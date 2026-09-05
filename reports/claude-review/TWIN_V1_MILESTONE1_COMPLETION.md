@@ -13,8 +13,8 @@ The generated acceptance gate passes: `reports/implementation/local-acceptance.j
 
 | Item | Value |
 |---|---|
-| Freeze commit | `FREEZE_COMMIT_SHA` |
-| Tag | `twin-v1.0` (annotated; points at the commit that records the freeze SHA in this report, `TAG_COMMIT_SHA`) |
+| Freeze commit | `219ca48bbb5e51db9347b335ac0a50241656045b` |
+| Tag | `twin-v1.0` (annotated). It points at the one-file commit that follows the freeze commit and records the freeze SHA in this report; resolve it with `git rev-parse twin-v1.0`. |
 | Accepted run root | `reports/implementation/runs/m1-20260905T165255Z/` (git-ignored by evidence policy; every file the gate read is SHA-256 listed in `local-acceptance.json`, 139 entries) |
 | Current-boot audit | `reports/implementation/audits/m1-current-boot-20260905T165742Z/` (passed with the documented caveats; boot identity matches replay A) |
 | Build evidence | `.local/twin-repos/build-evidence-20260905T160213Z/` (payouts image `sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b`) |
