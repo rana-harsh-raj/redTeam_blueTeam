@@ -1,0 +1,54 @@
+{
+  "status": "passed",
+  "scripts": 8,
+  "results": [
+    {
+      "path": "DAYTONA/scripts/cleanup.sh",
+      "exit_code": 0,
+      "sha256": "ae5113cfab9ff59a04a514c459d0c61d6f964492e752803eabf8e4fdbcc5de43",
+      "output": ""
+    },
+    {
+      "path": "DAYTONA/scripts/create.sh",
+      "exit_code": 0,
+      "sha256": "808336d8f234a60e76803c6cc797c94154e80e7fd631d8f78ff93432199f94b6",
+      "output": ""
+    },
+    {
+      "path": "DAYTONA/scripts/export-results.sh",
+      "exit_code": 0,
+      "sha256": "bf70b7bfe7ec88b4ab57fb4250772820b58bae41c976ac05cef6f3f5cb9df654",
+      "output": ""
+    },
+    {
+      "path": "DAYTONA/scripts/remote-run.sh",
+      "exit_code": 0,
+      "sha256": "284a5c44f74a27b4f7f5f80b6a7c3b2dda63064ecfb109b5e1e94be5e2f673d6",
+      "output": ""
+    },
+    {
+      "path": "DAYTONA/scripts/run-and-cleanup.sh",
+      "exit_code": 0,
+      "sha256": "cfd9eb58a3196eb1f9632c29786aaaf4b8b1c2711b4f1126f2c529917d1c3f17",
+      "output": ""
+    },
+    {
+      "path": "DAYTONA/scripts/run-full.sh",
+      "exit_code": 0,
+      "sha256": "8d601b9997fda169a95036f64300f889b5e9718816b4b51383698ce295c61c52",
+      "output": ""
+    },
+    {
+      "path": "DAYTONA/scripts/run-smoke.sh",
+      "exit_code": 0,
+      "sha256": "8db2acc8e6e31aef50b0b43d83a96509d3a4480b690a0523cae3acac6a953ab7",
+      "output": ""
+    },
+    {
+      "path": "DAYTONA/scripts/upload-or-sync.sh",
+      "exit_code": 0,
+      "sha256": "40af5d914c3e5e3c9ef23dae077f2a695a5962292af06fe4674d21e11081833f",
+      "output": ""
+    }
+  ]
+}

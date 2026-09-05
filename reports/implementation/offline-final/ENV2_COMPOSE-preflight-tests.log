@@ -1,0 +1,45 @@
+test_already_removed_containers_are_accepted_only_after_absence_check (test_egress_audit.AuditLifecycleTests.test_already_removed_containers_are_accepted_only_after_absence_check) ... Egress audit: passed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpmxyag1ca/evidence/egress.json
+ok
+test_analysis_containers_have_names_for_interrupt_cleanup (test_egress_audit.AuditLifecycleTests.test_analysis_containers_have_names_for_interrupt_cleanup) ... Egress audit: passed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpwvds9bny/evidence/egress.json
+ok
+test_analysis_failure_is_closed_and_cleans_up (test_egress_audit.AuditLifecycleTests.test_analysis_failure_is_closed_and_cleans_up) ... Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmp178g29dt/evidence/egress.json
+ok
+test_analyzer_cleanup_failure_is_not_ignored (test_egress_audit.AuditLifecycleTests.test_analyzer_cleanup_failure_is_not_ignored) ... Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpefsmflm0/evidence/egress.json
+ok
+test_capture_covers_complete_command_and_cleans_up (test_egress_audit.AuditLifecycleTests.test_capture_covers_complete_command_and_cleans_up) ... Egress audit: passed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpivsmqeff/evidence/egress.json
+ok
+test_capture_dying_before_command_finish_is_not_passed (test_egress_audit.AuditLifecycleTests.test_capture_dying_before_command_finish_is_not_passed) ... Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpwy2sjgg5/evidence/egress.json
+ok
+test_failed_cleanup_listing_is_not_treated_as_absence (test_egress_audit.AuditLifecycleTests.test_failed_cleanup_listing_is_not_treated_as_absence) ... Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmp_xb5yohi/evidence/egress.json
+ok
+test_failed_verifier_exit_is_propagated (test_egress_audit.AuditLifecycleTests.test_failed_verifier_exit_is_propagated) ... Egress audit: passed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmp81zko73q/evidence/egress.json
+ok
+test_missing_control_traffic_is_not_passed (test_egress_audit.AuditLifecycleTests.test_missing_control_traffic_is_not_passed) ... Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpijswu3ji/evidence/egress.json
+ok
+test_signal_during_cleanup_still_removes_resources_and_writes_evidence (test_egress_audit.AuditLifecycleTests.test_signal_during_cleanup_still_removes_resources_and_writes_evidence) ... Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmp3s8eutki/evidence/egress.json
+ok
+test_timeout_terminates_command_and_cleans_up (test_egress_audit.AuditLifecycleTests.test_timeout_terminates_command_and_cleans_up) ... Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpi6_o5pyc/evidence/egress.json
+ok
+test_uncertain_capture_launch_still_removes_registered_container (test_egress_audit.AuditLifecycleTests.test_uncertain_capture_launch_still_removes_registered_container) ... Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmp232gnk07/evidence/egress.json
+ok
+test_verifier_cleanup_failure_cannot_report_success (test_egress_audit.AuditLifecycleTests.test_verifier_cleanup_failure_cannot_report_success) ... Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpvos8ewmz/evidence/egress.json
+ok
+test_ambiguous_paths_are_rejected (test_ingress.IngressTests.test_ambiguous_paths_are_rejected) ... ok
+test_cross_site_fetch_metadata_is_rejected_without_origin (test_ingress.IngressTests.test_cross_site_fetch_metadata_is_rejected_without_origin) ... ok
+test_duplicate_host_origin_and_length_are_rejected (test_ingress.IngressTests.test_duplicate_host_origin_and_length_are_rejected) ... ok
+test_external_null_and_other_loopback_origin_are_rejected (test_ingress.IngressTests.test_external_null_and_other_loopback_origin_are_rejected) ... ok
+test_failed_readiness_terminates_child_and_removes_its_pidfile (test_ingress.IngressTests.test_failed_readiness_terminates_child_and_removes_its_pidfile) ... ok
+test_malformed_pidfile_is_stale_and_does_not_kill (test_ingress.IngressTests.test_malformed_pidfile_is_stale_and_does_not_kill) ... ok
+test_path_boundaries_accept_real_routes_and_query (test_ingress.IngressTests.test_path_boundaries_accept_real_routes_and_query) ... ok
+test_redirect_handler_never_follows_redirect (test_ingress.IngressTests.test_redirect_handler_never_follows_redirect) ... ok
+test_same_origin_and_cli_requests_forward_with_deadline (test_ingress.IngressTests.test_same_origin_and_cli_requests_forward_with_deadline) ... ok
+test_subprocess_timeout_is_bounded_gateway_error (test_ingress.IngressTests.test_subprocess_timeout_is_bounded_gateway_error) ... ok
+test_termination_timeout_escalates_and_waits_again (test_ingress.IngressTests.test_termination_timeout_escalates_and_waits_again) ... ok
+test_unsupported_transfer_encoding_and_incomplete_body_rejected (test_ingress.IngressTests.test_unsupported_transfer_encoding_and_incomplete_body_rejected) ... ok
+test_exact_consumer_scope_and_nested_configuration (test_materialization.MaterializationTests.test_exact_consumer_scope_and_nested_configuration) ... ok
+test_symlink_input_is_rejected_before_reading (test_materialization.MaterializationTests.test_symlink_input_is_rejected_before_reading) ... ok
+
+----------------------------------------------------------------------
+Ran 27 tests in 0.047s
+
+OK

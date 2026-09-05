@@ -1,0 +1,23 @@
+test_all_route_profiles_are_recorded_and_hashed (test_generate.GeneratorTests.test_all_route_profiles_are_recorded_and_hashed) ... ok
+test_api_feature_ids_fit_char14_schema (test_generate.GeneratorTests.test_api_feature_ids_fit_char14_schema) ... ok
+test_api_schema_names_keys_and_absent_service_only_fields (test_generate.GeneratorTests.test_api_schema_names_keys_and_absent_service_only_fields) ... ok
+test_cfa_and_monolith_beneficiaries_agree_and_hashes_are_fresh (test_generate.GeneratorTests.test_cfa_and_monolith_beneficiaries_agree_and_hashes_are_fresh) ... ok
+test_direct_routing_rule_primary_keys_are_unique (test_generate.GeneratorTests.test_direct_routing_rule_primary_keys_are_unique) ... ok
+test_each_test_has_isolated_ids_and_three_archetypes (test_generate.GeneratorTests.test_each_test_has_isolated_ids_and_three_archetypes) ... ok
+test_generated_api_columns_exist_and_foreign_key_parents_precede_balances (test_generate.GeneratorTests.test_generated_api_columns_exist_and_foreign_key_parents_precede_balances) ... ok
+test_ids_and_sensitive_fields (test_generate.GeneratorTests.test_ids_and_sensitive_fields) ... ok
+test_inactive_beneficiary_keeps_shield_suffix (test_generate.GeneratorTests.test_inactive_beneficiary_keeps_shield_suffix) ... ok
+test_ledger_banking_identity_is_signed_like_journal_dto (test_generate.GeneratorTests.test_ledger_banking_identity_is_signed_like_journal_dto) ... ok
+test_ledger_duplicate_fixture_ids_are_rejected (test_generate.GeneratorTests.test_ledger_duplicate_fixture_ids_are_rejected) ... ok
+test_ledger_queue_processes_and_scheduler_override (test_generate.GeneratorTests.test_ledger_queue_processes_and_scheduler_override) ... ok
+test_nullable_api_beneficiary_type_uses_source_fts_default (test_generate.GeneratorTests.test_nullable_api_beneficiary_type_uses_source_fts_default) ... ok
+test_output_integrity_and_evidence_records (test_generate.GeneratorTests.test_output_integrity_and_evidence_records) ... ok
+test_same_inputs_are_byte_identical (test_generate.GeneratorTests.test_same_inputs_are_byte_identical) ... ok
+test_splitz_base_variants_expand_to_every_merchant (test_generate.GeneratorTests.test_splitz_base_variants_expand_to_every_merchant) ... ok
+test_sql_and_http_references_agree (test_generate.GeneratorTests.test_sql_and_http_references_agree) ... ok
+test_xbalances_and_fts_use_their_distinct_channel_enums (test_generate.GeneratorTests.test_xbalances_and_fts_use_their_distinct_channel_enums) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 1.248s
+
+OK

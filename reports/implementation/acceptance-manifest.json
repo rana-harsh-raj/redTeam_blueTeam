@@ -1,0 +1,18 @@
+{
+  "replay_a": "reports/implementation/runs/m1-20260905T165255Z/replay-a",
+  "replay_b": "reports/implementation/runs/m1-20260905T165255Z/replay-b",
+  "final_route": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+  "final_bank": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+  "final_golden": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden",
+  "profile_direct_golden": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden",
+  "profile_mixed_golden": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden",
+  "profile_kafka": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka",
+  "logical_replay": "reports/implementation/logical-replay-m1.json",
+  "audit_dir": "reports/implementation/audits/m1-current-boot-20260905T165742Z",
+  "resource_profile": "reports/implementation/resource-profile-m1.json",
+  "build_evidence": ".local/twin-repos/build-evidence-20260905T160213Z",
+  "explorer_verification": "reports/implementation/explorer-final-saved-verification.json",
+  "declared_deviations": "ENV2_COMPOSE/config/declared-deviations.yaml",
+  "expected_failures": "TWIN_SPEC/expected-failures.yaml",
+  "fixed_twin_defects": "reports/implementation/fixed-twin-defects.json"
+}

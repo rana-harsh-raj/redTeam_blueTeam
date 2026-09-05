@@ -1,0 +1,251 @@
+{
+  "status": "passed",
+  "project": "env2_compose",
+  "volumes": {
+    "config-cfa": {
+      "name": "rzp-arena-config-cfa",
+      "consumers": [
+        {
+          "service": "cfa-migrate",
+          "target": "/app/config"
+        },
+        {
+          "service": "cfa-server",
+          "target": "/app/config"
+        },
+        {
+          "service": "cfa-worker-contact",
+          "target": "/app/config"
+        },
+        {
+          "service": "cfa-worker-fa",
+          "target": "/app/config"
+        }
+      ]
+    },
+    "config-fts": {
+      "name": "rzp-arena-config-fts",
+      "consumers": [
+        {
+          "service": "fts-migrate",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-web",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-check-transfer-status",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-default",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-fire-transfer-status-webhook",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-initiate-transfer",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-rbl-check-transfer-status",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-rbl-direct-imps-check-transfer-status",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-rbl-direct-imps-initiate-transfer",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-rbl-imps-check-transfer-status",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-rbl-imps-initiate-transfer",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-rbl-initiate-transfer",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-retry-transfer",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-retry-transfer-preprocessor",
+          "target": "/app/config"
+        },
+        {
+          "service": "fts-worker-retry-transfer-source-update",
+          "target": "/app/config"
+        }
+      ]
+    },
+    "config-ledger": {
+      "name": "rzp-arena-config-ledger",
+      "consumers": [
+        {
+          "service": "ledger-api",
+          "target": "/app/config"
+        },
+        {
+          "service": "ledger-migrate",
+          "target": "/app/config"
+        },
+        {
+          "service": "ledger-scheduler",
+          "target": "/app/config"
+        },
+        {
+          "service": "ledger-worker",
+          "target": "/app/config"
+        },
+        {
+          "service": "ledger-worker-balance-update",
+          "target": "/app/config"
+        },
+        {
+          "service": "ledger-worker-entry-details-create",
+          "target": "/app/config"
+        },
+        {
+          "service": "ledger-worker-entry-details-create-pg",
+          "target": "/app/config"
+        },
+        {
+          "service": "ledger-worker-journal-create",
+          "target": "/app/config"
+        }
+      ]
+    },
+    "config-mozart-mock": {
+      "name": "rzp-arena-config-mozart-mock",
+      "consumers": [
+        {
+          "service": "mozart-mock",
+          "target": "/app/conf"
+        }
+      ]
+    },
+    "config-payouts": {
+      "name": "rzp-arena-config-payouts",
+      "consumers": [
+        {
+          "service": "payouts-api",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-kafka-fts-status-updates-consumer",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-kafka-fts-status-updates-retry-consumer",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-migrate",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-async-dual-write",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-fts-async-hv-processing",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-fts-async-processing",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-generic-processing",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-on-hold-payout",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-partner-bank-hold-payouts",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-payout-create-failure-handling",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-payout-source-updater",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-payout-update-failure-handling",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-queued-payout",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-schedule-payout",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-transaction-create",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-webhook-event",
+          "target": "/app/config"
+        },
+        {
+          "service": "payouts-worker-x-balances-balance-refresh",
+          "target": "/app/config"
+        }
+      ]
+    },
+    "config-xbalances": {
+      "name": "rzp-arena-config-xbalances",
+      "consumers": [
+        {
+          "service": "xbalances-migrate",
+          "target": "/app/config"
+        },
+        {
+          "service": "xbalances-server",
+          "target": "/app/config"
+        },
+        {
+          "service": "xbalances-worker",
+          "target": "/app/config"
+        }
+      ]
+    },
+    "secrets-kong": {
+      "name": "rzp-arena-secrets-kong",
+      "consumers": [
+        {
+          "service": "kong-lite",
+          "target": "/run/secrets"
+        }
+      ]
+    },
+    "secrets-monolith": {
+      "name": "rzp-arena-secrets-monolith",
+      "consumers": [
+        {
+          "service": "monolith-stub",
+          "target": "/run/secrets"
+        }
+      ]
+    }
+  },
+  "host_secret_bind_mounts": []
+}

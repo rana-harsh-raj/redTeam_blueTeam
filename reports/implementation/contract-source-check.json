@@ -1,0 +1,8 @@
+{
+  "cron_routes_verified": 6,
+  "ledger_distinct_primary_keys": 44,
+  "dcs_bool_field_number_verified": 1,
+  "fts_source_account_mapping_verified": true,
+  "scope": "source contract and seed structure only; no live core assertions",
+  "route_profiles_rendered_config_validation": 4
+}

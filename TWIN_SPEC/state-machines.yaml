@@ -1,0 +1,285 @@
+# TWIN_SPEC/state-machines.yaml
+# Authoritative state machines for the RazorpayX Payouts Twin.
+# Every transition carries provenance (repo/path:line at the commits listed in README.md).
+# Confidence: CONFIRMED = read in source; INFERRED = derived; UNKNOWN = not derivable.
+version: 1
+generated: 2026-09-05
+sources:
+  payouts: razorpay/payouts@4bf3dbf (shallow, master)
+  fts: razorpay/fts@2a09e76
+  api: razorpay/api@2d665f9
+  ledger: razorpay/ledger@471ff4d
+  workflows: razorpay/workflows@080d71a
+
+machines:
+
+  # --------------------------------------------------------------------------
+  payout:
+    owner: payouts (Payouts Service, PS)
+    source: payouts/internal/app/payouts/state_machine.go (full file); statuses payouts/internal/app/common/appConstants/states.go:4-18
+    initial: create_request_submitted
+    statuses:
+      - create_request_submitted
+      - created
+      - pending
+      - pending_on_otp            # present in enum, no transition targets it (dead/legacy) — states.go:4-18
+      - scheduled
+      - batch_submitted
+      - queued
+      - on_hold
+      - ledger_response_awaited
+      - initiated
+      - processed
+      - reversed
+      - failed
+      - cancelled
+      - rejected
+    public_status_map:            # payouts/internal/app/common/appConstants/status.go:3-18
+      processing: [created, initiated, ledger_response_awaited, create_request_submitted, batch_submitted]
+      queued: [on_hold, queued]
+      pending: [pending_on_otp, pending]
+      processed: [processed]
+      reversed: [reversed]
+      rejected: [rejected]
+      cancelled: [cancelled]
+      failed: [failed]
+    transitions:
+      - event: created
+        to: created
+        from: [create_request_submitted, pending, scheduled, queued, on_hold, ledger_response_awaited, batch_submitted]
+        on_enter: [stork_event payout.initiated]
+        source: state_machine.go:129 (event), :19-27 (enter)
+      - event: ledger_response_awaited
+        to: ledger_response_awaited
+        from: [create_request_submitted, pending, scheduled, queued, on_hold, batch_submitted]
+        on_enter: []
+        source: state_machine.go:151, :28-34
+      - event: initiated
+        to: initiated
+        from: [created, initiated]      # self-loop allowed for FTS async retries (comment cites monolith Status.php)
+        on_enter: []
+        source: state_machine.go:177, :36-41
+      - event: failed
+        to: failed
+        from: [create_request_submitted, created, pending, scheduled, queued, on_hold, ledger_response_awaited, batch_submitted, initiated]
+        on_enter: [stork_event payout.failed]
+        source: state_machine.go:205, :65-72
+      - event: processed
+        to: processed
+        from: [initiated]
+        on_enter: [stork_event payout.processed]
+        source: state_machine.go:243, :44-53
+      - event: reversed
+        to: reversed
+        from: [create_request_submitted, ledger_response_awaited, pending, on_hold, queued, scheduled, processed, failed, initiated, created, batch_submitted]
+        on_enter: [stork_event payout.reversed]
+        source: state_machine.go:266, :55-63
+      - event: pending
+        to: pending
+        from: [create_request_submitted]
+        on_enter: [stork_event payout.pending]
+        source: state_machine.go:297, :105-112
+      - event: schedule
+        to: scheduled
+        from: [create_request_submitted, pending]
+        on_enter: []                    # no Enter hook registered (:117)
+        source: state_machine.go:319
+      - event: batch_summit               # sic — typo preserved from source
+        to: batch_submitted
+        from: [create_request_submitted, pending, scheduled]
+        on_enter: []
+        source: state_machine.go:344, :119-125
+      - event: queued
+        to: queued
+        from: [create_request_submitted, ledger_response_awaited, pending, scheduled, on_hold]
+        on_enter: [stork_event payout.queued]
+        source: state_machine.go:368, :74-81
+      - event: cancelled
+        to: cancelled
+        from: [queued, scheduled, on_hold]
+        on_enter: []                    # NO merchant webhook on cancel (absent from StatusToWebhookEventMap)
+        source: state_machine.go:392, :83-85
+      - event: on_hold
+        to: on_hold
+        from: [create_request_submitted, pending, batch_submitted, scheduled]
+        on_enter: [set on_hold_at, stork_event payout.queued]   # on_hold shares the payout.queued event
+        source: state_machine.go:419, :87-95
+      - event: rejected
+        to: rejected
+        from: [pending]
+        on_enter: [stork_event payout.rejected]
+        source: state_machine.go:444, :97-103
+    terminal: [processed, failed, cancelled, rejected]   # reversed is reachable from processed and failed (post-terminal correction)
+    audit:
+      payout_logs: appended in Payout.OnEvent (payouts/internal/app/payouts/model.go:1411-1419); mode/triggered_by always "system"
+      payout_status_details: one row per FTS/webhook status update (migration 20211026104754); table name is singular payout_status_details
+    ledger_event_map:             # payouts/internal/app/payouts/status.go:52-58
+      ledger_response_awaited: payout_initiated
+      created: payout_initiated
+      processed: payout_processed
+      reversed: payout_reversed
+      failed: payout_failed
+      note: VA-to-VA and charge-collections families use va_to_va_* / cc_debit_* events (status.go:60-73)
+    webhook_event_map:            # payouts/internal/app/common/appConstants/webhooks.go:4-24
+      created: payout.initiated
+      processed: payout.processed
+      reversed: payout.reversed
+      failed: payout.failed
+      queued: payout.queued
+      on_hold: payout.queued
+      rejected: payout.rejected
+      pending: payout.pending
+      detail_update: payout.updated      # fired directly, not via state machine (core.go:2049,2218)
+      money_moved: transaction.created   # after every successful failed/reversed journal (reversalViaLedgerService.go:215-312)
+      cancelled: none
+    guards:
+      fts_webhook_allowed_from: [initiated, processed, reversed, failed]   # states.go:37-54; otherwise HTTP 200 "webhook update skipped due to invalid state transition"
+      terminal_repeat: same terminal status again -> 200 idempotent no-op
+      per_payout_mutex: Redis AcquireResource(ResourcePayout+SourceID, 30s) shared by webhook and Kafka paths
+      approval_expiry: none in PS; monolith cron payouts_auto_cancel_on_expiry (api Service.php:2530-2557 -> Core.php:4482-4525) PENDING->rejected, QUEUED/CREATE_REQUEST_SUBMITTED->failed after 3 months
+      queued_expiry: IsValidQueuedPayout (validation.go:45-70) exists but has zero production call sites (dead code)
+
+  # --------------------------------------------------------------------------
+  fts_to_payout_status_map:
+    owner: payouts
+    source: payouts/internal/app/common/appConstants/states.go:64-128 (FtsToPayoutStatusMap)
+    default_and_shared:
+      created: created
+      initiated: initiated
+      reversed: reversed
+      failed: reversed          # shared/pool accounts remap FTS failed to payout reversed
+      processed: processed
+    direct_channels: [RBL, ICICI, AXIS, YESBANK, IDFC, SLICE]
+    direct:
+      created: created
+      initiated: initiated
+      reversed: reversed
+      failed: failed
+      processed: processed
+
+  monolith_fta_to_payout_status_map:
+    owner: api (monolith relay path)
+    source: api/app/Models/Payout/Status.php:243-309,415-421 ($ftaToPayoutStatusMap)
+    lookup: map[account_type][channel][fta_status] ?? map[DEFAULT][DEFAULT][fta_status]
+    default:
+      CREATED: created
+      INITIATED: initiated
+      REVERSED: reversed
+      FAILED: reversed
+      PROCESSED: processed
+    shared:
+      default: same as default
+      YESBANK: {}               # empty branch -> falls to DEFAULT/DEFAULT
+    direct:
+      default: {}               # no DEFAULT for DIRECT -> non-listed channel falls to DEFAULT/DEFAULT (FAILED->reversed)
+      RBL:     {CREATED: created, INITIATED: initiated, REVERSED: reversed, FAILED: failed, PROCESSED: processed}
+      ICICI:   same as RBL
+      AXIS:    same as RBL
+      YESBANK: same as RBL
+      IDFC:    same as RBL
+    relay_actions:              # api/app/Models/Payout/Core.php:933-1058
+      PROCESSED: handlePayoutProcessedForPayoutService -> PATCH /payouts/update_payouts_with_fts status=processed
+      REVERSED: reversePayoutService -> PATCH ... status=reversed
+      FAILED: handlePayoutFailed -> PATCH ... status=failed (only reachable for direct channels above)
+      CREATED: no-op
+      INITIATED: no-op
+      unknown: warning UNKNOWN_FTA_STATUS_SENT_TO_PAYOUT, no PS call
+      guard: repeatedFtsStatusUpdateForTerminalStatePayout short-circuits terminal repeats (Core.php:941-944)
+
+  # --------------------------------------------------------------------------
+  fts_transfer:
+    owner: fts
+    source: fts/internal/transfer/state_machine.go:7-114
+    states: [NEW, CREATED, INITIATED, PROCESSED, FAILED, REVERSED, RETRY, USER_PENDING]
+    transitions:
+      - {event: event_created, from: [NEW], to: CREATED}
+      - {event: event_initiated, from: [CREATED, RETRY, USER_PENDING], to: INITIATED}
+      - {event: event_processed, from: [INITIATED], to: PROCESSED}
+      - {event: event_failed, from: [INITIATED, CREATED, RETRY, USER_PENDING], to: FAILED}
+      - {event: event_reversed, from: [PROCESSED], to: REVERSED}
+      - {event: event_retry, from: [FAILED, INITIATED], to: RETRY}
+      - {event: event_user_pending, from: [INITIATED], to: USER_PENDING}
+    event_source: meta.{Processed,Failed,Reversed,Pending} computed by FTS from bank_status_code (fts/internal/providers/mozart/error_code.go:217-952); Mozart wire response has no meta (C57)
+    webhook_skip: no status webhook fires while transfer is RETRY (service.go:1104-1111)
+
+  fts_attempt:
+    owner: fts
+    source: fts/internal/transfer/state_machine.go:37-75
+    states: [NEW, CREATED, INITIATED, PROCESSED, FAILED, REVERSED, RETRY, FAILED_INTERNAL]
+    transitions:
+      - {event: event_created, from: [NEW], to: CREATED}
+      - {event: event_initiated, from: [CREATED, RETRY], to: INITIATED}
+      - {event: event_processed, from: [INITIATED], to: PROCESSED}
+      - {event: event_failed, from: [INITIATED, CREATED], to: FAILED}
+      - {event: "FAILED (literal-string event)", from: [CREATED], to: FAILED, note: second FAILED transition keyed on literal string (:65-69)}
+      - {event: event_reversed, from: [PROCESSED], to: REVERSED}
+      - {event: event_retry, from: [FAILED], to: RETRY}
+      - {event: event_failed_internal, from: [CREATED], to: FAILED_INTERNAL}
+    retry_policy:
+      max_reinitiate_attempt_count: 2   # attempt_processor.go:144
+      high_volume_merchant_retry_sla_s: 86400
+      retry_sla_source: TransferRetry.MerchantConfig[merchant][product][mode].RetrySLA else [integration.api.<bank>.<ver>.<mode>].RETRY_SLA
+      status_polling: self-republishing check_transfer_status until RETRY_SLA elapses (attempt_processor.go:6088-6178)
+      duplicate_gateway_ref_no: attempts_unique_keys -> FailTransfer(FtsDuplicateGatewayRefNo)
+      ambiguous_cutoffs: {IDFC "CBS:188": 8100s -> FAILED, Yesbank "ns:E404": 5400s -> FAILED}   # env.default.toml:8399-8436
+
+  # --------------------------------------------------------------------------
+  monolith_fund_transfer_attempt:
+    owner: api
+    source: api/app/Models/FundTransfer/Attempt/Core.php:487-560 (updateFundTransfer), Status.php:19-58
+    notes:
+      - FTA row saved BEFORE any PS relay call (:530-537)
+      - AttemptStatus::isValidStateTransition rejects with {"message":"webhook update skipped due to invalid state transition"} (:524-528)
+      - relay order: updateWithDetailsBeforeFtaRecon (POST /payouts/update_payouts_details_with_fts) then updateStatusAfterFtaRecon (PATCH /payouts/update_payouts_with_fts) (:835-875)
+      - no monolith-side retry; FTS's own webhook retry (3 x 200s) is the only retry
+
+  # --------------------------------------------------------------------------
+  ledger_journal:
+    owner: ledger (tenant X)
+    source: ledger/internal/journal/ledger_config/seed_data/shared_account_x.go, direct_account_x.go; account discovery ledger/internal/account_discovery/core.go:51-181
+    events_shared_account_x:
+      payout_initiated:   {config: XPayoutInitiatedV2, entries: [debit MerchantBalance amount+commission, credit VendorPayable amount, credit CommissionIncome commission-tax, credit OutputGST tax]}
+      payout_processed:   {config: XPayoutProcessedV2, entries: [debit VendorPayable amount, credit FtsPayable amount], identifiers: [banking_account_id, fts_fund_account_id, fts_account_type]}
+      payout_reversed:    {config: XPayoutReversedV2, entries: [debit FtsReceivable amount, credit MerchantBalance amount+commission, debit CommissionIncome commission-tax, debit OutputGST tax]}
+      payout_failed:      {config: XPayoutFailedV2, entries: [debit VendorPayable amount, credit MerchantBalance amount+commission, debit CommissionIncome commission-tax, debit OutputGST tax]}
+      positive_adjustment_processed: {config: XPositiveAdjustmentProcessedV2, entries: [debit AdjustmentLiability, credit MerchantBalance]}
+    events_direct_account_x:
+      note: DA* accounts keyed by banking_account_stmt_detail_id (bank statement row), never FtsPayable/Receivable
+    ps_call_timing:
+      payout_initiated: synchronous at create; failure -> payout_create_failure_handling job (FetchByTransactor then resume)
+      payout_processed: asynchronous via payout_meta_temporary FtsInfoMeta + payout_update_failure_handling job; SHARED accounts only (payouts core.go:2575)
+      payout_reversed/payout_failed: synchronous attempt in reversals/core.go:281-330; Direct skipped; retried via payout_update_failure_handling
+    dedupe: app-level ValidateJournalExist under Redis mutex; no DB unique index on (transactor_id, transactor_event)
+    balance: accounts.balance updated atomically in the journal transaction (UPDATE ... WHERE balance+incr >= min_balance); other accounts async via SQS balance_update
+
+  # --------------------------------------------------------------------------
+  workflow_approval:
+    owner: workflows (WFS, Cadence)
+    source: workflows/internal/client/types/approval/workflow.go; workflows.status taxonomy per raw-findings/23 §A.4
+    workflow_status: [creation_in_progress, created, initiated, init_failed, processed, failed, terminated]
+    domain_status: [created, approved, rejected, closed]
+    payout_side:
+      pending_entry: IsWorkflowApplicable true -> WorkflowAPI/Create -> EventPending (payouts baseHelper.go:29-105); Create error -> whole payout create fails (400)
+      approved: callback POST /v1/payouts/payouts_internal/{id}/approve -> re-enters post-create processing (no dedicated approved event)
+      rejected: callback POST .../reject -> EventRejected (pending -> rejected)
+      expired: none — Cadence ExecutionStartToCloseTimeout only (min ~4 months, default 10 years); no callback fires
+    callback_retry: Cadence activity, InitialInterval 2s, BackoffCoefficient 5.0, MaximumInterval 1h, ExpirationInterval 30d, per-attempt 30s
+    ps_success_codes_for_callbacks: [200, 201, 409]   # payouts/pkg/workflow/workflow_create.go:320-325
+    approver_check: string equality of actor_property_key/value against state rules only (workflows action/interactor.go:300-333); no self-approval prevention
+
+  # --------------------------------------------------------------------------
+  inflight_reservation:
+    owner: payouts (Redis only, no DB table)
+    source: payouts/internal/app/payouts/reservation/{store.go,scripts.go}, reservation_hook.go:34-90, inflight_reservation_reconciler.go:51-56
+    keys:
+      counter: "<prefix>:in_flight:{merchant_id:balance_id}"
+      items: "<prefix>:in_flight_items:{merchant_id:balance_id}"   # payoutID -> "<amount>:<dispatchedAtUnix>:<state>"
+    item_states: [live, awaiting_balance_refresh]
+    ttl_s: 21600
+    max_items_per_balance: 2000
+    reserve: atomic Lua script before dispatch (reservation_gate.go:170, store.go:249)
+    release:
+      processed: -> awaiting_balance_refresh (released by x_balances_balance_refresh worker once debit is visible)
+      failed|reversed|cancelled|rejected: released immediately
+    reconcile: POST /v1/cron/process_inflight_reservation_reconciliation every 5 min (cadence assumed; FastCron); heartbeat TTL 12.5 min, gate fails closed (queues) when heartbeat missing
+    gate_selection: reservationGate iff MerchantConfig.Feature["in_flight_reservation_enabled"]==1 else balanceBufferGate (queueingstrategy/strategy.go)

@@ -23,6 +23,7 @@ import os
 import sys
 import time
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
+from . import faults
 
 SERVICE_NAME = os.environ.get("STUB_NAME", "unknown-stub")
 LISTEN_PORT = int(os.environ.get("STUB_PORT", "8080"))
@@ -83,6 +84,12 @@ class StubHandler(BaseHTTPRequestHandler):
             return
         length = int(self.headers.get("Content-Length", 0) or 0)
         raw_body = self.rfile.read(length) if length else b""
+        if self.path == "/_arena/faults":
+            status, payload = faults.control(method, raw_body)
+            self._send_json(status, payload)
+            return
+        if faults.apply(self, raw_body):
+            return
         # Longest-prefix-first: a route dict may register both "/x/Evaluate"
         # and "/x/EvaluateBulk" -- since the latter has the former as a
         # string prefix, naive insertion-order iteration can match the

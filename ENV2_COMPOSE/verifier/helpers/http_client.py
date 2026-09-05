@@ -9,6 +9,7 @@ import base64
 import json
 import urllib.error
 import urllib.request
+from . import trace
 
 
 class HTTPResponse:
@@ -61,11 +62,18 @@ class ArenaHTTPClient:
             data = body if isinstance(body, (bytes, bytearray)) else json.dumps(body).encode("utf-8")
         req = urllib.request.Request(url, data=data, method=method,
                                       headers=self._headers(headers, passport_jwt))
+        trace.record("http_request", {"method":method,"url":url,"body":body})
         try:
             with urllib.request.urlopen(req, timeout=timeout or self.timeout) as resp:
-                return HTTPResponse(resp.status, dict(resp.getheaders()), resp.read())
+                result = HTTPResponse(resp.status, dict(resp.getheaders()), resp.read())
+                try: payload = result.json()
+                except ValueError: payload = result.text
+                trace.record("http_response", {"method":method,"url":url,"status":result.status,"body":payload})
+                return result
         except urllib.error.HTTPError as exc:
-            return HTTPResponse(exc.code, dict(exc.headers or {}), exc.read() or b"{}")
+            result = HTTPResponse(exc.code, dict(exc.headers or {}), exc.read() or b"{}")
+            trace.record("http_response", {"method":method,"url":url,"status":result.status,"body":result.text})
+            return result
         except urllib.error.URLError as exc:
             raise ServiceUnreachable("%s %s unreachable: %s" % (method, url, exc.reason)) from exc
         except (ConnectionError, TimeoutError, OSError) as exc:

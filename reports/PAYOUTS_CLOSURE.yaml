@@ -1,0 +1,879 @@
+# PAYOUTS_CLOSURE.yaml — material closure for RazorpayX BB+ Payouts, version 2026-09-04.v2 (baseline 2026-09-03.v1 + post-access delta)
+# Tier semantics: F3 real service+schema; F2 protocol-faithful substitute; F1 behavioural placeholder; F0 graph-only; "F3-mock" = real binary in built-in mock mode.
+closure_rule: 'Included if the component can authenticate the initiator, determine merchant/account identity, authorize or reject, alter beneficiary/amount/mode/source account, determine approval requirements, enforce a limit,
+  create or mutate payout state, create or mutate Ledger state, initiate or update the fund transfer, reverse or compensate financial state, determine the merchant-visible final result, receive a status-changing callback,
+  reconcile or repair status, route between legacy and new implementations, change behaviour through configuration, or perform a privileged admin mutation.
+
+  '
+must_not_be_mocked_simplistically:
+- authorization
+- ledger_state
+- idempotency
+- final_payout_state
+- reversal
+- tenant_isolation
+- routing
+- approval
+- beneficiary_validation
+components:
+- name: Payouts Service
+  repository: razorpay/payouts
+  service: payouts (api, workers, kafkaConsumers, migration)
+  tier: F3
+  reason: System of record for payout state, idempotency, approval applicability, balance gating, FTS/Ledger orchestration, webhooks, admin mutations, migration routing.
+  influences:
+  - authorization
+  - approval
+  - idempotency
+  - payout_state
+  - ledger_state
+  - transfer_state
+  - reversal
+  - tenant_isolation
+  - routing
+  - final_state
+  dependencies:
+  - Ledger
+  - FTS
+  - CFA
+  - x-balances
+  - DCS
+  - Splitz
+  - Workflow Service
+  - Shield
+  - Governor/charge-collections
+  - API monolith (config, pricing, fallbacks)
+  - Stork
+  - ASV
+  - MySQL
+  - Redis
+  - SQS
+  - Kafka
+  - SNS
+  - ES
+  - HVault
+  configuration_needed:
+  - config/prod.toml + env overrides (PAYOUTS_*)
+  - DCS merchant features
+  - Splitz experiment variants
+  - cron cadence
+  - service credentials
+  - in_flight_reservation_enabled
+  - fts_request_from_ps list
+  evidence:
+  - findings/01
+  - 2
+  - 12
+  - 13
+  - 14
+  - 15
+  confidence: confirmed
+- name: Ledger (tenant X)
+  repository: razorpay/ledger
+  service: ledger api + worker + scheduler
+  tier: F3
+  reason: Financial source of truth; synchronous atomic balance authorization at payout_initiated; payout_processed/reversed/failed accounting; dedupe invariant is app-level only.
+  influences:
+  - ledger_state
+  - authorization (insufficient balance)
+  - reversal
+  dependencies:
+  - Postgres rx
+  - Redis mutex
+  - SQS balance_update
+  - SNS journal-created
+  - seed ledger_config
+  configuration_needed:
+  - auth.payouts/auth.fts/auth.xbalances creds
+  - ledger_config seed for X
+  - db.rx
+  evidence:
+  - findings/04
+  confidence: confirmed
+- name: FTS
+  repository: razorpay/fts
+  service: fts web + default-workers (machinery/Redis) + in-process crons
+  tier: F3
+  reason: Transfer state machine, routing, UTR, status propagation logic (direct webhook vs monolith relay vs Kafka), retry/abandon semantics that produce stuck payouts.
+  influences:
+  - transfer_state
+  - payout_state (via webhook)
+  - routing
+  - reversal
+  dependencies:
+  - Mozart (F2)
+  - Payouts Service
+  - API monolith (legacy webhook target)
+  - Ledger (account create)
+  - XAS (retry preprocessing)
+  - Relay (optional)
+  - Splitz
+  - Razorx
+  - MySQL
+  - Redis
+  configuration_needed:
+  - env.prod-live.toml bank matrix
+  - users.* creds
+  - payouts_service.update_fts_fund_transfer URL
+  - Splitz CreateTransferMetaRollout/FireStatusUpdateKafka variants
+  - INSTANCE_TYPE=canary for stuck cron
+  evidence:
+  - findings/03
+  - 13
+  confidence: confirmed
+- name: CFA
+  repository: razorpay/cfa
+  service: cfa server + worker
+  tier: F3
+  reason: Beneficiary system of record with merchant_id-scoped isolation and structural validation; API-DB fallback reads.
+  influences:
+  - beneficiary_validation (structural)
+  - tenant_isolation
+  - payout_state (inactive account reject)
+  dependencies:
+  - MongoDB
+  - API MySQL (fallback, F2 schema)
+  - SQS dual-write
+  - DCS (payouts namespace)
+  - Vault/BIN/Token (card only)
+  configuration_needed:
+  - ACL usernames incl. Payouts/API/Validx
+  - EnableCFADB/EnableTiDB
+  - skip_ifsc_lookup
+  evidence:
+  - findings/05
+  confidence: confirmed
+- name: x-balances
+  repository: razorpay/x-balances
+  service: x-balances server + workers
+  tier: F3
+  reason: Source-account selection (ListAccounts), Direct balance value feeding the queue gate, BalanceRefreshEvent releasing reservations; ledger enrichment for sub-balances.
+  influences:
+  - routing (source account)
+  - authorization (balance gate input)
+  - payout_state (queue)
+  dependencies:
+  - Mozart (F2 balance fetch)
+  - banking-accounts (creds)
+  - Ledger
+  - API MySQL balance fallback (F2 schema)
+  - DCS
+  - SQS
+  - Redis
+  configuration_needed:
+  - Server.Auth.* creds
+  - in_flight_reservation_enabled
+  - fetch strategy
+  evidence:
+  - findings/06
+  confidence: confirmed
+- name: banking-accounts
+  repository: razorpay/banking-accounts
+  service: banking-account-service
+  tier: F2
+  reason: Only read for account_number↔balance_id↔fts_fund_account_id and credentials metadata in payout flows; onboarding out of scope. Seeded rows suffice.
+  influences:
+  - routing (source account linkage)
+  dependencies:
+  - MySQL
+  configuration_needed:
+  - seed banking_account rows
+  evidence:
+  - findings/06
+  confidence: confirmed
+  env_overrides:
+    env5_bulk: F2
+    env_onboarding: F3
+- name: x dashboard SPA
+  repository: razorpay/x
+  service: static SPA
+  tier: F3
+  reason: Merchant entrypoint; client-side permission gating; Playwright e2e specs exist for payouts and bulk flows.
+  influences:
+  - authorization (client-side only)
+  - payout_state (initiation)
+  dependencies:
+  - dashboard host routing (Kong F2)
+  - monolith authenticate (F2)
+  configuration_needed:
+  - X_ENV config
+  - Splitz experiment ids
+  evidence:
+  - findings/07
+  confidence: confirmed
+- name: Xperience BFF
+  repository: razorpay/xperience
+  service: xperience api
+  tier: F0
+  reason: Not on the single-payout path; owns bulk lifecycle and petty-cash payouts.
+  influences:
+  - payout_state (bulk only)
+  dependencies:
+  - Batch service
+  - WFS
+  - API monolith
+  - PS
+  - protos from BSR
+  configuration_needed:
+  - buf.build access
+  evidence:
+  - findings/07
+  confidence: confirmed
+  env_overrides:
+    env5_bulk: F3
+- name: XAS (x-account-statements)
+  repository: razorpay/x-account-statements
+  service: xas server + worker
+  tier: F2
+  reason: Consumes payout/reversal SQS events and links statements; can influence failed-status verification (debit statement check) and BAS-recon reversal creation for Direct accounts.
+  influences:
+  - reversal (Direct via BAS recon)
+  - final_state (failed verification)
+  dependencies:
+  - Mozart statements (F2)
+  - API monolith enrichment sink
+  - SQS
+  configuration_needed:
+  - queue names
+  evidence:
+  - findings/08
+  - '13 #10'
+  confidence: confirmed
+  env_overrides:
+    env4_failure: F3
+- name: ValidX
+  repository: razorpay/ValidX
+  service: validx server + worker
+  tier: F0
+  reason: No FAV-freshness gate exists in any cloned repo; ValidX is called by the monolith only. Included as F3 only for a FAV-specific environment.
+  influences:
+  - beneficiary_validation (FAV entity in monolith)
+  dependencies:
+  - API monolith
+  - FTS
+  - Mozart
+  - CFA
+  - Ledger
+  - charge-collections
+  - Stork
+  - DCS
+  - Splitz
+  configuration_needed:
+  - gateway_routing_rules seed
+  - ACL API/Cron/Admin
+  evidence:
+  - findings/15
+  confidence: confirmed
+  env_overrides:
+    env_fav: F3
+- name: API monolith
+  repository: razorpay/api
+  service: api (PHP)
+  tier: F2 (high-fidelity)
+  reason: 'In-path for every dashboard/public request (Edge default upstream today — payouts-proxy-cutover is devstack-only), dashboard authentication (IP allowlist only; no merchant_users DB check found), role checks (local
+    AdminAccess::policyChecker for admin/ops; AuthZ for merchant-dashboard roles unconfirmed server-side), merchant config default source, pricing default source, fund-account/ contact fallbacks, source_update sink, legacy
+    FTS webhook relay (no retry, FTA committed before relay attempt), admin routes, variants'' payouts_internal routes, payouts_service/dual_write (PS-authoritative read, writes local payouts table; watermark only into PS''s
+    own DB), FAV gate confirmed absent from the create path (exhaustive grep). Physical `payouts` table is reported absent in prod (Slack 2026-09-03) while the code paths above are all live — substitute must implement the
+    handlers and may choose whether to reproduce the ApprovedPayoutProcessor failure (C42) or let them succeed.
+
+    '
+  influences:
+  - authorization
+  - approval (UI/OTP)
+  - routing
+  - payout_state (relay)
+  - pricing
+  - config
+  dependencies:
+  - MySQL (balance
+  - contacts
+  - fund_accounts
+  - merchants
+  - features; payouts table schema-present
+  - physically absent in prod)
+  - WFS
+  - AuthZ (local admin permission model + unconfirmed remote AuthZ for merchant roles)
+  configuration_needed:
+  - full route table now available (findings/20 §1) — ~30 endpoint monolith substitute list finalised: payouts
+  - payouts_internal(_direct)
+  - internalContactPayout
+  - payouts_with_otp(/2fa/*)
+  - payouts/approve|reject/bulk
+  - payouts/(id)/approve|reject
+  - admin/payouts/cancel
+  - payouts/manual_action
+  - payouts/(id)/manual/status(/batch)
+  - payouts/(id)/retry
+  - fund_transfer_attempts*
+  - payouts_service/(create
+  - create_fta
+  - create_ledger
+  - deduct_credits
+  - reverse_credits
+  - fetch_pricing_info
+  - decrement_free_payouts
+  - free_payout_rollback
+  - mail_and_sms
+  - source_update
+  - status_details_source_update
+  - dual_write
+  - delete_card_metadata
+  - renameAttachments)
+  - banking_account_statement/payout_update
+  - internal/merchants/(id)
+  - fund_accounts_internal*
+  - contacts_internal*
+  - internal_balances_queued
+  - merchant/on_hold_slas_internal
+  - wf-service/state/callback
+  - update_fts_fund_transfer
+  - fund_accounts/validations(_internal/*)
+  evidence:
+  - findings/20
+  confidence: confirmed
+- name: Edge / Kong
+  repository: razorpay/terraform-kong, razorpay/edge
+  service: kong + plugins (basic-auth-x, upstream-jwt, ip-restriction-x, upstream-override, authz-enforcer)
+  tier: F2
+  reason: 'Mints passport identity (upstream-jwt, RS256, hardcoded 300s TTL, no authType claim in the JWT — auth_type/auth_flow is Kong-internal ctx only) and decides upstream (monolith vs PS). Cutover (payouts-proxy-cutover)
+    is instantiated only in devstack — no prod/stage/us/sg environment diverts any payout route; payouts_with_otp is explicitly excluded from the diverted set even in devstack. Confirmed absent, not merely unfound: rate-limiting
+    plugin (no wiring on any payouts/ contacts/fund_accounts route), loop-guard mechanism (no X-PS-Proxied or equivalent) for the direct-divert design. authz-enforcer runs shadow_mode=true AND the public-API route is explicitly
+    whitelisted on prod-api (never blocks); dashboard-merchant surface runs enforced.
+
+    '
+  influences:
+  - authorization (identity)
+  - routing
+  dependencies:
+  - JWKS/static key material (edgev1/edgev2
+  - apiv1)
+  - Consul-backed authz policy sync
+  configuration_needed:
+  - exact base/payouts-proxy-cutover/config.tf rollout knobs now captured (findings/21 §1.2); full claim schema (findings/21 §2.1
+  - findings/24 §1); own JWKS or static keypair for a local substitute
+  evidence:
+  - findings/21
+  - findings/24 §1
+  confidence: confirmed
+- name: AuthZ
+  repository: razorpay/authz
+  service: policy store (Consul-synced) + goutils/authz enforcer
+  tier: F2
+  reason: 'Role->permission policies for X roles (xplatform.csv role x action matrix, plus a second, independently-evolved policy set producing role payout_approve_reject_view from the "CAC" initiative — reconciliation gap
+    between the two resource-naming conventions). Enforced in monolith (local, not confirmed remote-AuthZ for merchant-dashboard roles) and xperience (Casbin in-process). Pilot for PS (authz PR 2577, timeslots route only).
+    New gap this pass: prod''s own config/prod.toml watchResourceGroups EXCLUDES x_platform (stage/bvt/dev-serve include it) — a second, independent candidate explanation (besides the still-unresolved non_lms org-string question)
+    for "policies seeded but not enforcing" in prod.
+
+    '
+  influences:
+  - authorization
+  dependencies:
+  - Consul KV (list+watch)
+  - casbin policy engine
+  configuration_needed:
+  - policy CSV export for org razorpayx/banking (xplatform.csv + CAC-derived rows); resolution of watchResourceGroups gap
+  evidence:
+  - findings/21 §3
+  confidence: confirmed
+- name: Workflow Service
+  repository: razorpay/workflows
+  service: workflows (Go; cmd/api Twirp server, cmd/workers Cadence worker, cmd/migration)
+  tier: F3-capable
+  reason: 'Holds approval state and drives approve/reject callbacks; OTP/2FA enforcement lives entirely upstream of WFS (confirmed absent from WFS code — enable_approval_via_oauth does not exist anywhere in this repo). Cadence
+    is the real business-logic engine (every approval instance is a live Cadence workflow execution; human approve/reject becomes a Cadence Signal, re-validated server-side only by string-matching caller-supplied actor_property_key/value
+    against the pending state''s stored rules — no independent role re-verification, a real trust boundary). Expiry is bounded purely by Cadence''s ExecutionStartToCloseTimeout (min ~4 months if configured, default ~10 years);
+    no code anywhere fires a callback on expiry — a timed-out workflow leaves WFS''s own DB row at status=initiated forever with PS never notified. WFS has zero bulk RPCs; Batch''s payout_approval batch type calls PS''s bulk_approve
+    directly, bypassing WFS entirely. Repo is now fully readable and buildable (Go + MySQL + Redis + Cadence, docker-compose in repo).
+
+    '
+  influences:
+  - approval
+  dependencies:
+  - MySQL
+  - Redis (cache only
+  - no approval logic)
+  - Uber Cadence
+  - API monolith callbacks
+  - PS callbacks
+  configuration_needed:
+  - docker-compose Cadence stack (README); Create contract + callback schema now fully specified (findings/23 §C.6); credential pairs cred.Payouts (inbound) / clients.payouts_live (outbound) are distinct
+  evidence:
+  - findings/23 §A
+  confidence: confirmed
+- name: DCS
+  repository: razorpay/dcs
+  service: dynamic config
+  tier: F3-capable
+  reason: 'Merchant feature values determine approval applicability, reservation gating, IFSC lookup, encryption. Repo now fully readable and locally runnable: docker-compose e2e stack (DynamoDB-local + Aurora-compatible MySQL
+    + Kafka/Zookeeper), or an in-memory storage mode with zero external infra (used by DCS''s own admin-server e2e suite). Storage model confirmed: DynamoDB single-table primary (PK=entity#<type>#<id>, SK=kv/<namespace>/...)
+    + Aurora MySQL secondary (legacy proxy-v1 feature table + proxy-v2 dual-write mirror, gated by DCSFeature.dual_write_enabled + Splitz dcs_kv_dual_write_enabled, fail-closed). Export/legacy- interop mechanism is the Proxy
+    dual-write/authority-gating system (write_via_client / read_enabled_via_dcs per-flag pair), not a push/Kafka export.
+
+    '
+  influences:
+  - approval
+  - authorization (balance gate mode)
+  - config
+  dependencies:
+  - DynamoDB (or DynamoDB-local)
+  - Aurora MySQL
+  - config-proto marshal/unmarshal registry (gen package) for real protobuf wire bytes
+  configuration_needed:
+  - export of rzp/x/merchant/payouts/* now fully schema-mapped field-by-field with proto3 defaults (findings/26 §A); real local run recipe (`make local-e2e-infra-up` + `APP_ENV=dev ./bin/.../server`) or in-memory mode
+  evidence:
+  - findings/26 §A
+  confidence: confirmed
+- name: Splitz
+  repository: razorpay/splitz
+  service: experiments
+  tier: F3-capable-but-empty
+  reason: 'Variants decide FTS call origin, webhook path, Kafka vs HTTP, idempotency enforcement, duplicate detection, pricing source, merchant-config source, shadow-gateway mode. Repo now fully readable and locally runnable
+    (docker-compose dev stack: api/worker/mysql/redis + separate Kafka compose). BUT: all 8 in-scope experiment IDs/names (TUnTsUB8Os2kX0, Qnc6b4fg1Hi36k, Sg7tEnMoxCbTzM, TMp5VcIFYOHK2m, PEVE4sUaVG6Drw, ORHtoFyuKLWUSw, CreateTransferMetaRollout,
+    FireStatusUpdateKafka) have ZERO definitions anywhere in the repo — architectural, not a clone gap: experiment definitions live exclusively in Splitz''s own MySQL, admin-managed at runtime. A local instance needs the synthesized,
+    deterministic seed data provided in findings/26 §B (not repo-derivable) before it is useful for testing.
+
+    '
+  influences:
+  - routing
+  - idempotency
+  - config
+  dependencies:
+  - MySQL
+  - Redis cluster
+  - Kafka (TrackEvent only)
+  configuration_needed:
+  - deterministic variant table per experiment id — now synthesized in findings/26 §B (not real prod data; DB-only source of truth)
+  evidence:
+  - findings/26 §B
+  confidence: confirmed (mechanism); probable (seed data — synthesized, not reverse-engineered from real Splitz data)
+- name: Shield
+  repository: razorpay/shield-sdk (client only; full razorpay/shield ~6.7GB not cloned)
+  service: risk rules
+  tier: F2
+  reason: 'Contract now fully confirmed via shield-sdk alone (server-side rule catalogue remains unreadable): three actions exist — allow, block, review (not just block) — but Payouts'' own integration only branches on "block";
+    review is currently indistinguishable from allow in Payouts'' behavior (confirmed at the call site). Fail-open at two levels: any HTTP/timeout error, and any non-"block" action (including review). 200ms per-call timeout
+    with Hystrix-style circuit breaker (opens >=20 requests, >=50% error rate, 5s sleep window). purpose=rzp_fees is excluded from evaluation entirely via config.
+
+    '
+  influences:
+  - authorization (risk reject)
+  dependencies:
+  - none for a stub — shield-sdk's real client interface is directly mockable
+  configuration_needed:
+  - request schema fully confirmed (PayoutEvaluateRequest/PayoutInput
+  - findings/26 §D); substitute must return allow/block/review and Payouts' handling of review-as-allow must be reproduced
+  - not "fixed"
+  evidence:
+  - findings/26 §D
+  confidence: confirmed
+- name: Governor + Charge Collections (pricing)
+  repository: razorpay/governor, razorpay/governor-executor, razorpay/charge-collections
+  service: governor, charge-collections
+  tier: F2
+  reason: 'Fee calculation is fail-closed; amounts feed ledger commission/GST entries; default source today is the monolith (fetch_pricing_info) unless Splitz charge_collections_call_experiment routes to the SDK path. Confirmed
+    call topology: Payouts -> ccSdk (in-process, vendored charge-collections-sdk) -> [Governor (always) + Charge Collections (optional, only if config.ChargeCollections.Host set)]. Governor is a selection/scoring engine only
+    (govaluate rule chains, returns boolean Evaluation + Score, NOT fee amounts) — Payouts configures 5 separate rule chains (basic/product/bank/mode/amount-range). Charge Collections'' Rule message holds the actual fee numbers
+    (percent_rate/fixed_rate/min_fee/max_fee). The exact wire request the SDK sends to Governor''s /execute (mapping ccSdkPayout.Request fields into EvaluatingEntity/SupportingEntities) could not be confirmed — charge-collections-sdk
+    source is outside the sandboxed filesystem (go module cache path unreadable).
+
+    '
+  influences:
+  - ledger_state (fees)
+  - payout_state (fail-closed)
+  dependencies:
+  - charge-collections-sdk (build dep
+  - unreadable)
+  - Governor MySQL rules table
+  - Charge Collections' own PricingService
+  configuration_needed:
+  - recorded fee rules per mode/purpose; OR use the already-shipped
+  - fully deterministic payouts/pkg/ccSdk.MockPayoutCalculator (CCSDKConfig.Mock=true) — simplest correct default
+  evidence:
+  - findings/26 §C
+  confidence: confirmed (contract/topology); unknown (exact wire mapping)
+- name: Stork
+  repository: razorpay/stork
+  service: webhook/SMS/email delivery
+  tier: F2
+  reason: 'Merchant-visible final state; contract confirmed as Twirp WebhookAPI/ProcessEvent (not "SOP"-style REST). Backoff confirmed exponential (factor=5, maxTime=86400s/24h, maxAttempt=15; extended per-owner schedule 72h/23
+    attempts). No ordering guarantee (standard non-FIFO SQS p0/p1/p2). No dedupe anywhere (messages.event_id has no unique constraint; grep for dedup*/idempoten* across webhook/channel packages returns zero matches) — at-least-once
+    delivery per channel, merchants must dedupe on X-Razorpay-Event-Id. HMAC-SHA256 signature over the raw payload body (X-Razorpay-Signature). No caller of WebhookAPI/Create (merchant webhook registration) exists in the payouts
+    repo — presumed to live in the monolith, unconfirmed.
+
+    '
+  influences:
+  - final_state (visibility)
+  dependencies:
+  - none for the F2 capture stub
+  configuration_needed:
+  - Twirp WebhookAPI proto now fully specified (proto/stork/webhook/v1/*
+  - findings/25 §A.2); "Stork capture" substitute spec fully written (findings/25 §A.10)
+  - byte-compatible with the real signature scheme
+  evidence:
+  - findings/25 §A
+  confidence: confirmed
+- name: Mozart + partner banks
+  repository: razorpay/mozart
+  service: bank gateway
+  tier: F3-mock
+  reason: 'External boundary; FTS keys its FSM on Mozart response flags computed LOCALLY by FTS (not sent by Mozart on the wire — the real envelope is {data, error, external_trace_id, mozart_id, success, next}, no meta field;
+    FTS derives processed/failed/reversed/retry/user_pending from bank_status_code via two Go lookup maps, ~140 entries + transfer_init-only overrides). Repo is now fully readable, and Mozart ships a first-class, production-config-driven
+    mock server (`mozart -mock`) — same route/auth/config pipeline as prod, hundreds of pre-existing .golden/.gatewayResp fixtures under app/testdata/fts/**, exact-field-match scenario selection. This is now the preferred
+    simulator over a from-scratch build. IDFC has no plain NEFT/IMPS gateway in Mozart''s fts namespace — idfc_upi v1 (UPI only) is the only IDFC integration.
+
+    '
+  influences:
+  - transfer_state
+  dependencies:
+  - none for -mock mode; Postgres+Redis for the real (non-mock) binary
+  configuration_needed:
+  - run `mozart -mock` directly
+  - or use the lighter fts/cmd/mock-server amount-keyed convention as a fallback (findings/25 §C.2); fixture tree app/testdata/fts/**
+  evidence:
+  - findings/25 §B
+  confidence: confirmed
+- name: Account Service (ASV)
+  repository: unknown (NOT ACCESSIBLE)
+  service: asv gRPC
+  tier: F2
+  reason: Provides activated/hold_funds; hold_funds rejects Shared payouts.
+  influences:
+  - authorization
+  dependencies: []
+  configuration_needed:
+  - merchant metadata stub
+  evidence:
+  - findings/15 row 13
+  confidence: confirmed
+- name: Batch service
+  repository: razorpay/batch
+  service: batch (Java/Spring Boot; 7 k8s deployments)
+  tier: F0 (env1-3); F2 (env5_bulk, hardened)
+  reason: 'Config-driven batch-type engine (payout.json, payout_approval.json, six v2/payouts_*_bene_* types, payout_link_bulk*.json). Confirmed: payout_approval.json calls PS `payouts/bulk_approve` directly, bypassing Workflow
+    Service. Real, code-level gap: the classic bulk-payout-create flow (payout.json — the flow ARCHITECTURE.md itself calls out as Batch''s headline use case) derives idempotency as `"batch_"+BatchEntry.id` with NO Redis mutex/cross-attempt
+    coordination, while sibling v2/payout-links batch types hitting the same PS endpoints were hardened with a SHA1-hash + RedisMutexLock(300s)+24h cache. The repo''s own core/AGENTS.md "distributed mutex in BatchCore" claim
+    is confirmed stale/false (no such code exists). Batch does not poll PS for bulk-create status — the call is synchronous; its own callers poll Batch''s own GET /batch/{id}.
+
+    '
+  influences:
+  - payout_state (bulk rows)
+  - approval (bulk
+  - bypassing WFS)
+  dependencies:
+  - xperience
+  - WFS (bulk-approve path NOT via WFS — direct to PS)
+  - PS /v1/payouts/bulk
+  - PS /v1/payouts/bulk_approve
+  - Postgres
+  - Redis
+  - S3
+  configuration_needed:
+  - ? full request/response contracts now specified (findings/23 §C.1-C.6); row validation rules — confirmed absent at field-semantics level for payout.json (structural checks only
+    : file type
+  - header match
+  - row-count cap)
+  evidence:
+  - findings/23 §B
+  confidence: confirmed
+- name: Admin dashboard + monolith admin routes
+  repository: razorpay/admin-dashboard (+ api NOT ACCESSIBLE)
+  service: admin UI
+  tier: F0
+  reason: Privileged mutations exist but are not part of the happy-path flows; must be F2 in the failure/repair environment.
+  influences:
+  - payout_state
+  - reversal
+  - transfer_state
+  dependencies:
+  - monolith permissions
+  configuration_needed:
+  - permission→route map
+  evidence:
+  - findings/08
+  confidence: confirmed
+  env_overrides:
+    env4_failure: F2
+- name: Recon / ART
+  repository: razorpay/recon
+  service: recon (Python/Flask + Spark/EMR batch matcher)
+  tier: F0 (env1,2,3,5); F2 (env4_failure_retry_reversal_async_status, NEW)
+  reason: 'Post-hoc 3-way match, primarily a Spark/EMR data-lake batch reader, not a live DB/API reader of payouts/FTS. But its write path is real and live: FinOps reviews and re-uploads an "RX Workflow" file via Admin Dashboard
+    -> recon converts rows to Kafka messages -> recon-workflow-kafka-consumer fires a generic, DB-config-driven HTTP request against {FTS, API, PRS} -> confirmed on FTS''s own side (ARTAuth Basic credential directly authorized
+    on v1/attempts/:action and v1/attempts/ reconcile) -> cascades to transfer and payout status via FTS''s normal attempt-update mechanism. Human-gated, not automatic on every match, but real and wired to prod. Material specifically
+    to Env4 (failure/retry/reversal/repair scenarios), where a "repair a stuck/failed attempt from a bank file" workflow is exactly what''s being exercised. F2 not F3: the Spark/EMR ingestion-and- matching engine that produces
+    the RX Workflow file is not needed to exercise Env4 — a test harness can seed the workflow_configs row + Kafka message directly.
+
+    '
+  influences:
+  - observe
+  - manual repair (Env4 only: transfer/payout status mutation via FTS attempts route)
+  dependencies:
+  - Kafka
+  - FTS (v1/attempts/:action
+  - /reconcile)
+  - XAS (read-only
+  - for reconciliation input)
+  - Postgres/MySQL
+  - Databricks/EMR (not needed for Env4 substitute)
+  configuration_needed:
+  - workflow_configs DB row (endpoint template
+  - method
+  - payload schema) — runtime data
+  - not in repo; a test harness seeding this + a Kafka message directly is sufficient for Env4
+  evidence:
+  - findings/27 §A
+  confidence: confirmed (mechanism); probable (exact production workflow_configs content)
+- name: payout-links / vendor-payments / vendor-experience / charge-collections fee-recovery / frontend-x payee page
+  repository: razorpay/payout-links, vendor-payments, vendor-experience, charge-collections, frontend-x
+  service: variants
+  tier: F0
+  reason: Distinct entry variants with their own closure; not needed for core flows.
+  influences:
+  - payout_state (initiation via monolith internal routes)
+  dependencies:
+  - API monolith payouts_internal routes
+  - Stork
+  - WFS
+  - SNS source updates
+  configuration_needed: []
+  evidence:
+  - findings/09
+  confidence: confirmed
+  env_overrides:
+    env_variants: F3
+- name: virtual-account
+  repository: razorpay/virtual-account
+  service: virtual-account
+  tier: F0
+  reason: Only for VA-funded payouts; resolves balance_id via x-balances.
+  influences:
+  - routing (VA source)
+  dependencies:
+  - x-balances
+  - Ledger
+  configuration_needed: []
+  evidence:
+  - findings/06
+  confidence: probable
+- name: accounting-integrations, self-serve-analytics, x-bank-statement-sync, data-mcp, tejas, memoir, razorpay-mcp-server, dashboard (PG)
+  repository: various
+  service: observers / unrelated
+  tier: F0
+  reason: Observe-only or unrelated; cannot alter payout or ledger state.
+  influences:
+  - observe
+  dependencies: []
+  configuration_needed: []
+  evidence:
+  - findings/07
+  - 08
+  - 09
+  confidence: confirmed
+- name: Relay config server
+  repository: razorpay/relay
+  service: relay
+  tier: F1
+  reason: Only FTS polls it, behind POLL_DATA_FROM_RELAY_SERVICE; not payout logic.
+  influences:
+  - config (FTS runtime patches)
+  dependencies: []
+  configuration_needed:
+  - flag off
+  evidence:
+  - findings/10 §3
+  confidence: confirmed
+- name: Shared Go libraries (goutils, ledger-sdk, config-proto, rpc, proto, error-mapping-module, governor-executor, pg-sdk, shield-sdk, rzpconv, bvs-sdk, charge-collections-sdk)
+  repository: NOT ACCESSIBLE (except charge-collections-sdk)
+  service: libraries
+  tier: F3 (build prerequisite)
+  reason: Every F3 service imports them (passport, authz, splitz/dcs clients, workers, ledger client, protos).
+  influences:
+  - authorization (passport/authz)
+  - idempotency (mutex)
+  - routing
+  dependencies: []
+  configuration_needed:
+  - GOPRIVATE proxy or vendored module cache; buf.build razorpay org read
+  evidence:
+  - go.mod scan; findings/10 §6
+  confidence: confirmed
+- name: Infrastructure (MySQL, Postgres, MongoDB, Redis, SQS, SNS, Kafka, Elasticsearch, TiDB)
+  repository: n/a
+  service: datastores/messaging
+  tier: 'F3 (local equivalents: MySQL 8, Postgres, Mongo, Redis, LocalStack SQS/SNS, Kafka; ES optional; TiDB substituted by MySQL for payouts_temp)'
+  reason: Schemas via in-repo migrations; queue/topic names preserved.
+  influences:
+  - payout_state
+  - ledger_state
+  dependencies: []
+  configuration_needed:
+  - names from findings/02 §3
+  - 4
+  - 6
+  - 08
+  evidence:
+  - findings/01
+  - 4
+  - 10
+  confidence: confirmed
+- name: UPS (payments-upi)
+  repository: razorpay/payments-upi
+  service: payments-upi (VPA validate/mapper)
+  tier: F2
+  reason: 'Payouts calls the UPS number->VPA mapper (POST /v1/payments/validate/account) directly for the "pay to a UPI number" flow — Basic Auth, header X-Origin: payouts (which unlocks plaintext VPA in the response specifically
+    for payouts, per response.go special-casing). FTS does NOT call UPS directly for its own VPA validation — it calls the monolith''s own /v1/payment/validate/vpa; whether the monolith in turn proxies to UPS''s ValidateVpa
+    RPC is unverifiable without a deeper monolith read on that specific path (folds into the existing monolith-access gap).
+
+    '
+  influences:
+  - beneficiary_validation (VPA resolution only
+  - not full existence-check)
+  dependencies:
+  - none for the mapper-only stub — the full ValidateVpa existence-check chain (Mozart/Integrations-UPI
+  - Terminal Service
+  - Splitz
+  - MySQL cache
+  - Redis) is NOT needed since payouts doesn't call it directly
+  configuration_needed:
+  - ready-made ITF fixture usable verbatim as a protocol-faithful mock (findings/27 §C.5): request (entity:"vpa"
+  - value:"...") -> (vpa
+  - success
+  - customer_name)
+  evidence:
+  - findings/27 §C
+  confidence: confirmed
+environments:
+  env1_dashboard_single_payout_with_approval:
+    f3:
+    - payouts
+    - ledger
+    - fts
+    - cfa
+    - x-balances
+    - x SPA
+    f2:
+    - api monolith (auth/proxy/config/pricing/relay endpoints)
+    - kong
+    - authz
+    - workflow service
+    - dcs
+    - splitz
+    - shield
+    - pricing
+    - stork
+    - mozart simulator
+    - asv
+    - xas (queue sink)
+    - banking-accounts (seeded)
+    f1:
+    - relay
+    - payload encryption (off)
+    f0:
+    - xperience
+    - batch
+    - validx
+    - admin
+    - recon
+    - variants
+    - virtual-account
+    - observers
+  env2_public_api_payout_idempotency_webhooks:
+    f3:
+    - payouts
+    - ledger
+    - fts
+    - cfa
+    - x-balances
+    f2:
+    - kong (basic-auth-x + passport private
+    - confirmed rate-limit-free
+    - confirmed no loop-guard)
+    - api monolith proxy (endpoint list finalised)
+    - dcs (real service
+    - F3-capable)
+    - splitz (real service
+    - F3-capable-but-empty — needs synthesized seed data)
+    - shield (contract confirmed: allow/block/review
+    - review==allow in practice)
+    - pricing (Governor+Charge-Collections OR MockPayoutCalculator)
+    - stork capture (real proto/backoff/no-dedupe confirmed)
+    - mozart (real binary
+    - -mock mode — replaces the earlier "mozart simulator" placeholder)
+    - asv
+    f0:
+    - x SPA
+    - xperience
+    - batch
+    - validx
+    - admin
+    - recon
+    - variants
+  env3_migration_routing_proxy_cutover:
+    f3:
+    - payouts (shadow gateway enabled, routes onboarded)
+    - fts
+    f2:
+    - kong with payouts-proxy-cutover template
+    - api monolith (proxy leg + authenticate + update_fts_fund_transfer relay + dual_write sink)
+    - splitz variants per merchant
+    - dcs
+    f0:
+    - others as env1
+  env4_failure_retry_reversal_async_status:
+    f3:
+    - payouts
+    - ledger
+    - fts
+    - xas
+    - x-balances
+    - cfa
+    f2:
+    - mozart (real binary
+    - -mock mode
+    - scripted delayed/ambiguous/duplicate/reversed responses via app/testdata/fts/** fixtures — replaces the earlier generic "mozart simulator with scripted responses" placeholder)
+    - api monolith relay + admin routes (endpoint list finalised: update_fts_fund_transfer with confirmed no-retry semantics
+    - manual_action
+    - admin/payouts/cancel
+    - payouts/(id)/manual/status(/batch)
+    - payouts_service/dual_write with confirmed PS-to-monolith direction)
+    - admin-dashboard contract
+    - stork capture
+    - splitz (CreateTransferMetaRollout on/off
+    - FireStatusUpdateKafka on/off — config-field names; real Splitz IDs only known for FTS prod
+    - ROyjRWsBowWdWY / PYGTRQEzO39PfB)
+    - kafka topic rx-fts-status-update-events
+    - recon (NEW — ART repair path: FinOps-gated RX-Workflow re-upload -> Kafka -> PATCH/POST FTS v1/attempts/:action + PUT v1/attempts/reconcile
+    - ARTAuth; harness can seed workflow_configs row + Kafka message directly
+    - full Spark/EMR matcher not needed)
+    f0:
+    - x SPA
+    - xperience
+    - batch
+    - validx
+    - variants
+  env5_bulk_payouts:
+    f3:
+    - payouts
+    - xperience
+    - ledger
+    - fts
+    - cfa
+    - x-balances
+    - x SPA
+    f2:
+    - batch service (row validation + ProcessBatch → PS /v1/payouts/bulk)
+    - workflow service bulk approve
+    - api monolith batch CRUD proxy
+    - kong
+    - dcs
+    - splitz
+    - pricing
+    - stork
+    - mozart simulator
+    f0:
+    - validx
+    - admin
+    - recon
+    - variants
+version: 2026-09-04.v2
+delta_note: Merged closure_delta.yaml (post-access pass, findings 20-27); see ARCHITECTURE_DELTA.md section (f).

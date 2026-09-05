@@ -18,6 +18,10 @@ compose() {
   docker compose --env-file .env.arena -f docker-compose.yml "$@"
 }
 
+generator_args=()
+if [ -n "${ARENA_SOURCE_REPOS_ROOT:-}" ]; then generator_args=(--repos-root "$ARENA_SOURCE_REPOS_ROOT"); fi
+python3 seeds/generator/generate.py --epoch "${ARENA_SEED_EPOCH:-$(date +%s)}" "${generator_args[@]}"
+
 echo "############################################################"
 echo "# 1/8  secrets/gen-secrets.sh"
 echo "############################################################"
@@ -36,6 +40,9 @@ echo "############################################################"
 echo "# 3/8  preflight/preflight.py  (HARD GATE -- non-zero exit stops here)"
 echo "############################################################"
 python3 preflight/preflight.py
+
+# Preserve host 0600 files while giving UID 10001 only its own generated inputs.
+python3 secrets/materialize.py
 
 echo "############################################################"
 echo "# 4/8  datastores profile"
@@ -62,39 +69,43 @@ compose exec -T mysql-apidb-stub mysql -uroot -p"$MYSQL_APIDB_ROOT_PW_SP" api_lo
 echo "############################################################"
 echo "# 6/8  seeds"
 echo "############################################################"
-# shellcheck disable=SC1091
-source ./secrets/.env.secrets 2>/dev/null || true
+# All credentials below are read explicitly. Sourcing an optional file can
+# terminate macOS bash even with `|| true`, and is unnecessary here.
 
 MYSQL_PAYOUTS_ROOT_PW="$(cat secrets/mysql_payouts_root_password.txt)"
 MYSQL_FTS_ROOT_PW="$(cat secrets/mysql_fts_root_password.txt)"
 MYSQL_XBALANCES_ROOT_PW="$(cat secrets/mysql_xbalances_root_password.txt)"
 MONGO_CFA_ROOT_PW="$(cat secrets/mongo_cfa_root_password.txt)"
 
-echo "  -- payouts banking_accounts/fund_accounts/counters (seeds/s4/payouts.sql)"
-compose exec -T mysql-payouts mysql -uroot -p"$MYSQL_PAYOUTS_ROOT_PW" payouts < seeds/s4/payouts.sql
+echo "  -- payouts banking_accounts/fund_accounts/counters (seeds/generated/s4/payouts.sql)"
+compose exec -T mysql-payouts mysql -uroot -p"$MYSQL_PAYOUTS_ROOT_PW" payouts < seeds/generated/s4/payouts.sql
 
-echo "  -- fts source accounts / routing (seeds/s4/fts.sql)"
-compose exec -T mysql-fts mysql -uroot -p"$MYSQL_FTS_ROOT_PW" fts < seeds/s4/fts.sql
+echo "  -- fts source accounts / routing (seeds/generated/s4/fts.sql)"
+compose exec -T mysql-fts mysql -uroot -p"$MYSQL_FTS_ROOT_PW" fts < seeds/generated/s4/fts.sql
 
-echo "  -- x-balances balance rows (seeds/s4/xbalances.sql)"
-compose exec -T mysql-xbalances mysql -uroot -p"$MYSQL_XBALANCES_ROOT_PW" rx_balances_local < seeds/s4/xbalances.sql
+echo "  -- x-balances balance rows (seeds/generated/s4/xbalances.sql)"
+compose exec -T mysql-xbalances mysql -uroot -p"$MYSQL_XBALANCES_ROOT_PW" rx_balances_local < seeds/generated/s4/xbalances.sql
 
-echo "  -- ledger accounts + ledger_config (seeds/s4/ledger.sql; tenant X schema from rx_migrations)"
+echo "  -- ledger accounts + ledger_config (seeds/generated/s4/ledger.sql; tenant X schema from rx_migrations)"
 LEDGER_PW="$(cat secrets/postgres_ledger_password.txt)"
-compose exec -T -e PGPASSWORD="$LEDGER_PW" postgres-ledger psql -v ON_ERROR_STOP=1 -q -U ledger -d ledger < seeds/s4/ledger.sql
+compose exec -T -e PGPASSWORD="$LEDGER_PW" postgres-ledger psql -v ON_ERROR_STOP=1 -q -U ledger -d ledger < seeds/generated/s4/ledger.sql
 
-echo "  -- cfa contacts/fund_accounts/hash_lookup (seeds/s4/cfa.js, Mongo)"
-compose exec -T mongo-cfa mongosh cfa --quiet \
+echo "  -- cfa contacts/fund_accounts/hash_lookup (seeds/generated/s4/cfa.js, Mongo)"
+compose exec -T mongo-cfa mongosh cfa --quiet --file /dev/stdin \
   --username cfa_root --password "$MONGO_CFA_ROOT_PW" --authenticationDatabase admin \
-  < seeds/s4/cfa.js
+  < seeds/generated/s4/cfa.js
 
-echo "  -- apidb: DDL applied automatically via docker-entrypoint-initdb.d on first boot;"
-echo "     apidb_seed.json / dcs_flags.json are read directly by monolith-stub/dcs-stub at their own startup (bind-mounted), no extra step needed here."
+echo "  -- generated API balance mirrors and feature rows"
+MYSQL_APIDB_ROOT_PW="$(cat secrets/mysql_apidb_root_password.txt)"
+compose exec -T mysql-apidb-stub mysql -uroot -p"$MYSQL_APIDB_ROOT_PW" api_local < seeds/generated/s4/apidb.sql
+bash scripts/provision-monolith-db.sh
 
 echo "############################################################"
 echo "# 7/8  substitutes profile"
 echo "############################################################"
-compose --profile datastores --profile substitutes build
+if [ "${ARENA_SKIP_BUILD:-0}" != "1" ]; then
+  compose --profile datastores --profile substitutes build
+fi
 compose --profile datastores --profile substitutes up -d
 ./scripts/healthcheck.sh kong-lite monolith-stub dcs-stub splitz-stub shield-stub \
   pricing-stub asv-stub stork-capture merchant-webhook-sink xas-sink --timeout 120
@@ -138,15 +149,28 @@ CORE_SERVICES="$(compose --profile datastores --profile substitutes --profile co
 echo "  -- (post-core) ledger accounting configs: ledger's own seed sets via LedgerConfigAPI/CreateInBulk (shared_account_x, direct_account_x)"
 LEDGER_AUTH_B64="$(printf 'payouts_key:%s' "$(cat secrets/auth_payouts_ledger.txt)" | base64)"
 for ident in shared_account_x direct_account_x; do
-  docker run --rm --network rzp-arena curlimages/curl:latest -s -o /dev/null -w "     $ident -> HTTP %{http_code}\n" \
+  docker run --rm --pull never --network rzp-arena curlimages/curl:latest -fsS -o /dev/null -w "     $ident -> HTTP %{http_code}\n" \
     -X POST -H "Authorization: Basic $LEDGER_AUTH_B64" -H "Ledger-Tenant: X" -H "Content-Type: application/json" \
     -d "{\"ledger_config_data_identifier\":\"$ident\"}" \
-    http://ledger-api:8080/twirp/rzp.ledger.ledger_config.v1.LedgerConfigAPI/CreateInBulk || echo "WARNING: ledger config bulk create failed for $ident"
+    http://ledger-api:8080/twirp/rzp.ledger.ledger_config.v1.LedgerConfigAPI/CreateInBulk
 done
+
+echo "  -- (post-core) initial reservation reconciliation and trusted-store readiness"
+# cron-driver starts before the API and may miss its first tick. The source gate
+# intentionally queues until a healthy pass writes its heartbeat. Run the real
+# endpoint after health, then check trust: HTTP200 alone does not prove a pass.
+compose --profile substitutes exec -T cron-driver python3 /app/driver.py --once reservation_reconcile
+python3 scripts/reservation-readiness.py
 
 
 echo "############################################################"
 echo "# LocalStack queues: $(docker compose --env-file .env.arena logs localstack 2>/dev/null | grep -cE '(queue|topic) ') created by seeds/localstack/init-queues.sh"
+if [ "${ARENA_HOST_BRIDGE:-1}" = "1" ]; then python3 scripts/ingress.py start --port "${KONG_LITE_HOST_PORT:-18080}"; fi
+# Boot identity: input digests, image ids, running container ids, route profile,
+# git HEAD, boot id. Written to .runtime/ (git-ignored, no secrets or rendered
+# config) and copied into every run directory so the acceptance gate can prove
+# which tree and which boot produced each retained run.
+python3 scripts/fingerprint.py
 echo "# Env 2 arena is up. Entrypoint: http://localhost:${KONG_LITE_HOST_PORT:-18080}"
 echo "# Run scripts/golden-run.sh to exercise the verifier."
 echo "############################################################"

@@ -1,0 +1,253 @@
+[
+  {
+    "folder": "ENV2_COMPOSE/preflight/tests",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ENV2_COMPOSE/preflight/tests",
+      "-v"
+    ],
+    "exit": 0,
+    "test_count": 27,
+    "passed": 27,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "ENV2_COMPOSE-preflight-tests.log",
+    "duration_seconds": 0.175,
+    "summary": [
+      "Ran 27 tests in 0.047s",
+      "",
+      "OK"
+    ]
+  },
+  {
+    "folder": "ENV2_COMPOSE/build/tests",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ENV2_COMPOSE/build/tests",
+      "-v"
+    ],
+    "exit": 0,
+    "test_count": 6,
+    "passed": 6,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "ENV2_COMPOSE-build-tests.log",
+    "duration_seconds": 0.107,
+    "summary": [
+      "Ran 6 tests in 0.038s",
+      "",
+      "OK"
+    ]
+  },
+  {
+    "folder": "ENV2_COMPOSE/scripts",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ENV2_COMPOSE/scripts",
+      "-v"
+    ],
+    "exit": 0,
+    "test_count": 22,
+    "passed": 22,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "ENV2_COMPOSE-scripts.log",
+    "duration_seconds": 0.133,
+    "summary": [
+      "Ran 22 tests in 0.064s",
+      "",
+      "OK"
+    ]
+  },
+  {
+    "folder": "ENV2_COMPOSE/seeds/generator",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ENV2_COMPOSE/seeds/generator",
+      "-v"
+    ],
+    "exit": 0,
+    "test_count": 18,
+    "passed": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "ENV2_COMPOSE-seeds-generator.log",
+    "duration_seconds": 1.309,
+    "summary": [
+      "Ran 18 tests in 1.248s",
+      "",
+      "OK"
+    ]
+  },
+  {
+    "folder": "ENV2_COMPOSE/substitutes/mozart-sim",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ENV2_COMPOSE/substitutes/mozart-sim",
+      "-v"
+    ],
+    "exit": 0,
+    "test_count": 8,
+    "passed": 8,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "ENV2_COMPOSE-substitutes-mozart-sim.log",
+    "duration_seconds": 0.666,
+    "summary": [
+      "Ran 8 tests in 0.530s",
+      "",
+      "OK"
+    ]
+  },
+  {
+    "folder": "ENV2_COMPOSE/substitutes/monolith-stub",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ENV2_COMPOSE/substitutes/monolith-stub",
+      "-v"
+    ],
+    "exit": 0,
+    "test_count": 18,
+    "passed": 18,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "ENV2_COMPOSE-substitutes-monolith-stub.log",
+    "duration_seconds": 0.126,
+    "summary": [
+      "Ran 18 tests in 0.004s",
+      "",
+      "OK"
+    ]
+  },
+  {
+    "folder": "ENV2_COMPOSE/substitutes/splitz-stub",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ENV2_COMPOSE/substitutes/splitz-stub",
+      "-v"
+    ],
+    "exit": 0,
+    "test_count": 3,
+    "passed": 3,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "ENV2_COMPOSE-substitutes-splitz-stub.log",
+    "duration_seconds": 0.106,
+    "summary": [
+      "Ran 3 tests in 0.000s",
+      "",
+      "OK"
+    ]
+  },
+  {
+    "folder": "ARCHITECTURE_EXPLORER",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ARCHITECTURE_EXPLORER",
+      "-v"
+    ],
+    "exit": 0,
+    "test_count": 11,
+    "passed": 11,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "ARCHITECTURE_EXPLORER.log",
+    "duration_seconds": 0.611,
+    "summary": [
+      "Ran 11 tests in 0.530s",
+      "",
+      "OK"
+    ]
+  },
+  {
+    "folder": "ENV2_COMPOSE/verifier/offline_tests",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "ENV2_COMPOSE/verifier/offline_tests",
+      "-v"
+    ],
+    "exit": 1,
+    "test_count": 2,
+    "passed": 1,
+    "failures": 0,
+    "errors": 1,
+    "skipped": 0,
+    "log": "ENV2_COMPOSE-verifier-offline_tests.log",
+    "duration_seconds": 0.09,
+    "run_at": "20260905T132337Z",
+    "summary": [
+      "Ran 2 tests in 0.000s",
+      "",
+      "FAILED (errors=1)"
+    ]
+  },
+  {
+    "folder": "DAYTONA/tests",
+    "command": [
+      "python3",
+      "-m",
+      "unittest",
+      "discover",
+      "-s",
+      "DAYTONA/tests",
+      "-v"
+    ],
+    "exit": 0,
+    "test_count": 9,
+    "passed": 9,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "log": "DAYTONA-tests.log",
+    "duration_seconds": 0.081,
+    "summary": [
+      "Ran 9 tests in 0.006s",
+      "",
+      "OK"
+    ]
+  }
+]

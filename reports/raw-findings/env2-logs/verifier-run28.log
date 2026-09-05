@@ -1,0 +1,103 @@
+ Container env2_compose-verifier-run-b8a829c6e306 Creating 
+ Container env2_compose-verifier-run-b8a829c6e306 Created 
+============================= test session starts ==============================
+platform linux -- Python 3.12.14, pytest-8.4.2, pluggy-1.6.0 -- /usr/local/bin/python3
+cachedir: .pytest_cache
+rootdir: /verifier
+collecting ... collected 26 items
+
+verifiers/test_v01_idempotency_same_key_same_body.py::test_idempotent_create_same_key_same_body PASSED [  3%]
+verifiers/test_v02_idempotency_same_key_different_body.py::test_idempotent_create_same_key_different_body_rejected PASSED [  7%]
+verifiers/test_v03_fts_transfer_dedupe.py::test_fts_transfer_dedupe_on_source_id_and_type PASSED [ 11%]
+verifiers/test_v04_ledger_dedupe.py::test_ledger_journal_dedupe_on_transactor_id_and_event FAILED [ 15%]
+verifiers/test_v05_ledger_accounting_initiated.py::test_payout_initiated_journal_sums_to_zero_and_debits_merchant PASSED [ 19%]
+verifiers/test_v06_ledger_accounting_processed.py::test_payout_processed_journal_mirrors_ledger FAILED [ 23%]
+verifiers/test_v07_ledger_accounting_reversed.py::test_payout_reversed_journal_and_reversal_entity SKIPPED [ 26%]
+verifiers/test_v08_ledger_accounting_failed_direct.py::test_payout_failed_direct_account_no_reversal_no_ledger SKIPPED [ 30%]
+verifiers/test_v09_balance_auth_queued.py::test_insufficient_balance_queues_when_queue_if_low_balance_true PASSED [ 34%]
+verifiers/test_v10_balance_auth_failed.py::test_insufficient_balance_fails_when_queue_if_low_balance_false FAILED [ 38%]
+verifiers/test_v11_merchant_balance_sync.py::test_merchant_balance_debited_synchronously PASSED [ 42%]
+verifiers/test_v12_reservation_gate_total.py::test_inflight_reservation_total_equals_live_reservations FAILED [ 46%]
+verifiers/test_v13_reservation_release_on_terminal.py::test_reservation_released_on_terminal_event SKIPPED [ 50%]
+verifiers/test_v14_state_machine_legality.py::test_no_illegal_transition_in_payout_logs PASSED [ 53%]
+verifiers/test_v15_fts_webhook_state_guard.py::test_webhook_on_cancelled_payout_is_noop SKIPPED [ 57%]
+verifiers/test_v16_stuck_initiated_no_repair.py::test_stuck_initiated_payout_has_no_automated_repair SKIPPED [ 61%]
+verifiers/test_v17_reversal_ordering.py::test_reversal_row_committed_before_ledger_call_baseline SKIPPED [ 65%]
+verifiers/test_v17_reversal_ordering.py::test_reversal_survives_ledger_outage_via_async_retry SKIPPED [ 69%]
+verifiers/test_v18_shared_vs_direct_failed_remap.py::test_failed_webhook_remaps_differently_by_account_type FAILED [ 73%]
+verifiers/test_v19_direct_failed_verification_guard.py::test_transaction_id_set_blocks_failed_transition SKIPPED [ 76%]
+verifiers/test_v20_tenant_isolation.py::test_other_merchant_cannot_fetch_or_cancel SKIPPED [ 80%]
+verifiers/test_v21_webhook_completeness.py::test_terminal_webhook_fires_exactly_once SKIPPED [ 84%]
+verifiers/test_v22_shield_fail_open.py::test_shield_timeout_fails_open SKIPPED [ 88%]
+verifiers/test_v23_fee_fail_closed.py::test_pricing_500_rejects_payout SKIPPED [ 92%]
+verifiers/test_v24_cron_dequeue.py::test_queued_low_balance_payout_dequeues_after_topup_and_cron FAILED [ 96%]
+verifiers/test_v24_cron_dequeue.py::test_scheduled_payout_dequeues_after_slot_and_cron PASSED [100%]
+
+=================================== FAILURES ===================================
+____________ test_ledger_journal_dedupe_on_transactor_id_and_event _____________
+verifiers/test_v04_ledger_dedupe.py:50: in test_ledger_journal_dedupe_on_transactor_id_and_event
+    assert len(rows) == 1, (
+E   AssertionError: expected exactly one journal row for (transactor_id, transactor_event) despite no DB unique index (C18) -- got 0. This is the catalog's own 'invariant weak -- test it' flag; a value > 1 here is a confirmed finding, not a test-harness bug.
+E   assert 0 == 1
+E    +  where 0 = len([])
+_________________ test_payout_processed_journal_mirrors_ledger _________________
+verifiers/test_v06_ledger_accounting_processed.py:53: in test_payout_processed_journal_mirrors_ledger
+    assert journal_row is not None, "no payout_processed journal found"
+E   AssertionError: no payout_processed journal found
+E   assert None is not None
+_______ test_insufficient_balance_fails_when_queue_if_low_balance_false ________
+verifiers/test_v10_balance_auth_failed.py:29: in test_insufficient_balance_fails_when_queue_if_low_balance_false
+    assert resp.status in (200, 201), "create failed: %s" % resp
+E   AssertionError: create failed: HTTPResponse(status=400, body=b'{"error":{"code":"BAD_REQUEST_ERROR","description":"Your account does not have enough balance to carry out the payout operation.","step":"","reason":"","field":"","source":"","metadata":{}}}')
+E   assert 400 in (200, 201)
+E    +  where 400 = HTTPResponse(status=400, body=b'{"error":{"code":"BAD_REQUEST_ERROR","description":"Your account does not have enough balance to carry out the payout operation.","step":"","reason":"","field":"","source":"","metadata":{}}}').status
+___________ test_inflight_reservation_total_equals_live_reservations ___________
+verifiers/test_v12_reservation_gate_total.py:42: in test_inflight_reservation_total_equals_live_reservations
+    assert payout_id in live_ids, "created payout %s missing from live reservations: %r" % (
+E   AssertionError: created payout pout_TY2vFfyDh04mbM missing from live reservations: []
+E   assert 'pout_TY2vFfyDh04mbM' in set()
+____________ test_failed_webhook_remaps_differently_by_account_type ____________
+verifiers/test_v18_shared_vs_direct_failed_remap.py:52: in test_failed_webhook_remaps_differently_by_account_type
+    assert m1_row_after["status"] == "reversed", "M1 (Shared) failed webhook must remap to reversed, got %r" % (
+E   AssertionError: M1 (Shared) failed webhook must remap to reversed, got 'created'
+E   assert 'created' == 'reversed'
+E     
+E     - reversed
+E     + created
+_________ test_queued_low_balance_payout_dequeues_after_topup_and_cron _________
+verifiers/test_v24_cron_dequeue.py:50: in test_queued_low_balance_payout_dequeues_after_topup_and_cron
+    final_row = wait_until(
+helpers/wait.py:35: in wait_until
+    raise WaitTimeout("timed out after %.1fs waiting for %s (last value: %r)" % (timeout, desc, last_result))
+E   helpers.wait.WaitTimeout: timed out after 120.0s waiting for queued payout to dequeue after cron call (last value: None)
+
+During handling of the above exception, another exception occurred:
+verifiers/test_v24_cron_dequeue.py:59: in test_queued_low_balance_payout_dequeues_after_topup_and_cron
+    pytest.fail("payout never left 'queued' after topping up balance and calling the dequeue cron: %s" % exc)
+E   Failed: payout never left 'queued' after topping up balance and calling the dequeue cron: timed out after 120.0s waiting for queued payout to dequeue after cron call (last value: None)
+=============================== warnings summary ===============================
+../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475
+  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:475: PytestCacheWarning: could not create cache path /verifier/.pytest_cache/v/cache/nodeids: [Errno 30] Read-only file system: '/verifier/pytest-cache-files-_wq2pow9'
+    config.cache.set("cache/nodeids", sorted(self.cached_nodeids))
+
+../usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429
+  /usr/local/lib/python3.12/site-packages/_pytest/cacheprovider.py:429: PytestCacheWarning: could not create cache path /verifier/.pytest_cache/v/cache/lastfailed: [Errno 30] Read-only file system: '/verifier/pytest-cache-files-8zbu_8mp'
+    config.cache.set("cache/lastfailed", self.lastfailed)
+
+-- Docs: https://docs.pytest.org/en/stable/how-to/capture-warnings.html
+=========================== short test summary info ============================
+SKIPPED [1] verifiers/test_v07_ledger_accounting_reversed.py:30: payout did not reach a pre-terminal state suitable for the reversal stimulus: {'id': 'TY2vCLwok2EPFu', 'reference_id': None, 'narration': 'Arena Merchant One Fund Transf', 'merchant_id': 'ARENAM00000001', 'balance_id': 'ARENABAL000001', 'method': 'fund_transfer', 'mode': 'IMPS', 'fund_account_id': 'ARENAFAX000001', 'batch_id': None, 'idempotency_key': None, 'user_id': '', 'purpose': 'payout', 'purpose_type': 'settlement', 'amount': 5000, 'currency': 'INR', 'notes': '{}', 'fees': 200, 'tax': 36, 'status': 'processed', 'fts_transfer_id': 266, 'transaction_id': 'TY2vCNxewYu8AY', 'channel': 'RBL', 'utr': 'SIM_UTR_GENERIC', 'failure_reason': None, 'cancellation_user_id': '', 'status_code': None, 'remarks': None, 'created_at': 1788543765, 'updated_at': 1788543766, 'payout_link_id': '', 'pricing_rule_id': 'ARENAPLAN00001', 'scheduled_at': None, 'fee_type': None, 'registered_name': '', 'workflow_feature': 0, 'queued_reason': '', 'queued_at': None, 'on_hold_at': None, 'origin': 1, 'status_details_id': '', 'gateway_ref_no': None}
+SKIPPED [1] verifiers/test_v08_ledger_accounting_failed_direct.py:30: payout did not reach a pre-terminal state suitable for the failed stimulus: {'id': 'TY2vDXGHzAt14B', 'reference_id': None, 'narration': 'Arena Merchant Two Fund Transf', 'merchant_id': 'ARENAM00000002', 'balance_id': 'ARENABAL000002', 'method': 'fund_transfer', 'mode': 'IMPS', 'fund_account_id': 'ARENAFAX000002', 'batch_id': None, 'idempotency_key': None, 'user_id': '', 'purpose': 'payout', 'purpose_type': 'settlement', 'amount': 5000, 'currency': 'INR', 'notes': '{}', 'fees': 200, 'tax': 36, 'status': 'processed', 'fts_transfer_id': 267, 'transaction_id': None, 'channel': 'rbl', 'utr': 'SIM_UTR_GENERIC', 'failure_reason': None, 'cancellation_user_id': '', 'status_code': None, 'remarks': None, 'created_at': 1788543766, 'updated_at': 1788543767, 'payout_link_id': '', 'pricing_rule_id': 'ARENAPLAN00002', 'scheduled_at': None, 'fee_type': None, 'registered_name': '', 'workflow_feature': 0, 'queued_reason': '', 'queued_at': None, 'on_hold_at': None, 'origin': 1, 'status_details_id': '', 'gateway_ref_no': None}
+SKIPPED [1] verifiers/test_v13_reservation_release_on_terminal.py:33: created payout never reached a live reservation -- gate may not have reserved it
+SKIPPED [1] verifiers/test_v15_fts_webhook_state_guard.py:34: seed payout did not land in a cancellable state ('initiated') -- cannot set up the terminal precondition this verifier needs
+SKIPPED [1] verifiers/test_v16_stuck_initiated_no_repair.py:34: payout did not reach 'initiated' with an fts_transfer_id (status='processed', fts_transfer_id=274) -- cannot set up the stuck-initiated precondition
+SKIPPED [1] verifiers/test_v17_reversal_ordering.py:35: payout not in a pre-terminal state suitable for the reversal stimulus: {'id': 'TY2vKJooECEN5k', 'reference_id': None, 'narration': 'Arena Merchant One Fund Transf', 'merchant_id': 'ARENAM00000001', 'balance_id': 'ARENABAL000001', 'method': 'fund_transfer', 'mode': 'IMPS', 'fund_account_id': 'ARENAFAX000001', 'batch_id': None, 'idempotency_key': None, 'user_id': '', 'purpose': 'payout', 'purpose_type': 'settlement', 'amount': 100, 'currency': 'INR', 'notes': '{}', 'fees': 200, 'tax': 36, 'status': 'processed', 'fts_transfer_id': 275, 'transaction_id': 'TY2vKLFPaSKYB1', 'channel': 'RBL', 'utr': 'SIM_UTR_GENERIC', 'failure_reason': None, 'cancellation_user_id': '', 'status_code': None, 'remarks': None, 'created_at': 1788543772, 'updated_at': 1788543773, 'payout_link_id': '', 'pricing_rule_id': 'ARENAPLAN00001', 'scheduled_at': None, 'fee_type': None, 'registered_name': '', 'workflow_feature': 0, 'queued_reason': '', 'queued_at': None, 'on_hold_at': None, 'origin': 1, 'status_details_id': '', 'gateway_ref_no': None}
+SKIPPED [1] verifiers/test_v17_reversal_ordering.py:70: missing fixture: no network-fault-injection mechanism exists in ENV2_COMPOSE/ yet (gate: ALLOW_NETWORK_FAULT_INJECTION=1) -- see VERIFIER_SPEC.md V17
+SKIPPED [1] verifiers/test_v19_direct_failed_verification_guard.py:29: payout not in a pre-terminal state suitable for this stimulus: {'id': 'TY2vLbDBWcdPQj', 'reference_id': None, 'narration': 'Arena Merchant Two Fund Transf', 'merchant_id': 'ARENAM00000002', 'balance_id': 'ARENABAL000002', 'method': 'fund_transfer', 'mode': 'IMPS', 'fund_account_id': 'ARENAFAX000002', 'batch_id': None, 'idempotency_key': None, 'user_id': '', 'purpose': 'payout', 'purpose_type': 'settlement', 'amount': 100, 'currency': 'INR', 'notes': '{}', 'fees': 200, 'tax': 36, 'status': 'processed', 'fts_transfer_id': 278, 'transaction_id': None, 'channel': 'rbl', 'utr': 'SIM_UTR_GENERIC', 'failure_reason': None, 'cancellation_user_id': '', 'status_code': None, 'remarks': None, 'created_at': 1788543774, 'updated_at': 1788543775, 'payout_link_id': '', 'pricing_rule_id': 'ARENAPLAN00002', 'scheduled_at': None, 'fee_type': None, 'registered_name': '', 'workflow_feature': 0, 'queued_reason': '', 'queued_at': None, 'on_hold_at': None, 'origin': 1, 'status_details_id': '', 'gateway_ref_no': None}
+SKIPPED [1] verifiers/test_v20_tenant_isolation.py:30: M1 seed payout did not land in a cancellable state ('created') -- cannot run the cancel half of this negative test meaningfully
+SKIPPED [1] verifiers/test_v21_webhook_completeness.py:37: payout not in a pre-terminal state suitable for this stimulus: {'id': 'TY2vNucKcIaAn0', 'reference_id': None, 'narration': 'Arena Merchant One Fund Transf', 'merchant_id': 'ARENAM00000001', 'balance_id': 'ARENABAL000001', 'method': 'fund_transfer', 'mode': 'IMPS', 'fund_account_id': 'ARENAFAX000001', 'batch_id': None, 'idempotency_key': None, 'user_id': '', 'purpose': 'payout', 'purpose_type': 'settlement', 'amount': 100, 'currency': 'INR', 'notes': '{}', 'fees': 200, 'tax': 36, 'status': 'processed', 'fts_transfer_id': 280, 'transaction_id': 'TY2vNvrh2gYwSl', 'channel': 'RBL', 'utr': 'SIM_UTR_GENERIC', 'failure_reason': None, 'cancellation_user_id': '', 'status_code': None, 'remarks': None, 'created_at': 1788543776, 'updated_at': 1788543776, 'payout_link_id': '', 'pricing_rule_id': 'ARENAPLAN00001', 'scheduled_at': None, 'fee_type': None, 'registered_name': '', 'workflow_feature': 0, 'queued_reason': '', 'queued_at': None, 'on_hold_at': None, 'origin': 1, 'status_details_id': '', 'gateway_ref_no': None}
+SKIPPED [1] verifiers/test_v22_shield_fail_open.py:31: missing fixture: shield-stub CONTRACT.md documents no latency-injection control
+SKIPPED [1] verifiers/test_v23_fee_fail_closed.py:36: monolith-stub answered /payouts_service/fetch_pricing_info but the X-Test-Fault=500 fault injection header had no effect (got 200) -- cannot exercise the fail-closed path
+======= 6 failed, 8 passed, 12 skipped, 2 warnings in 138.40s (0:02:18) ========
+
+exit=1

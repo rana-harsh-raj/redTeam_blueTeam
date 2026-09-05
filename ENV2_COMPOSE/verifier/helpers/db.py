@@ -100,6 +100,8 @@ def fetchone(conn, sql, params=()):
     cur.execute(sql, params)
     row = cur.fetchone()
     cur.close()
+    from . import trace
+    trace.record("db_read", {"sql":sql,"params":params,"rows":row})
     return row
 
 
@@ -108,6 +110,8 @@ def fetchall(conn, sql, params=()):
     cur.execute(sql, params)
     rows = cur.fetchall()
     cur.close()
+    from . import trace
+    trace.record("db_read", {"sql":sql,"params":params,"rows":rows})
     return rows
 
 
@@ -115,3 +119,5 @@ def execute(conn, sql, params=()):
     cur = conn.cursor()
     cur.execute(sql, params)
     cur.close()
+    from . import trace
+    trace.record("db_mutation", {"sql":sql,"params":params})

@@ -1,0 +1,24 @@
+{
+  "run_at": "2026-09-05T14:07:35.145265+00:00",
+  "command": [
+    "env",
+    "-u",
+    "DAYTONA_APPROVED",
+    "bash",
+    "DAYTONA/scripts/run-and-cleanup.sh",
+    "--profile",
+    "smoke"
+  ],
+  "exit_code": 0,
+  "stdout_sha256": "671272f3dfc2f7e5aa01f26c33ef155df0a8fa62ed6716fd9f78d23abcc2564b",
+  "stderr_bytes": 0,
+  "resource_profile_sha256": "d8ffc2909cbfb9f97ba1a61ba2c2b4f9af33ca0cf3043c74804d16b9f92175ac",
+  "observed": {
+    "mode": "dry-run",
+    "remote_api_calls": 0,
+    "sandbox_created": false,
+    "resource_minutes_consumed": 0,
+    "execution_authorized": false
+  },
+  "scope": "Local unapproved dry run; no SDK or API execution"
+}

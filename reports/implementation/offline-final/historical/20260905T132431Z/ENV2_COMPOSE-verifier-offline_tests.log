@@ -1,0 +1,24 @@
+test_processed_journal_wait (unittest.loader._FailedTest.test_processed_journal_wait) ... ERROR
+test_mysql_tuple_rows_include_empty_reversals_and_full_attempt_chain (test_trace_snapshot.SnapshotTests.test_mysql_tuple_rows_include_empty_reversals_and_full_attempt_chain) ... ok
+
+======================================================================
+ERROR: test_processed_journal_wait (unittest.loader._FailedTest.test_processed_journal_wait)
+----------------------------------------------------------------------
+ImportError: Failed to import test module: test_processed_journal_wait
+Traceback (most recent call last):
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/unittest/loader.py", line 426, in _find_test_path
+    module = self._get_module_from_name(name)
+  File "/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/unittest/loader.py", line 367, in _get_module_from_name
+    __import__(name)
+    ~~~~~~~~~~^^^^^^
+  File "/Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/verifier/offline_tests/test_processed_journal_wait.py", line 9, in <module>
+    from helpers import payouts_flow as pf, wait
+  File "/Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/verifier/helpers/payouts_flow.py", line 12, in <module>
+    import pytest
+ModuleNotFoundError: No module named 'pytest'
+
+
+----------------------------------------------------------------------
+Ran 2 tests in 0.000s
+
+FAILED (errors=1)

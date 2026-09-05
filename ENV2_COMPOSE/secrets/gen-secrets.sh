@@ -16,6 +16,7 @@
 #
 # secrets/destroy.sh removes everything this script writes.
 set -euo pipefail
+umask 077
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
@@ -23,7 +24,14 @@ cd "$SCRIPT_DIR"
 rand_password() {
   # 32 bytes of randomness, base64url-ish (no padding/slashes) so it's safe
   # to embed unquoted-ish in TOML strings without escaping surprises.
-  openssl rand -base64 33 | tr '+/' '-_' | tr -d '=\n'
+  # M1 / FD-003: never start with '-' or '_'. A leading '-' made mongosh treat the
+  # CFA seed password as an option (usage text, seed step failed, boot aborted:
+  # reports/implementation/runs/m1-20260905T165255Z/profile-kafka/up.log). The
+  # first character is drawn from [A-Za-z0-9]; the remaining 43 stay as before.
+  local body head
+  body="$(openssl rand -base64 33 | tr '+/' '-_' | tr -d '=\n' | cut -c2-)"
+  head="$(openssl rand -base64 12 | tr -dc 'A-Za-z0-9' | cut -c1)"
+  printf '%s%s' "${head:-A}" "$body"
 }
 
 write_secret() {
@@ -49,6 +57,8 @@ write_secret auth_xbalances_payouts "$(rand_password)"   # username x_balances
 write_secret auth_fastcron_payouts  "$(rand_password)"   # username fast_cron
 write_secret auth_monolith_shared   "$(rand_password)"   # username rzp_live
 write_secret auth_api_payouts       "$(rand_password)"   # username api -- cred.API, inbound on payouts-api's /v1/payouts group (kong-lite's service Basic-Auth), see payouts.toml.tmpl [auth.api]
+write_secret auth_monolith_payouts_db "$(rand_password)"  # SELECT on the synthetic payout identity row
+write_secret auth_monolith_balance_db "$(rand_password)"  # synthetic API balance mirror only
 write_secret auth_dcs_payouts       "$(rand_password)"   # username payouts
 write_secret auth_dcs_xbalances     "$(rand_password)"   # username x_balances
 write_secret auth_splitz_payouts    "$(rand_password)"   # username payouts
@@ -98,6 +108,22 @@ echo "==> generating synthetic merchant key secrets (public key ids like rzp_tes
 write_secret merchant_arena_m1_secret "$(rand_password)"
 write_secret merchant_arena_m2_secret "$(rand_password)"
 write_secret merchant_arena_m3_secret "$(rand_password)"
+mkdir -p merchant-keys
+cp merchant_arena_m?_secret.txt merchant-keys/
+# Generated per-test merchants have independent API secrets.
+python3 - <<'PYGEN'
+import json,secrets
+from pathlib import Path
+seed=Path('../seeds/generated/merchants.json')
+if seed.exists():
+    for merchant in json.loads(seed.read_text())['merchants'].values():
+        name=merchant['secret_file']
+        if not name.replace('_','').isalnum():
+            raise SystemExit('invalid generated secret file name')
+        p=Path('merchant-keys')/(name+'.txt')
+        if name not in ('merchant_arena_m1_secret','merchant_arena_m2_secret','merchant_arena_m3_secret'): p.write_text(secrets.token_urlsafe(33)+'\n')
+        p.chmod(0o600)
+PYGEN
 
 echo "==> writing verifier-bridge/ (user:pass files at the exact slugs verifier/helpers/creds.py's resolve_basic_auth() looks for under SECRETS_DIR=/run/secrets -- see docker-compose.yml verifier service's secrets list). Best-effort mapping onto the auth_* pairs above; TODO confirm each prefix's real intended caller identity against VERIFIER_SPEC.md if results look wrong under a real run -- these are reasonable guesses, not confirmed against that spec (not available to this workstream)."
 mkdir -p verifier-bridge

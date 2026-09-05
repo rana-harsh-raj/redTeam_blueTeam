@@ -291,7 +291,14 @@
     clusterMode       = false
 
 [mutex]
-    ttl                    = 500
+    # PRODUCTION PARITY (M1 / DEV-002): ledger/config/prod-live.toml:326 sets
+    # `ttl = 60000` (milliseconds). The twin previously carried 500 -- the value
+    # inherited from the upstream default.toml:292 -- a 120x shorter lease on
+    # Ledger's journal/idempotency mutex, so a concurrency probe would see locks
+    # expiring mid-operation and duplicate journals production would suppress.
+    # Stacked on the ledger-gate header drop (DEV-001) it left ledger with no
+    # effective duplicate-suppression on the payouts leg at all.
+    ttl                    = 60000  # in millisecond; = ledger/config/prod-live.toml:326
     [mutex.mutex]
         scope              = "ledger:mutex:"
 

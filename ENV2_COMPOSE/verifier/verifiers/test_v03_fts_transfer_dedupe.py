@@ -8,7 +8,8 @@ import uuid
 
 import pytest
 
-from helpers import db
+from helpers import db, payouts_flow as pf
+from helpers.wait import wait_until
 
 
 @pytest.mark.spec_id("V3")
@@ -28,14 +29,17 @@ def test_fts_transfer_dedupe_on_source_id_and_type(fts_client, fts_mysql, mercha
             "source_type": source_type,
             "preferred_mode": "IMPS",
         },
-        "account": {"fund_account_id": 900001},
+        "account": {"fund_account_id": merchant_m1["fts_fund_account_id"]},
     }
 
     resp1 = fts_client.post("/v1/transfer", body=body)
     assert resp1.status in (200, 201), "first /v1/transfer create failed: %s" % resp1
 
+    # Replay at the actual held-bank boundary, as in V1, rather than an
+    # arbitrary CREATED/INITIATED phase of the original asynchronous dispatch.
+    pf.wait_for_held_fts_transfer(fts_mysql, source_id)
     resp2 = fts_client.post("/v1/transfer", body=body)
-    assert resp2.status in (200, 201), "duplicate /v1/transfer create failed: %s" % resp2
+    assert resp2.status == 200, "duplicate /v1/transfer create failed: %s" % resp2
 
     id1 = resp1.json().get("fund_transfer_id")  # fts responds {fund_account_id, fund_transfer_id, status}
     id2 = resp2.json().get("fund_transfer_id")
@@ -48,5 +52,6 @@ def test_fts_transfer_dedupe_on_source_id_and_type(fts_client, fts_mysql, mercha
     )
     assert len(rows) == 1, "expected exactly one transfers row for (source_id, source_type), got %d" % len(rows)
 
-    attempts = db.fetchall(fts_mysql, "SELECT id FROM attempts WHERE transfer_id=%s", (id1,))
-    assert len(attempts) <= 1, "duplicate transfer create must not spawn a second attempts row"
+    attempts = wait_until(lambda: db.fetchall(fts_mysql, "SELECT id FROM attempts WHERE transfer_id=%s", (id1,)),timeout=30,interval=.5,desc="actual bank attempt")
+    assert len(attempts) == 1, "duplicate transfer create must not spawn a second attempts row"
+    assert rows[0]["id"] == id1 and rows[0]["status"] == "INITIATED"

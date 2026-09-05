@@ -6,3 +6,5 @@ reports/implementation/baseline/*.log
 reports/implementation/runs/
 ARCHITECTURE_EXPLORER/dist/
 .local/
+ENV2_COMPOSE/secrets/merchant-keys/
+ENV2_COMPOSE/.runtime/

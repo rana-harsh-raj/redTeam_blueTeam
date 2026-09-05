@@ -94,6 +94,15 @@ INSERT INTO account_details (id, account_id, account_name, merchant_id, parent_a
   ('ARENAM3DT00004', 'ARENAM3ACC0004', 'Output GST Account - ARENAM00000003',        'ARENAM00000003', 'ARENAPRACC0004', 'INR', 'liability', 'real', '{"account_type":["payable"],"banking_account_id":["ARENABA0000003"],"fund_account_type":["va_gst"]}', NULL, extract(epoch from now())::int, extract(epoch from now())::int, NULL, 'X', 0)
 ON CONFLICT DO NOTHING;
 
+
+-- Current source-account parent pair: shared_account_x.go current-account semantics.
+INSERT INTO accounts (id, merchant_id, status, balance, min_balance, negative_balance, created_at, updated_at, deleted_at) VALUES
+ ('ARENAPRACC0009','Gh0YfsxpRlykwn','ACTIVATED',0,0,NULL,extract(epoch from now())::int,extract(epoch from now())::int,NULL),
+ ('ARENAPRACC0010','Gh0Yfp7SMMBIRp','ACTIVATED',0,0,NULL,extract(epoch from now())::int,extract(epoch from now())::int,NULL) ON CONFLICT DO NOTHING;
+INSERT INTO account_details (id,account_id,account_name,merchant_id,parent_account_id,currency,account_category,business_category,entities,description,created_at,updated_at,deleted_at,tenant,use_split_accounts) VALUES
+ ('ARENAPRDT00009','ARENAPRACC0009','Current Receivable','Gh0YfsxpRlykwn',NULL,'INR','asset','real','{"fund_account_type":["current"],"account_type":["receivable"]}','Current account parent',extract(epoch from now())::int,extract(epoch from now())::int,NULL,'X',0),
+ ('ARENAPRDT00010','ARENAPRACC0010','Current Payable','Gh0Yfp7SMMBIRp',NULL,'INR','liability','real','{"fund_account_type":["current"],"account_type":["payable"]}','Current account parent',extract(epoch from now())::int,extract(epoch from now())::int,NULL,'X',0) ON CONFLICT DO NOTHING;
+
 -- ============================================================================
 -- 3. FTS nodal receivable/payable accounts, keyed by fts_fund_account_id (NOT per-merchant --
 --    these track Razorpay's own nodal bank balance). One pair for the M1/M3 shared pool
@@ -104,15 +113,15 @@ ON CONFLICT DO NOTHING;
 INSERT INTO accounts (id, merchant_id, status, balance, min_balance, negative_balance, created_at, updated_at, deleted_at) VALUES
   ('ARENAPOOLACC01', 'Gh0YfwUewxUqdm', 'ACTIVATED', 0, 0, NULL, extract(epoch from now())::int, extract(epoch from now())::int, NULL), -- FtsReceivable, pool (900001)
   ('ARENAPOOLACC02', 'Gh0YfqKiXRdkCo', 'ACTIVATED', 0, 0, NULL, extract(epoch from now())::int, extract(epoch from now())::int, NULL), -- FtsPayable, pool (900001)
-  ('ARENAM2NODAC01', 'Gh0YfwUewxUqdm', 'ACTIVATED', 0, 0, NULL, extract(epoch from now())::int, extract(epoch from now())::int, NULL), -- FtsReceivable, M2 direct (900002)
-  ('ARENAM2NODAC02', 'Gh0YfqKiXRdkCo', 'ACTIVATED', 0, 0, NULL, extract(epoch from now())::int, extract(epoch from now())::int, NULL)  -- FtsPayable, M2 direct (900002)
+  ('ARENAM2NODAC01', 'Gh0YfsxpRlykwn', 'ACTIVATED', 0, 0, NULL, extract(epoch from now())::int, extract(epoch from now())::int, NULL), -- FtsReceivable, M2 direct (900002)
+  ('ARENAM2NODAC02', 'Gh0Yfp7SMMBIRp', 'ACTIVATED', 0, 0, NULL, extract(epoch from now())::int, extract(epoch from now())::int, NULL)  -- FtsPayable, M2 direct (900002)
 ON CONFLICT DO NOTHING;
 
 INSERT INTO account_details (id, account_id, account_name, merchant_id, parent_account_id, currency, account_category, business_category, entities, description, created_at, updated_at, deleted_at, tenant, use_split_accounts) VALUES
   ('ARENAPOOLDT001', 'ARENAPOOLACC01', 'FTS Nodal Receivable - pool 900001', 'Gh0YfwUewxUqdm', 'ARENAPRACC0005', 'INR', 'asset',     'real', '{"account_type":["receivable"],"fts_fund_account_id":["900001"],"fund_account_type":["nodal"]}', 'Shared RBL pool nodal account (M1, M3)', extract(epoch from now())::int, extract(epoch from now())::int, NULL, 'X', 0),
   ('ARENAPOOLDT002', 'ARENAPOOLACC02', 'FTS Nodal Payable - pool 900001',    'Gh0YfqKiXRdkCo', 'ARENAPRACC0006', 'INR', 'liability', 'real', '{"account_type":["payable"],"fts_fund_account_id":["900001"],"fund_account_type":["nodal"]}', 'Shared RBL pool nodal account (M1, M3)', extract(epoch from now())::int, extract(epoch from now())::int, NULL, 'X', 0),
-  ('ARENAM2NODDT01', 'ARENAM2NODAC01', 'FTS Nodal Receivable - M2 900002',   'Gh0YfwUewxUqdm', 'ARENAPRACC0005', 'INR', 'asset',     'real', '{"account_type":["receivable"],"fts_fund_account_id":["900002"],"fund_account_type":["nodal"]}', 'Direct RBL current account (M2)', extract(epoch from now())::int, extract(epoch from now())::int, NULL, 'X', 0),
-  ('ARENAM2NODDT02', 'ARENAM2NODAC02', 'FTS Nodal Payable - M2 900002',      'Gh0YfqKiXRdkCo', 'ARENAPRACC0006', 'INR', 'liability', 'real', '{"account_type":["payable"],"fts_fund_account_id":["900002"],"fund_account_type":["nodal"]}', 'Direct RBL current account (M2)', extract(epoch from now())::int, extract(epoch from now())::int, NULL, 'X', 0)
+  ('ARENAM2NODDT01', 'ARENAM2NODAC01', 'FTS Current Receivable - M2 900002',   'Gh0YfsxpRlykwn', 'ARENAPRACC0009', 'INR', 'asset',     'real', '{"account_type":["receivable"],"fts_fund_account_id":["900002"],"fund_account_type":["current"]}', 'Direct RBL current account (M2)', extract(epoch from now())::int, extract(epoch from now())::int, NULL, 'X', 0),
+  ('ARENAM2NODDT02', 'ARENAM2NODAC02', 'FTS Current Payable - M2 900002',      'Gh0Yfp7SMMBIRp', 'ARENAPRACC0010', 'INR', 'liability', 'real', '{"account_type":["payable"],"fts_fund_account_id":["900002"],"fund_account_type":["current"]}', 'Direct RBL current account (M2)', extract(epoch from now())::int, extract(epoch from now())::int, NULL, 'X', 0)
 ON CONFLICT DO NOTHING;
 
 -- ============================================================================

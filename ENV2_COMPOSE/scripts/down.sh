@@ -21,17 +21,20 @@ compose() {
   docker compose --env-file .env.arena -f docker-compose.yml "$@"
 }
 
+FAILED=0
+python3 scripts/ingress.py stop || FAILED=1
 echo "==> stopping every profile"
 if [ "$KEEP_VOLUMES" = "1" ]; then
-  compose --profile datastores --profile substitutes --profile core --profile verify --profile migrations down
+  compose --profile datastores --profile substitutes --profile core --profile verify --profile migrations down || FAILED=1
 else
-  compose --profile datastores --profile substitutes --profile core --profile verify --profile migrations down -v
+  compose --profile datastores --profile substitutes --profile core --profile verify --profile migrations down -v || FAILED=1
 fi
 
 echo "==> destroying secrets + generated config"
-./secrets/destroy.sh
+./secrets/destroy.sh || FAILED=1
 
 echo "==> removing SAFETY_PREFLIGHT.md / EGRESS_AUDIT.md (regenerated on next run)"
 rm -f "$COMPOSE_ROOT/SAFETY_PREFLIGHT.md" "$COMPOSE_ROOT/EGRESS_AUDIT.md"
 
 echo "==> down.sh complete"
+exit "$FAILED"

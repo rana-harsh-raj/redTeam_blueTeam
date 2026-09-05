@@ -452,12 +452,18 @@
     name = "fts"
     MaxConcurrency = 3
 
+# ARENA FIX (milestone 1, TWIN_V1_AUDIT_AND_NEXT_STEP.md §3.7/§5.2/§8 B/item 2): upstream default.toml:429
+# placeholder brokers ("broker:9092","broker1:9092") are non-resolvable compose services; the getter in
+# pkg/kafka fails to build a producer, HandleFailedMessage's PublishWithKey call on the nil producer then
+# panics the consumer process (reproduced/retained at
+# reports/implementation/runs/claude-audit-kafka-repro-20260905T152544Z/). Point at the arena's real broker,
+# matching [kafka_consumers.*.config].Brokers below, which already resolve "kafka:9092" successfully.
 [kafka_producer]
     RetryBackoff          = 1
     MaxRetry              = 3
     Partitioner           = "random"
     MaxMessages           = 100
-    Brokers               = ["broker:9092", "broker1:9092"]
+    Brokers               = ["kafka:9092"]
     EnableTLS             = false
     WaitForAck            = true
     CompressionType       = "snappy"
@@ -543,7 +549,7 @@
     timeout             = 200 #timeout : 200ns later converted to 200ms before sending request to Splitz
     keepAliveTimeout    = 60000  #keepAliveTimeout : 60000ns later converted to 60s before sending request to Splitz
     maxIdleConnections  = 10
-    client_side_eval            = true
+    client_side_eval            = false
     cache_ttl_minutes           = 5
     experiment_cache_size_mb    = 5
     segment_cache_size_mb       = 20
@@ -586,14 +592,22 @@
     xas_source_event_utr_and_grn_match_experiment = "RStPt2vqXrd5Wl"
     deduct_credits_experiment                   = "RfVD62nvKbFvWL"
     fetch_payout_by_id_via_orchestrator_experiment = "Rbyk5bJ3ZJZmGn"
-    fetch_by_id_api_fallback_experiment         = "dummy"
+    fetch_by_id_api_fallback_experiment = "arena_ps_fetch_by_id_api_fallback_experiment" # ASSUMED synthetic experiment identity
     use_api_db_for_payouts_experiment           = "TLL7cUwWeEELzd"
     use_api_db_for_payout_status_details_experiment = "TMp0fcGQi3nMWG"
-    free_payouts_xbalances_experiment           = "dummy"
-    fmp_initiate_experiment                     = "dummy"
+    free_payouts_xbalances_experiment = "arena_ps_free_payouts_xbalances_experiment" # ASSUMED synthetic experiment identity
+    fmp_initiate_experiment = "arena_ps_fmp_initiate_experiment" # ASSUMED synthetic experiment identity
     payout_workflows_dcs_name_experiment        = "Sg7vrXQkpK4hBA"
     skip_balance_cache_force_x_balances         = "S9qQNxNd9dpYYE"
-    source_updater_sns_experiment               = "dummy" # Enable SNS-based source updater
+    source_updater_sns_experiment = "arena_ps_source_updater_sns_experiment" # ASSUMED synthetic experiment identity
+
+    testing_partner_bank_on_hold_payouts_async_processing_experiment = "arena_ps_testing_partner_bank_on_hold_payouts_async_processing_experiment" # ASSUMED synthetic experiment identity
+
+    testing_bene_bank_on_hold_payouts_async_processing_experiment = "arena_ps_testing_bene_bank_on_hold_payouts_async_processing_experiment" # ASSUMED synthetic experiment identity
+
+    testing_queue_if_low_balance_payouts_async_processing_experiment = "arena_ps_testing_queue_if_low_balance_payouts_async_processing_experiment" # ASSUMED synthetic experiment identity
+
+    sla_monitoring_experiment = "arena_ps_sla_monitoring_experiment" # ASSUMED synthetic experiment identity
 
 [configs]
     [configs.fetch_balance_from_x_balance]
@@ -747,7 +761,12 @@
         key_pattern = "{payouts_banking_account}_%s"
 
 [features]
-    ikey_auto_enforcement = false
+    # ARENA FIX (milestone 1, TWIN_V1_AUDIT_AND_NEXT_STEP.md §5.2/§8 item B3): prod.toml:664 sets this true; the
+    # twin was inheriting default.toml:714 (false). Enforcement is additionally AND-gated per-merchant by the
+    # Splitz experiment [splitz_experiment_list].ikey_auto_enforcement_ramp_up (idempotency_key.go:107-111); the
+    # twin's splitz-stub fixture (seeds/s4/splitz_fixtures.json, seeds/splitz/experiments.json) returns "off" for
+    # that experiment for every seeded merchant, so this flip is inert against the current fixtures -- see report.
+    ikey_auto_enforcement = true
     reverse_dual_write    = true
     forward_dual_write    = false
     skip_ca_dual_write    = true

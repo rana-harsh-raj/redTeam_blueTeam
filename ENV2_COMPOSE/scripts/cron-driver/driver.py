@@ -14,6 +14,7 @@ Stdlib only (urllib), loops forever, logs each tick to stdout. Auth: Basic,
 FastCron credential pair from secrets/ (env CRON_BASIC_AUTH_USER/PASS).
 """
 import base64
+import argparse
 import json
 import os
 import sys
@@ -37,9 +38,11 @@ JOBS = {
     "queued_partner_bank": ("/v1/cron/process_queued_payouts", 300),          # type=partner_bank_downtime only (queued/queued_payouts_factory.go)
     "queued_low_balance": ("/v1/cron/process_queued_low_balance_payouts", 300),
     "scheduled": ("/v1/cron/process_scheduled_payouts", 300),
-    "on_hold": ("/v1/cron/process_on_hold_payouts", 300),
-    "reservation_reconcile": ("/v1/cron/reservation_reconcile", 300),
-    "dual_write_failure": ("/v1/cron/process_dual_write_failures", 900),
+    "on_hold": ("/v1/cron/process_beneficiary_bank_on_hold_payouts", 300),
+    "reservation_reconcile": ("/v1/cron/process_inflight_reservation_reconciliation", 300),
+    "dual_write_failure": ("/v1/cron/payouts_dual_write_failure_processing", 900),
+    "batch_submitted": ("/v1/cron/process_batch_submitted_payouts", 300),  # ASSUMED cadence; source route ignores body
+    "fund_management": ("/v1/cron/fund_management_payouts/check", 300),  # ASSUMED cadence; required nonempty merchant_ids DTO
 }
 
 
@@ -56,9 +59,13 @@ def _interval_for(key, default):
         return default
 
 
-# payouts-api binds a JSON body on every cron route (an empty body is a 400 "EOF");
-# process_queued_payouts additionally requires balance_ids (dtos: `json:"balance_ids" binding:"required"`).
-BALANCE_IDS = [b for b in os.environ.get("CRON_BALANCE_IDS", "ARENABAL000001,ARENABAL000002,ARENABAL000003").split(",") if b]
+# DTOs: queued partner-bank route takes type; scheduled and low-balance take
+# optional balance_ids/balance_ids_not; the other handlers do not bind a body.
+BALANCE_IDS = [b for b in os.environ.get("CRON_BALANCE_IDS", "").split(",") if b]
+# ASSUMED synthetic target set; the source DTO requires at least one merchant.
+FMP_MERCHANT_IDS = [m for m in os.environ.get("CRON_FMP_MERCHANT_IDS", "ARENAM00000001").split(",") if m]
+if not FMP_MERCHANT_IDS:
+    raise ValueError("CRON_FMP_MERCHANT_IDS must contain at least one synthetic merchant")
 
 
 def _body_for(path):
@@ -66,6 +73,10 @@ def _body_for(path):
     # (dtos/v2 ProcessQueuedPayoutsRequest) and only "partner_bank_downtime" is registered; the others take {}.
     if path.endswith("/process_queued_payouts"):
         return {"type": "partner_bank_downtime"}
+    if path.endswith("/fund_management_payouts/check"):
+        return {"merchant_ids": FMP_MERCHANT_IDS}
+    if BALANCE_IDS and path.endswith(("/process_scheduled_payouts", "/process_queued_low_balance_payouts")):
+        return {"balance_ids": BALANCE_IDS}
     return {}
 
 
@@ -79,10 +90,12 @@ def _hit(path):
     try:
         with urllib.request.urlopen(req, timeout=10) as resp:
             _log("%s -> %s" % (path, resp.status))
+            return 200 <= resp.status < 300
     except urllib.error.HTTPError as exc:
         _log("%s -> HTTP %s" % (path, exc.code))
     except Exception as exc:  # noqa: BLE001 - keep looping regardless of transient failures
         _log("%s -> error %r" % (path, exc))
+    return False
 
 
 def main():
@@ -99,4 +112,9 @@ def main():
 
 
 if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--once", choices=sorted(JOBS), help="Run one actual cron request and return its result")
+    args = parser.parse_args()
+    if args.once:
+        sys.exit(0 if _hit(JOBS[args.once][0]) else 1)
     main()

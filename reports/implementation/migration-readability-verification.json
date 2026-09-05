@@ -1,0 +1,59 @@
+{
+  "status": "passed",
+  "stage": "/Users/rana.singh/rzp-payouts-architecture/.local/twin-runtime-migrations/accepted-permission-b63d06ff44",
+  "stage_mode": "0700",
+  "files": 118,
+  "source_hashes_unchanged": true,
+  "source_modes_unchanged": true,
+  "groups": [
+    {
+      "repository": "payouts",
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:e029d63980bb76107029e49f61b41cf83b678bcc56958ac44906808cefa8baf8",
+      "configured_user": "appuser",
+      "network": "none",
+      "container": "twin-migration-read-f851796e3e7a",
+      "status": "passed",
+      "readable_files": 34,
+      "all_hashes_match": true,
+      "container_absent": true
+    },
+    {
+      "repository": "ledger",
+      "image": "rzp-arena/ledger:v1-candidate",
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "configured_user": "appuser",
+      "network": "none",
+      "container": "twin-migration-read-84459a9f890b",
+      "status": "passed",
+      "readable_files": 32,
+      "all_hashes_match": true,
+      "container_absent": true
+    },
+    {
+      "repository": "fts",
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "configured_user": "appuser",
+      "network": "none",
+      "container": "twin-migration-read-84032af0281d",
+      "status": "passed",
+      "readable_files": 51,
+      "all_hashes_match": true,
+      "container_absent": true
+    },
+    {
+      "repository": "x-balances",
+      "image": "rzp-arena/xbalances:v1-candidate",
+      "image_id": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+      "configured_user": "appuser",
+      "network": "none",
+      "container": "twin-migration-read-307436f7a220",
+      "status": "passed",
+      "readable_files": 1,
+      "all_hashes_match": true,
+      "container_absent": true
+    }
+  ],
+  "source_files_remain_0600": true
+}

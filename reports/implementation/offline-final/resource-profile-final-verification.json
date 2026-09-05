@@ -1,0 +1,60 @@
+{
+  "schema_version": 1,
+  "verified_at": "2026-09-05T14:08:45.908637+00:00",
+  "status": "passed",
+  "resource_profile_sha256": "d8ffc2909cbfb9f97ba1a61ba2c2b4f9af33ca0cf3043c74804d16b9f92175ac",
+  "profile_updated_at": "2026-09-05T14:06:06.892766+00:00",
+  "checked": [
+    "required phases observed with at least two complete samples",
+    "wrapped workloads passed without measurement errors, interruption or timeout",
+    "sample count and container counts",
+    "container CPU and RAM sums",
+    "phase CPU, RAM and disk maxima",
+    "disk component sums",
+    "Same 65 persistent container identities across all phases"
+  ],
+  "phases": {
+    "idle": {
+      "sample_count": 6,
+      "observed": true,
+      "peak_cpu_cores": 1.0203,
+      "peak_memory_gib": 4.179068359375,
+      "disk_gib": 4.307486556470394,
+      "started_at": "2026-09-05T14:04:20.646908+00:00",
+      "finished_at": "2026-09-05T14:04:41.062769+00:00",
+      "workload_status": "not_attested"
+    },
+    "successful_payout": {
+      "sample_count": 2,
+      "observed": true,
+      "peak_cpu_cores": 1.0022,
+      "peak_memory_gib": 4.0988037109375,
+      "disk_gib": 4.315931595861912,
+      "started_at": "2026-09-05T14:05:58.614806+00:00",
+      "finished_at": "2026-09-05T14:06:06.890872+00:00",
+      "workload_status": "passed"
+    },
+    "full_verifier": {
+      "sample_count": 15,
+      "observed": true,
+      "peak_cpu_cores": 1.4038,
+      "peak_memory_gib": 4.144431640625,
+      "disk_gib": 4.371029798872769,
+      "started_at": "2026-09-05T14:03:19.487056+00:00",
+      "finished_at": "2026-09-05T14:04:11.466110+00:00",
+      "workload_status": "passed"
+    }
+  },
+  "common_persistent_container_count": 65,
+  "measured_planning_floor": {
+    "cpu": 2,
+    "memory_gib": 8,
+    "disk_gib": 16
+  },
+  "remote_execution": false,
+  "limits": [
+    "Sampled Compose containers only; short spikes may be missed",
+    "Docker daemon/VM and standalone capture/analyzer CPU/RAM excluded",
+    "Inaccessible logs and unlisted archive/staging disk excluded"
+  ]
+}

@@ -6,64 +6,965 @@
       "experiment_id": "TUnTsUB8Os2kX0",
       "name": "payouts_shadow_gateway_scheduled_time_slots",
       "gates": "shadow-gateway pilot cutover for /v1/payouts/schedule/timeslots (Env 3 concern, not Env 2 -- included for completeness of the 8-id set)",
-      "variants": { "ARENAM00000001": "proxy", "ARENAM00000002": "proxy", "ARENAM00000003": "proxy" }
+      "variants": {
+        "ARENAM00000001": "proxy",
+        "ARENAM00000002": "proxy",
+        "ARENAM00000003": "proxy"
+      }
     },
     {
       "experiment_id": "Qnc6b4fg1Hi36k",
       "name": "merchant_config_via_asv_and_dcs_experiment",
       "gates": "IsMerchantConfigViaAsvAndDcsEnabled (payouts/internal/app/merchant/core.go:1077-1079) -- merchant config fetched via ASV+DCS vs legacy monolith path",
-      "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+      "variants": {
+        "ARENAM00000001": "on",
+        "ARENAM00000002": "on",
+        "ARENAM00000003": "on"
+      }
     },
     {
       "experiment_id": "Sg7tEnMoxCbTzM",
       "name": "payout_workflows_dcs_name_experiment",
       "gates": "payout workflows named/looked-up via DCS vs legacy flag name",
-      "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+      "variants": {
+        "ARENAM00000001": "on",
+        "ARENAM00000002": "on",
+        "ARENAM00000003": "on"
+      }
     },
     {
       "experiment_id": "TMp5VcIFYOHK2m",
       "name": "use_api_db_for_payout_status_details_experiment",
       "gates": "payout_status_details read from API-DB vs legacy source (payouts/internal/helpers/apidb.go:29,47)",
-      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      }
     },
     {
       "experiment_id": "PEVE4sUaVG6Drw",
       "name": "BulkPayoutsExperiment",
       "gates": "xperience paise-rounding/amount-handling in bulk payouts (Env 5 concern, included for the 8-id set)",
-      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      }
     },
     {
       "experiment_id": "ORHtoFyuKLWUSw",
       "name": "ledgerMakeshiftDualWriteExperiment",
       "gates": "RX-Postgres <-> legacy PG ledger dual-write migration switch",
-      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      }
     },
     {
       "experiment_id": "CreateTransferMetaRollout",
       "_id_note": "config-field name in non-prod; real prod Splitz id is ROyjRWsBowWdWY (not one of this task's 8 named ids -- kept as the literal config-field string per findings/26:534, since that's what fts/payouts config actually reads in non-prod envs)",
       "name": "CreateTransferMetaRollout",
       "gates": "FTS createTransferMeta / X-Origin webhook routing (direct-to-PS vs monolith-relay), see findings/13_fts_payouts_status_path.md finding #15",
-      "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+      "variants": {
+        "ARENAM00000001": "on",
+        "ARENAM00000002": "on",
+        "ARENAM00000003": "on"
+      }
     },
     {
       "experiment_id": "FireStatusUpdateKafka",
       "_id_note": "config-field name; prod resolves to real Splitz id PYGTRQEzO39PfB (findings/26:536) -- kept literal per BOM Env2 flag matrix which lists this by config-field name",
       "name": "FireStatusUpdateKafka",
       "gates": "whether FTS also publishes transfer-status events to Kafka topic rx-fts-status-update-events",
-      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      }
+    },
+    {
+      "experiment_id": "PXoynBvY8VkA5a",
+      "name": "forDuplicatePayoutEvaluate",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ForDuplicatePayoutEvaluate",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "Pf0j4gdcJNPZta",
+      "name": "forPayoutPropertiesEventEvaluate",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ForPayoutPropertiesEventEvaluate",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "PXm4aNSJOfdmXm",
+      "name": "partner_bank_on_hold_payouts_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:PartnerBankOnHoldPayoutsExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "PoQI26W5xwnXib",
+      "name": "forDualWriteDirectPushToAPI",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ForDualWriteDirectPushToAPI",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "PpEyxfP2yIvlJN",
+      "name": "forChargeCollectionEvaluate",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ForChargeCollectionEvaluate",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "merchant_configuration_experiment",
+      "name": "merchant_configuration_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:MerchantConfigurationExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "Po1yZkb1pdCkXy",
+      "name": "forProcessingFilterEvaluate",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ForProcessingFilterEvaluate",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_ps_testing_partner_bank_on_hold_payouts_async_processing_experiment",
+      "name": "testing_partner_bank_on_hold_payouts_async_processing_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ExperimentForTestingPartnerBankOnHoldPayoutsAsyncProcessing",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_ps_testing_bene_bank_on_hold_payouts_async_processing_experiment",
+      "name": "testing_bene_bank_on_hold_payouts_async_processing_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ExperimentForTestingBeneBankOnHoldPayoutsAsyncProcessing",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_ps_testing_queue_if_low_balance_payouts_async_processing_experiment",
+      "name": "testing_queue_if_low_balance_payouts_async_processing_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ExperimentForTestingQueueIfLowBalancePayoutsAsyncProcessing",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "performance_optimization_experiment",
+      "name": "performance_optimization_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:PerformanceOptimizationExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "QTwJ8uQKns0pOE",
+      "name": "fts_request_from_payouts_service_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ExperimentForFtsRequestFromPayoutsService",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "QaLdhqjfjLYZFm",
+      "name": "downtime_v2_webhook_notification_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ForDowntimeV2WebhookNotificationExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "go_routine_capping_experiment",
+      "name": "go_routine_capping_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:GoRoutineCappingExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "fund_account_optimisation_experiment",
+      "name": "fund_account_optimisation_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ExperimentForTestingFundAccountOptimisation",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "QiH03vj8QtN2FX",
+      "name": "api_and_webhook_additional_fields",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ExperimentAPIAndWebhookAdditionalFields",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "bulk_payout_concurrency_experiment",
+      "name": "bulk_payout_concurrency_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:BulkPayoutConcurrencyExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "bulk_processing_optimisation_experiment",
+      "name": "bulk_processing_optimisation_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ForBulkProcessingOptimisation",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "P9jMHiqpMI81A5",
+      "name": "account_statement_source_event",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:XasSourceEventExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "R2Mo039vdGE3Dr",
+      "name": "ikey_auto_enforcement_ramp_up",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:IKeyAutoEnforcementRampUp",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "merchant_config_via_asv_and_dcs",
+      "name": "merchant_config_via_asv_and_dcs_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:MerchantConfigViaAsvAndDcs",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "R9gHg72EW42wi8",
+      "name": "charge_collections_call_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ChargeCollectionsCallExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "RNkAkBIfS8zTcA",
+      "name": "charge_collections_call_canary_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:ChargeCollectionsCallCanaryExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "RGCBZ5zidPFaPL",
+      "name": "fetch_from_microservices_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:FetchFromMicroservicesExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "Rjdj0sAd4paXMG",
+      "name": "fetch_balance_entity_from_x_balance",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "on",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:FetchBalanceEntityFromXBalance",
+      "_variant_reason": "Direct fixture stores gateway balance in x-balances; explicit on selects seeded live balance. BASD fallback is unseeded and yields zero."
+    },
+    {
+      "experiment_id": "SQg4o8tfP5GwVq",
+      "name": "fetch_balance_entity_from_x_balance_async",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:FetchBalanceEntityFromXBalanceAsync",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "S9qQNxNd9dpYYE",
+      "name": "skip_balance_cache_force_x_balances",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:SkipBalanceCacheForceXBalances",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "RStPt2vqXrd5Wl",
+      "name": "xas_source_event_utr_and_grn_match_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:XasSourceEventUTRAndGRNMatchExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_ps_source_updater_sns_experiment",
+      "name": "source_updater_sns_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:SourceUpdaterSnsExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "RfVD62nvKbFvWL",
+      "name": "deduct_credits_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:DeductCreditsExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "Rbyk5bJ3ZJZmGn",
+      "name": "fetch_payout_by_id_via_orchestrator_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:FetchPayoutByIdViaOrchestratorExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_ps_sla_monitoring_experiment",
+      "name": "sla_monitoring_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:SLAMonitoringExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_ps_fetch_by_id_api_fallback_experiment",
+      "name": "fetch_by_id_api_fallback_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:FetchByIDAPIFallbackExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "TLL7cUwWeEELzd",
+      "name": "use_api_db_for_payouts_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:UseApiDbForPayoutsExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "TMp0fcGQi3nMWG",
+      "name": "use_api_db_for_payout_status_details_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:UseApiDbForPayoutStatusDetailsExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_ps_free_payouts_xbalances_experiment",
+      "name": "free_payouts_xbalances_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:FreePayoutsXBalancesExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_ps_fmp_initiate_experiment",
+      "name": "fmp_initiate_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:FMPInitiateExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "Sg7vrXQkpK4hBA",
+      "name": "payout_workflows_dcs_name_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "payouts:PayoutWorkflowsDcsNameExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_stuck_payouts_experiment",
+      "name": "stuck_payouts_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:StuckPayoutsExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_stuck_payouts_initiate_experiment",
+      "name": "stuck_payouts_initiate_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:StuckPayoutsInitiateExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_neft_second_slot_experiment",
+      "name": "neft_second_slot_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:NeftSecondSlotExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_neft_second_slot_experiment_permanent",
+      "name": "neft_second_slot_experiment_permanent",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:NeftSecondSlotExperimentPermanent",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_new_maintain_neft_flow",
+      "name": "new_maintain_neft_flow",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:NewMaintainNeftFlow",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_kafka",
+      "name": "fire_status_update_kafka",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:FireStatusUpdateKafka",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_mar_new_routing_flow",
+      "name": "mar_new_routing_flow",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:MarNewRoutingFlow",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_routing_congestion_calculator_neft",
+      "name": "routing_congestion_calculator_neft",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:RoutingCongestionCalculatorNEFT",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_limited_webhook_flow_experiment",
+      "name": "limited_webhook_flow_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:LimitedWebhookFlowExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_axis_upi_custom_status_check_experiment",
+      "name": "axis_upi_custom_status_check_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:AxisUpiCustomStatusCheckExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_rbl_upi_optimized_status_check_experiment",
+      "name": "rbl_upi_optimized_status_check_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:RBLUPIOptimizedStatusCheckExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_non_recon_status_check_experiment",
+      "name": "non_recon_status_check_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:NonReconStatusCheckExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_reselect_sa_flow_experiment",
+      "name": "reselect_sa_flow_experiment",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:ReSelectSAFlowExperiment",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_combined_tps_source_account_fetch",
+      "name": "combined_tps_source_account_fetch",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:CombinedTpsSourceAccountFetch",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_token_selection_feature",
+      "name": "token_selection_feature",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:TokenSelectionFeature",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_rbl_data_system_activity",
+      "name": "rbl_data_system_activity",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:RBLDataSystemActivity",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_rbl_egress_token_bucket",
+      "name": "rbl_egress_token_bucket",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:RBLEgressTokenBucket",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_fts_fraud_check",
+      "name": "fts_fraud_check",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:FtsFraudCheck",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_yesbank_sync_flow_feature",
+      "name": "yesbank_sync_flow_feature",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:YesBankSyncFlowFeature",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_neft_24_7_queuing_feature",
+      "name": "neft_24_7_queuing_feature",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:NEFT24x7QueueingFeature",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_tracer_transfer_feature_enabled",
+      "name": "tracer_transfer_feature_enabled",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:TracerTransferFeatureEnabled",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_axis_neft_24_7_enable",
+      "name": "axis_neft_24_7_enable",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:AxisNeft24x7Enable",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_separate_queue_for_gk_merchants",
+      "name": "separate_queue_for_gk_merchants",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:SeparateQueueForGKMerchants",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_separate_queue_for_petty_cash_merchants",
+      "name": "separate_queue_for_petty_cash_merchants",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:SeparateQueueForPettyCashMerchants",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_axis_channel_neft_mode_transfer_remarks_enhancement",
+      "name": "axis_channel_neft_mode_transfer_remarks_enhancement",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:AxisChannelNeftModeTransferRemarksEnhancement",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_meta",
+      "name": "create_transfer_meta_rollout",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:CreateTransferMetaRollout",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_shadow_mode_headers",
+      "name": "shadow_mode_headers",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:ShadowModeHeaders",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_fire_transfer_status_webhook_to_ps",
+      "name": "fire_transfer_status_webhook_to_ps",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:FireTransferStatusWebhookToPS",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_pass_request_meta_to_mozart",
+      "name": "pass_request_meta_to_mozart",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:PassRequestMetaToMozart",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_slice_v2_terminal_failure_handling",
+      "name": "slice_v2_terminal_failure_handling",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:SliceV2TerminalFailureHandling",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_irctc_axis",
+      "name": "irctc_axis",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:IrctcAxis",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
+    },
+    {
+      "experiment_id": "arena_fts_opgsp_settlement_currency_amount",
+      "name": "opgsp_settlement_currency_amount",
+      "variants": {
+        "ARENAM00000001": "off",
+        "ARENAM00000002": "off",
+        "ARENAM00000003": "off"
+      },
+      "_classification": "ASSUMED deterministic synthetic variant; not a production cohort",
+      "_config_source": "fts:OpgspSettlementCurrencyAmount",
+      "_variant_reason": "Explicit off unless a route-profile override or documented fixture explicitly enables the gate."
     }
   ],
   "_env2_bom_cross_check": "BOM Sec 2 F2 substitutes row specifies for Env2: fts_request_from_payouts_service=on, CreateTransferMetaRollout=on, FireStatusUpdateKafka=off, ikey enforcement on, duplicate evaluate shadow, charge_collections off -- reflected above (CreateTransferMetaRollout on, FireStatusUpdateKafka off for all 3 merchants).",
   "fts_request_from_payouts_service_experiment": {
     "_note": "Referenced in findings/13_fts_payouts_status_path.md finding #15 as the Splitz experiment gating IsFTSRequestFromPayoutsService when the merchant is not on the config allow/deny-list -- exact experiment id not found in findings/26's 8-id enumeration (findings/26 only captured 8 ids from prod.toml keys explicitly listed in the task); TODO(confirm) exact id if the arena needs this gate exercised outside the allow-list path. For Env2 golden flow B, seed the allow-list directly instead (see monolith_fixtures.json / payouts config) so this experiment is never consulted.",
-    "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+    "variants": {
+      "ARENAM00000001": "on",
+      "ARENAM00000002": "on",
+      "ARENAM00000003": "on"
+    }
   },
   "evaluate_response_template": {
     "id": "",
     "project_id": "",
-    "experiment": { "id": "<experiment_id>", "name": "<name>", "exclusion_group_id": "", "updated_at": "<RFC3339>" },
-    "variant": { "id": "<variant_id>", "name": "<variant_name>", "variables": [{ "key": "result", "value": "<on|off|proxy|shadow_api>" }], "experiment_id": "<experiment_id>", "weight": 100, "region": "" },
+    "experiment": {
+      "id": "<experiment_id>",
+      "name": "<name>",
+      "exclusion_group_id": "",
+      "updated_at": "<RFC3339>"
+    },
+    "variant": {
+      "id": "<variant_id>",
+      "name": "<variant_name>",
+      "variables": [
+        {
+          "key": "result",
+          "value": "<on|off|proxy|shadow_api>"
+        }
+      ],
+      "experiment_id": "<experiment_id>",
+      "weight": 100,
+      "region": ""
+    },
     "Reason": "whitelisting",
-    "steps": ["whitelisting", "sampler", "exclusion", "audience", "assign_bucket"]
-  }
+    "steps": [
+      "whitelisting",
+      "sampler",
+      "exclusion",
+      "audience",
+      "assign_bucket"
+    ]
+  },
+  "default_variant": "off",
+  "_classification": "ASSUMED synthetic cohorts and variants; gate names/fields derive from pinned source"
 }

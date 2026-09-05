@@ -14,8 +14,8 @@ class WaitTimeout(Exception):
 
 def wait_until(predicate, timeout=10.0, interval=0.5, desc="condition"):
     # The arena is slower than the spec's production-derived windows (cron-driven FTS status checks,
-    # single-replica workers); ARENA_WAIT_SCALE multiplies every verifier timeout (default 6x).
-    timeout = timeout * float(os.environ.get("ARENA_WAIT_SCALE", "6"))
+    # single-replica workers); optional ARENA_WAIT_SCALE is explicit and defaults to 1.
+    timeout = timeout * float(os.environ.get("ARENA_WAIT_SCALE", "1"))
     deadline = time.monotonic() + timeout
     last_exc = None
     last_result = None

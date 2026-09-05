@@ -1,68 +1,9 @@
-"""
-Env 2 cross-service invariant verifiers -- pytest configuration and fixtures.
-
-Companion to /Users/rana.singh/rzp-payouts-architecture/reports/VERIFIER_SPEC.md
-(read that first -- it has the per-verifier preconditions/stimulus/assertions
-this conftest only wires up plumbing for).
-
-Design principles this file follows throughout:
-
-  * every fixture that depends on a live service or a DB resolves its
-    address/credentials from env vars with the defaults documented in
-    VERIFIER_SPEC.md §0, and calls ``pytest.skip(reason)`` -- never raises --
-    when the dependency is unreachable or unconfigured. A verifier run
-    against a partially-built arena should show a long, informative list of
-    skips, not a wall of errors.
-  * nothing in this package fabricates a credential, a merchant id, or a
-    passport token. Missing fixtures are named explicitly in the skip
-    reason so a human can go seed exactly that thing.
-  * DB connections are session-scoped (opened once, reused, skip decision
-    made once) since verifier runs are not perf-sensitive and repeatedly
-    reconnecting to a maybe-down service just to skip again is noise.
-
-Env var reference (all optional; every one has a documented default or a
-skip path):
-
-  Endpoints (VERIFIER_SPEC.md §0 topology table):
-    KONG_LITE_URL              default http://kong-lite:8000
-    PAYOUTS_API_URL            default http://payouts-api:9400
-    LEDGER_API_URL             default http://ledger-api:8080
-    FTS_WEB_URL                default http://fts-web:80
-    CFA_URL                    default http://cfa-server:8081
-    XBALANCES_URL              default http://xbalances-server:8080
-    MONOLITH_STUB_URL          default http://monolith-stub:8080
-    DCS_STUB_URL               default http://dcs-stub:8080
-    SPLITZ_STUB_URL            default http://splitz-stub:8080
-    SHIELD_STUB_URL            default http://shield-stub:8080
-    PRICING_STUB_URL           default http://pricing-stub:8080
-    STORK_CAPTURE_URL          default http://stork-capture:8080
-    ASV_STUB_URL               default http://asv-stub:8080
-    MOZART_MOCK_URL            default http://mozart-mock:8085 (no substitute dir exists yet -- see gap #1)
-
-  Datastores:
-    PAYOUTS_MYSQL_{HOST,PORT,USER,PASSWORD,DB}   default host=mysql-payouts port=3306 user=root db=payouts
-    LEDGER_PG_{HOST,PORT,USER,PASSWORD,DB}       default host=postgres-ledger port=5432 user=postgres db=ledger
-    FTS_MYSQL_{HOST,PORT,USER,PASSWORD,DB}       default host=mysql-fts port=3306 user=root db=fts
-    XBALANCES_MYSQL_{HOST,PORT,USER,PASSWORD,DB} default host=mysql-xbalances port=3306 user=root db=xbalances
-    CFA_MONGO_URI                                default mongodb://mongo-cfa:27017/cfa
-    PAYOUTS_REDIS_URL                            default redis://redis:6379/0
-    FTS_REDIS_URL                                default redis://redis:6379/1
-
-  Credentials (helpers/creds.py resolution order applies to each prefix):
-    PS_SERVICE_BASIC_AUTH        payouts-api's cred.API/cred.Workflow family (payoutRoutes + internal routes)
-    PS_FASTCRON_BASIC_AUTH       payouts-api's cred.FastCron (/v1/cron/*)
-    LEDGER_BASIC_AUTH            ledger-api's [auth] service credential
-    FTS_BASIC_AUTH                fts-web's PayoutsService/"PS" identity
-    MONOLITH_BASIC_AUTH          monolith-stub's secrets/monolith_basic_auth
-
-  Merchant fixtures (dcs-stub/CONTRACT.md seeds ARENA_M1/M2/M3; concrete ids not seeded yet):
-    ARENA_M{1,2,3}_MERCHANT_ID / _BALANCE_ID / _FUND_ACCOUNT_ID / _ACCOUNT_NUMBER
-
-  Passport (see VERIFIER_SPEC.md gap #9):
-    PASSPORT_STATIC_JWT_M1 / _M2 / _M3     pre-minted RS256 tokens, or
-    PASSPORT_SIGNER_URL                     a live minting endpoint
+"""Live Env2 fixtures. Missing required services or generated fixtures fail visibly.
+Each node receives isolated synthetic merchants and explicit bank behavior.
 """
 import os
+import json
+from pathlib import Path
 
 import pytest
 
@@ -88,7 +29,7 @@ def pytest_configure(config):
 # --------------------------------------------------------------------------
 # service endpoint fixtures (no reachability check here -- individual
 # fixtures/tests that need a live call check .health_ok()/catch
-# ServiceUnreachable and skip explicitly, so a verifier only skips for the
+# ServiceUnreachable and fail explicitly, so a verifier reports the
 # specific dependency it actually touches, not the whole topology)
 # --------------------------------------------------------------------------
 
@@ -101,7 +42,7 @@ def _url(env_name, default):
 def ps_service_auth():
     auth = creds.resolve_basic_auth("PS_SERVICE")
     if not auth:
-        pytest.skip("missing fixture: PS_SERVICE_BASIC_AUTH (payouts-api cred.API/cred.Workflow pair)")
+        pytest.fail("missing fixture: PS_SERVICE_BASIC_AUTH (payouts-api cred.API/cred.Workflow pair)")
     return auth
 
 
@@ -109,7 +50,7 @@ def ps_service_auth():
 def ps_fastcron_auth():
     auth = creds.resolve_basic_auth("PS_FASTCRON")
     if not auth:
-        pytest.skip("missing fixture: PS_FASTCRON_BASIC_AUTH (payouts-api cred.FastCron pair)")
+        pytest.fail("missing fixture: PS_FASTCRON_BASIC_AUTH (payouts-api cred.FastCron pair)")
     return auth
 
 
@@ -117,7 +58,7 @@ def ps_fastcron_auth():
 def ledger_auth():
     auth = creds.resolve_basic_auth("LEDGER")
     if not auth:
-        pytest.skip("missing fixture: LEDGER_BASIC_AUTH (ledger-api [auth] service credential)")
+        pytest.fail("missing fixture: LEDGER_BASIC_AUTH (ledger-api [auth] service credential)")
     return auth
 
 
@@ -125,7 +66,7 @@ def ledger_auth():
 def fts_auth():
     auth = creds.resolve_basic_auth("FTS")
     if not auth:
-        pytest.skip("missing fixture: FTS_BASIC_AUTH (fts-web PayoutsService/\"PS\" identity)")
+        pytest.fail("missing fixture: FTS_BASIC_AUTH (fts-web PayoutsService/\"PS\" identity)")
     return auth
 
 
@@ -133,7 +74,7 @@ def fts_auth():
 def monolith_auth():
     auth = creds.resolve_basic_auth("MONOLITH")
     if not auth:
-        pytest.skip("missing fixture: MONOLITH_BASIC_AUTH (monolith-stub secrets/monolith_basic_auth)")
+        pytest.fail("missing fixture: MONOLITH_BASIC_AUTH (monolith-stub secrets/monolith_basic_auth)")
     return auth
 
 
@@ -228,20 +169,17 @@ def asv_stub_client():
 
 @pytest.fixture(scope="session")
 def mozart_mock_client():
-    """No substitute directory exists under ENV2_COMPOSE/substitutes/ for this
-    at spec time (VERIFIER_SPEC.md gap #1) -- the client is constructed
-    regardless so tests can probe .health_ok() and skip/downgrade their own
-    ceiling rather than erroring."""
+    """Explicit synthetic bank endpoint with merchant/attempt controls."""
     return ArenaHTTPClient(_url("MOZART_MOCK_URL", "http://mozart-mock:8085"))
 
 
 def require_reachable(client, name):
     """Call from inside a test (not a fixture) right before a hard dependency
     on a stub's liveness -- e.g. shield-stub's latency-injection probe in
-    V22. Skips with a clear reason if the health check fails or the service
+    V22. Fails with a clear reason if the health check fails or the service
     is entirely unreachable."""
     if not client.health_ok():
-        pytest.skip("missing fixture: %s unreachable at %s" % (name, client.base_url))
+        pytest.fail("missing fixture: %s unreachable at %s" % (name, client.base_url))
 
 
 # --------------------------------------------------------------------------
@@ -258,7 +196,7 @@ def payouts_mysql():
             {"host": "mysql-payouts", "port": 3306, "user": "root", "password": "", "db": "payouts"},
         )
     except db.ConnectionUnavailable as exc:
-        pytest.skip("missing fixture: payouts MySQL (%s)" % exc)
+        pytest.fail("missing fixture: payouts MySQL (%s)" % exc)
 
 
 @pytest.fixture(scope="session")
@@ -269,7 +207,7 @@ def ledger_pg():
             {"host": "postgres-ledger", "port": 5432, "user": "postgres", "password": "", "db": "ledger"},
         )
     except db.ConnectionUnavailable as exc:
-        pytest.skip("missing fixture: ledger Postgres (%s)" % exc)
+        pytest.fail("missing fixture: ledger Postgres (%s)" % exc)
 
 
 @pytest.fixture(scope="session")
@@ -280,7 +218,7 @@ def fts_mysql():
             {"host": "mysql-fts", "port": 3306, "user": "root", "password": "", "db": "fts"},
         )
     except db.ConnectionUnavailable as exc:
-        pytest.skip("missing fixture: fts MySQL (%s)" % exc)
+        pytest.fail("missing fixture: fts MySQL (%s)" % exc)
 
 
 @pytest.fixture(scope="session")
@@ -292,7 +230,7 @@ def xbalances_mysql():
             {"host": "mysql-xbalances", "port": 3306, "user": "root", "password": "", "db": "xbalances"},
         )
     except db.ConnectionUnavailable as exc:
-        pytest.skip("missing fixture: x-balances MySQL (%s)" % exc)
+        pytest.fail("missing fixture: x-balances MySQL (%s)" % exc)
 
 
 @pytest.fixture(scope="session")
@@ -300,7 +238,7 @@ def cfa_mongo():
     try:
         return db.connect_mongo("CFA_MONGO_URI", "mongodb://mongo-cfa:27017/cfa")
     except db.ConnectionUnavailable as exc:
-        pytest.skip("missing fixture: cfa Mongo (%s)" % exc)
+        pytest.fail("missing fixture: cfa Mongo (%s)" % exc)
 
 
 @pytest.fixture(scope="session")
@@ -308,7 +246,7 @@ def payouts_redis():
     try:
         return db.connect_redis("PAYOUTS_REDIS_URL", "redis://redis:6379/0")
     except db.ConnectionUnavailable as exc:
-        pytest.skip("missing fixture: payouts Redis (%s)" % exc)
+        pytest.fail("missing fixture: payouts Redis (%s)" % exc)
 
 
 @pytest.fixture(scope="session")
@@ -316,7 +254,7 @@ def fts_redis():
     try:
         return db.connect_redis("FTS_REDIS_URL", "redis://redis:6379/1")
     except db.ConnectionUnavailable as exc:
-        pytest.skip("missing fixture: fts Redis (%s)" % exc)
+        pytest.fail("missing fixture: fts Redis (%s)" % exc)
 
 
 # --------------------------------------------------------------------------
@@ -325,10 +263,17 @@ def fts_redis():
 # --------------------------------------------------------------------------
 
 
-def _merchant(key):
+def _merchant(key, request=None):
+    index_path = Path(os.environ.get("ARENA_SCENARIO_INDEX", "/fixtures/scenario-index.json"))
+    if request is not None and index_path.is_file():
+        index = json.loads(index_path.read_text())
+        fixture = dict(index["verifiers"][request.node.name][key])
+        fixture["key"] = key
+        return fixture
+
     merchant_id = os.environ.get("ARENA_%s_MERCHANT_ID" % key)
     if not merchant_id:
-        pytest.skip("missing fixture: ARENA_%s_MERCHANT_ID (seeds/ not populated yet)" % key)
+        pytest.fail("missing fixture: ARENA_%s_MERCHANT_ID (seeds/ not populated yet)" % key)
     return {
         "key": key,
         "merchant_id": merchant_id,
@@ -339,25 +284,64 @@ def _merchant(key):
 
 
 @pytest.fixture
-def merchant_m1():
+def merchant_m1(request):
     """Shared/Lite balance, ledger-backed."""
-    return _merchant("M1")
+    return _merchant("M1", request)
 
 
 @pytest.fixture
-def merchant_m2():
+def merchant_m2(request):
     """Direct/current account, RBL, in_flight_reservation_enabled=on."""
-    return _merchant("M2")
+    return _merchant("M2", request)
 
 
 @pytest.fixture
-def merchant_m3():
+def merchant_m3(request):
     """Workflow-enabled (enable_payout_workflow=on) -- not exercised by the
     Env 2 verifiers in this package (workflow/approval is Env 1 scope), kept
     here for forward compatibility."""
-    return _merchant("M3")
+    return _merchant("M3", request)
 
 
 # Passport JWT resolution lives in helpers.payouts_flow.passport_or_skip --
 # merchant identity varies per test even within one file (see V20), so it is
 # called from inside test bodies rather than wired as a fixture here.
+
+
+@pytest.fixture(autouse=True)
+def isolated_scenario(request, mozart_mock_client):
+    """Explicit bank state is configured before any payout is created."""
+    from helpers import trace, payouts_flow as pf
+    trace.select(request.node.name)
+    index_path = Path(os.environ.get("ARENA_SCENARIO_INDEX", "/fixtures/scenario-index.json"))
+    if not index_path.is_file():
+        pytest.fail("isolated synthetic scenario-index.json is required")
+    fixtures = json.loads(index_path.read_text())["verifiers"][request.node.name]
+    pf.CURRENT_MERCHANTS = fixtures
+    trace.record("starting_fixture", fixtures)
+    scenario = "success" if request.node.name == "test_payout_processed_journal_mirrors_ledger" else "hold"
+    if request.node.name in ("test_payout_failed_direct_account_no_reversal_no_ledger", "test_payout_reversed_journal_and_reversal_entity", "test_failed_webhook_remaps_differently_by_account_type"): scenario = "failure"
+    for merchant in fixtures.values():
+        resp = mozart_mock_client.post("/_arena/scenario", body={"merchant_id":merchant["merchant_id"],"scenario":scenario})
+        assert resp.status == 200, "bank scenario control failed: %s" % resp
+    yield
+    # Each fixture has a unique namespace; pending work cannot spend another
+    # test's balance. Clear only the controls owned by this test.
+    for merchant in fixtures.values():
+        mozart_mock_client.post("/_arena/scenario", body={"merchant_id":merchant["merchant_id"],"clear":True})
+
+
+def pytest_runtest_logreport(report):
+    from helpers import trace
+    trace.record("test_result", {"nodeid":report.nodeid,"when":report.when,"outcome":report.outcome,
+                                  "duration":report.duration,"reason":str(report.longrepr) if report.failed or report.skipped else None})
+
+
+@pytest.fixture(scope="session")
+def ledger_gate_client():
+    return ArenaHTTPClient(_url("LEDGER_GATE_URL", "http://ledger-gate:8080"))
+
+
+@pytest.fixture(scope="session")
+def merchant_sink_client():
+    return ArenaHTTPClient(_url("MERCHANT_SINK_URL", "http://merchant-webhook-sink:8080"))

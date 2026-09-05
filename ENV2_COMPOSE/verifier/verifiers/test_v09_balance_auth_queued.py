@@ -13,14 +13,14 @@ def test_insufficient_balance_queues_when_queue_if_low_balance_true(
     ps_public_client, payouts_mysql, ledger_pg, merchant_m1
 ):
     if not merchant_m1["fund_account_id"] or not merchant_m1["account_number"]:
-        pytest.skip("missing fixture: ARENA_M1_FUND_ACCOUNT_ID / ARENA_M1_ACCOUNT_NUMBER")
+        pytest.fail("missing fixture: ARENA_M1_FUND_ACCOUNT_ID / ARENA_M1_ACCOUNT_NUMBER")
 
     passport_jwt = pf.passport_or_skip(merchant_m1)
     balance_before = pf.get_account_balance(ledger_pg, merchant_m1["merchant_id"])
     if balance_before is None:
-        pytest.skip("missing fixture: no ledger accounts row seeded for ARENA_M1_MERCHANT_ID")
+        pytest.fail("missing fixture: no ledger accounts row seeded for ARENA_M1_MERCHANT_ID")
 
-    amount = int(float(balance_before)) + 100000  # deliberately over balance
+    amount = int(balance_before) + 100000  # deliberately over balance
 
     body = pf.build_create_body(
         merchant_m1["fund_account_id"], merchant_m1["account_number"], amount=amount, queue_if_low_balance=True, mode="NEFT"
@@ -36,4 +36,4 @@ def test_insufficient_balance_queues_when_queue_if_low_balance_true(
     )
 
     balance_after = pf.get_account_balance(ledger_pg, merchant_m1["merchant_id"])
-    assert float(balance_after) == float(balance_before), "balance must be unchanged for a queued payout"
+    assert balance_after == balance_before, "balance must be unchanged for a queued payout"

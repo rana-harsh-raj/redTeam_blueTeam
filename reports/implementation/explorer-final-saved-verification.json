@@ -1,0 +1,25 @@
+{
+  "schema_version": 1,
+  "checked_at": "2026-09-05T14:10:00.960126+00:00",
+  "payout_id": "pout_TYNlMATJ3Bs6Hn",
+  "saved_status": "passed",
+  "trace_records": 35,
+  "static": {
+    "url": "http://127.0.0.1:18766",
+    "verified_steps": 5,
+    "payout_visible": true,
+    "live_action_disabled": true,
+    "activation": "browser button click"
+  },
+  "live_server": {
+    "url": "http://127.0.0.1:18765",
+    "services_ready": true,
+    "verified_steps": 5,
+    "payout_visible": true,
+    "activation": "DOM click on the existing saved-trace button; earlier native browser click commands reported success without activating it"
+  },
+  "last_runtime_action": "audited fixed golden runner at runs/final-acceptance/golden",
+  "new_payout_triggered_during_this_check": false,
+  "source_file_sha256": "ea2653f3ba60c60ddb1ad1c1db02bbcc74113fd89129fee07379411434f4343d",
+  "dist_file_sha256": "ea2653f3ba60c60ddb1ad1c1db02bbcc74113fd89129fee07379411434f4343d"
+}

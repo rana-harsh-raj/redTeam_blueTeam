@@ -1,5 +1,11 @@
 # Env2 arena seed data
 
+Twin v1 treats this directory as versioned generator input. `scripts/up.sh` runs
+[the generator](../generator/README.md) and loads `seeds/generated/s4/`, including
+isolated merchant namespaces and a provenance manifest. Use the
+[current execution guide](../../../TWIN_V1_README.md); the manual commands below
+describe the earlier scaffold and are retained for context.
+
 Companion seed files for `reports/SYNTHETIC_FIXTURE_SPEC.md`. Read that document first -- it is the
 entity model and rationale; this directory is the executable/loadable data.
 

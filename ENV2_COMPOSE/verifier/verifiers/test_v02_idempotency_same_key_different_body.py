@@ -10,9 +10,9 @@ from helpers import payouts_flow as pf
 
 @pytest.mark.spec_id("V2")
 @pytest.mark.status("CROSS_SERVICE_CONFIRMED")
-def test_idempotent_create_same_key_different_body_rejected(ps_public_client, payouts_mysql, merchant_m1):
+def test_idempotent_create_same_key_different_body_rejected(ps_public_client, payouts_mysql, merchant_m1, fts_mysql):
     if not merchant_m1["fund_account_id"] or not merchant_m1["account_number"]:
-        pytest.skip("missing fixture: ARENA_M1_FUND_ACCOUNT_ID / ARENA_M1_ACCOUNT_NUMBER")
+        pytest.fail("missing fixture: ARENA_M1_FUND_ACCOUNT_ID / ARENA_M1_ACCOUNT_NUMBER")
 
     passport_jwt = pf.passport_or_skip(merchant_m1)
     idem_key = pf.new_idempotency_key()
@@ -40,3 +40,4 @@ def test_idempotent_create_same_key_different_body_rejected(ps_public_client, pa
 
     payouts_for_key = pf.get_payout_row(payouts_mysql, key_row_after["source_id"])
     assert payouts_for_key is not None, "the original payout for the key must still be the only one"
+    pf.wait_for_held_handoff(payouts_mysql, fts_mysql, key_row_after["source_id"])

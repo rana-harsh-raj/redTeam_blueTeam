@@ -11,6 +11,8 @@ import json
 import os
 import sys
 import time
+import threading
+from decimal import Decimal, InvalidOperation
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 sys.path.insert(0, "/app")
@@ -20,6 +22,78 @@ LISTEN_PORT = int(os.environ.get("STUB_PORT", "8085"))
 POLL_TO_SUCCESS_AFTER = int(os.environ.get("MOZART_SIM_POLL_TO_SUCCESS_AFTER", "2"))
 
 STATUS_STATE = {}  # gateway_ref_no -> poll_count
+SCENARIOS = {}  # merchant_id, attempt id or payout/source id -> explicit scenario
+ATTEMPTS = {}   # attempt id -> chosen scenario and poll count
+SCENARIO_LOCK = threading.RLock()
+SCENARIO_NAMES = {"success", "failure", "insufficient_funds", "hold", "delayed_success", "returned", "ambiguous_with_utr", "ambiguous_without_utr", "duplicate", "timeout"}
+EVENTS = []
+
+
+def _scenario_control(body):
+    key = str(body.get("key") or body.get("merchant_id") or body.get("payout_id") or "")
+    if not key or len(key) > 100:
+        return 400, {"error": "key required"}
+    with SCENARIO_LOCK:
+        if body.get("clear"):
+            SCENARIOS.pop(key, None)
+            ATTEMPTS.pop(key, None)
+            return 200, {"cleared": key}
+        scenario = body.get("scenario")
+        polls = body.get("polls", 2)
+        if scenario not in SCENARIO_NAMES or not isinstance(polls, int) or not 1 <= polls <= 100:
+            return 400, {"error": "invalid scenario or polls"}
+        rule = {"scenario": scenario, "polls": polls}
+        SCENARIOS[key] = rule
+        if key in ATTEMPTS:
+            ATTEMPTS[key].update(rule)
+            ATTEMPTS[key]["count"] = 0
+        return 200, {"key": key, **rule}
+
+
+def _controlled(action, body):
+    attempt = _dig(body, "entities", "attempt", default={})
+    aid = str(attempt.get("id") or attempt.get("gateway_ref_no") or "")
+    keys = [str(attempt.get(k) or "") for k in ("id", "source_id", "merchant_id")]
+    with SCENARIO_LOCK:
+        rule = next((SCENARIOS[k] for k in keys if k in SCENARIOS), None)
+        if action == "transfer_init" and rule:
+            ATTEMPTS[aid] = {**rule, "count": 0, "merchant_id": attempt.get("merchant_id")}
+        state = ATTEMPTS.get(aid)
+        if state is None: return None
+        scenario = state["scenario"]
+        if action == "transfer_status": state["count"] += 1
+        count, polls = state["count"], state["polls"]
+        EVENTS.append({"action":action,"attempt_id":aid,"scenario":scenario,"poll":count,"at":time.time()})
+        del EVENTS[:-1000]
+    utr = "ARENA" + aid.zfill(10)[-10:]
+    pending = {"gateway_ref_no": attempt.get("gateway_ref_no") or aid, "bank_status_code": "INITIATED"}
+    if scenario == "timeout":
+        time.sleep(30)
+        # A gateway timeout has no valid Mozart success/error envelope.
+        # FTS createEmptyResponse maps it to pending MOZART_INDETERMINATE.
+        return 504, {}
+    if scenario == "hold": return 200, _envelope(pending)
+    if scenario == "delayed_success" and (action == "transfer_init" or count < polls):
+        return 200, _envelope(pending)
+    if scenario == "returned":
+        # A success is terminal for normal FTS polling: explicit status check
+        # is needed later to observe a return. Never invent an automatic poll.
+        if action == "transfer_init" or count < polls:
+            return 200, _envelope({"bank_status_code":"SUCCESS","utr":utr,"is_debited":True,"is_credited":True})
+        return 200, _envelope({"bank_status_code":"RETURNED","return_utr":"RET"+utr}, False,
+                             {"gateway_error_code":"RETURNED","internal_error_code":"RETURNED"})
+    if scenario in ("failure", "insufficient_funds", "duplicate"):
+        # FTS mozart/error_code.go: INVALID_ACCOUNT_NUMBER is terminal MERCHANT;
+        # INSUFFICIENT_FUND is retryable INTERNAL for Shared accounts.
+        code = {"failure":"INVALID_ACCOUNT_NUMBER", "insufficient_funds":"INSUFFICIENT_FUND",
+                "duplicate":"DUPLICATE_TXN"}[scenario]
+        return 200, _envelope({"bank_status_code":code,"is_debited":False,"is_credited":False},False,
+            {"description":"synthetic bank "+scenario,"gateway_error_code":code,"gateway_error_description":"synthetic "+scenario,"gateway_status_code":200,"internal_error_code":code})
+    if scenario.startswith("ambiguous_"):
+        data = {"bank_status_code":"CBS:188","is_debited":None,"is_credited":None}
+        if scenario.endswith("with_utr"): data["utr"] = utr
+        return 200, _envelope(data,False,{"description":"synthetic ambiguous response","gateway_error_code":"CBS:188","internal_error_code":"TECHNICAL_ERROR_AMBIGUOUS"})
+    return 200, _envelope({"bank_status_code":"SUCCESS","utr":utr,"is_debited":True,"is_credited":True})
 
 ENVELOPE_DEFAULTS = {"error": None, "external_trace_id": "SIM_TRACE_ID", "mozart_id": "SIM_MOZART_ID",
                      "success": True, "next": {}}
@@ -47,8 +121,10 @@ def _amount(body):
     if v is None:
         v = body.get("amount")
     try:
-        return int(v)
-    except (TypeError, ValueError):
+        # FTS SetAttempt converts paise to a decimal rupee string.
+        # Standalone top-level amount is explicitly paise for legacy fixtures.
+        return int(Decimal(str(v)) * (100 if _dig(body, "entities", "attempt", "amount") is not None else 1))
+    except (TypeError, ValueError, InvalidOperation):
         return None
 
 
@@ -221,6 +297,12 @@ ACTION_HANDLERS = {
 
 class MozartSimHandler(StubHandler):
     def do_GET(self):
+        if self.path == "/_arena/scenarios":
+            if not self._authorized():
+                self._send_json(401, {"error":"unauthorized"}); return
+            with SCENARIO_LOCK:
+                self._send_json(200, {"rules":SCENARIOS,"attempts":ATTEMPTS,"events":EVENTS})
+            return
         if self.path == "/health":
             self._send_json(200, {"status": "ok", "service": "mozart-sim"})
             return
@@ -241,6 +323,10 @@ class MozartSimHandler(StubHandler):
             self._send_json(400, {"error": "invalid_json"})
             return
 
+        if self.path == "/_arena/scenario":
+            status, payload = _scenario_control(body)
+            self._send_json(status, payload)
+            return
         parts = [p for p in self.path.split("/") if p]
         if len(parts) != 4:
             self._send_json(404, {"error": "unrecognized_path", "path": self.path,
@@ -251,7 +337,8 @@ class MozartSimHandler(StubHandler):
         if handler is None:
             self._send_json(404, {"error": "unknown_action", "action": action})
             return
-        status, payload = handler(body)
+        controlled = _controlled(action, body) if action in ("transfer_init", "transfer_status") else None
+        status, payload = controlled if controlled is not None else handler(body)
         self._send_json(status, payload)
 
 

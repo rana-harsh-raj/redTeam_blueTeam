@@ -147,7 +147,12 @@ def _deliver(webhook, event):
     except Exception as exc:  # noqa: BLE001 - matches real Stork: delivery failure is async/best-effort
         sys.stderr.write("[stork-capture] delivery to %s failed: %r\n" % (webhook["url"], exc))
         status = None
+    try:
+        parsed_payload = json.loads(payload_str)
+    except ValueError:
+        parsed_payload = {"invalid_json": True}
     record = {
+        "payload": parsed_payload,
         "event_id": event_id, "webhook_id": webhook["id"], "url": webhook["url"],
         "owner_id": webhook.get("owner_id", ""), "merchant": webhook.get("owner_id", ""),
         "event_name": event.get("name"), "delivered_status": status, "delivered_at": time.time(),

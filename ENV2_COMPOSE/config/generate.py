@@ -86,6 +86,10 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import _miniyaml  # noqa: E402
+from routes import apply_route_profile, PROFILES
+ROUTE_PROFILE = os.environ.get("ARENA_ROUTE_PROFILE", "monolith")
+if ROUTE_PROFILE not in PROFILES:
+    raise SystemExit("Invalid ARENA_ROUTE_PROFILE: " + ROUTE_PROFILE)
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ARENA_YAML = os.path.join(ROOT, "config", "arena.yaml")
@@ -406,6 +410,10 @@ def render_service(svc, file_specs, tokens):
             raise ValueError("unknown mode %r for %s" % (mode, src_path))
         text = sanitize_forbidden(text)
         text = _cfa_mongo_local_forward(svc, text)
+        if svc == "payouts":
+            text = text.replace("http://ledger-api:8080", "http://ledger-gate:8080")
+        if out_name in ("arena.toml", "env.arena.toml"):
+            text = apply_route_profile(text, svc, ROUTE_PROFILE)
         out_path = os.path.join(out_dir, out_name)
         with open(out_path, "w") as f:
             f.write(text)
@@ -477,4 +485,5 @@ def main():
 
 
 if __name__ == "__main__":
+    os.umask(0o077)  # apply restrictive creation modes before the first write
     main()

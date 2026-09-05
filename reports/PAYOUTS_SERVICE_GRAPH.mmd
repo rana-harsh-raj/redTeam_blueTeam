@@ -1,0 +1,331 @@
+%% PAYOUTS_SERVICE_GRAPH v2026-09-03.v1 — service-level view (repo/event/deploy/role nodes omitted for legibility; full graph in JSON)
+flowchart LR
+  n457132545["Banking Account Service"]
+  n862736904[("TiDB (payouts_temp / analytical copy via WDA)")]
+  n744789495["Charge Collections (pricing)"]
+  n325242378{"alert-rules: stuck payouts IDFC/IMPS >5 in 15m; xpayroll non-terminal >1hr — no generic per-payout stuck alert"}
+  n390109168[["Payouts SQS workers (cmd/workers)"]]
+  n709714414>"SQS queued_payout / schedule_payout / on_hold_payout"]
+  n416673258["API monolith (razorpay/api, PHP)"]
+  n345511398["CFA (gRPC+gateway)"]
+  n499767781[("banking-accounts MySQL (banking_account: account_number, balance_id, fts_fund_account_id)")]
+  n284876254{"shadow_gateway.enabled (prod=false)"}
+  n811605030(["RazorpayX dashboard SPA (x.razorpay.com)"])
+  n808761895{{"Merchant webhook endpoint"}}
+  n691923410[("Payouts MySQL (payouts, payout_details, idempotency_keys, reversals, workflow_state_map...)")]
+  n915026481>"SQS x_balances_balance_refresh (x-balances → payouts)"]
+  n21137868[/"PS /v1/cron/process_beneficiary_bank_on_hold_payouts + /process_queued_payouts (SLA breach ⇒ failed)"/]
+  n108517834["Shield risk engine (shield-sdk client only; full shield service ~6.7GB not cloned)"]
+  n150703672[/"PS /v1/cron/process_inflight_reservation_reconciliation (5 min cadence, heartbeat TTL 12.5 min, fail-closed)"/]
+  n863328831>"SQS webhook_event"]
+  n821068866["XAS account statements"]
+  n12408391["Vendor Payments"]
+  n431916473["Xperience BFF"]
+  n668869706[["x-balances per-bank balance-fetch workers"]]
+  n53830066[("API monolith MySQL (balance, contacts, fund_accounts, bank_accounts; payouts table DELETED Aug-2026)")]
+  n911496275["UPI service (UPS, razorpay/payments-upi)"]
+  n59650979[/"FTS v1/attempts/:action (PATCH/POST) + v1/attempts/reconcile (PUT) — ARTAuth (recon) and APIAuth directly authorized"/]
+  n204623456>"SQS ledger balance_update (async non-merchant accounts)"]
+  n538366054["Batch service (bulk payouts)"]
+  n595381362[/"Splitz EvaluateAPI/Evaluate (Twirp) — deterministic MurmurHash bucketing; all 8 payouts-scope experiment IDs are DB-only"/]
+  n223594381[/"monolith payouts_service/dual_write handler (PayoutController@payoutServiceDualWrite) — PS-authoritative read, writes local payouts table"/]
+  n891983992[/"PS POST /v1/payouts/banking_account_statement/payout_update (BAS recon → can create reversal)"/]
+  n363766907>"Stork delivery SQS priority queues p0/p1/p2 (standard, non-FIFO, no ordering guarantee)"]
+  n560833923[/"Public POST /v1/fund_accounts/validations — FundAccountValidationController@create (monolith), calls ValidX internal routes"/]
+  n711191684[/"PS /v1/cron/* (queued/scheduled/on_hold dispatch, reservation reconcile, dual-write failure, SLA monitor)"/]
+  n65717626(["Admin dashboard (internal)"])
+  n571372684[/"FTS POST /v1/transfer"/]
+  n399856271[/"UPS POST /v1/payments/validate/account (VPA number-mapper) — called by payouts directly, Basic Auth + X-Origin: payouts"/]
+  n208488816[/"monolith payouts_internal route group (payout_create_internal, payouts_internal_direct, internalContactPayout)"/]
+  n202907284[/"monolith /v1/payment/validate/vpa — called by FTS for VPA validation (not UPS directly)"/]
+  n380903066["DCS dynamic config"]
+  n181757275[/"API monolith POST /v1/update_fts_fund_transfer → FundTransferAttemptController@updateSource (FTA committed first; single-attempt relay to PS, no retry)"/]
+  n129613993[/"PS SLA monitor (create_request_submitted, batch_submitted, scheduled only — NOT initiated; alert only)"/]
+  n200336716[/"POST /payouts/{id}/approve|reject (+bulk, 2fa)"/]
+  n992162119{{"FastCron SaaS — external cron trigger for payouts /v1/cron/* (per-endpoint schedule lives only in FastCron's own dashboard)"}}
+  n567243079[("XAS MySQL (account_statements, accounts)")]
+  n639729340["Workflow service (approval engine, Cadence-based)"]
+  n687378628{"Kong template payouts-proxy-cutover — instantiated only in base/payouts-proxy-cutover (devstack); prod undiverted"}
+  n622907708>"SNS source_update_topics (vendor_payments, payout_links, settlements, xpayroll, tax_payments...)"]
+  n193832135[/"PS PATCH /v1/payouts/update_payouts_with_fts (internal)"/]
+  n61978823{"DCS payout_workflows / enable_payout_workflow / skip_* flags (config-proto rzp/x/merchant/payouts; values runtime-only in DynamoDB)"}
+  n791404851{"payout_service_enabled = DCS feature AND banking_accounts.payout_service_enabled column; monolith classic proxy gate + Splitz direct gate (DirectToPayoutsServiceGate)"}
+  n729665237[/"Admin PATCH live/payouts/{id}/manual/status (force status)"/]
+  n684729045["Wallet service — NOT ACCESSIBLE"]
+  n82466520>"SQS prod-api-validation-dual-write-live (ValidX → monolith)"]
+  n260093735[("DCS primary store: single-table DynamoDB (PK entity#<type>#<id>, SK kv/<namespace>/...)")]
+  n440874789["Stork webhooks/SMS/email"]
+  n982466780[/"monolith /v1/update_fts_fund_transfer relay handler (FundTransferAttemptController@updateSource) — no retry on PS-call failure"/]
+  n799008029[/"FTS channel-health /manual_override, /fail_fast_status/manual_update, /v1/transfer/fail, /v1/manual_queries/update"/]
+  n998106343[["API monolith job ApprovedPayoutProcessor — code targets local payouts table; physical table dropped in prod ⇒ fails (2026-09-03)"]]
+  n421963522["Payout Links"]
+  n463066878[("Payouts Redis (idempotency mutex, in-flight reservations)")]
+  n518973690[/"PS /v1/cron/process_scheduled_payouts (4 IST slots; pending-at-slot ⇒ auto-reject)"/]
+  n532139271[/"WFS to PS callback activity (Cadence Activity: 2s to x5.0 backoff, capped 1h, 30-day expiry, HTTP Basic payouts_live)"/]
+  n139581705[/"PS /v1/cron/process_queued_low_balance_payouts (6h balance-change window, limit 5000, no ORDER BY)"/]
+  n255641847["Recon / ART"]
+  n763176720>"Kafka rx-fts-status-update-events (+ fts_status_updates_retry)"]
+  n975893272["Account Service (ASV gRPC) — NOT ACCESSIBLE"]
+  n741143782{"Splitz PayoutWorkflowsDcsNameExperiment (Sg7tEnMoxCbTzM): OR legacy + DCS flag names"}
+  n440970978[/"PS POST/PUT /v1/admin/merchant-configuration (+ cron variant) — merchant config mutation"/]
+  n38777570[("PS Redis MerchantConfig cache (30 min; UpdateMerchantFeatureInCache no-ops when cold)")]
+  n971500831[/"PS POST/PATCH /v1/workflow/state[/:id] (workflow_state_map)"/]
+  n75636511["Accounting Integrations"]
+  n835163872{{"Partner banks via Mozart: ICICI, Axis, RBL, IDFC, Yes Bank, HDFC, Citi, M2P, MCS, OCBC, Slice, Amazon Pay, JPMC"}}
+  n585052892["Ledger Service (Twirp, tenant X)"]
+  n797329701{"Relay config server"}
+  n210860840[/"PS PATCH /v1/admin/payouts_sync + POST /v1/admin/free_payout/:balance_id (passport admin + BasicAuth)"/]
+  n406114001("Service-to-service Basic Auth credentials (per caller)")
+  n990052557[/"Shield POST /v1/rules/evaluate/payout — 3 actions allow/block/review; Payouts only branches on block (review treated as allow)"/]
+  n33717961["AuthZ service + goutils/authz enforcer"]
+  n402760392[["Payouts Kafka consumer (cmd/kafkaConsumers)"]]
+  n339139897[("FTS MySQL (transfers, attempts, transfer_meta, source_accounts, routing tables)")]
+  n194977607{"config fts_request_from_ps merchant list + Splitz fts_request_from_payouts_service_experiment"}
+  n529480007["Splitz experiments"]
+  n8717496[("x-balances MySQL (balance, sub_balance)")]
+  n117090644[("DCS secondary store: Aurora MySQL (legacy proxy-v1 feature table + proxy-v2 dual-write mirror)")]
+  n660516526>"Kafka payout-kafka-topic (CDC/Maxwell shape, consumed by charge-collections)"]
+  n836398419{"Splitz charge_collections_call_experiment (pricing source: monolith vs CC-SDK)"}
+  n379332436["X Balances"]
+  n500463958(["x-customer-payout-links (payee page)"])
+  n826658135[/"PS POST /v1/payouts/payouts_internal/{id}/approve|reject (BasicAuth only, unscoped FindByID)"/]
+  n890393767>"SQS payout_update_failure_handling (ledger processed/reversed retries, MaxRetries 3, 120 s)"]
+  n970395810[/"FTS stuck_payouts cron (canary instance, leader-elected)"/]
+  n49588888["Governor pricing rule engine"]
+  n508260499[("CFA MongoDB (contacts, fund_accounts, hash_lookup)")]
+  n352525968[("ValidX MySQL (validations, validation_attempts, gateway_routing_rules, rpd_ledger)")]
+  n784400758>"SNS journal-created (ledger)"]
+  n479951735{"alert-rules: FTS to Payouts transfer webhook update failure (aggregate >10 / >50 failures per 15min by status, for:10m)"}
+  n618259320>"SQS payout/reversal source events (payouts → XAS)"]
+  n131858814[/"PS bulk approve/reject endpoint called directly by Batch (bypasses Workflow Service entirely)"/]
+  n158394752{"features.ikey_auto_enforcement + Splitz ramp-up"}
+  n295545733{"authz CAC-derived role payout_approve_reject_view (second, independently-evolved policy set vs xplatform.csv)"}
+  n985162632[/"monolith admin routes group (AdminAccess::policyChecker, local DB-backed permission)"/]
+  n476719218[["FTS default-workers (machinery)"]]
+  n835876760[/"ValidX /v1/internal/validations*, /webhook/fts, /webhook/citi, /manual-action, /routing/rules"/]
+  n582132324[("Ledger Postgres rx (journal, accounts, ledger_entries, ledger_config, idempotency)")]
+  n838245984[/"PS POST /v1/payouts/bulk (+/validate) — caller Batch service (inferred), X-Batch-Id header"/]
+  n352886191[/"Ledger Twirp Journal.Create"/]
+  n533065["Settlements service — NOT ACCESSIBLE"]
+  n679424445[["Workflow Service Cadence worker process (cmd/workers) — executes approval state machine + callback activities"]]
+  n604029373[/"POST /merchant/api/{mode}/payouts_with_otp (dashboard)"/]
+  n67452352{"authz xplatform.csv role x action matrix (owner/admin/finance_l1-3/operations/view_only)"}
+  n532873664{"Splitz use_api_db_for_payout_status_details_experiment (TMp5VcIFYOHK2m) fail-open → monolith DB reads"}
+  n292892223[/"Governor POST /v1/namespaces/:id/execute (govaluate rule chains; payouts configures 5: basic/product/bank/mode/amount)"/]
+  n628493372[/"PS POST /v1/payouts/transfer_status_webhook"/]
+  n646715846[/"PS POST /v1/notify/health/update, /notify/downtime (FTS → partner bank health)"/]
+  n57613369[/"monolith dashboard authenticate (IP allowlist via MerchantIpFilter; no merchant_users DB check found)"/]
+  n783791147[/"DCS KVService (Get/Put/Patch/Evaluate/GetAuditHistory/GetEntityAggregate) — gRPC + grpc-gateway JSON"/]
+  n874539992["FTS web"]
+  n326806054{"Kong upstream-jwt passport minting plugin (RS256, 300s TTL hardcoded, no authType claim)"}
+  n28166167{"Splitz for_duplicate_payout_evaluate {enable, action} shadow vs enforce"}
+  n878453780["Virtual Account"]
+  n327743977[/"PS POST /v1/payouts/manual_action (processed→processing, approve/reject workflow)"/]
+  n937848300[("Payouts Elasticsearch (search index)")]
+  n113121259["Payouts Service (Go)"]
+  n733010452["Edge / Kong (terraform-kong, edge)"]
+  n221528557("Dashboard user (cookie session + CSRF; passport minted at edge)")
+  n536743920>"Kafka add-tds-entry"]
+  n123599347["ValidX (FAV)"]
+  n722009588("Merchant API client (key_id/secret Basic Auth)")
+  n285910027["Mozart bank gateway"]
+  n784362488[/"POST /v1/payouts (public; also payouts_internal, internal_contact_payout)"/]
+  n221528557 -->|calls| n811605030
+  n811605030 -->|calls| n733010452
+  n733010452 -->|routes_to ?| n416673258
+  n733010452 -->|routes_to [migration] ?| n113121259
+  n722009588 -->|calls| n733010452
+  n416673258 -->|calls| n113121259
+  n113121259 -->|falls_back_to [migration]| n416673258
+  n33717961 -->|authorizes [migration] ?| n113121259
+  n33717961 -->|authorizes| n431916473
+  n33717961 -->|authorizes ?| n416673258
+  n113121259 -->|calls| n975893272
+  n811605030 -->|calls| n604029373
+  n811605030 -->|calls| n200336716
+  n811605030 -->|calls| n431916473
+  n431916473 -->|calls| n538366054
+  n431916473 -->|calls| n416673258
+  n431916473 -->|reads| n113121259
+  n431916473 -->|calls ?| n639729340
+  n113121259 -->|writes| n463066878
+  n113121259 -->|writes| n691923410
+  n158394752 -->|controlled_by| n113121259
+  n113121259 -->|reads| n345511398
+  n345511398 -->|writes| n508260499
+  n345511398 -->|reads [migration]| n53830066
+  n345511398 -->|dual_writes [migration] ?| n416673258
+  n123599347 -->|calls| n345511398
+  n123599347 -->|calls| n874539992
+  n113121259 -->|reads ?| n123599347
+  n113121259 -->|calls| n108517834
+  n113121259 -->|calls| n49588888
+  n113121259 -->|calls| n744789495
+  n744789495 -->|calls| n416673258
+  n113121259 -->|reads| n380903066
+  n61978823 -->|controlled_by| n113121259
+  n113121259 -->|calls ?| n639729340
+  n113121259 -->|reads| n529480007
+  n113121259 -->|reads| n379332436
+  n379332436 -->|writes| n8717496
+  n379332436 -->|reads [migration]| n53830066
+  n379332436 -->|reads| n585052892
+  n668869706 -->|polls| n285910027
+  n668869706 -->|reads| n457132545
+  n379332436 -->|publishes| n915026481
+  n915026481 -->|consumes| n390109168
+  n457132545 -->|calls [migration]| n416673258
+  n457132545 -->|calls| n379332436
+  n457132545 -->|writes| n499767781
+  n113121259 -->|calls| n352886191
+  n352886191 -->|writes| n582132324
+  n585052892 -->|authorizes| n113121259
+  n585052892 -->|publishes| n204623456
+  n585052892 -->|publishes| n784400758
+  n874539992 -->|calls| n585052892
+  n113121259 -->|calls| n571372684
+  n416673258 -->|calls [legacy]| n571372684
+  n571372684 -->|writes| n339139897
+  n476719218 -->|calls| n285910027
+  n285910027 -->|calls ?| n835163872
+  n476719218 -->|calls ?| n835163872
+  n476719218 -->|polls| n285910027
+  n476719218 -->|calls| n628493372
+  n476719218 -->|calls [legacy/migration]| n181757275
+  n181757275 -->|calls [legacy/migration] ?| n193832135
+  n476719218 -->|publishes| n763176720
+  n763176720 -->|consumes| n402760392
+  n874539992 -->|calls| n113121259
+  n476719218 -->|reads| n821068866
+  n874539992 -->|polls ?| n797329701
+  n970395810 -->|reconciles| n339139897
+  n255641847 -->|calls ?| n874539992
+  n533065 -->|calls [current(out of scope)]| n571372684
+  n684729045 -->|calls [current(out of scope)]| n571372684
+  n113121259 -->|writes| n691923410
+  n113121259 -->|publishes| n863328831
+  n863328831 -->|consumes| n390109168
+  n390109168 -->|calls| n440874789
+  n440874789 -->|calls| n808761895
+  n113121259 -->|publishes| n622907708
+  n622907708 -->|consumes ?| n421963522
+  n622907708 -->|consumes ?| n12408391
+  n113121259 -->|publishes| n536743920
+  n113121259 -->|publishes ?| n618259320
+  n618259320 -->|consumes| n821068866
+  n821068866 -->|calls| n285910027
+  n821068866 -->|writes| n416673258
+  n821068866 -->|writes| n567243079
+  n113121259 -->|reads| n821068866
+  n255641847 -->|reads ?| n821068866
+  n711191684 -->|calls| n113121259
+  n113121259 -->|publishes| n709714414
+  n709714414 -->|consumes| n390109168
+  n113121259 -->|writes| n463066878
+  n113121259 -->|dual_writes [migration]| n416673258
+  n113121259 -->|writes [migration] ?| n862736904
+  n416673258 -->|dual_writes [legacy/migration]| n113121259
+  n113121259 -->|reads [legacy]| n53830066
+  n113121259 -->|writes| n937848300
+  n791404851 -->|controlled_by [migration] ?| n416673258
+  n284876254 -->|controlled_by| n113121259
+  n687378628 -->|controlled_by [migration] ?| n733010452
+  n65717626 -->|calls| n416673258
+  n416673258 -->|calls| n327743977
+  n327743977 -->|reverses| n691923410
+  n729665237 -->|reverses| n416673258
+  n65717626 -->|calls ?| n874539992
+  n585052892 -->|reverses| n582132324
+  n421963522 -->|calls| n416673258
+  n12408391 -->|calls| n416673258
+  n416673258 -->|routes_to| n784362488
+  n500463958 -->|calls| n733010452
+  n421963522 -->|calls| n440874789
+  n12408391 -->|calls| n639729340
+  n660516526 -->|consumes ?| n744789495
+  n878453780 -->|reads| n379332436
+  n12408391 -->|publishes| n75636511
+  n406114001 -->|authorizes| n874539992
+  n406114001 -->|authorizes| n345511398
+  n406114001 -->|authorizes| n585052892
+  n406114001 -->|authorizes| n113121259
+  n406114001 -->|authorizes| n379332436
+  n113121259 -->|calls| n639729340
+  n639729340 -->|calls| n826658135
+  n639729340 -->|calls| n971500831
+  n826658135 -->|writes| n691923410
+  n741143782 -->|controlled_by [migration]| n113121259
+  n113121259 -->|reads ?| n38777570
+  n113121259 -->|reads [migration]| n416673258
+  n113121259 -->|calls| n416673258
+  n194977607 -->|controlled_by [migration]| n113121259
+  n628493372 -->|writes| n691923410
+  n628493372 -->|calls| n352886191
+  n628493372 -->|publishes| n890393767
+  n129613993 -->|reads| n691923410
+  n327743977 -->|reverses| n691923410
+  n139581705 -->|publishes| n709714414
+  n150703672 -->|reconciles| n463066878
+  n113121259 -->|reads| n463066878
+  n518973690 -->|publishes| n709714414
+  n21137868 -->|writes| n691923410
+  n874539992 -->|calls| n646715846
+  n538366054 -->|calls ?| n838245984
+  n416673258 -->|routes_to| n560833923
+  n416673258 -->|calls| n835876760
+  n123599347 -->|writes| n352525968
+  n123599347 -->|calls| n285910027
+  n123599347 -->|dual_writes| n82466520
+  n123599347 -->|calls| n352886191
+  n123599347 -->|calls| n744789495
+  n113121259 -->|calls| n416673258
+  n28166167 -->|controlled_by| n113121259
+  n836398419 -->|controlled_by [migration]| n113121259
+  n532873664 -->|controlled_by [migration]| n53830066
+  n791404851 -->|controlled_by [migration]| n113121259
+  n821068866 -->|calls ?| n891983992
+  n113121259 -->|reads| n975893272
+  n440970978 -->|writes| n691923410
+  n210860840 -->|writes| n691923410
+  n799008029 -->|transforms| n339139897
+  n998106343 -->|writes [legacy] ?| n53830066
+  n75636511 -->|reads ?| n416673258
+  n416673258 -->|exposes| n208488816
+  n416673258 -->|exposes| n982466780
+  n416673258 -->|exposes| n223594381
+  n416673258 -->|exposes| n57613369
+  n416673258 -->|exposes| n985162632
+  n874539992 -->|calls| n982466780
+  n982466780 -->|calls| n113121259
+  n223594381 -->|reads| n113121259
+  n733010452 -->|implements| n326806054
+  n326806054 -->|mints_identity_for| n113121259
+  n33717961 -->|enforces| n67452352
+  n33717961 -->|enforces| n295545733
+  n67452352 -->|authorizes ?| n416673258
+  n639729340 -->|implements| n679424445
+  n679424445 -->|executes| n532139271
+  n532139271 -->|calls| n826658135
+  n538366054 -->|calls| n131858814
+  n440874789 -->|uses| n363766907
+  n363766907 -->|delivers_to| n808761895
+  n380903066 -->|writes_to| n260093735
+  n380903066 -->|writes_to| n117090644
+  n380903066 -->|exposes| n783791147
+  n113121259 -->|calls| n783791147
+  n529480007 -->|exposes| n595381362
+  n113121259 -->|calls| n595381362
+  n49588888 -->|exposes| n292892223
+  n113121259 -->|calls ?| n292892223
+  n108517834 -->|exposes| n990052557
+  n113121259 -->|calls| n990052557
+  n255641847 -->|calls| n59650979
+  n874539992 -->|exposes| n59650979
+  n992162119 -->|calls| n711191684
+  n479951735 -->|monitors| n874539992
+  n325242378 -->|monitors| n113121259
+  n113121259 -->|calls| n399856271
+  n874539992 -->|calls| n202907284
+  n202907284 -->|calls ?| n911496275
+  classDef inaccessible fill:#fde2e2,stroke:#b00,stroke-dasharray: 4 2;
+  class n722009588,n533065,n835163872,n975893272,n684729045,n53830066,n808761895 inaccessible;

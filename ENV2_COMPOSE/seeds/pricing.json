@@ -2,35 +2,164 @@
   "_source": "findings/26_dcs_splitz_governor_shield.md:934-1102 (Governor is a rule-SELECTION engine, no fee numbers; Charge Collections' Rule message is the real fee schema) + payouts/pkg/api/fetch_pricing.go (FetchPricingApiHttpResponse{fees,tax,pricing_rule_id,error,code} -- exact JSON field names) + payouts/pkg/api/update_api_free_payouts.go (UpdateAPIFreePayoutsResponse{balance_id,free_payouts_consumed,free_payouts_consumed_last_reset_at}). Amounts in paisa throughout (payouts.fees/payouts.tax are `int unsigned` columns).",
   "_task_requirement": "Task specifies: flat fee Rs 2 + 18% GST for IMPS, free_payout counter 0. Rs 2 = 200 paisa; 18% of 200 = 36 paisa tax (int(200*0.18)=36). This is an explicit arena requirement, independent of the real ccSdk mock's own built-in default (fee=500,tax=90 for method=fund_transfer&&mode=IMPS) -- a deliberate deviation for reproducible golden-flow assertions.",
   "plans": {
-    "ARENAM00000001": { "plan_id": "ARENAPLAN00001", "rules": {
-      "IMPS": { "fees": 200, "tax": 36 },
-      "NEFT": { "fees": 200, "tax": 36 },
-      "RTGS": { "fees": 200, "tax": 36 },
-      "UPI":  { "fees": 200, "tax": 36 }
-    }},
-    "ARENAM00000002": { "plan_id": "ARENAPLAN00002", "rules": {
-      "IMPS": { "fees": 200, "tax": 36 },
-      "NEFT": { "fees": 200, "tax": 36 },
-      "RTGS": { "fees": 200, "tax": 36 },
-      "UPI":  { "fees": 200, "tax": 36 }
-    }},
-    "ARENAM00000003": { "plan_id": "ARENAPLAN00003", "rules": {
-      "IMPS": { "fees": 200, "tax": 36 },
-      "NEFT": { "fees": 200, "tax": 36 },
-      "RTGS": { "fees": 200, "tax": 36 },
-      "UPI":  { "fees": 200, "tax": 36 }
-    }}
+    "ARENAM00000001": {
+      "plan_id": "ARENAPLAN00001",
+      "rules": {
+        "IMPS": {
+          "fees": 200,
+          "tax": 36,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        },
+        "NEFT": {
+          "fees": 100,
+          "tax": 18,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        },
+        "RTGS": {
+          "fees": 500,
+          "tax": 90,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        },
+        "UPI": {
+          "fees": 50,
+          "tax": 9,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        }
+      }
+    },
+    "ARENAM00000002": {
+      "plan_id": "ARENAPLAN00002",
+      "rules": {
+        "IMPS": {
+          "fees": 200,
+          "tax": 36,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        },
+        "NEFT": {
+          "fees": 100,
+          "tax": 18,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        },
+        "RTGS": {
+          "fees": 500,
+          "tax": 90,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        },
+        "UPI": {
+          "fees": 50,
+          "tax": 9,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        }
+      }
+    },
+    "ARENAM00000003": {
+      "plan_id": "ARENAPLAN00003",
+      "rules": {
+        "IMPS": {
+          "fees": 200,
+          "tax": 36,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        },
+        "NEFT": {
+          "fees": 100,
+          "tax": 18,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        },
+        "RTGS": {
+          "fees": 500,
+          "tax": 90,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        },
+        "UPI": {
+          "fees": 50,
+          "tax": 9,
+          "method": "fund_transfer",
+          "channel": "*",
+          "fee_type": "*",
+          "min_amount": 1,
+          "_classification": "ASSUMED synthetic tariff; wildcard channel and fee type"
+        }
+      }
+    }
   },
   "special_case_overrides": {
     "_note": "Mirrors the real ccSdk mock's own override precedence so tests exercising these paths behave consistently: purpose==rzp_fees/refund => fee=0,tax=0; fee_type==free_payout => fee=0,tax=0.",
-    "purpose_rzp_fees": { "fees": 0, "tax": 0 },
-    "purpose_refund": { "fees": 0, "tax": 0 },
-    "fee_type_free_payout": { "fees": 0, "tax": 0 }
+    "purpose_rzp_fees": {
+      "fees": 0,
+      "tax": 0
+    },
+    "purpose_refund": {
+      "fees": 0,
+      "tax": 0
+    },
+    "fee_type_free_payout": {
+      "fees": 0,
+      "tax": 0
+    }
   },
   "free_payout_counters": {
     "_source": "payouts `counters` table (internal/database/migrations/20220526144631_create_counters_table.go). Seeded here at free_payouts_consumed=0 per the task requirement; decrement_free_payouts mutates this in-memory (reset on stub restart).",
-    "ARENAM00000001": { "balance_id": "ARENABAL000001", "free_payouts_consumed": 0, "free_payouts_consumed_last_reset_at": 1735689600 },
-    "ARENAM00000002": { "balance_id": "ARENABAL000002", "free_payouts_consumed": 0, "free_payouts_consumed_last_reset_at": 1735689600 },
-    "ARENAM00000003": { "balance_id": "ARENABAL000003", "free_payouts_consumed": 0, "free_payouts_consumed_last_reset_at": 1735689600 }
-  }
+    "ARENAM00000001": {
+      "balance_id": "ARENABAL000001",
+      "free_payouts_consumed": 0,
+      "free_payouts_consumed_last_reset_at": 1735689600
+    },
+    "ARENAM00000002": {
+      "balance_id": "ARENABAL000002",
+      "free_payouts_consumed": 0,
+      "free_payouts_consumed_last_reset_at": 1735689600
+    },
+    "ARENAM00000003": {
+      "balance_id": "ARENABAL000003",
+      "free_payouts_consumed": 0,
+      "free_payouts_consumed_last_reset_at": 1735689600
+    }
+  },
+  "_mode_fees_classification": "ASSUMED synthetic fee plan for I90: IMPS 200+36 preserved from task; NEFT 100+18, RTGS 500+90, UPI 50+9 chosen only to demonstrate mode selection. Not production pricing.",
+  "_state_classification": "Credit/counter fixture state is synthetic and process-local; no production reward-credit balance is inferred.",
+  "reward_credit_balances": {}
 }

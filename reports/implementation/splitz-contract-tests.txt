@@ -1,0 +1,6 @@
+[unknown-stub] 2026-09-05T17:22:07 no seed file at /app/seed/experiments.json -- splitz-stub starting empty (default variant only)
+...
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK

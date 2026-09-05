@@ -1,0 +1,134 @@
+{
+  "_provenance": [
+    "cfa (Contacts / Fund Accounts) MongoDB schema, RECONSTRUCTED from Go code only — cfa has no",
+    "$jsonSchema validators active on ANY collection in production (two drafts exist commented-out,",
+    "see contacts._provenance_note below; all others pass `nil` as the validator arg). This file is",
+    "therefore a code-derived approximation of document shape, not a transcription of an enforced",
+    "schema. NO DATA ROWS. Source: cfa/internal/contacts/model.go, cfa/internal/fund_accounts/model.go,",
+    "cfa/internal/hashlookup/model.go, cfa/internal/fund_accounts/card/model.go,",
+    "cfa/internal/database/migrations/*.go (collection creation + non-unique indexes).",
+    "IMPORTANT: cfa's read/write path round-trips every document through encoding/json (not bson",
+    "struct tags) — see pkg/storage/mongodb/transform.go:79-247. Field names below are the JSON field",
+    "names actually persisted, which is what matters for a twin; the `bson:` tags in Go source can",
+    "diverge and are NOT what ends up on disk.",
+    "UNIQUENESS: contacts.id, fund_accounts.id, hash_lookup.hash have NO unique index anywhere in the",
+    "repo (internal/database/migrations/1739361599_identify_duplicates.go exists specifically because",
+    "duplicates were found and unique indexes were never added). Do not add unique indexes to a twin",
+    "seeking to reproduce production; do add them only if intentionally testing a stricter posture."
+  ],
+  "database": "cfa",
+  "collections": {
+    "contacts": {
+      "source": "internal/contacts/model.go:23-58; indexes internal/database/migrations/1715709457_create_contacts_collection.go",
+      "fields": {
+        "id": {"type": "string", "required": true, "note": "app-generated via uniqueid.New() on create, 14-char"},
+        "created_at": {"type": "int64 (unix, IST)"},
+        "updated_at": {"type": "int64 (unix, IST)"},
+        "name": {"type": "string", "required": true},
+        "email": {"type": "string", "required": false},
+        "contact": {"type": "string", "required": false},
+        "type": {"type": "string", "required": false, "enum_declared": ["customer","employee","vendor","self","rzp_fees","rzp_tax_pay","rzp_xpayroll","rzp_capital_collections","rzp_charge_collections"], "enum_enforced": "NOT enforced as a blanket field constraint in ContactModel.Validate() — only gated downstream for one internal-app-permission call path (internal/fund_accounts/validate.go:39-64)"},
+        "reference_id": {"type": "string", "required": false},
+        "notes": {"type": "map[string]string", "required": false},
+        "hash": {"type": "string", "required": "field-optional but always set in practice — SHA3-256 dedup hash"},
+        "merchant_id": {"type": "string", "required": true},
+        "batch_id": {"type": "string", "required": false},
+        "active": {"type": "bool", "default": true},
+        "deleted_at": {"type": "datetime", "required": false, "note": "soft delete"}
+      },
+      "indexes": [
+        {"keys": {"merchant_id": 1}, "unique": false},
+        {"keys": {"hash": 1}, "unique": false},
+        {"keys": {"reference_id": 1, "merchant_id": 1}, "unique": false},
+        {"keys": {"batch_id": 1}, "unique": false}
+      ],
+      "_provenance_note": "A unique index on {id:1} exists only as commented-out code (1715709457_create_contacts_collection.go:73-76) — never actually created."
+    },
+    "fund_accounts": {
+      "source": "internal/fund_accounts/model.go:67-85 (polymorphic/discriminated union, 5 sub-types); indexes 1715709459_create_fund_accounts_collection.go:39-100",
+      "fields": {
+        "id": {"type": "string", "required": true},
+        "created_at": {"type": "int64"},
+        "updated_at": {"type": "int64"},
+        "contact_id": {"type": "string", "required": false, "note": "not mandatory"},
+        "merchant_id": {"type": "string", "required": true},
+        "account_type": {"type": "string", "required": true, "discriminator": true,
+          "enum_declared": ["bank_account","vpa","wallet_account","card","mobile"],
+          "enum_enforced_create": ["bank_account","vpa","wallet_account","card"],
+          "enum_gap": "account_type='mobile' is REJECTED by FundAccountModel.ValidateWithConfig (model.go:164-192) — no case for it, falls to default error — even though MobileDetails/proto fully model it. Confirmed gap, not speculative."
+        },
+        "bank_account": {"type": "object|null", "present_iff": "account_type=bank_account", "fields": ["id","ifsc","bank_name","name","account_number","notes[]","beneficiary_code","bank_identifier","identifier_type"]},
+        "vpa": {"type": "object|null", "present_iff": "account_type=vpa", "fields": ["id","handle","username"]},
+        "wallet": {"type": "object|null", "present_iff": "account_type=wallet_account (NOT 'wallet' despite a stale code comment at model.go:50)", "fields": ["id","provider","phone","email","name"],
+          "provider_enum_declared": ["paytm","amazonpay","phonepe","gpay"],
+          "provider_enum_enforced": ["amazonpay"],
+          "provider_enum_gap": "ValidateWallet() (validate.go:225-227) accepts ONLY amazonpay; paytm/phonepe/gpay are declared constants but rejected at create time."
+        },
+        "card": {"type": "object|null", "present_iff": "account_type=card", "fields": ["id","expiry_month","expiry_year","cvv","name","token_expiry_month","token_expiry_year","tokenised","iin","trivia","network","issuer","type","subtype","category","country","international","emi","token_iin","token_last_4","last4","vault_token","vault","global_fingerprint","input_type","merchant_id","length","created_at","updated_at"],
+          "note": "ValidateCard() is a hard no-op (validate.go:277-279) — no field-level enforcement at the Mongo-model layer for card sub-documents"},
+        "mobile": {"type": "object|null", "present_iff": "account_type=mobile (but see enum_gap above — cannot be created via ValidateWithConfig)", "fields": ["id","number","account_holder_name"]},
+        "active": {"type": "bool", "default": true},
+        "batch_id": {"type": "string", "required": false},
+        "deleted_at": {"type": "int64", "required": false},
+        "hash": {"type": "string", "note": "app always sets via GenerateHash() SHA3-256"},
+        "linked_number": {"type": "string", "required": false},
+        "customer_name": {"type": "string", "required": false},
+        "vendor_id": {"type": "string", "required": false},
+        "customer_id": {"type": "string", "required": false}
+      },
+      "indexes": [
+        {"keys": {"bank_account.id": 1}, "unique": false},
+        {"keys": {"vpa.id": 1}, "unique": false},
+        {"keys": {"wallet.id": 1}, "unique": false},
+        {"keys": {"card.id": 1}, "unique": false},
+        {"keys": {"contact_id": 1}, "unique": false},
+        {"keys": {"hash": 1}, "unique": false},
+        {"keys": {"batch_id": 1}, "unique": false},
+        {"keys": {"merchant_id": 1}, "unique": false}
+      ]
+    },
+    "hash_lookup": {
+      "source": "internal/hashlookup/model.go:22-42",
+      "fields": {
+        "hash": {"type": "string", "required": true},
+        "entity_id": {"type": "string", "required": true},
+        "entity_type": {"type": "string", "required": true, "enum_enforced": ["contacts", "fund_accounts"]},
+        "created_at": {"type": "int64", "required": true},
+        "updated_at": {"type": "int64", "required": true},
+        "deleted_at": {"type": "datetime", "required": false}
+      },
+      "indexes": [],
+      "_provenance_note": "NO indexes created at all for this collection (1715709458_create_hash_lookup_collection.go:27-63) — not even on `hash`, despite existing to look records up by hash. UNKNOWN whether one was added out-of-band; ask the cfa/DocumentDB owner for db.hash_lookup.getIndexes()."
+    },
+    "tokenized_iin": {
+      "source": "internal/fund_accounts/card/model.go:12-22",
+      "fields": {
+        "id": {"type": "string", "bson_tag": "_id,omitempty (see transform-layer caveat in header)"},
+        "token_iin": {"type": "string"}, "iin": {"type": "string"},
+        "high_range": {"type": "string"}, "low_range": {"type": "string"},
+        "token_iin_length": {"type": "int"}, "active": {"type": "bool"},
+        "created_at": {"type": "int64"}, "updated_at": {"type": "int64"}
+      },
+      "indexes": [],
+      "_provenance_note": "No SetDefaults/Validate logic (both no-ops, model.go:40-42,50-52) and no index-creation code found anywhere in the repo, despite being queried by token_iin+active. UNKNOWN — ask for db.tokenized_iin.getIndexes()."
+    },
+    "iins": {
+      "source": "internal/fund_accounts/card/model.go:135-149 (collection name is a bare string literal, no named constant)",
+      "fields": {
+        "id": {"type": "string", "bson_tag": "_id,omitempty"},
+        "iin": {"type": "string"}, "network": {"type": "string"}, "type": {"type": "string"},
+        "subtype": {"type": "string"}, "category": {"type": "string"}, "issuer": {"type": "string"},
+        "country": {"type": "string"}, "international": {"type": "bool"}, "emi": {"type": "bool"},
+        "active": {"type": "bool"}, "created_at": {"type": "int64"}, "updated_at": {"type": "int64"}
+      },
+      "indexes": [],
+      "_provenance_note": "Same as tokenized_iin — no defaults/validation, no known indexes. UNKNOWN."
+    },
+    "migrations": {
+      "source": "cmd/migration/main.go:289 (internal tracking collection, not domain data)",
+      "fields": {"id": "string", "version": "int", "name": "string", "applied_at": "datetime"},
+      "indexes": [{"keys": {"version": 1}, "unique": true}]
+    }
+  },
+  "_engine_note": "Production runs AWS DocumentDB (TLS + SCRAM-SHA-1), not vanilla MongoDB (pkg/storage/mongodb/mongo.go:63-82). A local twin using real MongoDB is not identical at the engine-behavior level (DocumentDB has known gaps in $jsonSchema, some aggregation operators, TTL index support depending on engine version). Exact DocumentDB engine version is UNKNOWN from this repo (ops/Terraform-owned)."
+}

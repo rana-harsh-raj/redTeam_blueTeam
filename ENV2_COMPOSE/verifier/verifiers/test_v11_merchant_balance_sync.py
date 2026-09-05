@@ -1,8 +1,8 @@
 """V11 -- MerchantBalance debit is synchronous with the API response.
 
-Covers: C15 ("MerchantBalance always synchronous"). Deliberately does NOT use
-wait_until -- a single immediate read is the point of this verifier; a retry
-loop would mask an async regression.
+Covers: C15 ("MerchantBalance always synchronous"). The balance assertion uses
+a single immediate read; a retry would mask an async regression. Only after
+that assertion does the verifier wait for held dispatch before fixture cleanup.
 """
 import pytest
 
@@ -11,14 +11,14 @@ from helpers import payouts_flow as pf
 
 @pytest.mark.spec_id("V11")
 @pytest.mark.status("END_TO_END_CONFIRMED")
-def test_merchant_balance_debited_synchronously(ps_public_client, ledger_pg, merchant_m1):
+def test_merchant_balance_debited_synchronously(ps_public_client, ledger_pg, merchant_m1, payouts_mysql, fts_mysql):
     if not merchant_m1["fund_account_id"] or not merchant_m1["account_number"]:
-        pytest.skip("missing fixture: ARENA_M1_FUND_ACCOUNT_ID / ARENA_M1_ACCOUNT_NUMBER")
+        pytest.fail("missing fixture: ARENA_M1_FUND_ACCOUNT_ID / ARENA_M1_ACCOUNT_NUMBER")
 
     passport_jwt = pf.passport_or_skip(merchant_m1)
     balance_before = pf.get_account_balance(ledger_pg, merchant_m1["merchant_id"])
     if balance_before is None:
-        pytest.skip("missing fixture: no ledger accounts row seeded for ARENA_M1_MERCHANT_ID")
+        pytest.fail("missing fixture: no ledger accounts row seeded for ARENA_M1_MERCHANT_ID")
 
     amount = 100
     body = pf.build_create_body(merchant_m1["fund_account_id"], merchant_m1["account_number"], amount=amount)
@@ -31,7 +31,7 @@ def test_merchant_balance_debited_synchronously(ps_public_client, ledger_pg, mer
     # (Flow A/B sequence diagrams).
     balance_after = pf.get_account_balance(ledger_pg, merchant_m1["merchant_id"])
     assert balance_after is not None
-    assert float(balance_before) - float(balance_after) >= amount - 1e-6, (
-        "MerchantBalance was not debited synchronously: before=%s after=%s expected_drop>=%s"
-        % (balance_before, balance_after, amount)
-    )
+    expected = amount + resp.json()["fees"]
+    assert balance_before - balance_after == expected, (balance_before,balance_after,expected)
+    # Completion is after the immediate debit assertion, preserving its timing.
+    pf.wait_for_held_handoff(payouts_mysql,fts_mysql,resp.json()["id"])

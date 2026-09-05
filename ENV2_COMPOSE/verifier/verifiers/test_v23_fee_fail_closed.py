@@ -1,56 +1,28 @@
-"""V23 -- Fee fail-closed: pricing dependency 500 => payout rejected.
+"""V23: a pricing 500 returns an error before dispatch or debit.
 
-Covers: C27. The real call payouts makes is POST
-{monolith_base_url}/payouts_service/fetch_pricing_info (payouts/pkg/api/
-fetch_pricing.go:15-16) -- i.e. through monolith-stub, NOT the standalone
-pricing-stub container (pricing-stub/CONTRACT.md flags this exact
-ambiguity itself). Neither stub's current CONTRACT.md documents this path
-with fault injection, so this verifier probes monolith-stub first and skips
-with a fixture-naming reason if unsupported, per VERIFIER_SPEC.md V23.
+The retained row is create_request_submitted at this boundary. Pricing transport
+errors are retryable (processor/payout_pricing.go:456); this is not an assertion
+that the payout has permanently failed or cannot recover after fault removal.
 """
 import pytest
-
-from helpers import payouts_flow as pf
-
+from helpers import db,payouts_flow as pf
 
 @pytest.mark.spec_id("V23")
-@pytest.mark.status("BLOCKED_BY_FIDELITY_GAP")
-def test_pricing_500_rejects_payout(ps_public_client, payouts_mysql, monolith_stub_client, merchant_m1):
-    if not merchant_m1["fund_account_id"] or not merchant_m1["account_number"]:
-        pytest.skip("missing fixture: ARENA_M1_FUND_ACCOUNT_ID / ARENA_M1_ACCOUNT_NUMBER")
-    if not monolith_stub_client.health_ok():
-        pytest.skip("missing fixture: monolith-stub unreachable")
-
-    probe = monolith_stub_client.post(
-        "/payouts_service/fetch_pricing_info",
-        body={"merchant_id": merchant_m1["merchant_id"], "amount": 100, "purpose": "payout"},
-        headers={"X-Test-Fault": "500"},
-    )
-    if probe.status not in (200, 500):
-        pytest.skip(
-            "missing fixture: monolith-stub does not implement /payouts_service/fetch_pricing_info "
-            "with fault injection yet -- see pricing-stub/CONTRACT.md TODO and VERIFIER_SPEC.md V23 "
-            "(probe returned %s: %s)" % (probe.status, probe.text)
-        )
-    if probe.status != 500:
-        pytest.skip(
-            "monolith-stub answered /payouts_service/fetch_pricing_info but the X-Test-Fault=500 fault "
-            "injection header had no effect (got %s) -- cannot exercise the fail-closed path" % probe.status
-        )
-
-    passport_jwt = pf.passport_or_skip(merchant_m1)
-    body = pf.build_create_body(
-        merchant_m1["fund_account_id"], merchant_m1["account_number"], amount=100,
-        extra={"__test_fault_pricing": True},
-    )
-    resp = pf.create_payout(ps_public_client, passport_jwt, body)
-
-    if resp.status in (200, 201):
-        payout_id = resp.json().get("id")
-        payout_row = pf.get_payout_row(payouts_mysql, payout_id) if payout_id else None
-        assert payout_row is not None and payout_row["status"] == "failed", (
-            "pricing dependency failure must fail-closed (reject or immediately fail the payout), "
-            "got create status %s and payout row %r" % (resp.status, payout_row)
-        )
-    else:
-        assert resp.status >= 400, "expected a non-2xx rejection on pricing failure, got %s" % resp.status
+@pytest.mark.status("CROSS_SERVICE_CONFIRMED")
+def test_pricing_500_rejects_payout(ps_public_client,payouts_mysql,monolith_stub_client,merchant_m1,ledger_pg,fts_mysql):
+    mid=merchant_m1["merchant_id"]
+    before=pf.get_account_balance(ledger_pg,mid)
+    pf.fault(monolith_stub_client,merchant_m1,status=500,path="/v1/payouts_service/fetch_pricing_info")
+    try:
+        body=pf.build_create_body(merchant_m1["fund_account_id"],merchant_m1["account_number"],100)
+        response=pf.create_payout(ps_public_client,pf.passport_or_skip(merchant_m1),body)
+        assert response.status==500,response
+        assert pf.fault_hits(monolith_stub_client,merchant_m1), "actual pricing call did not hit fault"
+        rows=db.fetchall(payouts_mysql,"SELECT id,status,transaction_id FROM payouts WHERE merchant_id=%s",(mid,))
+        assert len(rows)==1,rows
+        assert rows[0]["status"]=="create_request_submitted",rows
+        assert not rows[0]["transaction_id"],rows
+        assert pf.get_account_balance(ledger_pg,mid)==before
+        assert db.fetchone(fts_mysql,"SELECT count(*) AS c FROM transfers WHERE merchant_id=%s",(mid,))["c"]==0
+        assert db.fetchone(ledger_pg,"SELECT count(*) AS c FROM journal WHERE transactor_id=%s",('pout_'+rows[0]['id'],))["c"]==0
+    finally: pf.fault(monolith_stub_client,merchant_m1,clear=True)

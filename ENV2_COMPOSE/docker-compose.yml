@@ -73,7 +73,7 @@ x-proxy-env: &proxy-env
   APP_ENV: arena
   HTTP_PROXY: "http://127.0.0.1:9"
   HTTPS_PROXY: "http://127.0.0.1:9"
-  NO_PROXY: "localhost,127.0.0.1,payouts-api,payouts-worker-webhook-event,payouts-worker-queued-payout,payouts-worker-schedule-payout,payouts-worker-on-hold-payout,payouts-worker-fts-async-processing,payouts-worker-fts-async-hv-processing,payouts-worker-payout-create-failure-handling,payouts-worker-payout-update-failure-handling,payouts-worker-transaction-create,payouts-worker-generic-processing,payouts-worker-async-dual-write,payouts-worker-x-balances-balance-refresh,payouts-worker-payout-source-updater,payouts-worker-partner-bank-hold-payouts,payouts-kafka-fts-status-updates-consumer,payouts-kafka-fts-status-updates-retry-consumer,ledger-api,ledger-worker,ledger-scheduler,fts-web,fts-worker-default,fts-worker-initiate-transfer,fts-worker-check-transfer-status,fts-worker-fire-transfer-status-webhook,fts-worker-retry-transfer,fts-worker-retry-transfer-preprocessor,fts-worker-retry-transfer-source-update,fts-worker-rbl-initiate-transfer,fts-worker-rbl-check-transfer-status,fts-worker-rbl-imps-initiate-transfer,fts-worker-rbl-imps-check-transfer-status,fts-worker-rbl-direct-imps-initiate-transfer,fts-worker-rbl-direct-imps-check-transfer-status,cfa-server,cfa-worker-contact,cfa-worker-fa,xbalances-server,xbalances-worker,kong-lite,monolith-stub,dcs-stub,splitz-stub,shield-stub,pricing-stub,asv-stub,bankingaccounts-stub,stork-capture,merchant-webhook-sink,xas-sink,mozart-mock,mozart-sim,mysql-payouts,mysql-fts,mysql-xbalances,mysql-apidb-stub,postgres-ledger,mongo-cfa,redis,localstack,kafka"
+  NO_PROXY: "localhost,127.0.0.1,ledger-gate,payouts-api,payouts-worker-webhook-event,payouts-worker-queued-payout,payouts-worker-schedule-payout,payouts-worker-on-hold-payout,payouts-worker-fts-async-processing,payouts-worker-fts-async-hv-processing,payouts-worker-payout-create-failure-handling,payouts-worker-payout-update-failure-handling,payouts-worker-transaction-create,payouts-worker-generic-processing,payouts-worker-async-dual-write,payouts-worker-x-balances-balance-refresh,payouts-worker-payout-source-updater,payouts-worker-partner-bank-hold-payouts,payouts-kafka-fts-status-updates-consumer,payouts-kafka-fts-status-updates-retry-consumer,ledger-api,ledger-worker,ledger-scheduler,fts-web,fts-worker-default,fts-worker-initiate-transfer,fts-worker-check-transfer-status,fts-worker-fire-transfer-status-webhook,fts-worker-retry-transfer,fts-worker-retry-transfer-preprocessor,fts-worker-retry-transfer-source-update,fts-worker-rbl-initiate-transfer,fts-worker-rbl-check-transfer-status,fts-worker-rbl-imps-initiate-transfer,fts-worker-rbl-imps-check-transfer-status,fts-worker-rbl-direct-imps-initiate-transfer,fts-worker-rbl-direct-imps-check-transfer-status,cfa-server,cfa-worker-contact,cfa-worker-fa,xbalances-server,xbalances-worker,kong-lite,monolith-stub,dcs-stub,splitz-stub,shield-stub,pricing-stub,asv-stub,bankingaccounts-stub,stork-capture,merchant-webhook-sink,xas-sink,mozart-mock,mozart-sim,mysql-payouts,mysql-fts,mysql-xbalances,mysql-apidb-stub,postgres-ledger,mongo-cfa,redis,localstack,kafka"
 
 networks:
   rzp-arena:
@@ -85,12 +85,30 @@ networks:
         - subnet: ${ARENA_SUBNET:-172.28.16.0/24}
   rzp-ingress:
     name: rzp-ingress
+    internal: true
     driver: bridge
     ipam:
       config:
         - subnet: ${INGRESS_SUBNET:-172.28.17.0/24}
 
 volumes:
+  # Generated synthetic material only; initialized with narrow consumer scope.
+  config-payouts:
+    name: rzp-arena-config-payouts
+  config-ledger:
+    name: rzp-arena-config-ledger
+  config-fts:
+    name: rzp-arena-config-fts
+  config-cfa:
+    name: rzp-arena-config-cfa
+  config-xbalances:
+    name: rzp-arena-config-xbalances
+  config-mozart-mock:
+    name: rzp-arena-config-mozart-mock
+  secrets-kong:
+    name: rzp-arena-secrets-kong
+  secrets-monolith:
+    name: rzp-arena-secrets-monolith
   mysql-payouts-data:
   mysql-fts-data:
   mysql-xbalances-data:
@@ -317,7 +335,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
       - ${PAYOUTS_REPO_MIGRATIONS_DIR}:/app/internal/database/migrations:ro
     env_file:
       - ./generated/payouts/payouts.env
@@ -347,7 +365,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/ledger:/app/config:ro
+      - config-ledger:/app/config:ro
       - ${LEDGER_REPO_MIGRATIONS_DIR:-./build/_ledger_migrations_not_configured}:/app/internal/database/migrations:ro
     env_file:
       - ./generated/ledger/ledger.env
@@ -373,7 +391,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
       - ${FTS_REPO_MIGRATIONS_DIR:-}:/app/internal/migrations:ro
     env_file:
       - ./generated/fts/fts.env
@@ -391,7 +409,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/cfa:/app/config:ro
+      - config-cfa:/app/config:ro
     env_file:
       - ./generated/cfa/cfa.env
     environment:
@@ -408,7 +426,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/xbalances:/app/config:ro
+      - config-xbalances:/app/config:ro
       - ${XBALANCES_REPO_MIGRATIONS_DIR}:/app/internal/database/migrations:ro
     env_file:
       - ./generated/xbalances/xbalances.env
@@ -430,7 +448,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -456,7 +474,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -485,7 +503,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -514,7 +532,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -543,7 +561,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -572,7 +590,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -601,7 +619,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -630,7 +648,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -659,7 +677,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -688,7 +706,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -717,7 +735,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -746,7 +764,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -775,7 +793,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -804,7 +822,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -833,7 +851,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -862,7 +880,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -872,6 +890,14 @@ services:
       ARENA_DCS_URL: "http://dcs-stub:8080"
       ARENA_STORK_JSON: "1"
     <<: *runtime-security
+    # ARENA FIX (milestone 1, TWIN_V1_AUDIT_AND_NEXT_STEP.md §5.2/§8 item B14, item 4): the deployed object
+    # (kube-manifests/devstack-prod-parity/reports/batch8/drift-check-20260703.html, namespace payouts,
+    # application prod-payouts, revision 418) shows restartPolicy: Always on the live
+    # payouts-kafka-fts-status-updates-consumer Deployment/pod template; the twin previously had no restart:
+    # policy at all, so the nil-producer panic reproduced at reports/implementation/runs/
+    # claude-audit-kafka-repro-20260905T152544Z/ left the container exited rather than restarted as prod would.
+    # `docker compose down` still stops/removes it as usual (an intentional stop suppresses the policy).
+    restart: on-failure
     healthcheck:
       test: ["CMD", "pgrep", "-f", "payouts-kafka-consumer"]
       <<: *healthcheck-defaults
@@ -887,7 +913,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/payouts:/app/config:ro
+      - config-payouts:/app/config:ro
     env_file:
       - ./generated/payouts/payouts.env
     environment:
@@ -897,6 +923,9 @@ services:
       ARENA_DCS_URL: "http://dcs-stub:8080"
       ARENA_STORK_JSON: "1"
     <<: *runtime-security
+    # ARENA FIX: same citation as payouts-kafka-fts-status-updates-consumer above (deployed restartPolicy: Always
+    # on the retry-consumer Deployment template).
+    restart: on-failure
     healthcheck:
       test: ["CMD", "pgrep", "-f", "payouts-kafka-consumer"]
       <<: *healthcheck-defaults
@@ -912,7 +941,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/ledger:/app/config:ro
+      - config-ledger:/app/config:ro
     env_file:
       - ./generated/ledger/ledger.env
     environment:
@@ -936,17 +965,116 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/ledger:/app/config:ro
+      - config-ledger:/app/config:ro
     env_file:
       - ./generated/ledger/ledger.env
     environment:
       <<: *proxy-env
+      LEDGER_WORKER_QUEUENAME: "account_create"
+      LEDGER_WORKER_MAXCONCURRENCY: "1"
     <<: *runtime-security
     healthcheck:
       test: ["CMD", "pgrep", "-f", "ledger-worker"]
       <<: *healthcheck-defaults
     depends_on:
       postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  ledger-worker-balance-update:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      LEDGER_WORKER_QUEUENAME: "balance_update"
+      LEDGER_WORKER_MAXCONCURRENCY: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ledger-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  ledger-worker-journal-create:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      LEDGER_WORKER_QUEUENAME: "journal_create"
+      LEDGER_WORKER_MAXCONCURRENCY: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ledger-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  ledger-worker-entry-details-create:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      LEDGER_WORKER_QUEUENAME: "ledger_entry_details_create"
+      LEDGER_WORKER_MAXCONCURRENCY: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ledger-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  ledger-worker-entry-details-create-pg:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      LEDGER_WORKER_QUEUENAME: "ledger_entry_details_create_pg"
+      LEDGER_WORKER_MAXCONCURRENCY: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ledger-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
       localstack: {condition: service_healthy}
 
   ledger-scheduler:
@@ -957,17 +1085,22 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/ledger:/app/config:ro
+      - config-ledger:/app/config:ro
     env_file:
       - ./generated/ledger/ledger.env
     environment:
       <<: *proxy-env
+      # Source: Ledger Config.Scheduler.Command and production CronJob override.
+      # This Compose process runs once; repeated production cadence remains ASSUMED.
+      LEDGER_SCHEDULER_COMMAND: "split-account-balance-update"
     <<: *runtime-security
     healthcheck:
       test: ["CMD", "pgrep", "-f", "ledger-scheduler"]
       <<: *healthcheck-defaults
     depends_on:
       postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
 
   fts-web:
     # CORRECTED in the substitutes pass: build/build-host.sh (confirmed
@@ -984,7 +1117,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1007,7 +1140,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1030,7 +1163,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1053,7 +1186,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1076,7 +1209,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1099,7 +1232,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1122,7 +1255,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1145,7 +1278,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1168,7 +1301,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1191,7 +1324,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1214,7 +1347,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1237,7 +1370,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1260,7 +1393,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1283,7 +1416,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/fts:/app/config:ro
+      - config-fts:/app/config:ro
     env_file:
       - ./generated/fts/fts.env
     environment:
@@ -1304,7 +1437,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/cfa:/app/config:ro
+      - config-cfa:/app/config:ro
     env_file:
       - ./generated/cfa/cfa.env
     environment:
@@ -1330,7 +1463,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/cfa:/app/config:ro
+      - config-cfa:/app/config:ro
     env_file:
       - ./generated/cfa/cfa.env
     environment:
@@ -1356,7 +1489,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/cfa:/app/config:ro
+      - config-cfa:/app/config:ro
     env_file:
       - ./generated/cfa/cfa.env
     environment:
@@ -1382,7 +1515,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/xbalances:/app/config:ro
+      - config-xbalances:/app/config:ro
     env_file:
       - ./generated/xbalances/xbalances.env
     environment:
@@ -1408,7 +1541,7 @@ services:
     working_dir: /app
     user: appuser
     volumes:
-      - ./generated/xbalances:/app/config:ro
+      - config-xbalances:/app/config:ro
     env_file:
       - ./generated/xbalances/xbalances.env
     environment:
@@ -1440,26 +1573,19 @@ services:
     profiles: ["substitutes"]
     networks: [rzp-arena, rzp-ingress]
     ports:
-      - "${KONG_LITE_HOST_PORT:-18080}:8080"
+      - "127.0.0.1:${KONG_LITE_HOST_PORT:-18080}:8080"
     volumes:
-      - ./seeds/merchants.json:/app/seed/merchants.json:ro
-      # Whole secrets/ dir, read-only -- kong-lite looks up
-      # <KONG_MERCHANT_SECRETS_DIR>/<seed's secret_file>.txt per merchant
-      # (see seeds/merchants.json) and the two single files below by exact
-      # path. Same "bind-mount secrets/*.txt directly" convention every
-      # other stub uses for its own STUB_BASIC_AUTH_FILE, not docker
-      # compose's top-level `secrets:` construct (which would rename away
-      # the .txt extension and add ceremony for no benefit to a Python
-      # stub that just os.path.exists()/open()s a file).
-      - ./secrets:/run/secrets/merchants:ro
-      - ./secrets/passport_private_key.txt:/run/secrets/passport_private_key:ro
-      - ./secrets/auth_api_payouts.txt:/run/secrets/auth_api_payouts:ro
+      - ./seeds/generated/merchants.json:/app/seed/merchants.json:ro
+      # Only synthetic merchant keys; service and datastore secrets are separate.
+      - secrets-kong:/run/secrets:ro
     environment:
       STUB_PORT: "8080"
       KONG_MERCHANTS_FILE: /app/seed/merchants.json
       KONG_MERCHANT_SECRETS_DIR: /run/secrets/merchants
       PASSPORT_PRIVATE_KEY_FILE: /run/secrets/passport_private_key
       PASSPORT_IDENTIFIER: "arena-passport-1"
+      # Synthetic identity claim, deliberately different from the production issuer.
+      PASSPORT_ISS: "https://identity.arena.invalid"
       PS_API_AUTH_USER: "api"
       PS_API_AUTH_PASS_FILE: /run/secrets/auth_api_payouts
     <<: *runtime-security
@@ -1467,10 +1593,26 @@ services:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/_arena/health"]
       <<: *healthcheck-defaults
 
-  monolith-stub:
+  ledger-gate:
     build:
       context: ./substitutes
       dockerfile: Dockerfile
+      args:
+        STUB_DIR: ledger-gate
+        STUB_NAME: ledger-gate
+        STUB_PORT: "8080"
+    image: rzp-arena/ledger-gate:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  monolith-stub:
+    build:
+      context: ./substitutes
+      dockerfile: monolith-stub/Dockerfile
       args:
         STUB_DIR: monolith-stub
         STUB_NAME: monolith-stub
@@ -1479,15 +1621,13 @@ services:
     profiles: ["substitutes"]
     networks: [rzp-arena]
     volumes:
-      - ./seeds/monolith/merchants.json:/app/seed/merchants.json:ro
-      - ./seeds/monolith/fund_accounts.json:/app/seed/fund_accounts.json:ro
-      - ./seeds/monolith/misc.json:/app/seed/misc.json:ro
-      - ./seeds/pricing.json:/app/seed/pricing.json:ro
+      - ./seeds/generated/monolith/merchants.json:/app/seed/merchants.json:ro
+      - ./seeds/generated/monolith/fund_accounts.json:/app/seed/fund_accounts.json:ro
+      - ./seeds/generated/monolith/misc.json:/app/seed/misc.json:ro
+      - ./seeds/generated/pricing.json:/app/seed/pricing.json:ro
       # "user:pass" file, same format/convention as verifier's secrets --
       # base_stub.py's own inbound Basic-Auth check (STUB_BASIC_AUTH_FILE).
-      - ./secrets/verifier-bridge/monolith:/run/secrets/monolith_basic_auth:ro
-      - ./secrets/auth_api_payouts.txt:/run/secrets/auth_api_payouts:ro
-      - ./secrets/auth_payouts_ledger.txt:/run/secrets/auth_payouts_ledger:ro
+      - secrets-monolith:/run/secrets:ro
     environment:
       STUB_PORT: "8080"
       STUB_BASIC_AUTH_FILE: /run/secrets/monolith_basic_auth
@@ -1517,7 +1657,7 @@ services:
     profiles: ["substitutes"]
     networks: [rzp-arena]
     volumes:
-      - ./seeds/dcs/merchants.json:/app/seed/merchants.json:ro
+      - ./seeds/generated/dcs/merchants.json:/app/seed/merchants.json:ro
     environment:
       STUB_PORT: "8080"
       DCS_SEED_FILE: /app/seed/merchants.json
@@ -1538,7 +1678,7 @@ services:
     profiles: ["substitutes"]
     networks: [rzp-arena]
     volumes:
-      - ./seeds/splitz/experiments.json:/app/seed/experiments.json:ro
+      - ./seeds/generated/splitz/experiments.json:/app/seed/experiments.json:ro
     environment:
       STUB_PORT: "8080"
       SPLITZ_SEED_FILE: /app/seed/experiments.json
@@ -1559,7 +1699,7 @@ services:
     profiles: ["substitutes"]
     networks: [rzp-arena]
     volumes:
-      - ./seeds/shield/rules.json:/app/seed/rules.json:ro
+      - ./seeds/generated/shield/rules.json:/app/seed/rules.json:ro
     environment:
       STUB_PORT: "8080"
       SHIELD_RULES_FILE: /app/seed/rules.json
@@ -1581,7 +1721,7 @@ services:
     profiles: ["substitutes"]
     networks: [rzp-arena]
     volumes:
-      - ./seeds/pricing.json:/app/seed/pricing.json:ro
+      - ./seeds/generated/pricing.json:/app/seed/pricing.json:ro
     environment:
       STUB_PORT: "8080"
       PRICING_SEED_FILE: /app/seed/pricing.json
@@ -1622,7 +1762,7 @@ services:
     environment:
       STUB_PORT: "8080"
     volumes:
-      - ./seeds/monolith/merchants.json:/app/seed/merchants.json:ro
+      - ./seeds/generated/monolith/merchants.json:/app/seed/merchants.json:ro
     <<: *runtime-security
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
@@ -1640,7 +1780,7 @@ services:
     profiles: ["substitutes"]
     networks: [rzp-arena]
     volumes:
-      - ./seeds/stork/subscriptions.json:/app/seed/subscriptions.json:ro
+      - ./seeds/generated/stork/subscriptions.json:/app/seed/subscriptions.json:ro
     environment:
       STUB_PORT: "8080"
       STORK_SEED_FILE: /app/seed/subscriptions.json
@@ -1668,6 +1808,8 @@ services:
     image: rzp-arena/merchant-webhook-sink:${ARENA_TAG:-local}
     profiles: ["substitutes"]
     networks: [rzp-arena]
+    volumes:
+      - ./seeds/generated/stork/subscriptions.json:/app/seed/subscriptions.json:ro
     environment:
       STUB_PORT: "8080"
       WEBHOOK_SECRET: "arena_test_secret_min5"
@@ -1732,7 +1874,7 @@ services:
       # Mounted directly at the path mozart's own env.<name>.toml convention
       # expects (conf/env.arena.toml relative to app basepath) -- see
       # build/mozart.Dockerfile's ASSUMPTION note; NOT baked into the image.
-      - ./generated/mozart-mock:/app/conf:ro
+      - config-mozart-mock:/app/conf:ro
     environment:
       APP_ENV: arena
     <<: *runtime-security
@@ -1812,7 +1954,7 @@ services:
     # unlike the original placeholder's ingress-only design, it therefore
     # needs rzp-arena too. rzp-ingress is kept so it can also reach kong-lite
     # as a real host-equivalent client for the HTTP-facing assertions.
-    networks: [rzp-arena, rzp-ingress]
+    networks: [rzp-arena]
     environment:
       ARENA_ENTRYPOINT: "http://kong-lite:8080"
       PASSPORT_SIGNER_URL: "http://kong-lite:8080/_arena/mint"
@@ -1837,6 +1979,8 @@ services:
       ARENA_M3_ACCOUNT_NUMBER: "2323230099999999"
     volumes:
       - ./verifier:/verifier:ro
+      - ./seeds/generated/scenario-index.json:/fixtures/scenario-index.json:ro
+      - ./seeds/generated/provenance.json:/fixtures/provenance.json:ro
     # datastore passwords are per-arena generated secrets; verifier/run.sh exports them from /run/secrets
     secrets: [ledger, fts, monolith, ps-fastcron, ps-service, mysql_payouts_root_password, mysql_fts_root_password, mysql_xbalances_root_password, postgres_ledger_password, mongo_cfa_root_password]
     # NO depends_on here on purpose (same reasoning as cron-driver above):

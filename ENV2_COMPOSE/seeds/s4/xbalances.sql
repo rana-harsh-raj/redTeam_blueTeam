@@ -18,6 +18,8 @@
 -- account_type values confirmed in x-balances/internal/database/model/balance.go + queries.sql:
 -- 'direct', 'pool', 'sub_balance', 'master'. The informal "shared (Lite VA)" terminology used in
 -- findings/06 maps to the literal enum value 'pool' used here for M1/M3.
+-- Channel is the lowercase x-balances enum (internal/enum/channel/channel.go:27),
+-- also copied verbatim into Payouts. FTS has a separate uppercase channel enum.
 
 INSERT IGNORE INTO balance
   (id, created_at, updated_at, status, merchant_id, account_number, account_type, channel,
@@ -25,11 +27,11 @@ INSERT IGNORE INTO balance
    last_attempted_at, fts_fund_account_id)
 VALUES
   ('ARENABAL000001', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 'activated', 'ARENAM00000001',
-   '2323230099999999', 'pool',   'RBL', 'INR', 10000000, 0,
+   '2323230099999999', 'pool',   'rbl', 'INR', 10000000, 0,
    UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), JSON_OBJECT('seed', 'env2-arena'), 0, '900001'),
   ('ARENABAL000002', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 'activated', 'ARENAM00000002',
-   '2323230000000002', 'direct', 'RBL', 'INR', 10000000, 0,
+   '2323230000000002', 'direct', 'rbl', 'INR', 10000000, 0,
    UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), JSON_OBJECT('seed', 'env2-arena'), 0, '900002'),
   ('ARENABAL000003', UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), 'activated', 'ARENAM00000003',
-   '2323230099999999', 'pool',   'RBL', 'INR', 10000000, 0,
+   '2323230099999999', 'pool',   'rbl', 'INR', 10000000, 0,
    UNIX_TIMESTAMP(), UNIX_TIMESTAMP(), JSON_OBJECT('seed', 'env2-arena'), 0, '900001');

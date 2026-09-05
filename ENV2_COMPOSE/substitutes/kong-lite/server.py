@@ -49,8 +49,9 @@ PASSPORT_PRIVATE_KEY_FILE = os.environ.get("PASSPORT_PRIVATE_KEY_FILE", "/run/se
 PASSPORT_IDENTIFIER = os.environ.get("PASSPORT_IDENTIFIER", "arena-passport-1")
 PASSPORT_ORG = os.environ.get("PASSPORT_ORG", "ARENAORG000001")
 PASSPORT_PRODUCT = os.environ.get("PASSPORT_PRODUCT", "banking")
-PASSPORT_ISS = os.environ.get("PASSPORT_ISS", "https://edge.razorpay.com")
-PASSPORT_SUB = os.environ.get("PASSPORT_SUB", "https://payouts.razorpay.com")
+# Synthetic issuer identity; the pinned Passport handler verifies the configured kid/signature.
+PASSPORT_ISS = os.environ.get("PASSPORT_ISS", "https://identity.arena.invalid")
+PASSPORT_SUB = os.environ.get("PASSPORT_SUB", "urn:arena:payouts")
 PASSPORT_TTL_SEC = int(os.environ.get("PASSPORT_TTL_SEC", "300"))  # real edge default, findings/21 §2
 
 # cred.API -- the Basic-Auth pair payouts' inbound `middleware.BasicAuth(cred.API,

@@ -2,15 +2,7 @@
 # Runs the Env 2 verifier suite. Any args are passed through to pytest
 # verbatim (e.g. `run.sh -k v01 -x`, `run.sh --collect-only`).
 #
-# Every verifier is written to skip cleanly -- not error -- when a fixture,
-# credential or substitute it needs is missing (see conftest.py's module
-# docstring and VERIFIER_SPEC.md's "Known scaffold gaps" section). A run
-# against a partially-built arena is therefore expected to show a long list
-# of skips, not failures; treat a FAIL as a real finding and a SKIP as "come
-# back once that fixture exists."
-#
-# -rs prints the skip reason for every skipped test (the whole point of the
-# "tolerant of missing fixtures" design is that those reasons are readable).
+# Missing required fixtures and failed invariants are visible failures.
 set -eu
 
 cd "$(dirname "$0")"
@@ -25,4 +17,5 @@ export LEDGER_PG_USER="${LEDGER_PG_USER:-ledger}"
 export LEDGER_PG_PASSWORD="${LEDGER_PG_PASSWORD:-$(rs postgres_ledger_password)}"
 _mpw="$(rs mongo_cfa_root_password)"
 [ -n "$_mpw" ] && export CFA_MONGO_URI="${CFA_MONGO_URI:-mongodb://cfa_root:${_mpw}@mongo-cfa:27017/cfa?authSource=admin}"
-exec python3 -m pytest -rs -v --tb=short "$@" verifiers
+python3 network_check.py
+exec python3 -m pytest -p no:cacheprovider -rs -v --tb=short "$@" verifiers

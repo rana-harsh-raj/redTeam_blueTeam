@@ -1,0 +1,41 @@
+{
+  "volume": "twin-materialize-test-55a8030f9cbc",
+  "fixture_only": true,
+  "runs": [
+    {
+      "group": "test-only",
+      "volume": "twin-materialize-test-55a8030f9cbc",
+      "files": [
+        "nested/arena.toml",
+        "obsolete.toml"
+      ],
+      "status": "passed",
+      "install": {
+        "installed_files": 2
+      },
+      "verify": {
+        "verified_files": 2,
+        "uid": 10001
+      },
+      "temporary_containers_removed": true
+    },
+    {
+      "group": "test-only",
+      "volume": "twin-materialize-test-55a8030f9cbc",
+      "files": [
+        "nested/arena.toml"
+      ],
+      "status": "passed",
+      "install": {
+        "installed_files": 1
+      },
+      "verify": {
+        "verified_files": 1,
+        "uid": 10001
+      },
+      "temporary_containers_removed": true
+    }
+  ],
+  "status": "passed",
+  "volume_absent": true
+}

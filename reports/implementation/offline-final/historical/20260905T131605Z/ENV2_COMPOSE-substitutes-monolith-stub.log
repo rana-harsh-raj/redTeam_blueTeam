@@ -1,0 +1,11 @@
+[unknown-stub] 2026-09-05T18:11:22 no seed file at /app/seed/merchants.json, using default
+[unknown-stub] 2026-09-05T18:11:22 no seed file at /app/seed/fund_accounts.json, using default
+[unknown-stub] 2026-09-05T18:11:22 no seed file at /app/seed/misc.json, using default
+[unknown-stub] 2026-09-05T18:11:22 no seed file at /app/seed/pricing.json, using default
+[unknown-stub] 2026-09-05T18:11:22 loaded 0 merchant(s), 0 fund_account(s), 0 pricing plan(s)
+.............[unknown-stub] 2026-09-05T18:11:22 update_fts_fund_transfer relay failed: TimeoutError()
+....
+----------------------------------------------------------------------
+Ran 17 tests in 0.002s
+
+OK

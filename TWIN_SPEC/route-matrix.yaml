@@ -1,0 +1,183 @@
+# TWIN_SPEC/route-matrix.yaml
+# Which path a payout takes, per origin and merchant class, and the exact selectors.
+# Each row: path -> selector (config key / flag / experiment) -> production default (if derivable) -> twin state.
+version: 1
+generated: 2026-09-05
+legend:
+  prod_default: value that source/config shows for production, or UNKNOWN (Splitz/DCS runtime values are never in a repo)
+  twin: what ENV2_COMPOSE does today (REAL / SUBSTITUTE / MISSING / INCORRECT)
+
+# ----------------------------------------------------------------------------
+ingress_paths:
+
+  public_api_create:
+    description: Merchant API key -> Edge/Kong -> API monolith POST /v1/payouts -> PS
+    hops:
+      - {hop: Kong, plugins: [basic-auth-x (merchant key), consumer-authentication, impersonation-grant, upstream-jwt (passport X-Passport-JWT-V1, RS256, 300s), authz-enforcer (shadow_mode=true, route whitelisted)], source: terraform-kong/prod/api/api.tf, edge/kong-plugins/kong-plugin-upstream-jwt/kong/plugins/upstream-jwt/access.lua:86-205}
+      - {hop: monolith, route: payout_create ($private only; NOT $admin), source: api/app/Http/Route.php:2311,5780}
+      - {hop: monolith middleware order, value: [Authenticate, BusinessAuth, SDKMetric, AdminAccess, UserAccess, SubscriptionProxy, ExcelStoreProxy, FailureEventsInterceptor, Workflow, MerchantIpFilter, EventTracker, P2p, HttpEncryptionMiddleware, MerchantIdempotencyHandler, RequestContextHandler], source: api/app/Http/Kernel.php:55-93}
+    branch_selector:
+      - name: direct_diversion
+        selector: DirectToPayoutsServiceGate::shouldDivert() -> live mode && !app-auth && body.merchant_id == caller && Splitz(app.payout_create_direct_ps_splitz_experiment_id).variant == 'enable'
+        source: api/app/Models/Payout/DirectToPayoutsServiceGate.php:59-136; PayoutController.php:163-209
+        effect: "monolith runs NO business logic; forwards to PS POST /v1/payouts with passport, X-Payouts-Service-Proxy: 0, NO actor headers; relays PS status/body verbatim"
+        prod_default: UNKNOWN (Splitz runtime); code fails safe to classic on any Splitz error
+      - name: classic_v2_passthrough
+        selector: isMonolithProxyForPayoutServiceMerchant(balance) (live + merchant migrated flag, excludes partner OAuth)
+        source: api/app/Models/Payout/Service.php:631,8169-8196; Services/PayoutService/Create.php:133-186
+        effect: validations 1-5 run (strict private auth, account number translation, BEFORE_CREATE rules, card mode); skips checkIfPayoutIsAllowed; forwards to PS with passport + actor headers; NO X-Payouts-Service-Proxy header
+      - name: legacy_v1_enrichment
+        selector: not diverted and not V2 -> Processor\Base::createPayout -> createPayoutViaMicroservice when isPayoutServiceIfApplicable
+        source: api/app/Models/Payout/Processor/Base.php:286-315,5147-5245
+        effect: "preValidations (hold funds, BLOCK_VA_PAYOUTS), pricing/fund-account/credits fetched on monolith, X-Payouts-Service-Proxy: 1, actor headers"
+      - name: fully_local
+        selector: merchant not migrated to PS
+        effect: monolith-local payout (Shield evaluated in Processor/Base.php:5451); out of twin scope (PS is source of truth in prod)
+    ps_entry:
+      route: POST /v1/payouts (root), /payouts/payouts_internal (app auth), /payouts/internal_contact_payout, /payouts/rzp_fees_payout
+      source: api/app/Services/PayoutService/Create.php:30-36; payouts/internal/routing/router/payout_routes.go
+      auth: Basic [auth.api] + X-Passport-JWT-V1 (kid apiv1|edgev1|edgev2)
+      idempotency: header X-Payout-Idempotency passed through unchanged (Create.php:188-206); PS Redis mutex 20 min + SHA-256 body hash (idempotency_key.go)
+    twin: SUBSTITUTE(kong-lite mints passport, calls PS directly) — monolith ingress MISSING; only the direct_diversion-shaped request is exercised
+
+  dashboard_create:
+    description: RazorpayX dashboard (x SPA) -> dashboard PHP proxy -> monolith POST /v1/payouts_with_otp -> PS
+    hops:
+      - {hop: x SPA, call: fetch.post('/payouts_with_otp'), source: x/src/js/api/outflow.js:88}
+      - "{hop: dashboard PHP proxy, route: /merchant/api/{mode}/{path}, identity: Basic rzp_<mode>_<merchantId>:api.auth_pass + X-Dashboard-User-Role/Id/Email/2FA-Verified, source: dashboard/app/Http/routes.php:186,422; dashboard/app/Admin/ApiRequestAny.php:141-503}"
+      - {hop: monolith, route: payout_create_with_otp ($private,$userWhitelist,$proxy; feature PAYOUT), source: api/app/Http/Route.php:5595,7350,8002,20313-20315}
+      - {hop: role check, mechanism: UserAccess::getRoutePermission -> Route::$bankingRoutePermissions (CREATE_PAYOUT); CAC merchants -> AccessAuthorizationService::hasAccessAllowedV2 -> AuthzEnforcer (mock by default AUTHZ_XPLATFORM_ENFORCER_MOCK=true), source: api/app/Http/Middleware/UserAccess.php:257-307,518-527; api/app/Http/AccessAuthorizationService.php:56-102}
+      - {hop: OTP, mechanism: User\Core::verifyOtp via Raven, action create_payout, source: api/app/Models/User/Core.php:6344-6473; Service.php:1834-1840}
+      - {hop: newer surfaces, note: xperience Go BFF verifies passport (apiv1/edgev1) for /xperience*; apps/shell verifies X-Passport-JWT-V1 via JWKS}
+    twin: MISSING (no dashboard, no OTP, no role enforcement)
+
+  internal_app_create:
+    description: internal apps (payout_links, vendor_payments, xpayroll, settlements, capital, scrooge, cross-border) -> monolith payouts_internal / internalContactPayout / composite_payout_internal
+    source: api/app/Http/Route.php:6593-6594 ($internal); vendor-payments/internal/payout/core.go:84; xperience/internal/app/client/apiservice/create_petty_cash_payout.go:15
+    ps_entry: /payouts/payouts_internal with X-Payout-Actor-Type application; PS identifies app via passport consumer.Meta.name allowlist (payouts/internal/auth/headers.go:11-25)
+    twin: MISSING
+
+  bulk_create:
+    description: dashboard upload -> Batch (payout.json) -> https://api.razorpay.com/v1/payouts/bulk -> PS POST /v1/payouts/bulk
+    batch_contract: "{chunk: 5 rows, threads: 10, idempotency_key: \"batch_\"+BatchEntry.id (14-char CustomIdGenerator), headers: [X-Batch-Id, X-Creator-Id, X-Creator-Type, X-Entity-Id], auth: Basic rzp_<mode>_<entityId>:BATCH_API_SECRET, retry: 5x5s fixed on non-2xx or item http_status_code 500}"
+    source: batch/src/main/resources/payout.json:49-68; BulkApiCallDataProcessorImpl.java:106,163,211-281; RestCallUtils.java:55-69
+    ps_contract: {route: POST /v1/payouts/bulk, auth: BasicAuth(API,Workflow)+Passport, max_rows: 15 (MaxBulkPayoutsLimit), concurrency: Splitz BulkPayoutConcurrencyExperiment -> CreateBulkPayoutsConcurrent else sequential, idempotency: bulk_idempotency_keys UNIQUE(idempotency_key,merchant_id)}
+    source: payouts/internal/routing/router/payout_internal_routes_with_passport.go:21-27; bulkPayoutsProcessor/{service.go:59-86,152-162,constants.go:6,repo.go:28-35}
+    twin: PS route REAL; Batch caller MISSING
+
+# ----------------------------------------------------------------------------
+merchant_class_selectors:
+  shared_vs_direct:
+    monolith: balance.account_type in {shared, direct}; banking_accounts.account_type; channel
+    payouts: bankingAccount.GetAccountType() (Shared vs Direct); MerchantConfig features from DCS direct_accounts/Configs
+    fts: transfers.preferred_source_account_id present => DIRECT (service.go:549-552); source_accounts.account_type POOL|DIRECT; bank_account_type NODAL|CURRENT|CORP_CARD
+    ledger: shared_account_x (identifiers banking_account_id) vs direct_account_x (banking_account_stmt_detail_id)
+    x-balances: balance.account_type direct|pool|sub_balance|master
+
+  create_fta_direct_marker:
+    rule: shouldFetchSourceFtsFundAccountId -> DIRECT && channel in non-transaction channels -> preferred_source_account_id; SHARED && (subMerchantOnDirectMaster || subAccountPayout) -> preferred_source_account_id
+    source: api/app/Services/FTS/FundTransfer.php:2053-2073,472-481
+    twin: monolith-stub sends preferred_source_account_id iff account_type==direct (simplified; misses SHARED sub-merchant case)
+
+  queueing_gate_direct:
+    rule: reservationGate iff MerchantConfig.Feature[in_flight_reservation_enabled]==1 (DCS rzp/x/merchant/payouts/direct_accounts/Configs) else balanceBufferGate
+    source: payouts/internal/app/payouts/processor/queueingstrategy/strategy.go:46-48; pkg/dcs/features/features.go:20-24
+    twin: dcs_fixtures set the flag for M2 but V12 shows PS never saw it (DCS patch coverage / features merge) — INCORRECT until proven
+
+  workflow_gate:
+    rule: see state-machines.yaml workflow_approval; DCS Workflows.enable_payout_workflow etc.; Private-auth + skip_approval_workflow_for_api => never workflow
+    source: payouts/internal/app/payouts/processor/baseHelper.go:107-193; config-proto/rzp/x/merchant/payouts/workflows.proto
+    twin: M3 fixture contract-faithful, but [workflow] host is http://127.0.0.1:1 so any workflow-applicable create fails (INCORRECT)
+
+# ----------------------------------------------------------------------------
+ps_to_fts_paths:
+  ps_monolith_create_fta_fts:
+    description: PS fts_async_processing job -> POST /v1/payouts_service/create_fta/{id} (no body) -> monolith reads PS DB row (SELECT * FROM payouts WHERE id=?) -> builds FTS body -> POST fts /v1/transfer (1s sync timeout, async fallback via Initiator)
+    selector: "!IsFTSRequestFromPayoutsService(ctx,payout) (Splitz ExperimentForFtsRequestFromPayoutsService + DCS payouts_to_fts_async_processing)"
+    source: payouts/internal/app/payouts/core.go:5809-5891; pkg/api/fts_create.go:16,66-77; api/app/Models/Payout/Core.php:8273-8286,8461-8530; Repository.php:5313-5323; Processor/Base.php:235,1024-1132,4654-4740; Services/FTS/FundTransfer.php:313-356,424-551
+    prod_default: this is the path the golden run exercises; Splitz value UNKNOWN
+    twin: SUBSTITUTE (monolith-stub relay) — REPRESENTATIVE (brute-force merchant lookup, minimal FTS body, no 1s-timeout/async fallback)
+  ps_fts_direct:
+    description: PS calls FTS directly (pkg/fts) via FundTransferServiceProcessing
+    selector: IsFTSRequestFromPayoutsService(ctx,payout) == true
+    source: payouts/internal/app/payouts/core.go:5809-5891
+    prod_default: UNKNOWN (Splitz ExperimentForFtsRequestFromPayoutsService)
+    twin: not exercised (Splitz fixture selects monolith path); code REAL
+
+# ----------------------------------------------------------------------------
+fts_status_propagation:
+  decision_table:   # fts/internal/transfer/service.go:1071-1275
+    - {FireStatusUpdateKafka: on,  CreateTransferMetaRollout: any, origin_service: any,       ps_config_update_fts_fund_transfer: any,       result: kafka_only (rx-fts-status-update-events, key=source_id), http: none}
+    - "{FireStatusUpdateKafka: off, CreateTransferMetaRollout: off, origin_service: any,       ps_config_update_fts_fund_transfer: any,       result: legacy_webhook -> [webhook.<product>.transfer_status] (monolith /update_fts_fund_transfer)}"
+    - "{FireStatusUpdateKafka: off, CreateTransferMetaRollout: on,  origin_service: payouts,   ps_config_update_fts_fund_transfer: non-empty, result: direct_ps -> [payouts_service.update_fts_fund_transfer] (PS POST /v1/payouts_internal/transfer_status_webhook)}"
+    - {FireStatusUpdateKafka: off, CreateTransferMetaRollout: on,  origin_service: API|missing, ps_config_update_fts_fund_transfer: any,     result: legacy_webhook}
+    - {FireStatusUpdateKafka: off, CreateTransferMetaRollout: on,  origin_service: payouts,   ps_config_update_fts_fund_transfer: empty,     result: legacy_webhook}
+  origin_service:
+    source_of_value: X-Origin header on POST /v1/transfer -> transfer_meta.origin_service in {API, payouts}; written only if CreateTransferMetaRollout on (service.go:399-418,1889-1910); default "API" INFERRED
+    monolith_create_fta_sends: no X-Origin / origin marker (api/app/Services/FTS/*.php, exhaustive grep) => origin_service = API => legacy webhook path
+  retry: 3 retries x 200s (WebhookRetryInterval=200 service.go:98, WebhookRetryMaxCount=3 :99); no DLQ; skipped while transfer in RETRY; return nil always
+  body_fields: [id, fund_transfer_id, source_id, source_type, merchant_id, product, status (externalized), utr, return_utr, gateway_ref_no, bank_status_code, failure_reason, remarks, narration, mode, channel, preferred_mode, preferred_channel, preferred_source_account_id, source_account_id (terminal only), bank_account_type (terminal only), status_details (non-terminal), amount, attempts, extra_info, is_credited, is_debited, credited_at, bank_processed_time]
+  monolith_relay:
+    route: POST /v1/update_fts_fund_transfer (fts credential only)
+    order: [FTA row saved, POST PS /payouts/update_payouts_details_with_fts, PATCH PS /payouts/update_payouts_with_fts]
+    status_map: see state-machines.yaml monolith_fta_to_payout_status_map
+    ps_body_status: "{source_id, status, failure_reason, bank_status_code, fts_fund_account_id?, fts_account_type?, fts_status?}"
+    source: api/app/Models/FundTransfer/Attempt/Core.php:487-560,835-875; app/Services/PayoutService/Status.php:19-58; Details.php:12,25-31
+    twin: SUBSTITUTE (monolith-stub) CONTRACT-FAITHFUL on ordering/fields/map (direct-non-listed-channel edge case unmodeled)
+  ps_direct_route:
+    route: POST /v1/payouts_internal/transfer_status_webhook (BasicAuth cred.FTS et al.)
+    body: TransferStatusWebhookForPayoutRequest incl. source_account_id, bank_account_type -> fts_fund_account_id / fts_account_type (lower-cased)
+    source: payouts/internal/routing/router/payout_internal_routes.go; internal/app/dtos/transfer_status_webhook_request.go:24-25; fts_transfer_status_webhook.go:515-521
+    twin: code REAL; not exercised (fts arena config lacks [payouts_service.update_fts_fund_transfer]; Splitz CreateTransferMetaRollout seeded on but origin is API)
+  kafka:
+    topics: {primary: rx-fts-status-update-events, retry: rx-fts-status-update-retry-events}
+    consumer_groups: {primary: rx-payouts-fts-status-update-consumer-group, retry: rx-payouts-fts-status-update-retry-consumer-group}
+    retries: {primary: 1/1s, retry: 2/30s (prod), 2/5s (devstack)}
+    consumer_behaviour: drops reversed/failed ("api is source of truth"), republishes failures to retry topic keyed by source_id with no cap, RecordNotFound swallowed
+    source: payouts/config/prod.toml:311-342,362-363; internal/taskHandlers/fts_status_updates.go:42-113
+    producer_gate: fts [kafka_producers.fire_transfer_status].enabled AND Splitz FireStatusUpdateKafka
+    prod_default: UNKNOWN (Splitz); fts env config per lane 12
+    twin: Kafka broker + consumers REAL but producer disabled -> path MISSING
+
+# ----------------------------------------------------------------------------
+queued_scheduled_on_hold:
+  low_balance_dequeue:
+    trigger_cron: POST /v1/cron/process_queued_low_balance_payouts (FastCron, cadence UNKNOWN)
+    trigger_event: POST /v1/payouts_internal/balance_update_event {balance_id, balance} from monolith QueuedInitiate (only live && Splitz PAYOUTS_SERVICE_CRON_TRIGGER_FOR_QUEUED_PAYOUTS disabled; being retired)
+    algorithm: API-DB balance.updated_at >= now-6h (payouts/internal/app/balance/repo.go:26-51) -> GET monolith /internal_balances_queued {balance_ids} -> greedy first-fit amount+fee -> queued_payout job
+    source: payouts/internal/routing/router/cron_routes.go:60-69; helperQueuedPayouts.go:18-47,91-102; api/app/Models/Payout/Core.php:4083-4104, Service.php:2892-2916
+    twin: INCORRECT (balance.updated_at stale; no balance_update_event caller)
+  partner_bank_hold:
+    trigger_cron: POST /v1/cron/process_queued_payouts (partner-bank-down recovery, not low balance)
+    health_source: FTS POST PS /v1/notify/health/update -> Redis hash partner_bank_health (payouts internal_routes.go:11-22; fundAccountPayoutDirect.go:577-604); FTS side downtime/notification.go:440-519 (feature PSDowntimeNotificationOnHold)
+  beneficiary_bank_on_hold:
+    trigger_cron: POST /v1/cron/process_beneficiary_bank_on_hold_payouts
+    gate: feature payouts_on_hold, IMPS only, Redis IFSC-prefix down map (writer UNKNOWN); SLA GET monolith /merchant/on_hold_slas_internal; breach -> failed
+    source: payouts/internal/app/payouts/onHoldHelper.go:16-153,309-341
+    twin: cron-driver path wrong (/process_on_hold_payouts) -> never fires
+  scheduled:
+    slots: "[9,13,17,21] IST, <= 3 months (schedule.go:23,55)"
+    trigger_cron: POST /v1/cron/process_scheduled_payouts (scheduled_at < now AND status in (pending, scheduled)); pending at slot -> rejected
+    twin: REAL (V24b passes with time travel)
+  batch_submitted:
+    trigger_cron: POST /v1/cron/process_batch_submitted_payouts
+    twin: not driven by cron-driver (MISSING)
+  reservation_reconcile:
+    trigger_cron: POST /v1/cron/process_inflight_reservation_reconciliation (every 5 min assumed; heartbeat TTL 12.5 min)
+    twin: cron-driver path wrong (/reservation_reconcile) -> never fires
+
+# ----------------------------------------------------------------------------
+approval_paths:
+  single_dashboard_approve: "x SPA -> dashboard proxy -> monolith payouts/{id}/approve (OTP via Raven unless OAuth partner + enable_approval_via_oauth) -> Core::approvePayout -> is_payout_service ? PS POST /payouts/payouts_internal/{id}/approve {queue_if_low_balance} : legacy local; WFS action via monolith workflowService->createActionOnEntity when EntityMap present"
+  dashboard_bulk_approve: monolith payouts/approve/bulk, OTP action approve_payout_bulk, synchronous foreach Core::approvePayout (Service.php:1507-1552)
+  batch_bulk_approve: Batch payout_approval.json -> MONOLITH payouts/bulk_approve (Route.php:2319), X-Batch-Id required, <=15 rows, action A|R, NO OTP -> Core::approvePayout/rejectPayout; fetch via local payouts table (dropped in prod)
+  wfs_callbacks: WFS -> PS POST /v1/payouts/payouts_internal/{id}/approve|reject (Basic payouts_live; PS success set [200,201,409]); WFS state callbacks POST /v1/workflow/state, PATCH /v1/workflow/state/{id}; monolith wf-service/state/callback is state-map bookkeeping + forward to PS /workflow/state
+  twin: all MISSING except PS routes (REAL, unexercised)
+
+# ----------------------------------------------------------------------------
+admin_repair_paths:
+  ps_manual_action: POST /v1/payouts_internal/manual_action actions [processed_to_processing, approve_workflow_payouts, reject_workflow_payouts] only (adminClientController.go:267-356); no stuck-initiated repair
+  monolith_admin: admin/payouts/cancel (bulkRejectFundAccountPayouts), payouts/manual_action (12 actions, 3 forwarded to PS), payouts/{id}/manual/status (PROCESSED/REVERSED/FAILED implemented; shared guard needs fts_fund_account_id+fts_account_type), manual/status_update/batch, payouts/{id}/retry (local only), admin/payouts/workflow_retry (WFS)
+  source: api/app/Models/Payout/Service.php:1610,4626,5023,7423,1740; Core.php:6987-7013; Validator.php:177-190,1533-1570
+  fts_repair: PATCH/POST /v1/attempts/:action, PUT /v1/attempts/reconcile (API+ART), body keyed by gateway_ref_no with mozart_meta{processed|failed|reversed}
+  twin: MISSING (no admin, no ART caller)

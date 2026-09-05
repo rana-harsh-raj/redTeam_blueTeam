@@ -9,14 +9,18 @@ SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 COMPOSE_ROOT="$(cd "$SCRIPT_DIR/.." && pwd)"
 
 echo "==> destroying secrets/*.txt, secrets/jwks.json, secrets/.env.secrets"
-find "$SCRIPT_DIR" -maxdepth 1 -type f -name '*.txt' -exec shred -u {} \; 2>/dev/null || \
-  find "$SCRIPT_DIR" -maxdepth 1 -type f -name '*.txt' -delete
+# `find -exec shred` reports success on macOS even when shred is absent.
+# Unlink generated files portably; overwriting cannot promise secure erasure
+# on APFS/SSD snapshots. Encrypted host storage remains the storage boundary.
+find "$SCRIPT_DIR" -maxdepth 1 -type f -name '*.txt' -delete
 rm -f "$SCRIPT_DIR/jwks.json" "$SCRIPT_DIR/.env.secrets"
-rm -rf "$SCRIPT_DIR/verifier-bridge"
+rm -rf "$SCRIPT_DIR/verifier-bridge" "$SCRIPT_DIR/merchant-keys"
 
 if [ -d "$COMPOSE_ROOT/generated" ]; then
   echo "==> destroying $COMPOSE_ROOT/generated (rendered config had credentials inlined)"
   rm -rf "$COMPOSE_ROOT/generated"
 fi
+
+python3 "$SCRIPT_DIR/materialize.py" --destroy
 
 echo "==> secrets destroyed"

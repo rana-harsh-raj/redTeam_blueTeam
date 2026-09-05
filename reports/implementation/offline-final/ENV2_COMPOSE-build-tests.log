@@ -1,0 +1,11 @@
+test_atomic_write_preserves_mode (test_configure_local.ConfigureLocalTests.test_atomic_write_preserves_mode) ... ok
+test_preserves_unknown_settings_and_comments_and_normalizes_managed_duplicates (test_configure_local.ConfigureLocalTests.test_preserves_unknown_settings_and_comments_and_normalizes_managed_duplicates) ... ok
+test_rejects_missing_input_and_multiline_paths (test_configure_local.ConfigureLocalTests.test_rejects_missing_input_and_multiline_paths) ... ok
+test_rejects_symlink_target (test_configure_local.ConfigureLocalTests.test_rejects_symlink_target) ... ok
+test_rejects_unadmitted_source_and_never_repairs_a_changed_existing_stage (test_configure_local.ConfigureLocalTests.test_rejects_unadmitted_source_and_never_repairs_a_changed_existing_stage) ... ok
+test_stages_only_admitted_schema_assets_without_changing_source_modes (test_configure_local.ConfigureLocalTests.test_stages_only_admitted_schema_assets_without_changing_source_modes) ... ok
+
+----------------------------------------------------------------------
+Ran 6 tests in 0.038s
+
+OK

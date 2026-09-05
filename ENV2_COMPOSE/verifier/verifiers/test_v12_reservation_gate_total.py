@@ -9,19 +9,19 @@ from helpers import payouts_flow as pf
 
 @pytest.mark.spec_id("V12")
 @pytest.mark.status("END_TO_END_CONFIRMED")
-def test_inflight_reservation_total_equals_live_reservations(ps_public_client, ps_internal_client, merchant_m2):
+def test_inflight_reservation_total_equals_live_reservations(ps_public_client, ps_internal_client, merchant_m2, payouts_mysql, fts_mysql):
     if not merchant_m2["fund_account_id"] or not merchant_m2["account_number"] or not merchant_m2["balance_id"]:
-        pytest.skip(
+        pytest.fail(
             "missing fixture: ARENA_M2_FUND_ACCOUNT_ID / ARENA_M2_ACCOUNT_NUMBER / ARENA_M2_BALANCE_ID"
         )
 
     passport_jwt = pf.passport_or_skip(merchant_m2)
     created_ids = []
     for _ in range(3):
-        body = pf.build_create_body(merchant_m2["fund_account_id"], merchant_m2["account_number"], amount=100)
+        body = pf.build_create_body(merchant_m2["fund_account_id"], merchant_m2["account_number"], amount=100,queue_if_low_balance=True)
         resp = pf.create_payout(ps_public_client, passport_jwt, body)
         assert resp.status in (200, 201), "create failed: %s" % resp
-        created_ids.append(resp.json()["id"])
+        created_ids.append(pf.db_id(resp.json()["id"]))
 
     inspect_resp = pf.get_inflight_reservations(
         ps_internal_client, merchant_m2["merchant_id"], merchant_m2["balance_id"]
@@ -30,7 +30,9 @@ def test_inflight_reservation_total_equals_live_reservations(ps_public_client, p
     inspect = inspect_resp.json()
 
     live_items = [i for i in inspect.get("items", []) if i.get("state") == "live"]
+    assert len(live_items) == 3, inspect
     live_total = sum(i["amount"] for i in live_items)
+    assert live_total == 300, inspect
 
     assert inspect.get("reserved_total") == live_total, (
         "reserved_total (%s) must equal the sum of live reservation amounts (%s): items=%r"
@@ -48,3 +50,7 @@ def test_inflight_reservation_total_equals_live_reservations(ps_public_client, p
         "store_trusted=false -- reservation store is not authoritative (reconciler needs a run); "
         "this is itself a finding, not a harness bug"
     )
+
+    # Keep the reservation assertions immediate; settle held dispatch before cleanup.
+    for payout_id in created_ids:
+        pf.wait_for_held_handoff(payouts_mysql,fts_mysql,payout_id)

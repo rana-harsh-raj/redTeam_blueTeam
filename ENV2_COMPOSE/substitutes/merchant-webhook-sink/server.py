@@ -18,6 +18,12 @@ WEBHOOK_SECRET = os.environ.get("WEBHOOK_SECRET", "")
 DELIVERIES_LOG_FILE = os.environ.get("DELIVERIES_LOG_FILE", "/data/deliveries.jsonl")
 
 RECEIVED = []
+MERCHANT_SECRETS = {}
+SEED_FILE = os.environ.get("STORK_SEED_FILE", "/app/seed/subscriptions.json")
+if os.path.exists(SEED_FILE):
+    with open(SEED_FILE) as f:
+        for webhook in json.load(f).get("webhooks", []):
+            MERCHANT_SECRETS[webhook["owner_id"]] = webhook.get("secret", "")
 
 
 def _append_deliveries_log(record):
@@ -41,8 +47,9 @@ def _receive(handler, body):
     signature = handler.headers.get("X-Razorpay-Signature", "")
 
     signature_valid = None
-    if WEBHOOK_SECRET:
-        expected = hmac.new(WEBHOOK_SECRET.encode(), body, hashlib.sha256).hexdigest()
+    secret = MERCHANT_SECRETS.get(merchant) or WEBHOOK_SECRET
+    if secret:
+        expected = hmac.new(secret.encode(), body, hashlib.sha256).hexdigest()
         signature_valid = hmac.compare_digest(expected, signature)
 
     try:
@@ -53,7 +60,8 @@ def _receive(handler, body):
     record = {
         "merchant": merchant,
         "path": handler.path,
-        "headers": {k: v for k, v in handler.headers.items()},
+        "headers": {k: v for k, v in handler.headers.items() if k.lower() in ("x-razorpay-event-id", "request-id", "content-type")},
+        "body_sha256": hashlib.sha256(body).hexdigest(),
         "event_id": event_id,
         "request_id": request_id,
         "signature_present": bool(signature),
@@ -63,7 +71,7 @@ def _receive(handler, body):
     }
     RECEIVED.append(record)
     _append_deliveries_log(record)
-    return 200, {"received": True}
+    return (200 if signature_valid is True else 401), {"received": signature_valid is True}
 
 
 def _received_events(handler, body):
@@ -71,7 +79,16 @@ def _received_events(handler, body):
 
 
 def _arena_deliveries(handler, body):
-    return 200, {"deliveries": RECEIVED}
+    # Read-only evidence scope. The full capture and append-only log remain
+    # available; verifier namespaces need not observe unrelated merchants.
+    from urllib.parse import urlsplit, parse_qs
+    query = parse_qs(urlsplit(handler.path).query)
+    merchant = query.get('merchant', [''])[0]
+    payout_id = query.get('payout_id', [''])[0]
+    rows = [row for row in RECEIVED
+            if (not merchant or row.get('merchant') == merchant)
+            and (not payout_id or row.get('body', {}).get('payload', {}).get('payout', {}).get('entity', {}).get('id') == payout_id)]
+    return 200, {"deliveries": rows}
 
 
 ROUTES = {

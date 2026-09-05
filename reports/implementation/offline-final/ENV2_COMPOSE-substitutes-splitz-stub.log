@@ -1,0 +1,9 @@
+[unknown-stub] 2026-09-05T18:46:06 no seed file at /app/seed/experiments.json -- splitz-stub starting empty (default variant only)
+test_name_alias_preserves_seeded_variant (test_contract.SplitzContract.test_name_alias_preserves_seeded_variant) ... ok
+test_unknown_experiment_is_off_for_both_callers (test_contract.SplitzContract.test_unknown_experiment_is_off_for_both_callers) ... ok
+test_variant_is_merchant_scoped (test_contract.SplitzContract.test_variant_is_merchant_scoped) ... ok
+
+----------------------------------------------------------------------
+Ran 3 tests in 0.000s
+
+OK

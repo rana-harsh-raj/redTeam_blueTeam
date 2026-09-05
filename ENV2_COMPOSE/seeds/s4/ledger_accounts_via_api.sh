@@ -64,9 +64,9 @@ call '{
   }]
 }'
 
-echo "== M2 (ARENAM00000002, Direct) dedicated nodal account (fts_fund_account_id=900002) =="
+echo "== M2 (ARENAM00000002, Direct) dedicated current account (fts_fund_account_id=900002) =="
 echo "NOTE: per findings/13_fts_payouts_status_path.md finding #6, Direct/CA payouts normally skip"
-echo "ledger's MerchantBalance path entirely -- this nodal_pool_account_onboarding call is included"
+echo "ledger's MerchantBalance path entirely -- this current_pool_account_onboarding call is included"
 echo "for completeness/parity with M1/M3's FtsPayable/FtsReceivable pattern, not because production"
 echo "is confirmed to exercise it for every Direct merchant. TODO(confirm) before relying on it."
 call '{
@@ -74,7 +74,7 @@ call '{
   "account_name": "ARENA RZPX DIRECT - RBL - 900002",
   "currency": "INR",
   "events": [{
-    "name": "nodal_pool_account_onboarding",
+    "name": "current_pool_account_onboarding",
     "description": "Env2 arena M2 dedicated RBL account",
     "entities": { "fts_fund_account_id": ["900002"] }
   }]

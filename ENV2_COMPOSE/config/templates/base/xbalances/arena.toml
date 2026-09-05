@@ -11,12 +11,12 @@
     HostName = "http://127.0.0.1:8081"
 
 [Server]
-    # Explicit 127.0.0.1 (not ":8080") so the grpc-gateway's self-dial back to
-    # the grpc server has a host our HTTPS_PROXY/NO_PROXY blackhole can match on.
+    # The HTTP gateway must accept peer-container calls on the internal bridge.
+    # Its gRPC self-dial stays explicitly loopback to match NO_PROXY.
     [Server.ServerAddresses]
         Grpc     = "127.0.0.1:8080"
-        Http     = "127.0.0.1:8081"
-        Internal = "127.0.0.1:8082"
+        Http     = "0.0.0.0:8081"
+        Internal = "0.0.0.0:8082"
     [Server.Auth]
         [Server.Auth.API]
             Username  = "api"

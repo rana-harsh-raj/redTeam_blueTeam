@@ -1,0 +1,9 @@
+test_diagnostic_url_does_not_allow_other_host_on_same_line (test_audits.AuditBoundaries.test_diagnostic_url_does_not_allow_other_host_on_same_line) ... ok
+test_known_redaction_preserves_novel_candidate (test_audits.AuditBoundaries.test_known_redaction_preserves_novel_candidate) ... ok
+test_missing_scanner_report_fails_closed (test_audits.AuditBoundaries.test_missing_scanner_report_fails_closed) ... ok
+test_workspace_mismatch_blocks_inspection (test_audits.AuditBoundaries.test_workspace_mismatch_blocks_inspection) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK

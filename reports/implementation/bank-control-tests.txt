@@ -1,0 +1,36 @@
+[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+.[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+.[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_status HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_status HTTP/1.1" 200 -
+.[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_status HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_status HTTP/1.1" 200 -
+.[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 400 -
+/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 400: 'Bad Request'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 400 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 400 -
+.[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+.[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+.[unknown-stub] 2026-09-05T17:55:12 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T17:55:12 "POST /fts/rbl/v1/transfer_init HTTP/1.1" 504 -
+/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 504: 'Gateway Timeout'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+.
+----------------------------------------------------------------------
+Ran 8 tests in 0.529s
+
+OK

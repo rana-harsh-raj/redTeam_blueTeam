@@ -26,7 +26,7 @@ INJECT_LATENCY_MS = int(os.environ.get("SPLITZ_INJECT_LATENCY_MS", "0"))
 
 EXPERIMENTS_BY_ID = {}   # experiment_id -> {name, variants: {merchant_id: variant_name}}
 EXPERIMENTS_BY_NAME = {}  # name -> same record (points at the same dict object)
-DEFAULT_VARIANT = "on"
+DEFAULT_VARIANT = "off"
 
 
 def _load_seed():
@@ -36,7 +36,7 @@ def _load_seed():
         return
     with open(SEED_FILE) as f:
         data = json.load(f)
-    DEFAULT_VARIANT = data.get("default_variant", "on")
+    DEFAULT_VARIANT = data.get("default_variant", "off")
     for exp_id, rec in data.get("experiments", {}).items():
         EXPERIMENTS_BY_ID[exp_id] = rec
         if rec.get("name"):
@@ -83,7 +83,10 @@ def _one_evaluate(req):
         "variant": {
             "id": "var_%s" % variant_name,
             "name": variant_name,
-            "variables": [{"key": "result", "value": variant_name}],
+            # Payouts reads result=on; FTS reads enabled=true. Both are
+            # typed string variables in the same real Splitz Variant DTO.
+            "variables": [{"key": "result", "value": variant_name},
+                          {"key": "enabled", "value": "true" if variant_name in ("on", "enabled", "true") else "false"}],
             "experiment_id": resolved_id,
             "weight": 100,
             "region": "",

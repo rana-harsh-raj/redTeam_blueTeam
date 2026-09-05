@@ -1,0 +1,175 @@
+# TWIN_SPEC/expected-failures.yaml
+#
+# Route outcomes that the twin is REQUIRED to reproduce as failures because the
+# pinned production source produces them. A run whose ending state matches one
+# of these entries is a route_fidelity PASS and a product_route_health FAIL.
+#
+# Consumed by ENV2_COMPOSE/scripts/local-acceptance.py. An observed failure that
+# matches no entry here (and no entry in
+# reports/implementation/fixed-twin-defects.json) is an UNEXPLAINED result and
+# blocks the freeze.
+#
+# `predicted_state` is structured and is compared field-by-field against the
+# state observed in the run artifact. A field set to null means "not asserted".
+# Fields:
+#   payout_status  final payouts.payouts.status
+#   fts_status     final fts.fund_transfers.status (null when no transfer)
+#   journals       ledger journal transactor_events that MUST be absent
+#                  (absent: [...]) and that MUST be present (present: [...])
+#   webhooks       merchant terminal webhook events that MUST be absent /
+#                  present, by `payout.<event>` name
+#
+# `source_refs` cite the PINNED PRISTINE CLONES (payouts 4bf3dbf9), not the
+# twin's admitted build copies. `deployed_status` records what kube-manifests
+# and the retained drift report say about the same code path in production.
+
+schema_version: 1
+generated_by: reports/claude-review/TWIN_V1_AUDIT_AND_NEXT_STEP.md sections 3 and 4
+pinned_source_commits:
+  payouts: 4bf3dbf9239feadea6d65ca90c893a988e116173
+  fts: 2a09e763
+  kube-manifests: 9226a892
+
+expected_failures:
+
+  - id: EF-001
+    title: Shared-account PROCESSED over Kafka cannot enqueue the processed Ledger journal
+    scope:
+      profile: kafka
+      cases:
+        - shared_source_failure
+        - golden-shared
+    predicted_state:
+      payout_status: initiated
+      fts_status: PROCESSED
+      journals:
+        present:
+          - payout_initiated
+        absent:
+          - payout_processed
+      webhooks:
+        absent:
+          - payout.processed
+          - payout.failed
+          - payout.reversed
+    source_refs:
+      - payouts internal/boot/handler.go:154
+      - payouts internal/boot/boot_kafka_consumer.go:17-29
+      - payouts pkg/worker/manager.go:186-189
+      - payouts internal/app/payouts/core.go:2472-2475
+      - payouts internal/app/payouts/core.go:2589-2595
+    mechanism: >-
+      job.RegisterJobs() has exactly one call site, internal/boot/handler.go:154,
+      reached only from boot_api.go:47 and boot_worker.go:37. The Kafka chain
+      (cmd/kafkaConsumers/main.go:18 -> boot_kafka_consumer.go:17-29 ->
+      registerDefaultHandlersForKafkaConsumer -> handleKafkaConsumer) never calls
+      it, so provider.GetWorker lazily builds an empty manager
+      (pkg/worker/manager.go:111) and Perform fails its registration guard
+      (manager.go:186-189). For Shared accounts core.go:2589-2595 propagates that
+      enqueue error and core.go:2472-2475 returns before OnEvent(EventProcessed),
+      so the payout stays `initiated`. Direct accounts return at core.go:2575-2577
+      before the enqueue, which is why the Direct Kafka case passes.
+    deployed_status: >-
+      DEPLOYED. payouts-kafka-fts-status-updates-consumer (and the retry consumer)
+      are templated with no enable gate; cde/payouts/values.yaml sets 1/1 replicas
+      and the retained drift report devstack-prod-parity/reports/batch8/
+      drift-check-20260703.html shows the live object in namespace `payouts`,
+      application `prod-payouts`, created 2022-02-17, revision 418, LIVE REPLICAS 3,
+      restartPolicy Always, with HTTP liveness and readiness probes. The FTS
+      producer is enabled in prod-live (env.prod-live.toml:318,
+      [kafka_producers.fire_transfer_status] enabled = true, topic
+      rx-fts-status-update-events). Whether any production MERCHANT is on the
+      Kafka route is NOT DETERMINABLE from repository evidence: the per-merchant
+      gate is Splitz experiment PYGTRQEzO39PfB (env.prod-live.toml:364,
+      fail-closed to false) and no fixture for it exists in the splitz clone
+      (owner questions Q1/Q2).
+    classification: production-source bootstrap defect, reproduced faithfully
+    disposition: preserve
+    notes: >-
+      Do NOT weaken this into green and do NOT exclude Shared Kafka from declared
+      v1 scope: it is the one route where the twin demonstrably reproduces a
+      production-source defect. A second, independent defect rides the same path:
+      FTS publishes the flat transfer map with source_account_id/bank_account_type
+      while the consumer unmarshals fts_fund_account_id/fts_account_type/fts_status
+      with no adapter (dtos/payoutUpdate.go:8-16,
+      taskHandlers/fts_status_updates.go:42-54), so even with jobs registered the
+      processed journal would carry empty account identifiers
+      (ledger_journal_create.go:216-217).
+
+  - id: EF-002
+    title: FTS FAILED delivered over Kafka is acknowledged and dropped
+    scope:
+      profile: kafka
+      cases:
+        - failed_dropped_direct
+        - failed_dropped_shared
+    predicted_state:
+      payout_status: initiated
+      fts_status: FAILED
+      journals:
+        # No 'present' clause: failed_dropped_direct is a Direct account, which never has a
+        # payout Ledger journal; the Shared case's initiated journal is covered by V05/V07.
+        absent:
+          - payout_failed
+          - payout_reversed
+      webhooks:
+        absent:
+          - payout.failed
+          - payout.reversed
+    source_refs:
+      - payouts internal/taskHandlers/fts_status_updates.go:56-62
+      - payouts internal/taskHandlers/fts_status_updates_retry.go:58-64
+    mechanism: >-
+      The FAILED branch returns nil, so the message is Acked and permanently
+      dropped: no payout state change, no reversal, no journal, no webhook. The
+      retry consumer has the same branch one line off. Because the FTS status
+      choice is exclusive (fts service.go:1139-1144 returns after the Kafka
+      publish), a Kafka-routed merchant's FAILED never reaches payouts-service
+      over HTTP either.
+    deployed_status: >-
+      DEPLOYED. Same consumer deployment as EF-001: live replicas 3,
+      restartPolicy Always, no enable gate; FTS producer enabled in prod-live.
+      Merchant rollout NOT DETERMINABLE (Splitz PYGTRQEzO39PfB has no repository
+      fixture). The API monolith consumes the same topic under its own group
+      (cde/api/values.yaml:315, 8 replicas) and can relay status over HTTP for
+      transfers whose FTA row the monolith created, so the drop is unmitigated
+      only for PS-direct-created transfers (owner question Q2).
+    classification: production-source handling gap, reproduced faithfully
+    disposition: preserve
+    notes: >-
+      Invariant I71. This is a known gap presented to the red-agent judge as
+      calibration, not a new finding.
+
+  - id: EF-003
+    title: FTS REVERSED delivered over Kafka is acknowledged and dropped
+    scope:
+      profile: kafka
+      cases:
+        - reversed_dropped_direct
+    predicted_state:
+      payout_status: processed
+      fts_status: REVERSED
+      journals:
+        # reversed_dropped_direct is a Direct account: no payout Ledger journal exists at all.
+        absent:
+          - payout_reversed
+          - payout_failed
+      webhooks:
+        absent:
+          - payout.reversed
+    source_refs:
+      - payouts internal/taskHandlers/fts_status_updates.go:56-62
+      - payouts internal/taskHandlers/fts_status_updates_retry.go:58-64
+    mechanism: >-
+      REVERSED shares the FAILED branch: return nil, Ack, permanent drop. The
+      payout therefore remains `processed` with no reversal entity and no
+      reversal journal, and no payout.reversed webhook is delivered.
+    deployed_status: >-
+      DEPLOYED. Same consumer deployment as EF-001/EF-002: live replicas 3,
+      restartPolicy Always, no enable gate; FTS producer enabled in prod-live;
+      merchant rollout NOT DETERMINABLE.
+    classification: production-source handling gap, reproduced faithfully
+    disposition: preserve
+    notes: >-
+      Direct accounts only, because a Shared account never reaches `processed`
+      over Kafka in the first place (EF-001).

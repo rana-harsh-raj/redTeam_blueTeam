@@ -1,5 +1,11 @@
 # ENV2_COMPOSE — Env 2 runnable implementation scaffold
 
+For Twin v1, use [the current setup and execution guide](../TWIN_V1_README.md).
+It covers admitted fresh source copies, generated fixtures, scoped secret volumes,
+both internal networks, the loopback bridge and audited verification. The original
+scaffold description below is retained as background; its earlier topology and
+seed instructions are superseded by that guide.
+
 A docker-compose scaffold for **Env 2: public API payout with idempotency
 and webhooks** (`INITIAL_PAYOUTS_ENVIRONMENT_BOM.md` §2), the first
 recommended sandbox environment in the Payouts architecture closure. Real
@@ -89,6 +95,22 @@ bash scripts/golden-run.sh --with-egress-audit
 
 # 4. Tear down (destroys secrets + generated config + volumes)
 ./scripts/down.sh
+```
+
+Milestone 1 additions (see [TWIN_V1_README.md](../TWIN_V1_README.md) for full detail):
+
+```bash
+# Kafka status-transport scenarios (I70/I71) -- kafka route profile only
+bash scripts/scenarios.sh --with-egress-audit kafka [--case shared_source_failure|direct_after_shared|failed_dropped_direct|failed_dropped_shared|reversed_dropped_direct]
+
+# Per-run boot fingerprint (also invoked by up.sh; copied into every run dir)
+python3 scripts/fingerprint.py
+
+# Generated machine-readable acceptance gate (schema 2), replacing the hand-authored one
+python3 scripts/local-acceptance.py MANIFEST.json [--output reports/implementation/local-acceptance.json] [--summary reports/implementation/LOCAL_ACCEPTANCE_GENERATED.md]
+
+# Rebuild one core image and refresh its build-evidence directory
+python3 build/record-rebuild.py <service> --base-evidence <dir> --repos-root <dir>
 ```
 
 The arena's only host-reachable entrypoint is

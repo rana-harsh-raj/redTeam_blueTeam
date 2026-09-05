@@ -7,7 +7,7 @@
       "bank_account": {
         "id": "ba_ARENABK000001", "name": "Arena Beneficiary One", "ifsc": "RATN0000001",
         "bank_identifier": "RATN", "account_number": "1112220001", "bank_name": "RBL Bank",
-        "ifsc_code": "RATN0000001", "account_type": "savings"
+        "ifsc_code": "RATN0000001", "account_type": null
       },
       "vpa": {}, "card": {}, "wallet": {},
       "contact": { "id": "cont_ARENA000001", "entity": "contact", "name": "Arena Beneficiary One",
@@ -40,7 +40,7 @@
       "bank_account": {
         "id": "ba_ARENABK000004", "name": "Arena Blocked Beneficiary", "ifsc": "RATN0000001",
         "bank_identifier": "RATN", "account_number": "1112229999", "bank_name": "RBL Bank",
-        "ifsc_code": "RATN0000001", "account_type": "savings"
+        "ifsc_code": "RATN0000001", "account_type": null
       },
       "vpa": {}, "card": {}, "wallet": {},
       "contact": { "id": "cont_ARENA000001", "entity": "contact", "name": "Arena Beneficiary One",

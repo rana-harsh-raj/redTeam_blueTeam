@@ -1,0 +1,9 @@
+test_journal_after_first_worker_retry_is_observed (test_processed_journal_wait.ProcessedJournalWait.test_journal_after_first_worker_retry_is_observed) ... ok
+test_missing_journal_still_fails_at_explicit_bound (test_processed_journal_wait.ProcessedJournalWait.test_missing_journal_still_fails_at_explicit_bound) ... ok
+test_wait_policy_matches_arena_worker_retry_config (test_processed_journal_wait.ProcessedJournalWait.test_wait_policy_matches_arena_worker_retry_config) ... ok
+test_mysql_tuple_rows_include_empty_reversals_and_full_attempt_chain (test_trace_snapshot.SnapshotTests.test_mysql_tuple_rows_include_empty_reversals_and_full_attempt_chain) ... ok
+
+----------------------------------------------------------------------
+Ran 4 tests in 0.002s
+
+OK

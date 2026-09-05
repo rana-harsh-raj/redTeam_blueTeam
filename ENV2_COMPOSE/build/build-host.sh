@@ -47,33 +47,56 @@ package_runtime() {
   local name="$1"; shift
   local -a bins=("$@")
   echo "==> packaging rzp-arena/${name}:${ARENA_TAG} from host-built binaries: ${bins[*]}"
-  local stage_dir; stage_dir="$(mktemp -d)"
+  local stage_dir="$OUT_DIR/runtime-$name"
+  mkdir -p "$stage_dir"
   for b in "${bins[@]}"; do
-    cp "$OUT_DIR/$b" "$stage_dir/$b"
+    install -m 0755 "$OUT_DIR/$b" "$stage_dir/$b"
   done
   # Runtime asset files the services open relative to WORKDIR=/app (see build/assets.Dockerfile.md).
   if declare -f "stage_assets_${name}" >/dev/null; then "stage_assets_${name}" "$stage_dir"; fi
+  # Only binaries and explicitly admitted public assets enter this context.
+  # Source copies may be 0600 and callers may use umask 077; appuser must
+  # still traverse every packaged directory. Never change source permissions.
+  find "$stage_dir" -type d -exec chmod 0755 {} +
   docker build -f "$RUNTIME_DOCKERFILE" -t "rzp-arena/${name}:${ARENA_TAG}" "$stage_dir"
   rm -rf "$stage_dir"
 }
 
+stage_public_json() {
+  local destination="$1"; shift
+  mkdir -p "$destination"
+  # Bank-directory metadata is public runtime reference data, not config or
+  # credentials. Set creation permissions explicitly instead of preserving
+  # the restrictive modes of the admitted source copy.
+  install -m 0644 "$@" "$destination/"
+}
+
 # payouts: github.com/razorpay/ifsc opens $WORKDIR/github.com/razorpay/ifsc/v2@<ver>/src/*.json at boot
+#
+# ARENA FIX (milestone 1, TWIN_V1_AUDIT_AND_NEXT_STEP.md §5.2/§3, lane_C_patches.md §3 "files/ not staged"):
+# prod's build/docker/prod/Dockerfile.api:80 also does `COPY --from=builder /src/files/ /app/files/`; that
+# directory was never staged here. helpers.ReadErrorFile (internal/helpers/read_file.go:18-33) resolves
+# $WORKDIR/files/error/<payout_error|fav_error>.json (WORKDIR=/app in docker-compose.yml) and silently returns
+# nil on a missing file (read_file.go:22-25, no error) -- every bank error-code -> public failure-reason mapping
+# (internal/app/payoutStatusDetails/statusProcessor.go:112, internal/app/payouts/payout_error.go:63,
+# internal/app/favStatusDetails/core.go:141) was degrading to the fallback with no visible failure. Both JSON
+# files are public bank error-code -> {source,reason,description} maps (grepped for
+# password/secret/api_key/private_key/token/credential -- zero matches; "VAULT_TOKEN_*" hits are error-code
+# *keys*, not values) and are staged public/0644 like the IFSC data above.
 stage_assets_payouts() {
   local stage="$1" ver; ver="$(grep -o 'razorpay/ifsc/v2 v[0-9.]*' "$REPOS_ROOT/payouts/go.mod" | awk '{print $2}')"
-  mkdir -p "$stage/github.com/razorpay/ifsc/v2@${ver}/src"
-  cp "$(go env GOMODCACHE)/github.com/razorpay/ifsc/v2@${ver}/src/"*.json "$stage/github.com/razorpay/ifsc/v2@${ver}/src/"
+  stage_public_json "$stage/github.com/razorpay/ifsc/v2@${ver}/src" "$(go env GOMODCACHE)/github.com/razorpay/ifsc/v2@${ver}/src/"*.json
+  stage_public_json "$stage/files/error" "$REPOS_ROOT/payouts/files/error/"*.json
 }
 
 # cfa: its own pkg/ifsc/*.json plus the ifsc module files, and the socat Mongo-forward entrypoint
 stage_assets_cfa() {
   local stage="$1" ver; ver="$(grep -o 'razorpay/ifsc/v2 v[0-9.]*' "$REPOS_ROOT/cfa/go.mod" 2>/dev/null | awk '{print $2}' || true)"
-  mkdir -p "$stage/github.com/razorpay/cfa/pkg/ifsc"
-  cp "$REPOS_ROOT/cfa/pkg/ifsc/"*.json "$stage/github.com/razorpay/cfa/pkg/ifsc/"
+  stage_public_json "$stage/github.com/razorpay/cfa/pkg/ifsc" "$REPOS_ROOT/cfa/pkg/ifsc/"*.json
   if [ -n "$ver" ]; then   # only when cfa depends on the ifsc module (it vendors pkg/ifsc/go itself today)
-    mkdir -p "$stage/github.com/razorpay/ifsc/v2@${ver}/src"
-    cp "$(go env GOMODCACHE)/github.com/razorpay/ifsc/v2@${ver}/src/"*.json "$stage/github.com/razorpay/ifsc/v2@${ver}/src/"
+    stage_public_json "$stage/github.com/razorpay/ifsc/v2@${ver}/src" "$(go env GOMODCACHE)/github.com/razorpay/ifsc/v2@${ver}/src/"*.json
   fi
-  cp "$COMPOSE_ROOT/build/cfa-entry.sh" "$stage/cfa-entry.sh"
+  install -m 0755 "$COMPOSE_ROOT/build/cfa-entry.sh" "$stage/cfa-entry.sh"
 }
 
 build_payouts() {
