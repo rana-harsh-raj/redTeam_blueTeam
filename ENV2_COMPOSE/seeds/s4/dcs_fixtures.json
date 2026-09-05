@@ -1,0 +1,114 @@
+{
+  "_source": "config-proto/rzp/x/merchant/payouts/{workflows,fund_transfer,api_interface,cfa}.proto, config-proto/rzp/x/merchant/payouts/direct_accounts/{configs,payout_mode_config}.proto, cross-checked against findings/26_dcs_splitz_governor_shield.md:99-126,343-370. Key shape: {namespace:'rzp/x', entity:'merchant', entity_id, domain:'payouts'[/'direct_accounts'], object_name}. DCS wire protocol is protojson over goutils/dcs KV API (POST /v1/kv/get|put|patch) per findings/24_shared_libs_proto.md:305-337 -- this file gives the logical JSON value per key; the dcs-stub substitute may serve it directly as JSON (not validating real protobuf wire bytes), matching the convention already used by the ENV2_COMPOSE dcs-stub substitute.",
+  "_merchant_id_note": "Arena merchant ids are ARENAM00000001 (M1), ARENAM00000002 (M2), ARENAM00000003 (M3) -- 14 chars exactly, matching payouts/fts merchant_id CHAR(14) columns. Deviates from the task prompt's illustrative 'ARENAM0000000001..3' (16 chars) which would silently truncate/collide in a CHAR(14) column.",
+  "merchants": {
+    "ARENAM00000001": {
+      "_role": "M1 -- Shared/Lite, ledger-backed balance, no workflow, no in-flight reservation (mirrors findings/26's merchant_test_001)",
+      "rzp/x/merchant/payouts/Workflows": {
+        "enable_payout_workflow": false,
+        "skip_workflow_for_dashboard": false,
+        "skip_workflow_for_payroll": false,
+        "skip_approval_workflow_for_api": false,
+        "enable_approval_via_oauth": false
+      },
+      "rzp/x/merchant/payouts/Cfa": { "skip_ifsc_lookup": false },
+      "rzp/x/merchant/payouts/direct_accounts/Configs": { "in_flight_reservation_enabled": false },
+      "rzp/x/merchant/payouts/FundTransfer": {
+        "enable_payouts": true,
+        "payouts_to_fts_async_processing": false,
+        "increase_per_payout_amount_limit": false,
+        "payouts_blocked_via_lite_account": false,
+        "enable_payouts_queue_buffer": false,
+        "queue_payout_bal_buffer": 0,
+        "block_va_payouts": false
+      },
+      "rzp/x/merchant/payouts/ApiInterface": {
+        "enable_beneficiary_name_in_response": false,
+        "enable_null_narration": false,
+        "payout_idem_key_required": true,
+        "enable_http_encryption": false,
+        "below_rupee_payouts": false,
+        "payout_service_enabled": true,
+        "fmp_config": {},
+        "bene_name_in_payout": false,
+        "rbl_ca_upi": false,
+        "enable_ip_whitelist_fetch": false
+      },
+      "rzp/x/merchant/payouts/direct_accounts/PayoutModeConfig": { "allowed_upi_channels": [] }
+    },
+    "ARENAM00000002": {
+      "_role": "M2 -- Direct/current account on RBL, x-balances-mirrored balance, in_flight_reservation_enabled ON (mirrors findings/26's merchant_test_002)",
+      "rzp/x/merchant/payouts/Workflows": {
+        "enable_payout_workflow": false,
+        "skip_workflow_for_dashboard": false,
+        "skip_workflow_for_payroll": false,
+        "skip_approval_workflow_for_api": false,
+        "enable_approval_via_oauth": false
+      },
+      "rzp/x/merchant/payouts/Cfa": { "skip_ifsc_lookup": true },
+      "rzp/x/merchant/payouts/direct_accounts/Configs": { "in_flight_reservation_enabled": true },
+      "rzp/x/merchant/payouts/FundTransfer": {
+        "enable_payouts": true,
+        "payouts_to_fts_async_processing": true,
+        "increase_per_payout_amount_limit": false,
+        "payouts_blocked_via_lite_account": false,
+        "enable_payouts_queue_buffer": true,
+        "queue_payout_bal_buffer": 50000,
+        "block_va_payouts": false
+      },
+      "rzp/x/merchant/payouts/ApiInterface": {
+        "enable_beneficiary_name_in_response": true,
+        "enable_null_narration": false,
+        "payout_idem_key_required": true,
+        "enable_http_encryption": false,
+        "below_rupee_payouts": false,
+        "payout_service_enabled": true,
+        "fmp_config": {},
+        "bene_name_in_payout": true,
+        "rbl_ca_upi": false,
+        "enable_ip_whitelist_fetch": false
+      },
+      "rzp/x/merchant/payouts/direct_accounts/PayoutModeConfig": { "allowed_upi_channels": ["icici", "axis"] }
+    },
+    "ARENAM00000003": {
+      "_role": "M3 -- Shared, workflow-enabled with finance_l1/finance_l2/owner roles (mirrors findings/26's merchant_test_003)",
+      "rzp/x/merchant/payouts/Workflows": {
+        "enable_payout_workflow": true,
+        "skip_workflow_for_dashboard": false,
+        "skip_workflow_for_payroll": true,
+        "skip_approval_workflow_for_api": true,
+        "enable_approval_via_oauth": false
+      },
+      "rzp/x/merchant/payouts/Cfa": { "skip_ifsc_lookup": false },
+      "rzp/x/merchant/payouts/direct_accounts/Configs": { "in_flight_reservation_enabled": false },
+      "rzp/x/merchant/payouts/FundTransfer": {
+        "enable_payouts": true,
+        "payouts_to_fts_async_processing": false,
+        "increase_per_payout_amount_limit": false,
+        "payouts_blocked_via_lite_account": false,
+        "enable_payouts_queue_buffer": true,
+        "queue_payout_bal_buffer": 100000,
+        "block_va_payouts": true
+      },
+      "rzp/x/merchant/payouts/ApiInterface": {
+        "enable_beneficiary_name_in_response": false,
+        "enable_null_narration": false,
+        "payout_idem_key_required": true,
+        "enable_http_encryption": false,
+        "below_rupee_payouts": false,
+        "payout_service_enabled": true,
+        "fmp_config": {},
+        "bene_name_in_payout": false,
+        "rbl_ca_upi": false,
+        "enable_ip_whitelist_fetch": false
+      },
+      "rzp/x/merchant/payouts/direct_accounts/PayoutModeConfig": { "allowed_upi_channels": ["yesbank"] }
+    }
+  },
+  "_legacy_dcs_dual_write_note": "The task also asks for 'legacy' flag names alongside DCS names. findings/26 (:203-240) found no literal second string name per flag -- the legacy interop is instead the Proxy service's DCSFeature{write_via_client, read_enabled_via_dcs, dual_write_enabled} (proto/dcs/proxy/v1/proxy.proto:40-49), which gates whether DCS or the legacy API-monolith MySQL 'Feature' table is authoritative for a given legacy flag name, per-flag. Since the arena's API monolith is itself a stub (monolith_fixtures.json), the 'legacy name' surface for payout_service_enabled and in_flight_reservation_enabled is represented there via the merchant.features list, kept in sync by hand with this file (see monolith_fixtures.json's _dcs_parity_note) rather than by a live dual-write mechanism.",
+  "dcs_feature_proxy_config": {
+    "_purpose": "Optional: seed if the dcs-stub substitute also serves /v1/proxy/features/config/update reads. Not required for Env2 golden flows B (create->processed etc) since payouts reads DCS directly, not via Proxy.",
+    "payout_service_enabled": { "write_via_client": true, "read_enabled_via_dcs": true, "dual_write_enabled": true },
+    "in_flight_reservation_enabled": { "write_via_client": true, "read_enabled_via_dcs": true, "dual_write_enabled": true }
+  }
+}

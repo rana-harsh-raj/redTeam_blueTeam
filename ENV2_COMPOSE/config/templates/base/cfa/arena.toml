@@ -1,0 +1,210 @@
+# NOTE: this file is loaded from env2-spike/cfa/config/ at runtime via WORKDIR;
+# it is NOT part of the git repo. See findings/28_build_spike_cfa.md for how it
+# was generated (copied from config/slit.toml, then every external host rewritten
+# to 127.0.0.1 / a local stub, per the build-spike hard rules).
+#
+# configloader.Load() ALWAYS loads config/default.toml first, then merges this
+# file's fields on top (struct-field overwrite, not full-map replace). Several
+# external hosts live only in default.toml (App.HostName, Wda.default_http_client_url)
+# so they are re-declared here even though this file's own base (slit.toml) already
+# repeats them with the same razorpay.in values - all instances are rewritten below.
+
+[App]
+    Env      = "arena"
+    HostName = "http://127.0.0.1:8081"
+
+[Server]
+    ShutdownTimeout = 20
+    [Server.ServerAddresses]
+        Grpc     = ":8080"
+        Http     = ":8081"
+        Internal = ":8082"
+
+    [Server.Auth]
+        [Server.Auth.API]
+            Username  = "api"
+            Password1 = "api"
+        [Server.Auth.Payouts]
+            Username  = "payouts"
+            Password1 = "{{SECRET.auth_cfa_payouts}}"   # arena: = payouts [cfa].password
+        [[Server.Auth.Dev]]
+            Username  = "local.dev"
+            Password1 = "devpassword"
+            Password2 = ""
+
+[Store]
+    Choice = "mongodb"
+    [Store.MongoDB]
+        Dialect               = "mongo"
+        Port                  = "{{SVC.mongo_cfa.port}}"
+        Endpoint              = "{{SVC.mongo_cfa.host}}"
+        Username              = "{{SVC.mongo_cfa.user}}"
+        Password              = "{{SECRET.mongo_cfa_root_password}}"
+        DatabaseName          = "{{SVC.mongo_cfa.dbname}}"
+        MaxOpenConnections    = 5
+        MaxIdleConnections    = 2
+        QueryTimeLogger       = true
+
+[APIStore]
+    Choice = "sql"
+    [APIStore.Sql]
+        Dialect               = "mysql"
+        Protocol              = "tcp"
+        Port                  = {{SVC.mysql_apidb.port}}
+        Url                   = "{{SVC.mysql_apidb.host}}"
+        Username              = "{{SVC.mysql_apidb.user}}"
+        Password              = "{{SECRET.mysql_apidb_root_password}}"
+        Name                  = "{{SVC.mysql_apidb.dbname}}"
+        SslMode               = "disable"
+        MaxOpenConnections    = 5
+        MaxIdleConnections    = 5
+
+[ElasticSearch]
+    Enabled = false
+    Host = "127.0.0.1"
+    Port = 9200
+    Index = "cfa_arena_contacts"
+    Mock  = true
+    ShortTimeoutSeconds = 5
+    MediumTimeoutSeconds = 10
+    LongTimeoutSeconds = 20
+    MaxRetryAttempts = 2
+    JitterEnabled = true
+    JitterMinPercent = 70
+    JitterMaxPercent = 130
+
+# SQS is not stood up for this spike (out of scope: brief authorized only
+# Mongo/Redis containers). These point at an unreachable local port so the
+# SDK fails fast with a local connection error instead of ever resolving a
+# real AWS host. See findings doc "Startup dependencies observed".
+#
+# INCIDENT (see findings doc): Driver="sqs" (goutils/worker/v2/queue's plain
+# SQS dialect) IGNORES the Endpoint field entirely and always builds a real
+# AWS SDK client against https://sqs.<Region>.amazonaws.com/ - confirmed live:
+# cfa-worker made repeated real HTTPS calls to sqs.us-east-1.amazonaws.com
+# (got AccessDenied/403 on each, no data exchanged) before being killed.
+#
+# Driver="sqs_local" (goutils queue/broker/sqs.go LocalDialect) uses
+# NewWithEndpoint(), which DOES call awsConfig.WithEndpoint(conf.Endpoint) -
+# this is the only driver value that actually honors a local Endpoint
+# override in this SDK version, and cfa-worker was re-verified clean with it
+# (only "connection refused" to 127.0.0.1:1 in the log, dial tcp local error).
+#
+# BUT cfa's OWN internal/eventsystem/service.go NewServiceWithSQS() hardcodes
+# a check that REJECTS any Driver other than the literal string "sqs" (fatal
+# at cfa-server boot: "unsupported queue driver: sqs_local") - so cfa-server
+# cannot use sqs_local. cfa-server's boot path never actively calls SQS
+# (mgr.Start() is only invoked in cmd/worker, not cmd/server - confirmed by a
+# clean boot.log grep with Driver="sqs" and no active polling), so Driver
+# stays "sqs" here for server; cfa-worker is launched instead with the env
+# override QUEUE_DRIVER=sqs_local (viper AutomaticEnv, see findings doc) to
+# swap the driver at process level without needing two config files.
+[Queue]
+    Driver = "sqs"
+    [Queue.Sqs]
+        Region   = "ap-south-1"   # arena: LocalStack queues are created in ap-south-1 (seeds/localstack/init-queues.sh); SigV4 region must match
+        Endpoint = "{{SVC.localstack.url}}"
+        Prefix   = "http://localstack:4566/000000000000"   # arena: goutils/worker v1 builds QueueUrl as "<Prefix>/<name>"
+        UseAnonymousCredentials = false   # arena: sign with the synthetic env creds so LocalStack resolves region ap-south-1
+        MaxRetries = 1
+        VisibilityTimeout = 300
+        WaitTimeout = 1
+        [Queue.Sqs.Httpclient]
+            ConnectTimeoutMs = 1000
+            ConnKeepAliveMs = 0
+            ExpectContinueTimeoutMs = 1000
+            IdleConnTimeoutMs = 0
+            MaxAllIdleConns = 0
+            MaxHostIdleConns = 100
+            ResponseHeaderTimeoutMs = 1000
+            TLSHandshakeTimeoutMs = 1000
+
+[Job]
+    ContactLazyLoad = "arena-cfa-contact-lazy-loading-live"
+    FundAccountLazyLoad = "arena-cfa-fund-account-lazy-loading-live"
+
+[EventSystem]
+    [EventSystem.QueueConfigs]
+        [EventSystem.QueueConfigs.contact]
+            default = "contacts"
+            dual_write = "contact-dual-write-queue"
+            lazy_load = "contact-lazy-load"
+        [EventSystem.QueueConfigs.fund_account]
+            default = "fund_account"
+            dual_write = "fund-account-dual-write-queue"
+            lazy_load = "fund-account-lazy-load"
+
+[BinService]
+    BaseURL = "http://127.0.0.1:1"
+    Mock = true
+    [BinService.Auth]
+        Key = "mock-key"
+        Secret = "mock-secret"
+
+[VaultService]
+    BaseURL = "http://127.0.0.1:1"
+    Mock = true
+    [VaultService.Auth]
+        Key = "mock-key"
+        Secret = "mock-secret"
+
+[TokenService]
+    BaseURL = "http://127.0.0.1:1"
+    Mock = true
+    [TokenService.Auth]
+        Key = "mock-key"
+        Secret = "mock-secret"
+
+[ApiService]
+    BaseURL = "http://127.0.0.1:1"
+    Mock = true
+    [ApiService.Auth]
+        Key = "mock-key"
+        Secret = "mock-secret"
+
+[FundAccountFetchMultiple]
+    enable_cfa_db = false
+    enable_tidb   = false
+
+[FundAccountValidation]
+    use_relaxed_beneficiary_name_regex = false
+
+[Wda]
+    default_http_client_url = "http://127.0.0.1:1"
+    user                    = "local"
+    password                = "local"
+    db_namespace            = "local"
+    db_cluster              = "local"
+    mock                    = true
+
+[Telemetry]
+    serviceName = "cfa"
+    serviceNamespace = "cfa"
+    environment = "arena"
+    exporterHost = "127.0.0.1"
+    exporterPort = "4318"
+    otelLogLevel = "debug"
+    [Telemetry.log]
+        level = "info"
+    [Telemetry.logConfig]
+        level = "info"
+
+# Dynamic Config Service (DCS): mock=true does NOT prevent a real network call.
+# CONFIRMED BY LIVE TEST (see findings doc "Residual grep hits" / DCS incident):
+# with env="dev", mock=true, cfa's internal/dcsservice.newDCSServer() still built
+# a real goutils/dcs client whose dcs.New() unconditionally calls c.creds.Get()
+# at construction time -> a real HTTPS POST to https://dcs-live.dev.razorpay.in/
+# v1/auth/login (got HTTP 403, no data exchanged, process was killed immediately
+# after). The Mock flag in goutils/dcs v1.7.1 does not gate this login step.
+# Fix used here: set env to a value NOT in goutils/dcs config.GetEnv()'s switch
+# (stage/prod/dev/func/automation/bvt/perf/perf1/slit/perf2/dark/availability).
+# cfa's newDCSServer() calls config.GetEnv(cfg.Env) FIRST and returns early on
+# error, before cache.New()/dcs.New() are ever called - guaranteeing zero
+# network calls. cfa's own caller (cmd/server/main.go) treats any DCS init
+# error as non-fatal and continues booting without DCS feature flags.
+[Dcs]
+    username = "payouts"
+    password = "{{SECRET.auth_dcs_payouts}}"
+    env      = "dev"
+    mock     = true
+    timeout  = 60

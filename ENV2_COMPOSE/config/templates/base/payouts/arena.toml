@@ -1,0 +1,1116 @@
+[app]
+    appEnv                = "default"
+    serviceName           = "payouts"
+    hostname              = "payouts.razorpay.com"
+    port                  = ":9400"
+    metricPort            = ":8001"
+    shutdownTimeout       = 60
+    shutdownDelay         = 10
+    gitCommitHash         = "nil"
+    debug                 = false
+
+[db]
+    [db.master]
+        dialect               = "mysql"
+        protocol              = "tcp"
+        url                   = "{{SVC.mysql_payouts.host}}"
+
+        port                  = "{{SVC.mysql_payouts.port}}"
+
+        username              = "{{SVC.mysql_payouts.user}}"
+
+        password              = "{{SECRET.mysql_payouts_root_password}}"
+
+        sslMode               = "disable"
+        name                  = "{{SVC.mysql_payouts.dbname}}"
+
+        maxOpenConnections    = 50
+        maxIdleConnections    = 50
+        connectionMaxLifetime = 0
+    [db.replica]
+        dialect               = "mysql"
+        protocol              = "tcp"
+        url                   = "{{SVC.mysql_payouts.host}}"
+
+        port                  = "{{SVC.mysql_payouts.port}}"
+
+        username              = "{{SVC.mysql_payouts.user}}"
+
+        password              = "{{SECRET.mysql_payouts_root_password}}"
+
+        sslMode               = "disable"
+        name                  = "{{SVC.mysql_payouts.dbname}}"
+
+        maxOpenConnections    = 50
+        maxIdleConnections    = 50
+        connectionMaxLifetime = 0
+    [db.api]
+        dialect               = "mysql"
+        protocol              = "tcp"
+        url                   = "{{SVC.mysql_apidb.host}}"
+
+        port                  = "{{SVC.mysql_apidb.port}}"
+
+        name                  = "{{SVC.mysql_apidb.dbname}}"
+
+        username              = "{{SVC.mysql_apidb.user}}"
+
+        password              = "{{SECRET.mysql_apidb_root_password}}"
+
+        sslMode               = "disable"
+        maxOpenConnections    = 5
+        maxIdleConnections    = 2
+        connectionMaxLifetime = 60
+        debug                 = true
+
+[tracing]
+    ServiceName         = "payouts"
+	Enabled             = false
+	LogSpans            = false
+	Host                = "localhost"
+	Port                = "6831"
+	MaxTagLengthValue   = "1024"
+    [tracing.RequestHeaderExclusions]
+        "Authorization"     = true
+        "x-passport-jwt-v1" = true
+        "x-pay-token"       = true
+        "x-xsrf-token"      = true
+    [[tracing.RouteURLsToExclude]]
+        "/status"       = true
+    [[tracing.RouteURLsToExclude]]
+        "/commit.txt"   = true
+
+[cache]
+    driver                = "redis"
+    [cache.redis]
+        host            = "{{SVC.redis.host}}"
+
+        port            = {{SVC.redis.port}}
+
+        password        = ""
+
+        database        = 0
+        # Connection pool settings
+        PoolSize      = 10
+        MinIdleConns  = 2
+        MaxConnAge    = 300
+        IdleTimeout   = 200
+
+[redis]
+    host              = "{{SVC.redis.host}}"
+
+    port              = {{SVC.redis.port}}
+
+    password          = ""
+
+    database          = 0
+    dialect           = "redis"
+    # Connection pool settings
+    PoolSize          = 10
+    MinIdleConns      = 2
+    MaxConnAge        = 300
+    IdleTimeout       = 0
+
+[auth]
+    [auth.dashboard]
+        username = "dashboard"
+        password = "dashboard"
+    [auth.reminder]
+        username = "reminder"
+        password = "reminder"
+    [auth.api]
+        username = "api"
+        password = "{{SECRET.auth_api_payouts}}"   # arena: inbound credential = the caller's generated secret
+    [auth.fts]
+        username = "fts"
+        password = "{{SECRET.auth_fts_payouts}}"   # arena: inbound credential = the caller's generated secret
+    [auth.workflow]
+        username = "rzp_live"
+        password = "{{SECRET.auth_workflow_payouts}}"   # arena: inbound credential = the caller's generated secret
+    [auth.fastcron]
+        username = "fast_cron"
+        password = "{{SECRET.auth_fastcron_payouts}}"   # arena: inbound credential = the caller's generated secret
+    [auth.merchantconfiguration]
+        username = "merchant_configuration"
+        password = "merchant_configuration_pw"
+    [auth.xperience]
+        username = "env|PAYOUTS_XPERIENCE_USERNAME"
+        password = "env|PAYOUTS_XPERIENCE_PASSWORD"
+    [auth.vendorpayments]
+        username = "vp_user"
+        password = "RANDOM_DASH_PASSWORD"
+    [auth.bankingaccounts]
+        username = "banking_accounts_user"
+        password = "banking_accounts_pw"
+    [auth.xbalances]
+        username = "x_balances"
+        password = "{{SECRET.auth_xbalances_payouts}}"   # arena: inbound credential = the caller's generated secret
+    [auth.settlements]
+        username = "env|PAYOUTS_AUTH_SETTLEMENTS_USERNAME"
+        password = "env|PAYOUTS_AUTH_SETTLEMENTS_PASSWORD"
+    [auth.irctc]
+        username = "env|PAYOUTS_AUTH_IRCTC_USERNAME"
+        password = "env|PAYOUTS_AUTH_IRCTC_PASSWORD"
+
+[api]
+    internalIngressHost = "{{SVC.monolith_stub.url}}/v1"
+    host = "{{SVC.monolith_stub.url}}/v1"
+    timeout = "30s"
+    keepAliveTimeout = "600s"
+    maxIdleConnections = 100
+    httpClientName = "api"
+    httpretryattempts = 3
+    httpretrywindow = "60ms"
+    httpmaxjitterinterval = "2ms"
+    [api.auth]
+        username = "rzp_live"
+        password = "{{SECRET.auth_monolith_shared}}"   # arena: payouts -> monolith(-stub) identity = monolith-stub inbound (verifier-bridge/monolith)
+    [api.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [api.httpclient.httpclient]
+        timeout = "30s"
+
+[stork]
+    serviceName = "rx-live"
+    servicePrefix = ""
+    [stork.sms]
+        namespace = "razorpayx_payouts_core"
+        payout_processed_contact_communication = "sms.payout.payout_processed_contact_communication_v2"
+        sender = "RZPAYX"
+        source = "api.user.payout_create"
+        service = "payouts-live"
+    [stork.email]
+        from_address = "no-reply@razorpay.in"
+        from_name = "Team Razorpay"
+        [stork.email.templates]
+            namespace = "razorpayx_payouts_core"
+            payout_reversed = "emails.transaction.payout_reversed"
+            payout_processed_contact_communication = "emails.payout.processed_contact_communication"
+            payout_transaction_processed = "emails.transaction.payout_processed"
+    [stork.httpClient]
+        host = "{{SVC.stork_capture.url}}"
+
+        timeout = "30s"
+        httpClientName = "api"
+        httpretryattempts = 3
+        httpretrywindow = "60ms"
+        httpmaxjitterinterval = "2ms"
+        [stork.httpClient.auth]
+            username = "payouts"
+            password = "{{SECRET.auth_stork_payouts}}"
+        [stork.httpClient.httpclient.resiliency]
+            maxconcurrentrequests = 100
+            requestvolumethreshold = 20
+            circuitbreakersleepwindow = 5000
+            errorpercentthreshold = 50
+            circuitbreakertimeout = 10000
+        [stork.httpClient.httpclient.httpclient]
+            timeout = "30s"
+
+[razorx]
+    host = "{{SVC.monolith_stub.url}}/v1"
+    timeout = "100ms"
+    httpClientName = "api"
+    httpretryattempts = 3
+    httpretrywindow = "60ms"
+    httpmaxjitterinterval = "2ms"
+    [razorx.auth]
+        username = "rzp_payouts"
+        password = "RANDOM_RAZORX_PASS_PAYOUTS"
+    [razorx.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [razorx.httpclient.httpclient]
+        timeout = "100ms"
+
+[vault]
+    host = "http://127.0.0.1:1"
+    timeout = "500ms"
+    keepAliveTimeout = "10000ms"
+    httpClientName = "payouts"
+    maxIdleConnections = 100
+    httpmaxjitterinterval = "2ms"
+    [vault.auth]
+        username = "payouts_user"
+        password = "{{SECRET.auth_vault_payouts}}"
+    [vault.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 2000
+        errorpercentthreshold = 70
+        circuitbreakertimeout = 10000
+    [vault.httpclient.httpclient]
+        timeout = "500ms"
+
+[mozart]
+    host = "{{MOZART.url}}"
+
+    timeout = "1000ms"
+    keepAliveTimeout = "10000ms"
+    httpClientName = "payouts"
+    maxIdleConnections = 100
+    [mozart.auth]
+        username = "payouts"
+        password = "{{SECRET.auth_mozart_shared}}"
+    [mozart.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 2000
+        errorpercentthreshold = 70
+        circuitbreakertimeout = 220000
+    [mozart.httpclient.httpclient]
+        timeout = "1000ms"
+
+[dcs]
+    Username    = "payouts"
+    Password    = "{{SECRET.auth_dcs_payouts}}"
+    Env         = "dev"
+
+    Mock        = true
+
+[banking_account_service]
+    host = "http://bankingaccounts-stub:8080"   # arena substitute (was a blackhole placeholder)
+    timeout = "2000ms"
+    keepAliveTimeout = "10000ms"
+    httpClientName = "payouts"
+    httpretryattempts = 2
+    httpretrywindow = "60ms"
+    maxIdleConnections = 100
+    httpmaxjitterinterval = "2ms"
+    [banking_account_service.auth]
+        username = "payouts"
+        password = "RANDOM_BAS_PASSWORD"
+    [banking_account_service.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [banking_account_service.httpclient.httpclient]
+        timeout = "2000ms"
+
+[workflow]
+    host = "http://127.0.0.1:1"
+    timeout = "100ms"
+    httpClientName = "api"
+    httpretryattempts = 3
+    httpretrywindow = "60ms"
+    httpmaxjitterinterval = "2ms"
+    [workflow.auth]
+        username = "workflow"
+        password = "workflow"
+    [workflow.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [workflow.httpclient.httpclient]
+        timeout = "100ms"
+
+[ledger]
+    host = "{{SVC.ledger_api.url}}"
+
+    timeout = "200ms"
+    keepAliveTimeout = "60000ms"
+    maxIdleConnections = 10
+    httpretryattempts = 3
+    [ledger.auth]
+        username = "payouts_key"
+        password = "{{SECRET.auth_payouts_ledger}}"
+    [ledger.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [ledger.httpclient.httpclient]
+        timeout = "200ms"
+
+[shield]
+    host = "{{SVC.shield_stub.url}}"
+
+    timeout = 200
+    keepAliveTimeout = 30000
+    maxIdleConnections = 10
+    httpClientName  = "shield"
+    [shield.auth]
+        username = "payouts"
+        password = "{{SECRET.auth_shield_payouts}}"
+    [shield.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        CircuitBreakerSleepWindow= 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 30000
+    [shield.httpclient.httpclient]
+        timeout = 200
+
+[shield_payout_evaluate]
+    [shield_payout_evaluate.exclude_payout]
+        [shield_payout_evaluate.exclude_payout.parameter]
+            purpose = ["rzp_fees"]
+
+[ups]
+    host = "http://127.0.0.1:1"
+
+    timeout = "3000ms"
+    keepAliveTimeout = "60000ms"
+    maxIdleConnections = 50
+    httpretryattempts = 3
+    httpretrywindow = "100ms"
+    httpmaxjitterinterval = "2ms"
+    [ups.auth]
+        username = "payouts"
+        password = "payouts"
+    [ups.httpclient.resiliency]
+        maxconcurrentrequests = 50
+        requestvolumethreshold = 10
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [ups.httpclient.httpclient]
+        timeout = "3000ms"
+
+[log]
+    contextString         = "payouts"
+    level                 = "debug"
+    [log.sentry]
+        dns                   = ""
+        enable                = false
+        logLevel              = "error"
+
+[slack]
+    [slack.alerts]
+        timeout     = "1s"
+        environment = "default"
+        channel     = "C01QM03070X"
+        webhook     = "http://merchant-webhook-sink:8080/webhook/arena-slack"   # arena: Slack alerts land in the webhook sink (was an env placeholder)
+
+[job]
+    source_updater                  = "payout-source-updater"        # arena name; devstack takes it from PAYOUTS_JOB_SOURCE_UPDATER
+    async_dual_write                = "payouts-async-dual-write"      # arena name; devstack takes it from PAYOUTS_JOB_ASYNC_DUAL_WRITE
+    queued_payout                   = "queued_payout"
+    transaction_create              = "transaction_create"
+    schedule_payout                 = "schedule_payout"
+    on_hold_payout                  = "on_hold_payout"
+    data_consistency_event          = "data-consistency-event"
+    data_consistency_checker        = "data-consistency-checker"
+    payout_create_failure_handling  = "payout_create_failure_handling"
+    payout_update_failure_handling  = "payout_update_failure_handling"
+    batch_submitted_merchants       = "batch_submitted_merchants"
+    bulk_payouts                    = "bulk_payouts"
+    webhook_event                   = "webhook_event"
+    payout_usage_event_processing   = "payout_usage_event_processing"
+    fts_async_processing            = "fts-async-processing"
+    fts_async_hv_processing         = "fts-async-hv-processing"
+    generic_processing              = "generic-processing"
+    partner_bank_hold_payout        = "partner_bank_hold_payouts"
+    api_queue_for_async_dual_write_direct_push  = "api-payout-service-dual-write-direct-push-live"
+    x_balances_payouts_event = "stage-x-balances-payouts-event"
+    x_balances_balance_refresh      = "stage-x-balances-balance-refresh-live"
+    fund_management_payout_check    = "fmp-check"
+    fund_management_payout_initiate = "fmp-initiate"
+
+[queue]
+    driver = "sqs"   # payouts vendors its own pkg/worker/queue: "sqs" honours [queue.sqs].endpoint (devstack.toml:131-135 uses the same LocalStack pattern)
+    [queue.sqs]
+        endpoint          = "http://localstack:4566/"   # signed with the synthetic env creds so LocalStack derives region ap-south-1 from SigV4 (anonymous requests fall back to us-east-1 -> NonExistentQueue)
+        region            = "ap-south-1"
+        prefix            = "{{SVC.localstack.url}}/000000000000/"
+
+        maxRetries        = 5
+        visibilityTimeout = 120
+        waitTimeout       = 30
+        [queue.sqs.httpClient]
+            connectTimeoutMs        = 2000
+            connKeepAliveMs         = 0
+            expectContinueTimeoutMs = 0
+            idleConnTimeoutMs       = 60000
+            maxAllIdleConns         = 1000
+            maxHostIdleConns        = 1000
+            responseHeaderTimeoutMs = 25000
+            tlsHandshakeTimeoutMs   = 2000
+
+[passport]
+    [passport.api]
+        identifier = "apiv1"
+        publicKey  = "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA7YsDUUnin5mzRewJeh+C\nz7HUCFHDYrQpOgrcxocYJHpuVZW0JT5I6mYq/TNcCt6X+Jcp4Y0DbSQ5V/9uGz+4\niPpmCV6FKrHdjxO/SWfAENY8omhzoeUnyFpR5jITgLQhfVvtU+4XGwztjhx46Zp0\noymkEQ4+4URVOWQTSvjupLkyfiSpYW/w0Pkw/1CZs9/p8SF4D2uidlctgm8ZDH8y\nqqakMudZvdFsYOeBNJ/8s8MkDcSggbpG550EK9OC4podVZ2b6R+6RG1Vo1898LgY\n9ze3gsBBQlB2O61EyWqflX73HdgB19cbg0bDz7T8ogutoBKTONqPX5lbrh+8/YNK\n+13sA9c30LObfxCPVImJxA2x+jc+681QhQ01nuNpt95PcJIUowdG2Y8YmIfLb5xG\nJzCTTwDvj531njQX6g6grdt97ZgPL6UdrxpEPtJULUp+2gOd5OKKy2B4F+9dMnDo\ndJ7HSZZ9w1i10zd+h4q+YKjjpV8m8+9s6rJsS4yJnP0km5RyZ85Rf1A66o4FeDzW\nMjUmvtlznHNvY1vT0Niukn2IJPmME+xaUZaUXPQ6WAaHdIzVvULhIVrXq3BkfaNs\nxF826+QxL/wnMr6SYW91SJvtp5nKBIcYZ7XHV5PvH6fDJyh6r1anofyK/cXdoyfW\nMwA/g8hfqPX7vJlWpw1xuf0CAwEAAQ==\n-----END PUBLIC KEY-----"
+    [passport.edge]
+        identifier = "arena-passport-1"
+        publicKey  = "{{SECRET.passport_public_key_toml}}"   # arena: kid + key of kong-lite\'s per-arena RS256 signer
+
+
+[consumer_task]
+    name = "fts"
+    MaxConcurrency = 3
+
+[kafka_producer]
+    RetryBackoff          = 1
+    MaxRetry              = 3
+    Partitioner           = "random"
+    MaxMessages           = 100
+    Brokers               = ["broker:9092", "broker1:9092"]
+    EnableTLS             = false
+    WaitForAck            = true
+    CompressionType       = "snappy"
+    CompressionEnabled    = true
+    UserCertificate       = "some_secret"
+    UserKey               = "some_secret"
+    CACertificate         = "some_secret"
+
+[api_internal_ingress_feature]
+    enable = false
+
+[api_retry_config]
+    [api_retry_config.contact]
+        enabled = true
+        maxRetryAttempts = 3
+        baseRetryDelay = "100ms"
+        maxRetryDelay = "2s"
+    [api_retry_config.fund_account]
+        enabled = true
+        maxRetryAttempts = 3
+        baseRetryDelay = "100ms"
+        maxRetryDelay = "2s"
+
+[redacted_fields]
+    [redacted_fields.fields]
+        "account_number"=true
+        "account_name"=true
+        "account_ifsc"=true
+        "account_phone_number"=true
+        "account_email"=true
+        "account_vpa"=true
+        "razorpayx_account_number"=true
+        "cvv"=true
+        "name"=true
+        "email"=true
+        "mobile"=true
+        "contact_mobile"=true
+        "contact"=true
+        "beneficiary_name"=true
+        "accountnumber"=true
+        "vpa"=true
+        "address"=true
+        "ifsc"=true
+        "phone"=true
+        "number"=true
+        "vault_token"=true
+        "username"=true
+        "handle"=true
+        "utr"=true
+        "fund_account_number"=true
+        "contact_name"=true
+        "contact_phone"=true
+        "contact_email"=true
+        "contactemail"=true
+        "contactname"=true
+        "bank_name"=true
+        "beneficiary_bank"=true
+        "phoneno"=true
+        "upi_id"=true
+        "fundbankname"=true
+        "debit_account_number"=true
+
+[sns]
+    aws_account_id = "101860328116"  # LocalStack/DevStack dummy account ID
+    aws_region     = "ap-south-1"
+
+# Source Updater SNS Topics Configuration
+# Maps source_type -> SNS Topic ARN for payout status update notifications
+# Each source type publishes to its own topic; consumers subscribe via HTTP endpoints
+[source_update_topics]
+    vendor_payments           = "payout-updates-test-dev"
+    payout_links              = "payout-updates-test-dev"
+    vendor_settlements        = "payout-updates-test-dev"
+    settlements               = "payout-updates-test-dev"
+    xpayroll                  = "payout-updates-test-dev"
+    capital_cards             = "payout-updates-test-dev"
+    capital_line_of_credit    = "payout-updates-test-dev"
+    tax_payments              = "payout-updates-test-dev"
+    generic_accounting        = "payout-updates-test-dev"
+
+[splitz]
+    host                = "{{SVC.splitz_stub.url}}"
+    timeout             = 200 #timeout : 200ns later converted to 200ms before sending request to Splitz
+    keepAliveTimeout    = 60000  #keepAliveTimeout : 60000ns later converted to 60s before sending request to Splitz
+    maxIdleConnections  = 10
+    client_side_eval            = true
+    cache_ttl_minutes           = 5
+    experiment_cache_size_mb    = 5
+    segment_cache_size_mb       = 20
+    [splitz.auth]
+        username    = "payouts"
+        password    = "{{SECRET.auth_splitz_payouts}}"
+    [splitz.httpclient.resiliency]
+        maxconcurrentrequests           = 100
+        requestvolumethreshold          = 20
+        circuitbreakersleepwindow       = 5000
+        errorpercentthreshold           = 50
+        circuitbreakertimeout           = 10000
+    [splitz.httpclient.httpclient]
+        timeout     = 200  #timeout : 200ns later converted to 200ms before sending request to Splitz
+
+[splitz_experiment_list]
+    forDuplicatePayoutEvaluate                  = "PXoynBvY8VkA5a"
+    forPayoutPropertiesEventEvaluate            = "Pf0j4gdcJNPZta"
+    partner_bank_on_hold_payouts_experiment     = "PXm4aNSJOfdmXm"
+    forDualWriteDirectPushToAPI                 = "PoQI26W5xwnXib"
+    forChargeCollectionEvaluate                 = "PpEyxfP2yIvlJN"
+    merchant_configuration_experiment            = "merchant_configuration_experiment"
+    forProcessingFilterEvaluate                 = "Po1yZkb1pdCkXy"
+    performance_optimization_experiment         = "performance_optimization_experiment"
+    fts_request_from_payouts_service_experiment = "QTwJ8uQKns0pOE"
+    go_routine_capping_experiment               = "go_routine_capping_experiment"
+    downtime_v2_webhook_notification_experiment = "QaLdhqjfjLYZFm"
+    fund_account_optimisation_experiment        = "fund_account_optimisation_experiment"
+    api_and_webhook_additional_fields           = "QiH03vj8QtN2FX"
+    bulk_payout_concurrency_experiment          = "bulk_payout_concurrency_experiment"
+    bulk_processing_optimisation_experiment     = "bulk_processing_optimisation_experiment"
+    account_statement_source_event              = "P9jMHiqpMI81A5"
+    ikey_auto_enforcement_ramp_up               = "R2Mo039vdGE3Dr"
+    merchant_config_via_asv_and_dcs_experiment  = "merchant_config_via_asv_and_dcs"
+    charge_collections_call_experiment          = "R9gHg72EW42wi8"
+    charge_collections_call_canary_experiment   = "RNkAkBIfS8zTcA"
+    fetch_from_microservices_experiment         = "RGCBZ5zidPFaPL"
+    fetch_balance_entity_from_x_balance         = "Rjdj0sAd4paXMG"
+    fetch_balance_entity_from_x_balance_async   = "SQg4o8tfP5GwVq"
+    xas_source_event_utr_and_grn_match_experiment = "RStPt2vqXrd5Wl"
+    deduct_credits_experiment                   = "RfVD62nvKbFvWL"
+    fetch_payout_by_id_via_orchestrator_experiment = "Rbyk5bJ3ZJZmGn"
+    fetch_by_id_api_fallback_experiment         = "dummy"
+    use_api_db_for_payouts_experiment           = "TLL7cUwWeEELzd"
+    use_api_db_for_payout_status_details_experiment = "TMp0fcGQi3nMWG"
+    free_payouts_xbalances_experiment           = "dummy"
+    fmp_initiate_experiment                     = "dummy"
+    payout_workflows_dcs_name_experiment        = "Sg7vrXQkpK4hBA"
+    skip_balance_cache_force_x_balances         = "S9qQNxNd9dpYYE"
+    source_updater_sns_experiment               = "dummy" # Enable SNS-based source updater
+
+[configs]
+    [configs.fetch_balance_from_x_balance]
+        enabled_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_BLACKLIST_ENV"
+
+    [configs.fetch_from_microservices]
+        enabled_env = "env|PAYOUTS_CONFIGS_FETCH_FROM_MICROSERVICES_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_FETCH_FROM_MICROSERVICES_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FETCH_FROM_MICROSERVICES_BLACKLIST_ENV"
+
+    [configs.fts_request_from_ps]
+        enabled_env = "env|PAYOUTS_CONFIGS_FTS_REQUEST_FROM_PS_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_FTS_REQUEST_FROM_PS_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FTS_REQUEST_FROM_PS_BLACKLIST_ENV"
+
+    [configs.fetch_balance_from_x_balance_async]
+        enabled_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_ASYNC_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_ASYNC_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_ASYNC_BLACKLIST_ENV"
+
+    [configs.free_payouts_x_balances]
+        enabled_env = "env|PAYOUTS_CONFIGS_FREE_PAYOUTS_X_BALANCES_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_FREE_PAYOUTS_X_BALANCES_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FREE_PAYOUTS_X_BALANCES_BLACKLIST_ENV"
+
+    [configs.fund_account_optimisation]
+        enabled_env = "env|PAYOUTS_CONFIGS_FUND_ACCOUNT_OPTIMISATION_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_FUND_ACCOUNT_OPTIMISATION_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FUND_ACCOUNT_OPTIMISATION_BLACKLIST_ENV"
+
+    [configs.account_statement_source_event]
+        enabled_env = "env|PAYOUTS_CONFIGS_ACCOUNT_STATEMENT_SOURCE_EVENT_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_ACCOUNT_STATEMENT_SOURCE_EVENT_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_ACCOUNT_STATEMENT_SOURCE_EVENT_BLACKLIST_ENV"
+
+    [configs.fts_async_hv_processing_merchants]
+        whitelist_env = "env|PAYOUTS_CONFIGS_FTS_ASYNC_HV_PROCESSING_MERCHANTS_WHITELIST_ENV"
+
+[events]
+    enabled = false
+
+    [events.kafka]
+        retryBackoff = 2
+        maxRetry     = 10
+        maxMessages  = 100
+        brokers      = ["{{SVC.kafka.host}}:{{SVC.kafka.port}}"]
+        enableTls    = true
+        debugEnabled = true
+        userCertificate = "env|PAYOUTS_EVENTS_KAFKA_USERCERTIFICATE"
+        caCertificate   = "env|PAYOUTS_EVENTS_KAFKA_CACERTIFICATE"
+        userKey         = "env|PAYOUTS_EVENTS_KAFKA_USERKEY"
+
+[load_testing]
+    enabled = true
+    merchant_ids = [["Jvsz3m9QJbSiWB","2323230045"]]
+    beneficiary = [["1121431121541121","HDFC0001234","Gaurav Kumar","Dummy@gmail.com","1234567890"]]
+    target_url = "http://127.0.0.1:1/v1/payouts"
+
+    username = "env|PAYOUTS_LOAD_TESTING_USERNAME"
+    password = "env|PAYOUTS_LOAD_TESTING_PASSWORD"
+    concurrency = 10
+    request_count = 1
+    timeout_in_secs = 120
+    narration = "Test payout Dev"
+    queue_if_low_balance = true
+    mode = "IMPS"
+
+[xas]
+    host = "{{SVC.xas_sink.url}}"
+
+    timeout = "30s"
+    keepAliveTimeout = "30s"
+    httpClientName = "xas"
+    maxIdleConnections = 100
+    httpretryattempts = 3
+    httpretrywindow = "1s"
+    httpmaxjitterinterval = "100ms"
+    [xas.auth]
+        username = "payouts"
+        password = "{{SECRET.auth_asv_shared}}"
+    [xas.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 1000
+    [xas.httpclient.httpclient]
+        timeout = "30s"
+
+[x_balances]
+    host = "{{SVC.xbalances_http.url}}"
+
+    timeout = "30s"
+    keepAliveTimeout = "30s"
+    httpClientName = "x_balances"
+    maxIdleConnections = 100
+    httpretryattempts = 3
+    httpretrywindow = "1s"
+    httpmaxjitterinterval = "100ms"
+    [x_balances.auth]
+        username = "x_balances"
+        password = "{{SECRET.auth_xbalances_payouts}}"
+    [x_balances.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 1000
+    [x_balances.httpclient.httpclient]
+        timeout = "30s"
+
+[account_service]
+    host = "{{SVC.asv_stub.host}}:{{SVC.asv_stub.port}}"
+
+    timeout = "30s"
+    keepAliveTimeout = "30s"
+    httpClientName = "account_service"
+    maxIdleConnections = 100
+    httpretryattempts = 3
+    httpretrywindow = "1s"
+    httpmaxjitterinterval = "100ms"
+    [account_service.auth]
+        username = "payouts"
+        password = "{{SECRET.auth_asv_shared}}"
+    [account_service.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 1000
+    [account_service.httpclient.httpclient]
+        timeout = "30s"
+
+[go_routine_allocator]
+    balance_processor_worker_count = "env|BALANCE_PROCESSOR_WORKER_COUNT"
+    bulk_payout_processor_worker_count = "env|BULK_PAYOUT_PROCESSOR_WORKER_COUNT"
+    fund_account_worker_count = "50"
+    merchant_worker_count = "50"
+    workflow_worker_count = "50"
+    user_worker_count = "50"
+
+[async_job_dispatch_limit]
+    partner_bank_on_hold_payouts = 5000
+
+[cache_ttl]
+    idempotency_key_exclusion_ttl = 600
+    [cache_ttl.banking_account]
+        ttl_seconds = 1800 # 30 mins
+        key_pattern = "{payouts_banking_account}_%s"
+
+[features]
+    ikey_auto_enforcement = false
+    reverse_dual_write    = true
+    forward_dual_write    = false
+    skip_ca_dual_write    = true
+    source_updater_sns_enabled = false
+    db_route_label_enabled = false
+
+
+[cfa]
+    host = "{{SVC.cfa_http.url}}"
+
+    timeout = "10000ms"
+    keepAliveTimeout = "60000ms"
+    maxIdleConnections = 10
+    httpClientName = "cfa"
+    httpretryattempts = 3
+    httpretrywindow = "60ms"
+    httpmaxjitterinterval = "2ms"
+    [cfa.auth]
+        username = "payouts"
+        password = "{{SECRET.auth_cfa_payouts}}"
+    [cfa.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [cfa.httpclient.httpclient]
+        timeout = "10000ms"
+
+
+[db_query_permission]
+    master = ["select"]
+    replica = ["select"]
+    api = ["select"]
+    tidb = ["select"]
+
+[hvault]
+    host = "http://127.0.0.1:1"
+
+    token = ""
+    namespace = "razorpayx"
+    mount_path = "secrets"
+    retry = 3
+    timeout = 30
+
+[wda]
+    default_http_client_url = "http://127.0.0.1:1"
+
+    user = "payouts_wda_user"
+    password = "payouts_wda_password"
+    db_namespace = "api-beta"
+    db_cluster = "admin"
+    mock = true
+
+
+[elasticsearch]
+    Enabled = true
+    Host = "http://127.0.0.1:1"
+
+    Port = 443
+    PayoutDocumentIndex =  "x_account_statements_source_events_v3" #"mandatehq_mandate_v1"
+    Mock = "true"
+
+    HealthCheckEnabled = "false"
+    ShortTimeoutSeconds = 10
+    MediumTimeoutSeconds = 20
+    LongTimeoutSeconds = 30
+    MaxRetryAttempts = 2
+    JitterEnabled = true
+    JitterMinPercent = 70
+    JitterMaxPercent = 130
+    # NEW CIRCUIT BREAKER PROPERTIES
+    FailureThreshold = 3              # Break circuit after 2 consecutive failures
+    HealthCheckIntervalSec = 30       # Health check every 30 seconds
+    ReconnectIntervalSec = 30        # Min 30 seconds between reconnect attempts
+    ReconnectTimeoutSec = 5         #  second timeout for reconnect health check
+
+[ccsdk]
+    mock = true
+
+
+    [ccsdk.governor]
+        hostname    = "http://127.0.0.1:1"
+
+        username    = "env|PAYOUTS_CCSDK_GOVERNOR_USERNAME"
+        password    = "env|PAYOUTS_CCSDK_GOVERNOR_PASSWORD"
+        namespace   = "env|PAYOUTS_CCSDK_GOVERNOR_NAMESPACE"
+        timeout     = "1000ms"
+        summaryType = "debug"
+
+        [ccsdk.governor.rules]
+            basic   = "env|PAYOUTS_CCSDK_GOVERNOR_RULES_BASIC"
+            product = "env|PAYOUTS_CCSDK_GOVERNOR_RULES_PRODUCT"
+            bank    = "env|PAYOUTS_CCSDK_GOVERNOR_RULES_BANK"
+            mode    = "env|PAYOUTS_CCSDK_GOVERNOR_RULES_MODE"
+            amount  = "env|PAYOUTS_CCSDK_GOVERNOR_RULES_AMOUNT"
+
+    [ccsdk.cache]
+        host        = "{{SVC.redis.host}}"
+
+        port        = {{SVC.redis.port}}
+
+        password    = ""
+
+        database    = 0
+        mode        = "cluster"
+
+    [ccsdk.charge_collections]
+        host     = "http://127.0.0.1:1"
+
+        username = "payouts_key"
+        password = "env|PAYOUTS_CCSDK_CHARGE_COLLECTIONS_PASSWORD"
+
+        [ccsdk.charge_collections.http_client_config]
+            name                    = "payouts_charge_collections_service"
+            retry_count             = 3
+            backoff_interval        = 200
+            maximum_jitter_interval = 100
+
+        [ccsdk.charge_collections.http_client_config.conn_pool_config]
+            timeout            = 2000
+            keepalivetimeout   = 30000
+            maxidleconnections = 10
+
+        [ccsdk.charge_collections.http_client_config.hystrix_resiliency_config]
+            maxconcurrentrequests     = 100
+            requestvolumethreshold    = 10
+            circuitbreakersleepwindow = 5000
+            errorpercentthreshold     = 75
+            circuitbreakertimeout     = 30000
+
+[orchestrator]
+    # Strategy configurations
+    default_strategy      = "non_fuzzy_search"
+    fuzzy_search_strategy = "fuzzy_search"
+    iterator_strategy     = "iterator"
+    fetch_by_id_strategy  = "fetch_by_id"
+    dashboard_strategy    = "dashboard_search"
+    # Storage configurations
+    [orchestrator.storage_configs]
+        [orchestrator.storage_configs.app_db]
+            supports_fuzzy  = false
+            [orchestrator.storage_configs.app_db.data_age_range]
+                from = 6 # 6 months
+                to   = 0 # current
+            recent_data_window_seconds = 10800 # 3hours in seconds
+        [orchestrator.storage_configs.tidb]
+            supports_fuzzy  = false
+            [orchestrator.storage_configs.tidb.data_age_range]
+                from = 48  # 48 months
+                to   = 0  # current
+        [orchestrator.storage_configs.elasticsearch]
+            supports_fuzzy  = true
+            [orchestrator.storage_configs.elasticsearch.data_age_range]
+                from = 12 # 12 months
+                to   = 0 # current months
+        [orchestrator.storage_configs.api_db]
+            supports_fuzzy  = false
+            [orchestrator.storage_configs.api_db.data_age_range]
+                from = 12 # 3 months
+                to   = 0 # current months
+            recent_data_window_seconds = 10800 # 3hours in seconds
+
+    # Feature flags
+    [orchestrator.feature_flags]
+    enable_fuzzy_search       = true
+    enable_tidb_backfill      = true
+    enable_strong_consistency = true
+    enable_es_fallback        = true
+
+    # Iterator configuration
+    [orchestrator.iterator_config]
+    max_rounds        = 10
+    batch_size        = 100
+    enable_parallel   = false
+    skip_increment    = 50
+    fallback_storages = ["app_db", "tidb"]
+
+[raven]
+    host = "http://127.0.0.1:1"
+
+    timeout = "10s"
+    keepAliveTimeout = "600s"
+    maxIdleConnections = 10
+    httpClientName = "raven_client"
+    httpretryattempts = 0
+    httpretrywindow = "1s"
+    httpmaxjitterinterval = "100ms"
+    [raven.auth]
+        username = "env|PAYOUTS_RAVEN_AUTH_USERNAME"
+        password = "env|PAYOUTS_RAVEN_AUTH_PASSWORD"
+    [raven.httpclient.resiliency]
+    maxconcurrentrequests = 100
+    requestvolumethreshold = 20
+    circuitbreakersleepwindow = 5000
+    errorpercentthreshold = 50
+    circuitbreakertimeout = 2000
+
+# Observability 2.0 Configuration
+# Uses goutils/telemetry for unified traces, logs, and metrics
+[Telemetry]
+    ServiceName = "payouts"
+    ServiceNamespace = "payouts"
+    Environment = "development"
+    ExporterHost = "127.0.0.1"
+
+
+    # HTTP routes enabled for Observability 2.0 (gradual migration)
+    # Only these routes will use the new telemetry system
+    # Other routes will continue using the old logging system
+    EnableHTTPClientSpans = true
+
+[sla_monitoring]
+    enabled = true
+
+    [sla_monitoring.mode.thresholds]
+        IMPS = "2m"
+        UPI  = "2m"
+        NEFT = "2h30m"
+
+    [sla_monitoring.mode.monitoring_windows]
+        IMPS = "5m"
+        UPI  = "5m"
+        NEFT = "3h"
+
+    [sla_monitoring.team.merchant_ids]
+        settlements = ["H50jvSPMWHrbdx", "GZrocobV6NEKQF", "PWFPBh2FQItbh8", "EAcqPJYvyDXbp2", "Hrh5NXFyzvUN7d", "J5LzxcZ25owJBP"]
+
+[stuck_payouts_monitoring]
+    enabled = true
+
+    [stuck_payouts_monitoring.create_request_submitted]
+        threshold         = "5m"
+        monitoring_window = "15m"
+
+    [stuck_payouts_monitoring.batch_submitted]
+        threshold         = "5m"
+        monitoring_window = "15m"
+
+    [stuck_payouts_monitoring.scheduled]
+        threshold         = "5m"
+        monitoring_window = "15m"
+
+[es_sync]
+    push_delay          = "10s"
+    retry_delay         = "2m"
+    va_payout_enabled   = true
+
+[log_sampler]
+    [log_sampler.rates]
+        "*" = 100
+
+[fmp]
+  # Global kill switch — set to true in Credstash + rotate pods to disable all FMP initiation
+  initiate_disabled         = false
+  # Minimum CA balance floor after FMP transfer in paisa (default: Rs10000)
+  gateway_balance_threshold = 1000000
+  # Lookback window for fetching in-flight FMPs in seconds (default: 6 hours)
+  retrieval_threshold       = 21600
+
+[meta_summary]
+    # How far back (in calendar months) the dashboard summary fetches data.
+    # Matches PHP: Carbon::now(IST)->startOfDay()->subMonths(N)
+    data_lookback_months = 3
+
+[payout_config]
+    fail_payout_on_xbalance_call_failure = true
+
+    [payout_config.in_flight_reservation]
+        key_prefix                   = "payouts"
+        ttl                          = "6h"
+        debit_visibility_lag_default = "3m"
+        fail_open_on_redis_error     = false
+        max_items_per_balance        = 2000
+
+[shadow_gateway]
+    # Master kill switch — false means the framework is fully inert.
+    enabled             = false
+    # API monolith base URL used for proxy mode and the monolith shadow leg.
+    monolith_base_url   = ""
+    # Timeout on the streaming proxy leg (0 = no extra timeout).
+    proxy_timeout       = "30s"
+    # Timeout on buffered shadow legs (monolith forward / PS re-dispatch).
+    shadow_timeout      = "10s"
+    # Strict Splitz mode-resolution timeout; expiry falls back to proxy.
+    splitz_timeout      = "100ms"
+    # Semaphore pool bound for shadow goroutines; exhausted pool skips the
+    # shadow leg (honored response is never affected).
+    max_shadow_routines = 16
+
+    # Route onboarding is config-only. Keys are lowercase "method path"
+    # using the gin route pattern, e.g.:
+    # [shadow_gateway.routes."get /v1/payouts/:id"]
+    #     experiment_id = "<splitz-experiment-id>"
+    #     ignore_fields = ["created_at"]
+
+# --- arena: Kafka consumer/task/topic config copied from payouts config/devstack.toml (brokers -> arena kafka, TLS off) ---
+[kafka_consumers]
+    [kafka_consumers.status_update_consumer]
+        name    = "status_update_consumer"
+    [kafka_consumers.status_update_consumer.config]
+        RetryBackoff          = 1
+        MaxRetry              = 1
+        Brokers               = ["kafka:9092"]
+        EnableTLS             = false
+        WaitForAck            = true
+        ConsumerGroup         = "rx-payouts-fts-status-update-consumer-group"
+        Topics                = ["rx-fts-status-update-events"]
+        UserCertificate       = "env|PAYOUTS_KAFKA_CONSUMERS_STATUS_UPDATE_CONSUMER_CONFIG_USERCERTIFICATE"
+        UserKey               = "env|PAYOUTS_KAFKA_CONSUMERS_STATUS_UPDATE_CONSUMER_CONFIG_USERKEY"
+        CACertificate         = "env|PAYOUTS_KAFKA_CONSUMERS_STATUS_UPDATE_CONSUMER_CONFIG_CACERTIFICATE"
+    [kafka_consumers.status_update_retry_consumer]
+        name    = "status_update_retry_consumer"
+    [kafka_consumers.status_update_retry_consumer.config]
+        RetryBackoff          = 5
+        MaxRetry              = 2
+        Brokers               = ["kafka:9092"]
+        EnableTLS             = false
+        WaitForAck            = true
+        ConsumerGroup         = "rx-payouts-fts-status-update-retry-consumer-group"
+        Topics                = ["rx-fts-status-update-retry-events"]
+        UserCertificate       = "env|PAYOUTS_KAFKA_CONSUMERS_STATUS_UPDATE_RETRY_CONSUMER_CONFIG_USERCERTIFICATE"
+        UserKey               = "env|PAYOUTS_KAFKA_CONSUMERS_STATUS_UPDATE_RETRY_CONSUMER_CONFIG_USERKEY"
+        CACertificate         = "env|PAYOUTS_KAFKA_CONSUMERS_STATUS_UPDATE_RETRY_CONSUMER_CONFIG_CACERTIFICATE"
+
+
+[task]
+    fts_status_updates = "status_update_consumer"
+    fts_status_updates_retry = "status_update_retry_consumer"
+
+
+[topics]
+    fts_status_updates_retry = "rx-fts-status-update-retry-events"
+
+
+
+# --- arena: worker section (keys must exist in TOML for PAYOUTS_WORKER_NAME env override to apply; one job per container) ---
+[worker]
+    name = "default"
+    maxconcurrency = 2
+    waittime = "1s"
+    retrydelay = "30s"
+
+# --- arena: payouts -> FTS client ([fts] exists only in env-specific TOMLs upstream; copied from config/devstack.toml, host -> fts-web, identity = fts [users.ps]) ---
+[fts]
+    host = "http://fts-web:8080/v1"
+    timeout = "1000ms"
+    keepAliveTimeout = "10000ms"
+    maxIdleConnections = 100
+    httpClientName = "fts"
+    httpretryattempts = 3
+    httpretrywindow = "60ms"
+    httpmaxjitterinterval = "2ms"
+    [fts.auth]
+        username = "ps_payouts"
+        password = "{{SECRET.auth_fts_payouts}}"
+    [fts.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [fts.httpclient.httpclient]
+        timeout = "1000ms"
+
+

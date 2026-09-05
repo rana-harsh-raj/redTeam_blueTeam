@@ -1,0 +1,551 @@
+[app]
+    appEnv                = "default"
+    appMode               = "test"
+    serviceName           = "ledger"
+    hostname              = "ledger.razorpay.com"
+    port                  = "0.0.0.0:8080"   # arena: ledger-api must be reachable from payouts/fts/x-balances inside the arena network (upstream default is loopback)
+    shutdownTimeout       = 2
+    shutdownDelay         = 2
+    gitCommitHash         = "nil"
+    errorMappingServices  = ["platform/ledger", "pkg/spine"]
+    logLevel              = "info"
+    isMirror              = false
+    isMakeshift           = false
+
+[db]
+    enableTrafficSplit                = false
+    [db.rx]
+        isEnabled                     = true
+        [db.rx.writer]
+            debug                     = true
+            [db.rx.writer.ConnectionConfig]
+                dialect               = "postgres"
+                protocol              = "tcp"
+                url                   = "127.0.0.1"
+                port                  = "5432"
+                username              = "ledger"
+                password              = "ledger"
+                sslMode               = "disable"
+                name                  = "ledger"
+            [db.rx.writer.ConnectionPoolConfig]
+                maxOpenConnections    = 5
+                maxIdleConnections    = 5
+                connectionMaxLifetime = 0
+                connectionMaxIdleTime = 0
+        [db.rx.cache]
+            isEnabled         = false
+            isMcacheEnabled   = false
+            defaultExpiration = 10
+            cleanupInterval   = 5
+    [db.pg]
+        isEnabled                     = true
+        [db.pg.writer]
+            debug                     = true
+            [db.pg.writer.ConnectionConfig]
+                dialect               = "postgres"
+                protocol              = "tcp"
+                url                   = "127.0.0.1"
+                port                  = "5432"
+                username              = "ledger"
+                password              = "ledger"
+                sslMode               = "disable"
+                name                  = "ledger"
+            [db.pg.writer.ConnectionPoolConfig]
+                maxOpenConnections    = 5
+                maxIdleConnections    = 5
+                connectionMaxLifetime = 0
+                connectionMaxIdleTime = 0
+        [db.pg.cache]
+            isEnabled         = false
+            isMcacheEnabled   = false
+            defaultExpiration = 10
+            cleanupInterval   = 5
+    [db.makeshift]
+        isEnabled                     = false
+        [db.makeshift.writer]
+            debug                     = true
+            [db.makeshift.writer.ConnectionConfig]
+                dialect               = "mysql"
+                protocol              = "tcp"
+                url                   = "127.0.0.1"
+                port                  = "3306"
+                username              = "root"
+                password              = ""
+                sslMode               = "disable"
+                name                  = "" # set name of makeshift DB here
+            [db.makeshift.writer.ConnectionPoolConfig]
+                maxOpenConnections    = 5
+                maxIdleConnections    = 5
+                connectionMaxLifetime = 0
+                connectionMaxIdleTime = 0
+        [db.makeshift.cache]
+            isEnabled                 = false
+            isMcacheEnabled           = false
+            defaultExpiration         = 10
+            cleanupInterval           = 5
+
+
+[apiDb]
+    [apiDb.ConnectionConfig]
+        dialect               = "mysql"
+        protocol              = "tcp"
+        url                   = "127.0.0.1"
+        port                  = "23306"
+        username              = "root"
+        password              = "123"
+        sslMode               = "disable"
+        name                  = "api_test"
+    [apiDb.ConnectionPoolConfig]
+        maxOpenConnections    = 5
+        maxIdleConnections    = 5
+        connectionMaxLifetime = 0
+        connectionMaxIdleTime = 0
+
+[apiTiDb]
+    [apiTiDb.ConnectionConfig]
+        dialect               = "mysql"
+        protocol              = "tcp"
+        url                   = "127.0.0.1"
+        port                  = "23306"
+        username              = "root"
+        password              = "123"
+        sslMode               = "disable"
+        name                  = "api_test"
+    [apiTiDb.ConnectionPoolConfig]
+        maxOpenConnections    = 5
+        maxIdleConnections    = 5
+        connectionMaxLifetime = 0
+        connectionMaxIdleTime = 0
+
+[tracing]
+    serviceName             = "ledger"
+    enabled                 = false
+    logSpans                = true
+    host                    = "localhost"
+    port                    = 6831
+
+[telemetry]
+    serviceName           = "ledger"
+    serviceNamespace      = "platform/ledger"
+    exporterHost          = "env|LEDGER_TELEMETRY_EXPORTER_HOST|localhost"
+    exporterPort          = "env|LEDGER_TELEMETRY_EXPORTER_PORT|4318"
+    samplingRatio         = 1.0
+    enableHTTPClientSpans = true
+    httpSkipPaths         = ["/health", "/healthz", "/ready", "/readiness", "/live", "/liveness", "/metrics", "/twirp/rzp.common.health.v1.HealthCheckAPI/Check", "/commit.txt"]
+    enableCanonicalLogs   = false
+    enableTraceCorrelation = false
+
+    [telemetry.spanLimits]
+        attributeValueLengthLimit = 4096
+        attributeCountLimit       = 1000
+
+# For any new auth, add config in twirpHooks(internal/boot/handler.go) also
+[auth]
+    [auth.api]
+        username          = "api_key"
+        password          = "api_secret"
+    [auth.dashboard]
+        username          = "dash_key"
+        password          = "dash_secret"
+    [auth.fts]
+        username          = "fts_key"
+        password          = "fts_secret"
+    [auth.pgRouter]
+        username          = "pg_router_key"
+        password          = "pg_router_secret"
+    [auth.payouts]
+        username          = "payouts_key"
+        password          = "payouts_secret"
+    [auth.xbalances]
+        username          = "x_balances_key"
+        password          = "x_balances_secret"
+    [auth.settlements]
+        username          = "settlements_key"
+        password          = "settlements_secret"
+    [auth.scrooge]
+        username          = "scrooge_key"
+        password          = "scrooge_secret"
+    [auth.capitalCollections]
+        username          = "capital_collections_key"
+        password          = "capital_collections_secret"
+    [auth.disputes]
+        username          = "disputes_key"
+        password          = "disputes_secret"
+    [auth.pgos]
+        username          = "pgos_key"
+        password          = "pgos_secret"
+    [auth.growth]
+        username          = "growth_key"
+        password          = "growth_secret"
+    [auth.cps]
+        username          = "cps_key"
+        password          = "cps_secret"
+    [auth.ups]
+        username          = "ups_key"
+        password          = "ups_secret"
+    [auth.pcp]
+        username          = "pcp_key"
+        password          = "pcp_secret"
+    [auth.nbPlus]
+        username          = "nbplus_key"
+        password          = "nbplus_secret"
+    [auth.chargeCollections]
+        username          = "charge_collections_key"
+        password          = "charge_collections_secret"
+    [auth.partnerships]
+        username          = "partnerships_key"
+        password          = "partnerships_secret"
+    [auth.optimizer]
+        username          = "optimizer_key"
+        password          = "optimizer_secret"
+    [auth.care]
+        username          = "care_key"
+        password          = "care_secret"
+    [auth.route]
+        username          = "route_key"
+        password          = "route_secret"
+    [auth.emandate]
+        username          = "emandate_key"
+        password          = ""
+   [auth.crossBorderImport]
+        username          = "cross_border_import_key"
+        password          = "cross_border_import_secret"
+   [auth.crossBorderExperience]
+        username          = "cross_border_experience_key"
+        password          = "cross_border_experience_password"
+    [auth.capitalEs]
+        username          = "capital_es_key"
+        password          = "capital_es_secret"
+    [auth.affordability]
+        username          = "affordability_key"
+        password          = "affordability_secret"
+    [auth.bts]
+        username          = "payments_bank_transfer_key"
+        password          = "payments_bank_transfer_secret"
+    [auth.batch]
+        username          = "batch_key"
+        password          = "batch_secret"
+    [auth.disputeService]
+        username          = "dispute_service_key"
+        password          = "env|LEDGER_AUTH_DISPUTE_SERVICE_PASSWORD"
+    [auth.offers]
+        username          = "offers_engine_key"
+        password          = "offers_engine_secret"
+    [auth.mes]
+        username          = "mes_key"
+        password          = "mes_secret"
+    [auth.apm]
+        username          = "apm_key"
+        password          = "apm_secret"
+    [auth.wallet]
+        username          = "wallet_key"
+        password          = "wallet_secret"
+    [auth.catalyst]
+        username          = "catalyst_key"
+        password          = "catalyst_secret"
+    [auth.billPayments]
+        username          = "bill_payments_key"
+        password          = "bill_payments_secret"
+
+[sentry]
+    dsn                   = "dummy"
+    enabled               = false
+    logLevel              = "Error"
+
+[events]
+    enabled               = false
+    debug                 = false
+    [events.kafka]
+        retryBackoff      = 2
+        topic             = "events.ledger.v2.test" # test/live based on app mode
+        maxRetry          = 10
+        maxMessages       = 100
+        brokers           = ["localhost:29092"]
+        enableTls         = false
+        userCertificate   = ""
+        caCertificate     = ""
+        userKey           = ""
+        debugEnabled      = true
+
+# Redis Cluster only supports database zero. In the case of a Redis Cluster,
+# having multiple databases would be useless and an unnecessary source of complexity
+# Refer: https://redis.io/commands/select
+[cache]
+    driver                = "redis"
+    defaultPrefix         = "ledger"
+
+[redis]
+    host              = "localhost"
+    port              = 6379
+    database          = 0
+    password          = ""
+    dialTimeout       = 10  # time in seconds
+
+[elasticache]
+    host              = "localhost"
+    port              = 6379
+    password          = ""
+    dialTimeout       = 10  # time in seconds
+    clusterMode       = false
+
+[mutex]
+    ttl                    = 500
+    [mutex.mutex]
+        scope              = "ledger:mutex:"
+
+[authz]
+    consulToken         = ""
+    env                 = "stage"
+    mock                = false
+    watchResourceGroups = [
+        "ledger",
+    ]
+
+[passport]
+    host = "https://edge-base.dev.razorpay.in"
+
+[apiService]
+    name = "api"
+    baseUrl = "https://api.razorpay.com"
+    mock = true
+    [apiService.auth]
+        username = "rzp_test"
+        password = "ledger-api-secret"
+    [apiService.connPoolConfig]
+        timeout            = 1000
+        keepAliveTimeout   = 30000
+        maxIdleConnections = 10
+    [apiService.hystrixResiliencyConfig]
+        MaxConcurrentRequests     = 100
+        RequestVolumeThreshold    = 10
+        CircuitBreakerSleepWindow = 5000
+        ErrorPercentThreshold     = 50
+        CircuitBreakerTimeout     = 5000
+    [apiService.retryConfig]
+        InitialTimeout          = 500
+        MaxTimeout              = 5000
+        ExponentFactor          = 2
+        MaximumJitterInterval   = 100
+        RetryCount              = 3
+
+[worker]
+    queueName       = "account_create"
+    maxconcurrency  = "1"
+    waittime        = "10s"
+    retrydelay      = "30s"
+
+[workerRetrier]
+    exponentFactor          = 2
+    initialTimeout          = "2s"
+    maxTimeout              = "30s"
+    maximumJitterInterval   = "1s"
+
+[queue]
+    driver = "sqs"
+    [queue.sqs]
+        region            = "ap-south-1"
+        prefix            = "https://sqs.ap-south-1.amazonaws.com/207*******67/"
+        enableRetryer = true
+        visibilityTimeout = 120
+        waitTimeout       = 0
+        [queue.sqs.httpClient]
+            connectTimeoutMs        = 2000
+            connKeepAliveMs         = 0
+            expectContinueTimeoutMs = 0
+            idleConnTimeoutMs       = 60000
+            maxAllIdleConns         = 1000
+            maxHostIdleConns        = 1000
+            responseHeaderTimeoutMs = 25000
+            tlsHandshakeTimeoutMs   = 2000
+        [queue.sqs.retryer]
+            numMaxRetries = 10
+            minRetryDelay = 500       # time in ms
+            minThrottleDelay = 1000   # time in ms
+            maxRetryDelay = 25000     # time in ms
+            maxThrottleDelay = 25000  # time in ms
+
+[queueKafka]
+    driver = "kafka"
+    [queueKafka.kafka]
+        brokers                = ["localhost:9092"]
+        groupID                = "env|LEDGER_QUEUEKAFKA_KAFKA_GROUPID"
+        topic                  = "env|LEDGER_QUEUEKAFKA_KAFKA_TOPIC"
+        maxAttempts            = 5
+        maxWait                = 10
+        enableTLS              = false
+        dialerTimeout          = 30
+        userCertificate        = "env|LEDGER_CONSUMER_USER_CERTIFICATE"
+        userKey                = "env|LEDGER_CONSUMER_USER_KEY"
+        caCertificate          = "env|LEDGER_CONSUMER_CA_CERTIFICATE"
+        partitionWatchInterval = 4    # time in seconds
+        rebalanceTimeout       = 30   # time in seconds
+
+[queueMakeshiftTxn]
+    driver = "kafka"
+    [queueMakeshiftTxn.kafka]
+        brokers                = ["localhost:9092"]
+        groupID                = "env|LEDGER_QUEUEMAKESHIFTTXN_KAFKA_GROUPID"
+        topic                  = "env|LEDGER_QUEUEMAKESHIFTTXN_KAFKA_TOPIC"
+        maxAttempts            = 5
+        maxWait                = 10
+        enableTLS              = false
+        dialerTimeout          = 30
+        userCertificate        = "env|LEDGER_MAKESHIFT_CONSUMER_USER_CERTIFICATE"
+        userKey                = "env|LEDGER_MAKESHIFT_CONSUMER_USER_KEY"
+        caCertificate          = "env|LEDGER_MAKESHIFT_CONSUMER_CA_CERTIFICATE"
+
+[job]
+    journal_create  = "journal_create"
+    account_create  = "account_create"
+    balance_update  = "balance_update"
+    balance_update_pg  = "balance_update_pg"
+    ledger_entry_details_create  = "ledger_entry_details_create"
+    ledger_entry_details_create_pg  = "ledger_entry_details_create_pg"
+
+[kafkaJob]
+    journal_create_pg_worker_name = "env|LEDGER_KAFKAJOB_JOURNAL_CREATE_PG_WORKER_NAME"
+
+[makeshiftTxnJob]
+    pg_worker_name = "env|LEDGER_MAKESHIFTTXNJOB_PG_WORKER_NAME"
+
+[metric]
+    appName = "Ledger"
+    port = ":8081"
+
+[slack]
+    channel = "C0298AJ069X"
+    webhookUrl = ""
+    mock = true
+
+[pagerDuty]
+    mock = true
+    key = ""
+
+[scheduler]
+    command = "journal-created-sns-publish"
+    ttl     = "10m"
+
+[profiling]
+    # pprof is opt-in — off everywhere by default. Enable per deployment with
+    # LEDGER_PROFILING_ENABLED=true. Served on the existing metric.port (:8081).
+    enabled = "env|LEDGER_PROFILING_ENABLED|false|bool"
+
+[idempotency]
+    enabled = true
+
+[splitAccount]
+    useSplitAccounts = false
+    maxAccountUpdateProcessAllowed = 0
+    maxLedgerEntryBalanceUpdateAllowed = 0
+    ledgerEntryBalanceUpdateTimeWindow = 86400
+    pgBatchSize = 1000
+    mutexTTL = 10 # time in minutes
+    cacheTTL = 20 # time in minutes
+
+[outbox]
+    outboxEnabled = true
+    processorEnabled = true
+    [outbox.crypto]
+        encryptionKey = "encryptionKey"
+    [outbox.outboxConfig]
+        ProcessorPoolSize = 1
+	    JobProcessingTimeoutMs = 2000
+	    MaxAttempts = 5
+        FailedJobFetchBatchSize = 1000
+        PendingJobFetchBatchSize = 1000
+	    WaitTimeMsAfterEmptyRead = 1000
+        NoDelete = true
+    [outbox.outboxConfig.expBackoffPolicy]
+        InitialIntervalMs = 2000
+	    Multiplier = 2
+	    JitterMs = 1000
+
+[outboxJob]
+    x_journal_created_sns       = "arn:aws:sns:us-east-1:000000000000:journal-created"
+    useOutboxJobsSync           = false
+
+[snsOutboxer]
+    [snsOutboxer.pubSub]
+        [snsOutboxer.pubSub.journal_created]
+            driver   = "sns_local"
+            [snsOutboxer.pubSub.journal_created.sns]
+                endpoint = "http://localhost:4100"
+                topicName = "arn:aws:sns:us-east-1:000000000000:journal-created"
+                region = "ap-south-1"   # arena: LocalStack queues are created in ap-south-1 (seeds/localstack/init-queues.sh); SigV4 region must match
+                maxRetries = 5
+                [snsOutboxer.pubSub.journal_created.sns.httpClient]
+                    connectTimeoutMs        = 2000
+                    connKeepAliveMs         = 0
+                    expectContinueTimeoutMs = 0
+                    idleConnTimeoutMs       = 60000
+                    maxAllIdleConns         = 1000
+                    maxHostIdleConns        = 1000
+                    responseHeaderTimeoutMs = 25000
+                    tlsHandshakeTimeoutMs   = 2000
+
+[pubSub]
+    [pubSub.journal_created]
+        driver   = "sns_local"
+        [pubSub.journal_created.sns]
+            endpoint = "http://localhost:4100"
+            topicArn = "arn:aws:sns:us-east-1:000000000000"
+            topicName = "journal-created"
+            region = "ap-south-1"   # arena: LocalStack queues are created in ap-south-1 (seeds/localstack/init-queues.sh); SigV4 region must match
+            enableRetryer = true
+            [pubSub.journal_created.sns.retryer]
+                numMaxRetries = 10
+                minRetryDelay = 500      # time in ms
+                minThrottleDelay = 1000  # time in ms
+                maxRetryDelay = 25000    # time in ms
+                maxThrottleDelay = 25000 # time in ms
+
+[wda]
+    defaultHttpClientUrl = "https://wda-service.concierge.stage.razorpay.in"
+    mock = true
+    retryCount = 2
+
+    [wda.ConnPoolConfig]
+        timeout = 3000
+        keepAliveTimeout = 600000
+        maxIdleConnections = 10
+
+    [wda.HystrixResiliencyConfig]
+        maxConcurrentRequests = 100
+        requestVolumeThreshold = 20
+        circuitBreakerSleepWindow = 5000
+        errorPercentThreshold = 50
+        circuitBreakerTimeout = 10000
+
+    [wda.ledger]
+        namespace = "env|LEDGER_WDA_LEDGER_NAMESPACE"
+        cluster = "env|LEDGER_WDA_LEDGER_CLUSTER"
+        user = "env|LEDGER_WDA_LEDGER_USER"
+        password = "env|LEDGER_WDA_LEDGER_PASSWORD"
+
+    [wda.api]
+        namespace = "env|LEDGER_WDA_API_NAMESPACE"
+        cluster = "env|LEDGER_WDA_API_CLUSTER"
+        user = "env|LEDGER_WDA_API_USER"
+        password = "env|LEDGER_WDA_API_PASSWORD"
+
+[splitz]
+    endpoint          = "https://splitz.dev.razorpay.in"
+    authKey           = "ledger"
+    authSecret        = "env|LEDGER_SPLITZ_AUTHSECRET|splitz_secret"
+    mock              = false
+    retryCount        = 2
+    [splitz.ConnPoolConfig]
+        timeout = 500 # time in milliseconds
+        keepAliveTimeout = 600000 # time in milliseconds
+        maxIdleConnections = 10
+    [splitz.HystrixResiliencyConfig]
+        maxConcurrentRequests = 100
+        requestVolumeThreshold = 20
+        circuitBreakerSleepWindow = 5000 # time in milliseconds
+        errorPercentThreshold = 50
+        circuitBreakerTimeout = 10000 # time in milliseconds
+    [splitz.ExperimentIdMap]
+        experiment = "N16JHEJyTMa5YI"
+        merchantBalanceAsyncUpdateExperiment = "OL3BMOeU1b2GgO"
+        ledgerMakeshiftDualWriteExperiment = "OLmdiifT69WGrd"
+        merchantBalanceSegregationExperiment = "S0sZfZiAxEQfIY"

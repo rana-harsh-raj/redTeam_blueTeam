@@ -1,0 +1,147 @@
+[App]
+    Env = "default"
+    Logger = "zap"
+    HostName = "https://cfa.dev.razorpay.in"
+    GitCommit = "" # APP_GITCOMMIT
+
+[Server]
+    ShutdownTimeout = 20
+    [Server.ServerAddresses]
+        Grpc     = ":8080"
+        Http     = ":8081"
+        Internal = ":8082"
+
+    [Server.Auth]
+        [Server.Auth.API]
+            Username  = "env|SERVER_AUTH_API_USERNAME"
+            Password1 = "env|SERVER_AUTH_API_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_API_PASSWORD2"
+        [Server.Auth.Cron]
+            Username  = "env|SERVER_AUTH_CRON_USERNAME"
+            Password1 = "env|SERVER_AUTH_CRON_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_CRON_PASSWORD2"
+        [Server.Auth.Admin]
+            Username  = "env|SERVER_AUTH_ADMIN_USERNAME"
+            Password1 = "env|SERVER_AUTH_ADMIN_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_ADMIN_PASSWORD2"
+        [Server.Auth.XPerience]
+            Username  = "env|SERVER_AUTH_XPERIENCE_USERNAME"
+            Password1 = "env|SERVER_AUTH_XPERIENCE_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_XPERIENCE_PASSWORD2"
+        [Server.Auth.Payouts]
+            Username  = "env|SERVER_AUTH_PAYOUTS_USERNAME"
+            Password1 = "env|SERVER_AUTH_PAYOUTS_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_PAYOUTS_PASSWORD2"
+        [Server.Auth.Validx]
+            Username  = "env|SERVER_AUTH_VALIDX_USERNAME"
+            Password1 = "env|SERVER_AUTH_VALIDX_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_VALIDX_PASSWORD2"
+        [Server.Auth.Wallet]
+            Username  = "env|SERVER_AUTH_WALLET_USERNAME"
+            Password1 = "env|SERVER_AUTH_WALLET_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_WALLET_PASSWORD2"
+
+        [[Server.Auth.Dev]]
+            Username  = "env|SERVER_AUTH_DEV_0_USERNAME"
+            Password1 = "env|SERVER_AUTH_DEV_0_PASSWORD1"
+            Password2 = ""
+
+
+[Sentry]
+    Enabled = false
+    DSN = "" # SENTRY_DSN
+
+[Store]
+    Choice = "mongodb"
+    [Store.MongoDB]
+        Dialect               = "mongo"
+        Port                  = 27017
+        Url                   = "env|STORE_MONGO_URL"
+        Username              = "env|STORE_MONGO_USERNAME"
+        Password              = "env|STORE_MONGO_PASSWORD"
+        DatabaseName          = "env|STORE_MONGO_DBNAME"
+        MaxOpenConnections    = 5
+        MaxIdleConnections    = 2
+        # QueryTimeLogger       = true
+
+[Worker]
+    QueueName = ""
+    MaxConcurrency = 1
+    WaitTime = "10s"
+
+[Queue]
+    Driver = "sqs"
+    [Queue.Sqs]
+        Region = "env|QUEUE_SQS_REGION"
+        Endpoint = "env|QUEUE_SQS_ENDPOINT"
+        Prefix = "env|QUEUE_SQS_PREFIX"
+        UseAnonymousCredentials = false
+        MaxRetries = 3
+        VisibilityTimeout = 300 # 5 minutes
+        WaitTimeout = 20  # 20 seconds
+        [Queue.Sqs.Httpclient]
+            ConnectTimeoutMs = 60001
+            ConnKeepAliveMs = 0
+            ExpectContinueTimeoutMs = 60001
+            IdleConnTimeoutMs = 0
+            MaxAllIdleConns = 0
+            MaxHostIdleConns = 100
+            ResponseHeaderTimeoutMs = 60001
+            TLSHandshakeTimeoutMs = 60001
+
+[EventSystem]
+    [EventSystem.QueueConfigs]
+        [EventSystem.QueueConfigs.contact]
+            default = "contacts"
+            dual_write = "contact-dual-write-queue"
+        [EventSystem.QueueConfigs.fund_account]
+            default = "fund_accounts"
+            dual_write = "fund-account-dual-write-queue"
+
+[BatchConfig]
+    FetchFundAccountByIds = 100
+
+# Observability 2.0 Configuration
+# Uses goutils/telemetry for unified traces, logs, and metrics
+[FundAccountFetchMultiple]
+    enable_cfa_db = false
+    enable_tidb   = false
+
+# FundAccount input validation feature flags.
+# Values are overridden at runtime by Credstash-backed environment variables.
+[FundAccountValidation]
+    # Remove the $ end-anchor from the beneficiary name regex so names like
+    # "Nikhil, Reddy" are accepted, matching the API monolith PHP behaviour.
+    # Credstash env var: FUNDACCOUNTVALIDATION_USE_RELAXED_BENEFICIARY_NAME_REGEX
+    use_relaxed_beneficiary_name_regex = false
+
+# Dynamic Config Service (DCS) connection config. CFA reuses the payouts DCS
+# namespace and credentials (same user + PAYOUTS_DCS_PASSWORD secret). Feature-flag
+# values are resolved at runtime from DCS.
+# NOTE: mock defaults to false (real DCS) and is intentionally NOT set here — it is
+# enabled (mock=true) only in test configs (slit.toml). This base config is inherited
+# by every env (incl. prod), so a stray mock=true here could silently mock prod.
+[Dcs]
+    username = "payouts"
+    password = "env|PAYOUTS_DCS_PASSWORD"
+    env      = "dev"
+    mock     = true
+    timeout  = 60
+
+[Wda]
+    default_http_client_url = "https://wda-service.concierge.stage.razorpay.in"
+    user                    = "env|WDA_USER"
+    password                = "env|WDA_PASSWORD"
+    db_namespace            = "env|WDA_DB_NAMESPACE"
+    db_cluster              = "env|WDA_DB_CLUSTER"
+    mock = true
+
+[Telemetry]
+    serviceName = "cfa"
+    serviceNamespace = "cfa"
+    environment = "development"
+    exporterHost = "localhost"
+    exporterPort = "4318"
+    otelLogLevel = "debug"
+    [Telemetry.log]
+        level = "info"

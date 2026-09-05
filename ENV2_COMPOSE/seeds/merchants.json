@@ -1,0 +1,24 @@
+{
+  "_source": "findings/21_edge_kong_authz.md section 5 (Kong-lite spec): 'username = merchant API key (rzp_live_.../rzp_test_..., regex ^rzp_(\\w{4})_(\\w{14})$), password = key secret'. Key ids below embed the merchant id (14 chars, matches the regex's \\w{14} group and the merchant_id CHAR(14) column) so a request's key id trivially maps back to a merchant_id without a second lookup table.",
+  "_secret_note": "The SECRET half of each key is NOT in this file (this is seeds/, not secrets/) -- it lives in secrets/merchant_arena_m{1,2,3}_secret.txt (generated fresh per-arena by secrets/gen-secrets.sh) and is looked up by 'secret_file' below at kong-lite boot. Do not add real secret VALUES to this file.",
+  "merchants": {
+    "ARENAM00000001": {
+      "key_id_test": "rzp_test_ARENAM00000001",
+      "key_id_live": "rzp_live_ARENAM00000001",
+      "secret_file": "merchant_arena_m1_secret",
+      "roles": []
+    },
+    "ARENAM00000002": {
+      "key_id_test": "rzp_test_ARENAM00000002",
+      "key_id_live": "rzp_live_ARENAM00000002",
+      "secret_file": "merchant_arena_m2_secret",
+      "roles": []
+    },
+    "ARENAM00000003": {
+      "key_id_test": "rzp_test_ARENAM00000003",
+      "key_id_live": "rzp_live_ARENAM00000003",
+      "secret_file": "merchant_arena_m3_secret",
+      "roles": ["finance_l1", "finance_l2", "owner"]
+    }
+  }
+}

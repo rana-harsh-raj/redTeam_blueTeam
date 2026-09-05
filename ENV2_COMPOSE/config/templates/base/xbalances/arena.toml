@@ -1,0 +1,239 @@
+##
+## arena.toml -- local build-spike overlay for x-balances.
+## Loaded on top of default.toml by pkg/configloader (viper merge) when
+## APP_ENV=arena. Every external (*.razorpay.in / *.razorpay.com / VPC) host
+## present in default.toml/stage.toml/prod.toml/e2e.toml has been replaced
+## below with 127.0.0.1, a local docker container, or Mock=true.
+##
+
+[App]
+    Env      = "arena"
+    HostName = "http://127.0.0.1:8081"
+
+[Server]
+    # Explicit 127.0.0.1 (not ":8080") so the grpc-gateway's self-dial back to
+    # the grpc server has a host our HTTPS_PROXY/NO_PROXY blackhole can match on.
+    [Server.ServerAddresses]
+        Grpc     = "127.0.0.1:8080"
+        Http     = "127.0.0.1:8081"
+        Internal = "127.0.0.1:8082"
+    [Server.Auth]
+        [Server.Auth.API]
+            Username  = "api"
+            Password1 = "arena-dummy-1"
+            Password2 = "arena-dummy-2"
+        [Server.Auth.Cron]
+            Username  = "arena_cron_user"
+            Password1 = "arena_cron_pass1"
+            Password2 = "arena_cron_pass2"
+        [Server.Auth.Admin]
+            Username  = "admin"
+            Password1 = "admin"
+            Password2 = "admin"
+        [Server.Auth.PS]
+            Username  = "x_balances"
+            Password1 = "{{SECRET.auth_xbalances_payouts}}"   # arena: = payouts [x_balances] username/password
+            Password2 = "arena_ps_pass2"
+        [Server.Auth.BankingAccounts]
+            Username  = "arena_ba_user"
+            Password1 = "arena_ba_pass1"
+            Password2 = "arena_ba_pass2"
+        [Server.Auth.Validx]
+            Username  = "arena_validx_user"
+            Password1 = "arena_validx_pass1"
+            Password2 = "arena_validx_pass2"
+        [Server.Auth.VirtualAccount]
+            Username = "arena_va_user"
+            Password1 = "arena_va_pass1"
+            Password2 = "arena_va_pass2"
+
+[Sentry]
+    Enabled = false
+    DSN = ""
+
+# ---- Datastore: local docker MySQL 8 (xbal-mysql), published to 127.0.0.1:23408 ----
+[Store]
+    Choice = "sql"
+    [Store.Sql]
+        Dialect = "mysql"
+        Protocol = "tcp"
+        Port = {{SVC.mysql_xbalances.port}}
+        Url = "{{SVC.mysql_xbalances.host}}"
+        Username = "{{SVC.mysql_xbalances.user}}"
+        Password = "{{SECRET.mysql_xbalances_root_password}}"
+        Name = "{{SVC.mysql_xbalances.dbname}}"
+        SslMode = "disable"
+        MaxOpenConnections = 5
+        MaxIdleConnections = 5
+
+[APIStore]
+    Choice = "sql"
+    [APIStore.Sql]
+        Dialect = "mysql"
+        Protocol = "tcp"
+        Port = {{SVC.mysql_apidb.port}}
+        Url = "{{SVC.mysql_apidb.host}}"
+        Username = "{{SVC.mysql_apidb.user}}"
+        Password = "{{SECRET.mysql_apidb_root_password}}"
+        Name = "{{SVC.mysql_apidb.dbname}}"
+        SslMode = "disable"
+        MaxOpenConnections = 5
+        MaxIdleConnections = 5
+
+[Worker]
+    Sync            = false
+    Name            = "pocworker"
+    MaxConcurrency  = 1
+    WaitTime        = "10s"
+    RetryDelay      = "30s"
+    [Worker.DbConfig]
+        maxOpenConnections    = 2
+        maxIdleConnections    = 2
+        connectionMaxLifetime = 0
+        connectionMaxIdleTime = 120
+
+# ---- Queue: in-memory driver instead of SQS -- no AWS egress needed at all ----
+[Queue]
+    Driver = "inmemory"
+
+# ---- API monolith gateway: Mocked, no real host needed to boot ----
+[APIService]
+    Mock = true
+    BaseURL = "{{SVC.monolith_stub.url}}"
+    [APIService.ConnPoolConfig]
+        Timeout                             = 30000
+        KeepAliveTimeout                    = 90000
+        MaxIdleConnections                  = 30
+    [APIService.HystrixResiliencyConfig]
+        MaxConcurrentRequests               = 100
+        RequestVolumeThreshold              = 20
+        CircuitBreakerSleepWindow           = 5000
+        ErrorPercentThreshold               = 50
+        CircuitBreakerTimeout               = 30000
+    [APIService.Auth]
+        Username                            = "rzp_live"
+        Password                            = "{{SECRET.auth_monolith_shared}}"
+
+# ---- Payout Service gateway: Mocked, no real host needed to boot ----
+[PayoutService]
+    Mock = true
+    BaseURL = "{{SVC.payouts_api.url}}"
+    [PayoutService.ConnPoolConfig]
+        Timeout                             = 30000
+        KeepAliveTimeout                    = 90000
+        MaxIdleConnections                  = 30
+    [PayoutService.HystrixResiliencyConfig]
+        MaxConcurrentRequests               = 100
+        RequestVolumeThreshold              = 20
+        CircuitBreakerSleepWindow           = 5000
+        ErrorPercentThreshold               = 50
+        CircuitBreakerTimeout               = 30000
+    [PayoutService.Auth]
+        Username                            = "x_balances"
+        Password                            = "{{SECRET.auth_xbalances_payouts}}"
+
+# ---- Banking Accounts gateway: not in default.toml at all; added here, Mocked ----
+[BankingAccountsConfig]
+    Mock    = true
+    BaseURL = "http://127.0.0.1:1"
+    [BankingAccountsConfig.ConnPoolConfig]
+        Timeout                             = 30000
+        KeepAliveTimeout                    = 90000
+        MaxIdleConnections                  = 30
+    [BankingAccountsConfig.HystrixResiliencyConfig]
+        MaxConcurrentRequests               = 100
+        RequestVolumeThreshold              = 20
+        CircuitBreakerSleepWindow           = 5000
+        ErrorPercentThreshold               = 50
+        CircuitBreakerTimeout               = 30000
+    [BankingAccountsConfig.Auth]
+        Username = "arena_ba"
+        Password = "arena-dummy"
+
+# ---- Mozart gateway: not in default.toml at all; added here, Mocked ----
+[MozartConfig]
+    Mock    = true
+    BaseURL = "{{MOZART.url}}"
+    [MozartConfig.ConnPoolConfig]
+        Timeout                             = 30000
+        KeepAliveTimeout                    = 90000
+        MaxIdleConnections                  = 30
+    [MozartConfig.HystrixResiliencyConfig]
+        MaxConcurrentRequests               = 100
+        RequestVolumeThreshold              = 20
+        CircuitBreakerSleepWindow           = 5000
+        ErrorPercentThreshold               = 50
+        CircuitBreakerTimeout               = 30000
+    [MozartConfig.Auth]
+        Username = "payouts"
+        Password = "{{SECRET.auth_mozart_shared}}"
+
+# ---- Redis: local docker Redis 7 (xbal-redis), published to 127.0.0.1:26481 ----
+[Cache]
+    Choice = "redis"
+    [Cache.Redis]
+        Addr = "{{SVC.redis.host}}:{{SVC.redis.port}}"
+        Password = ""
+        DB = 0
+
+[RateLimiter]
+    Choice = "redis"
+    [RateLimiter.Redis]
+        Addr = "{{SVC.redis.host}}:{{SVC.redis.port}}"
+        Password = ""
+        DB = 1
+
+[BalanceFetch]
+    FetchStrategy = "last_attempted_at"
+
+# ---- DCS (Dynamic Config Service): Mocked, no real env resolution needed to boot ----
+[DCSConfig]
+    Env  = "dev"
+    Mock = true
+    [DCSConfig.Auth]
+        Username = "x_balances"
+        Password = "{{SECRET.auth_dcs_xbalances}}"
+
+# ---- ASV / Account Service: Mocked -> returns pkg/account NewStub(), Host unused ----
+[AccountServiceConfig]
+    Host        = "{{SVC.asv_stub.host}}:{{SVC.asv_stub.port}}"
+    Mock        = true
+    LogResponse = true
+    CacheEvictionSeconds    = "15"
+    CacheMaxCacheSizeMB     = "8"
+    CacheCleanWindowSeconds = "1"
+    CacheShards             = "16"
+    CacheMaxEntriesInWindow = "10000"
+    [AccountServiceConfig.Auth]
+        Username = "xBalances"
+        Password = "{{SECRET.auth_asv_shared}}"
+
+# ---- Ledger: mandatory client, but pkg/ledger.NewClient() does not dial/ping at
+# construction time (verified: it only builds an ledgerSdk.Config + HTTP client).
+# Pointed at an unused local port so nothing here can reach *.razorpay.in. ----
+[LedgerConfig]
+    Host               = "{{SVC.ledger_api.url}}"
+    Timeout            = 10000
+    KeepAliveTimeout   = 60000
+    MaxIdleConnections = 10
+    [LedgerConfig.Auth]
+        Username = "x_balances_key"
+        Password = "{{SECRET.auth_xbalances_ledger}}"
+
+# ---- Observability 2.0: exporter already localhost in default.toml; kept local,
+# OTLP export failures are non-fatal (async exporter). ----
+[Telemetry]
+    serviceName = "x-balances"
+    serviceNamespace = "payouts"
+    environment = "arena"
+    exporterHost = "127.0.0.1"
+    exporterPort = "4318"
+    otelLogLevel = "debug"
+    httpEnabledPaths = [
+        "^GET /v1/accounts$",
+        "^POST /v1/balance/create$",
+        "^GET /v1/balances/[a-zA-Z0-9]+$",
+        "^POST /v1/balances$",
+    ]
+    [Telemetry.log]
+        level = "info"

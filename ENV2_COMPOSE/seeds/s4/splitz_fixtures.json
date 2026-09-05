@@ -1,0 +1,69 @@
+{
+  "_source": "findings/26_dcs_splitz_governor_shield.md:527-536,604-638,651-763. Twirp EvaluateAPI/Evaluate contract per findings/24_shared_libs_proto.md:339-361: POST {endpoint}/twirp/rzp.splitz.evaluate.v1.EvaluateAPI/Evaluate, HTTP Basic auth (Key/Secret), request {id, experiment_id|experiment_name, request_data, track_impression}, response {id, project_id, experiment:{id,name,...}, variant:{id,name,variables:[{key,value}],experiment_id,weight,region}, Reason, steps}. Variant-enabled convention: Variable{Key:'result', Value:'on'|'off'} per payouts/pkg/splitz/client.go:149-161.",
+  "_merchant_id_note": "ARENAM00000001 (M1), ARENAM00000002 (M2), ARENAM00000003 (M3) -- 14-char CHAR(14)-safe ids, see dcs_fixtures.json for the same note.",
+  "experiments": [
+    {
+      "experiment_id": "TUnTsUB8Os2kX0",
+      "name": "payouts_shadow_gateway_scheduled_time_slots",
+      "gates": "shadow-gateway pilot cutover for /v1/payouts/schedule/timeslots (Env 3 concern, not Env 2 -- included for completeness of the 8-id set)",
+      "variants": { "ARENAM00000001": "proxy", "ARENAM00000002": "proxy", "ARENAM00000003": "proxy" }
+    },
+    {
+      "experiment_id": "Qnc6b4fg1Hi36k",
+      "name": "merchant_config_via_asv_and_dcs_experiment",
+      "gates": "IsMerchantConfigViaAsvAndDcsEnabled (payouts/internal/app/merchant/core.go:1077-1079) -- merchant config fetched via ASV+DCS vs legacy monolith path",
+      "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+    },
+    {
+      "experiment_id": "Sg7tEnMoxCbTzM",
+      "name": "payout_workflows_dcs_name_experiment",
+      "gates": "payout workflows named/looked-up via DCS vs legacy flag name",
+      "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+    },
+    {
+      "experiment_id": "TMp5VcIFYOHK2m",
+      "name": "use_api_db_for_payout_status_details_experiment",
+      "gates": "payout_status_details read from API-DB vs legacy source (payouts/internal/helpers/apidb.go:29,47)",
+      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+    },
+    {
+      "experiment_id": "PEVE4sUaVG6Drw",
+      "name": "BulkPayoutsExperiment",
+      "gates": "xperience paise-rounding/amount-handling in bulk payouts (Env 5 concern, included for the 8-id set)",
+      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+    },
+    {
+      "experiment_id": "ORHtoFyuKLWUSw",
+      "name": "ledgerMakeshiftDualWriteExperiment",
+      "gates": "RX-Postgres <-> legacy PG ledger dual-write migration switch",
+      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+    },
+    {
+      "experiment_id": "CreateTransferMetaRollout",
+      "_id_note": "config-field name in non-prod; real prod Splitz id is ROyjRWsBowWdWY (not one of this task's 8 named ids -- kept as the literal config-field string per findings/26:534, since that's what fts/payouts config actually reads in non-prod envs)",
+      "name": "CreateTransferMetaRollout",
+      "gates": "FTS createTransferMeta / X-Origin webhook routing (direct-to-PS vs monolith-relay), see findings/13_fts_payouts_status_path.md finding #15",
+      "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+    },
+    {
+      "experiment_id": "FireStatusUpdateKafka",
+      "_id_note": "config-field name; prod resolves to real Splitz id PYGTRQEzO39PfB (findings/26:536) -- kept literal per BOM Env2 flag matrix which lists this by config-field name",
+      "name": "FireStatusUpdateKafka",
+      "gates": "whether FTS also publishes transfer-status events to Kafka topic rx-fts-status-update-events",
+      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+    }
+  ],
+  "_env2_bom_cross_check": "BOM Sec 2 F2 substitutes row specifies for Env2: fts_request_from_payouts_service=on, CreateTransferMetaRollout=on, FireStatusUpdateKafka=off, ikey enforcement on, duplicate evaluate shadow, charge_collections off -- reflected above (CreateTransferMetaRollout on, FireStatusUpdateKafka off for all 3 merchants).",
+  "fts_request_from_payouts_service_experiment": {
+    "_note": "Referenced in findings/13_fts_payouts_status_path.md finding #15 as the Splitz experiment gating IsFTSRequestFromPayoutsService when the merchant is not on the config allow/deny-list -- exact experiment id not found in findings/26's 8-id enumeration (findings/26 only captured 8 ids from prod.toml keys explicitly listed in the task); TODO(confirm) exact id if the arena needs this gate exercised outside the allow-list path. For Env2 golden flow B, seed the allow-list directly instead (see monolith_fixtures.json / payouts config) so this experiment is never consulted.",
+    "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+  },
+  "evaluate_response_template": {
+    "id": "",
+    "project_id": "",
+    "experiment": { "id": "<experiment_id>", "name": "<name>", "exclusion_group_id": "", "updated_at": "<RFC3339>" },
+    "variant": { "id": "<variant_id>", "name": "<variant_name>", "variables": [{ "key": "result", "value": "<on|off|proxy|shadow_api>" }], "experiment_id": "<experiment_id>", "weight": 100, "region": "" },
+    "Reason": "whitelisting",
+    "steps": ["whitelisting", "sampler", "exclusion", "audience", "assign_bucket"]
+  }
+}

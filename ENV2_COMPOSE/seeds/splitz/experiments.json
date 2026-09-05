@@ -1,0 +1,56 @@
+{
+  "_source": "findings/26_dcs_splitz_governor_shield.md:527-536,604-638,651-763 (the 8 Splitz experiment ids named in the BOM's Env2 flag matrix). Twirp contract per findings/24_shared_libs_proto.md:339-361 and goutils/splitz/client.go: POST {host}/twirp/rzp.splitz.evaluate.v1.EvaluateAPI/Evaluate|EvaluateBulk, request EvaluateRequest{id (=caller-supplied entity id, payouts always passes merchantID -- confirmed via payouts/.agents/skills/pre-mortem/references/services-splitz.md's evalRequest := splitz.EvaluateRequest{Id: merchantID, ExperimentId: ...}), experiment_id|experiment_name, request_data, track_impression}. Response evaluateResponse{id, project_id, experiment{id,name,...}, variant{id,name,variables:[{key,value}],experiment_id,weight,region}, Reason, steps}. Variant-enabled convention: Variable{Key:'result', Value:'on'|'off'} per payouts/pkg/splitz/client.go.",
+  "_merchant_id_note": "ARENAM00000001 (M1), ARENAM00000002 (M2), ARENAM00000003 (M3) -- 14-char CHAR(14)-safe ids, see seeds/dcs/merchants.json's sibling note.",
+  "default_variant": "on",
+  "experiments": {
+    "TUnTsUB8Os2kX0": {
+      "name": "payouts_shadow_gateway_scheduled_time_slots",
+      "gates": "shadow-gateway pilot cutover for /v1/payouts/schedule/timeslots (Env 3 concern, not Env 2 -- included for completeness of the 8-id set)",
+      "variants": { "ARENAM00000001": "proxy", "ARENAM00000002": "proxy", "ARENAM00000003": "proxy" }
+    },
+    "Qnc6b4fg1Hi36k": {
+      "name": "merchant_config_via_asv_and_dcs_experiment",
+      "gates": "IsMerchantConfigViaAsvAndDcsEnabled (payouts/internal/app/merchant/core.go:1077-1079) -- merchant config fetched via ASV+DCS vs legacy monolith path",
+      "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+    },
+    "Sg7tEnMoxCbTzM": {
+      "name": "payout_workflows_dcs_name_experiment",
+      "gates": "payout workflows named/looked-up via DCS vs legacy flag name",
+      "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+    },
+    "TMp5VcIFYOHK2m": {
+      "name": "use_api_db_for_payout_status_details_experiment",
+      "gates": "payout_status_details read from API-DB vs legacy source (payouts/internal/helpers/apidb.go:29,47)",
+      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+    },
+    "PEVE4sUaVG6Drw": {
+      "name": "BulkPayoutsExperiment",
+      "gates": "paise-rounding/amount-handling in bulk payouts (Env 5 concern, included for the 8-id set)",
+      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+    },
+    "ORHtoFyuKLWUSw": {
+      "name": "ledgerMakeshiftDualWriteExperiment",
+      "gates": "RX-Postgres <-> legacy PG ledger dual-write migration switch",
+      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+    },
+    "CreateTransferMetaRollout": {
+      "_id_note": "config-field-name literal (non-prod convention); real prod Splitz id is ROyjRWsBowWdWY per findings/26:534 -- kept as the config-field string since that's what fts/payouts config actually reads",
+      "name": "CreateTransferMetaRollout",
+      "gates": "FTS createTransferMeta / X-Origin webhook routing (direct-to-PS vs monolith-relay), findings/13_fts_payouts_status_path.md finding #15. BOM Env2 F2-substitutes row: ON.",
+      "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+    },
+    "FireStatusUpdateKafka": {
+      "_id_note": "config-field-name literal; prod resolves to real Splitz id PYGTRQEzO39PfB per findings/26:536",
+      "name": "FireStatusUpdateKafka",
+      "gates": "whether FTS also publishes transfer-status events to Kafka topic rx-fts-status-update-events. BOM Env2 F2-substitutes row: OFF.",
+      "variants": { "ARENAM00000001": "off", "ARENAM00000002": "off", "ARENAM00000003": "off" }
+    }
+  },
+  "_by_name_alias": {
+    "_note": "payouts' EvaluateRequest can carry experiment_name instead of experiment_id (goutils/splitz/client.go EvaluateRequest.ExperimentName) -- splitz-stub resolves by name too, using each experiment's 'name' field above as the alias key.",
+    "fts_request_from_payouts_service": {
+      "_note": "Referenced in findings/13_fts_payouts_status_path.md finding #15 as the experiment gating IsFTSRequestFromPayoutsService when the merchant is not on the config allow/deny-list -- exact experiment id not found in findings/26's 8-id enumeration. Seeded directly by name since callers may reference it by name.",
+      "variants": { "ARENAM00000001": "on", "ARENAM00000002": "on", "ARENAM00000003": "on" }
+    }
+  }
+}

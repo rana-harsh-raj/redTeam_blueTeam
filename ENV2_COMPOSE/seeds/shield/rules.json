@@ -1,0 +1,25 @@
+{
+  "_source": "findings/26_dcs_splitz_governor_shield.md:1140-1338 (shield-sdk/models/evaluate/payout_evaluate.go, payouts/internal/app/payouts/core.go:6883, payouts/config/default.toml:312-333). Endpoint POST /v1/rules/evaluate/payout, HTTP Basic auth, timeout 200ms. Payouts only branches on action==\"block\"; allow/review both non-blocking (findings/26:1296-1304).",
+  "_evaluation_order": "shield-stub evaluates rules top to bottom against the incoming input; first match wins; falls back to 'default' if none match.",
+  "rules": [
+    {
+      "rule_id": "arena_block_bene_acct_suffix_9999",
+      "description": "Beneficiary account ending 9999 => block (task-specified scripted block)",
+      "match": { "field": "input.AccountNumber", "op": "ends_with", "value": "9999" },
+      "response": { "action": "block", "triggered_rules": { "velocity_check": "blocked_beneficiary_account_suffix" }, "status_code": 200 }
+    },
+    {
+      "rule_id": "arena_m1_velocity_block",
+      "description": "M1 vendor_payments purpose => block",
+      "match": { "field": "input.MerchantID", "op": "eq", "value": "ARENAM00000001", "and": { "field": "input.Purpose", "op": "eq", "value": "vendor_payments" } },
+      "response": { "action": "block", "triggered_rules": { "velocity_check": "exceeded_daily_limit" }, "status_code": 200 }
+    },
+    {
+      "rule_id": "arena_m3_review_new_beneficiary",
+      "description": "M3 => review verdict (payouts treats review == allow today per findings/26:1296-1304)",
+      "match": { "field": "input.MerchantID", "op": "eq", "value": "ARENAM00000003" },
+      "response": { "action": "review", "triggered_rules": { "new_beneficiary_high_amount": "flagged" }, "status_code": 200 }
+    }
+  ],
+  "default": { "action": "allow", "triggered_rules": {}, "status_code": 200 }
+}

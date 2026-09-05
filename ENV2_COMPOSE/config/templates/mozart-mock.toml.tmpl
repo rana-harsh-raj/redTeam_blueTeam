@@ -1,0 +1,49 @@
+# Rendered by config/generate.py as generated/mozart-mock/env.arena.toml,
+# bind-mounted at /app/conf/env.arena.toml inside the mozart-mock container
+# (see docker-compose.yml's mozart-mock volumes and build/mozart.Dockerfile's
+# header comment for the full ASSUMPTION this rests on: that `-mock` mode,
+# started with APP_ENV=arena, loads exactly this file via the same
+# env.<name>.toml convention every other file under mozart/conf/ already
+# follows). NOT CONFIRMED against mozart/app/environment/reader.go's actual
+# env-var-name logic in this pass -- flagged in findings/29_env2_scaffold.md.
+#
+# [application] LISTEN_PORT/LISTEN_IP/PROM_LISTEN_PORT keys confirmed
+# present in mozart/conf/env.sample.toml (LISTEN_PORT=80 there; overridden
+# to 8085 here to match docker-compose.yml's mozart-mock healthcheck and
+# the port FTS/x-balances/XAS mozart client configs point at).
+#
+# [credentials.<client>] map shape (Credential{Username,Password,Url})
+# confirmed from mozart/app/environment/reader.go's AppConfig struct
+# (`Credentials map[string]Credential`); the exact per-client KEY NAMES
+# mozart itself uses to look up a caller's expected credential were NOT
+# confirmed in this pass (mozart/main.go's bootstrapAuthCredentials wasn't
+# read in full) -- "fts" is the most likely key given FTS is mozart's
+# primary Env 2 caller, but TODO confirm before trusting mozart-mock's auth
+# to actually accept FTS's Basic-Auth header.
+
+[application]
+    LISTEN_PORT = 8085
+    LISTEN_IP   = "0.0.0.0"
+    PROM_LISTEN_PORT = 8086
+
+[credentials.fts]
+    Username = "payouts"
+    Password = "{{SECRET.auth_mozart_shared}}"
+
+[credentials.xbalances]
+    Username = "payouts"
+    Password = "{{SECRET.auth_mozart_shared}}"
+
+[database]
+    # Left empty on purpose: `-mock` mode is documented (findings/25_stork_mozart.md
+    # §B.4) to replay canned fixtures without touching a real bank network,
+    # but it's UNCONFIRMED whether mozart's boot path requires a live DB
+    # connection regardless of mock mode (reader.go's AppConfig has a
+    # DBConfig field). If mozart-mock fails to boot citing a DB connection
+    # error, point this at postgres-ledger or a dedicated arena DB and
+    # revisit this template -- deliberately left as a documented gap rather
+    # than guessed at.
+
+[redis]
+    host = "{{SVC.redis.host}}"
+    port = {{SVC.redis.port}}

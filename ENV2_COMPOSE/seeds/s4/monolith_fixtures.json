@@ -1,0 +1,76 @@
+{
+  "_source": "findings/20_api_monolith.md (routes/controllers/auth confirmed via Route.php grep + $internalApps allowlist; the doc explicitly states it did NOT trace into controller method bodies for field-level request/response DTOs -- so most bodies below are the task's explicit required shape (activated=true, hold_funds=false, features list incl. payout_service_enabled) rather than a verified real monolith response. Every field not independently confirmed in findings/20 is marked TODO(confirm).",
+  "_scope_note": "This is the API-monolith SUBSTITUTE the BOM calls for (Sec 2 F2 row) -- the real razorpay/api repo is unreadable, so this stub's contract is necessarily partly assumed. Routes/controllers/auth-group below ARE confirmed (findings/20); response bodies are the task's specified minimum shape plus documented TODOs for anything findings/20 could not trace.",
+  "merchants": {
+    "ARENAM00000001": {
+      "endpoint": "GET /internal/merchants/ARENAM00000001",
+      "route_confirmed": "internal_merchant_fetch -> MerchantController@internalGetMerchant (findings/20:62)",
+      "response": {
+        "id": "ARENAM00000001", "name": "Arena Merchant One (Shared)", "activated": true, "live": true,
+        "hold_funds": false, "mode": "test",
+        "features": ["payout_service_enabled", "banking"],
+        "_features_todo": "TODO(confirm): full real feature-constant list is 46 PAYOUT/FUND_ACCOUNT constants per findings/20:258 (sample: PAYOUT_SERVICE_ENABLED, LEDGER_REVERSE_SHADOW, PG_LEDGER_REVERSE_SHADOW, ENABLE_APPROVAL_VIA_OAUTH, SKIP_HOLD_FUNDS_ON_PAYOUT, BLOCK_VA_PAYOUTS, ICICI_2FA, ENABLE_IP_WHITELIST, ENABLE_IP_WHITELIST_FETCH) -- only payout_service_enabled is required by this task's spec and is included; add others if a specific golden flow needs them.",
+        "balance_type": "shared", "account_type": "pool"
+      }
+    },
+    "ARENAM00000002": {
+      "endpoint": "GET /internal/merchants/ARENAM00000002",
+      "response": {
+        "id": "ARENAM00000002", "name": "Arena Merchant Two (Direct RBL)", "activated": true, "live": true,
+        "hold_funds": false, "mode": "test",
+        "features": ["payout_service_enabled", "banking"],
+        "balance_type": "direct", "account_type": "current", "channel": "RBL"
+      }
+    },
+    "ARENAM00000003": {
+      "endpoint": "GET /internal/merchants/ARENAM00000003",
+      "response": {
+        "id": "ARENAM00000003", "name": "Arena Merchant Three (Shared, Workflow)", "activated": true, "live": true,
+        "hold_funds": false, "mode": "test",
+        "features": ["payout_service_enabled", "banking", "enable_approval_via_oauth"],
+        "balance_type": "shared", "account_type": "pool"
+      }
+    }
+  },
+  "fetch_pricing_info": {
+    "endpoint": "POST /payouts_service/fetch_pricing_info",
+    "route_confirmed": "create_pricing_for_payout_service -> PayoutController@fetchPricingInfoForPayoutService (findings/20:52)",
+    "_body_shape": "TODO(confirm): request/response field shapes not traced in findings/20 (route located only). Stub delegates to pricing_fixtures.json's pricing_plans table keyed by merchant_id+mode instead of guessing the monolith's own wire format.",
+    "response_template": { "fee": "<paisa>", "tax": "<paisa>", "pricing_rule_id": "ARENAPLAN00000X" }
+  },
+  "on_hold_slas_internal": {
+    "endpoint": "POST /merchant/on_hold_slas_internal",
+    "route_confirmed": "on_hold_merchant_slas_internal -> PayoutController@getOnHoldMerchantSlas (findings/20:66)",
+    "_body_shape": "TODO(confirm): field shape not traced in findings/20.",
+    "response_template": { "ARENAM00000001": { "on_hold_sla_minutes": 0 }, "ARENAM00000002": { "on_hold_sla_minutes": 0 }, "ARENAM00000003": { "on_hold_sla_minutes": 0 } }
+  },
+  "users_internal": {
+    "_status": "NOT FOUND in findings/20_api_monolith.md -- no route/shape matching this literal name. Closest analogue: identity is carried via Passport JWT + X-Payout-Actor-Id/X-Payout-Actor-Type headers (findings/20:118,145), not a dedicated users_internal endpoint. See passport_fixtures.json for M3's finance_l1/l2/owner user identities.",
+    "endpoint": "TODO(confirm) -- not located"
+  },
+  "actor_info": {
+    "_status": "NOT FOUND in findings/20_api_monolith.md, same as users_internal above.",
+    "endpoint": "TODO(confirm) -- not located"
+  },
+  "purposes": {
+    "_status": "NOT FOUND as a monolith endpoint in findings/20. Payouts service has its own local payout_purpose table (payouts/internal/database/migrations/20210617163439_create_payout_purpose_table.go: id, merchant_id, purpose_type JSON) -- seeded directly in payouts.sql instead of via a monolith stub.",
+    "endpoint": "N/A -- served from payouts service's own payout_purpose table, see payouts.sql"
+  },
+  "confirmed_but_not_field-shaped_routes": {
+    "_note": "These routes/controllers ARE confirmed in findings/20:47-66 (auth: internal+admin) but their request/response DTOs were out of scope for that pass -- listed here for completeness, not implemented with real bodies.",
+    "routes": [
+      "POST payouts_service/create", "POST payouts_service/create_fta/{payout_id}", "POST payouts_service/create_ledger",
+      "POST payouts_service/deduct_credits", "POST payouts_service/reverse_credits",
+      "POST payouts_service/decrement_free_payouts", "POST payouts_service/free_payout_rollback",
+      "POST payouts_service/mail_and_sms", "POST payouts_service/source_update",
+      "POST payouts_service/status_details_source_update", "POST payouts_service/dual_write",
+      "GET internal_balances_queued"
+    ]
+  },
+  "update_fts_fund_transfer_relay": {
+    "_source": "findings/13_fts_payouts_status_path.md finding #2,#3, BOM Sec 3 (Env4)",
+    "endpoint": "POST /v1/update_fts_fund_transfer",
+    "relays_to": ["PATCH payouts-api/v1/payouts/update_payouts_with_fts", "POST payouts-api/v1/payouts/update_payouts_details_with_fts"],
+    "note": "Only needed if a golden flow forces IsFTSRequestFromPayoutsService=false (legacy relay path). Env2's B-flow golden path keeps this true (direct webhook), so the relay stub can be a pure pass-through, unexercised by default."
+  }
+}

@@ -1,0 +1,121 @@
+{
+  "_comment": "Consumed directly by substitutes/monolith-stub/server.py (MONOLITH_SEED_FILE), mounted read-only per docker-compose.yml's monolith-stub volume. Shape must match that script's DATA.get('contacts'|'fund_accounts'|'merchants').get(<id>) lookups exactly -- see substitutes/monolith-stub/CONTRACT.md/server.py, not owned by this workstream, only the DATA this file supplies is. IDs prefixed ARENA/cont_ARENA/fa_ARENA per the task brief. TODO: real field lists unconfirmed against monolith source (not in this clone set) -- see seeds/mysql/apidb-ddl/00_init.sql's identical caveat.",
+
+  "merchants": {
+    "ARENA_M1": {
+      "id": "ARENA_M1",
+      "name": "Arena Merchant One (Shared/Lite, ledger-backed)",
+      "live": false,
+      "activated": true,
+      "category": "other",
+      "balance": 100000000
+    },
+    "ARENA_M2": {
+      "id": "ARENA_M2",
+      "name": "Arena Merchant Two (Direct/current account, RBL)",
+      "live": false,
+      "activated": true,
+      "category": "other",
+      "balance": 100000000
+    },
+    "ARENA_M3": {
+      "id": "ARENA_M3",
+      "name": "Arena Merchant Three (workflow-enabled)",
+      "live": false,
+      "activated": true,
+      "category": "other",
+      "balance": 100000000
+    }
+  },
+
+  "contacts": {
+    "cont_ARENA000001": {
+      "id": "cont_ARENA000001",
+      "merchant_id": "ARENA_M1",
+      "name": "Arena Beneficiary One",
+      "email": "beneficiary1@arena.test",
+      "contact": "9000000001",
+      "type": "employee",
+      "active": true
+    },
+    "cont_ARENA000002": {
+      "id": "cont_ARENA000002",
+      "merchant_id": "ARENA_M2",
+      "name": "Arena Beneficiary Two",
+      "email": "beneficiary2@arena.test",
+      "contact": "9000000002",
+      "type": "vendor",
+      "active": true
+    },
+    "cont_ARENA000003": {
+      "id": "cont_ARENA000003",
+      "merchant_id": "ARENA_M3",
+      "name": "Arena Beneficiary Three",
+      "email": "beneficiary3@arena.test",
+      "contact": "9000000003",
+      "type": "employee",
+      "active": true
+    },
+    "cont_ARENA000004_inactive": {
+      "id": "cont_ARENA000004_inactive",
+      "merchant_id": "ARENA_M1",
+      "name": "Arena Inactive Beneficiary",
+      "email": "inactive@arena.test",
+      "contact": "9000000004",
+      "type": "employee",
+      "active": false
+    }
+  },
+
+  "fund_accounts": {
+    "fa_ARENA000001": {
+      "id": "fa_ARENA000001",
+      "merchant_id": "ARENA_M1",
+      "contact_id": "cont_ARENA000001",
+      "account_type": "bank_account",
+      "active": true,
+      "bank_account": {
+        "ifsc": "RATN0000001",
+        "bank_name": "RBL Bank (arena)",
+        "account_number": "111000000000001",
+        "beneficiary_name": "Arena Beneficiary One"
+      }
+    },
+    "fa_ARENA000002": {
+      "id": "fa_ARENA000002",
+      "merchant_id": "ARENA_M2",
+      "contact_id": "cont_ARENA000002",
+      "account_type": "bank_account",
+      "active": true,
+      "bank_account": {
+        "ifsc": "RATN0000001",
+        "bank_name": "RBL Bank (arena)",
+        "account_number": "111000000000002",
+        "beneficiary_name": "Arena Beneficiary Two"
+      }
+    },
+    "fa_ARENA000003": {
+      "id": "fa_ARENA000003",
+      "merchant_id": "ARENA_M3",
+      "contact_id": "cont_ARENA000003",
+      "account_type": "vpa",
+      "active": true,
+      "vpa": {
+        "address": "arena.beneficiary3@arenabank"
+      }
+    },
+    "fa_ARENA000004_inactive": {
+      "id": "fa_ARENA000004_inactive",
+      "merchant_id": "ARENA_M1",
+      "contact_id": "cont_ARENA000004_inactive",
+      "account_type": "bank_account",
+      "active": false,
+      "bank_account": {
+        "ifsc": "RATN0000001",
+        "bank_name": "RBL Bank (arena)",
+        "account_number": "111000000000004",
+        "beneficiary_name": "Arena Inactive Beneficiary"
+      }
+    }
+  }
+}

@@ -1,0 +1,56 @@
+{
+  "_source": "findings/24_shared_libs_proto.md:26-96,140-219 (goutils/passport v3/v4 claim structs, GetLegacyAuthType decision table). Header: X-Passport-JWT-V1. Payouts uses v3 (static pubkey-per-kid, config keys passport.api.identifier=\"apiv1\", passport.edge.identifier=\"edgev1\"/\"edgev2\").",
+  "_note_on_impersonation_bug": "ImpersonationClaims has NO json tags in the real struct (upstream bug) -- wire keys are literally 'Type'/'Consumer' (capitalized), not 'type'/'consumer'. Reproduced faithfully below for M3's proxy tokens.",
+  "signing": {
+    "algorithm": "RS256 (assumed -- goutils/passport is JWT-standard; arena mints its own JWKS/keypair per findings/29_env2_scaffold.md dcs-stub precedent of grounding in real repo contracts). TODO(confirm): exact algorithm not independently re-verified against goutils/passport signer code in this pass -- findings/24 confirms claim shape and header name, not the signing algorithm.",
+    "kid_api": "apiv1",
+    "kid_edge": "edgev1"
+  },
+  "private_mode_tokens": {
+    "_description": "M1 and M2 API-key merchants -- straight merchant auth, no impersonation, no oauth.",
+    "ARENAM00000001": {
+      "iss": "https://edge.razorpay.com", "sub": "https://payouts.razorpay.com",
+      "jti": "arena-jti-m1-0001", "iat": 0, "nbf": 0, "exp": 4102444800,
+      "identified": true, "authenticated": true, "mode": "test", "org": "ARENAORG000001", "product": "banking",
+      "consumer": { "id": "ARENAM00000001", "type": "merchant" }
+    },
+    "ARENAM00000002": {
+      "iss": "https://edge.razorpay.com", "sub": "https://payouts.razorpay.com",
+      "jti": "arena-jti-m2-0001", "iat": 0, "nbf": 0, "exp": 4102444800,
+      "identified": true, "authenticated": true, "mode": "test", "org": "ARENAORG000001", "product": "banking",
+      "consumer": { "id": "ARENAM00000002", "type": "merchant" }
+    }
+  },
+  "proxy_impersonation_tokens": {
+    "_description": "M3 finance users (dashboard impersonation) -- identified/authenticated as the human user, with an Impersonation block naming the merchant being acted on. roles carries the RazorpayX finance role name.",
+    "ARENAM00000003_finance_l1": {
+      "iss": "https://edge.razorpay.com", "sub": "https://payouts.razorpay.com",
+      "jti": "arena-jti-m3-fl1-0001", "iat": 0, "nbf": 0, "exp": 4102444800,
+      "identified": true, "authenticated": true, "mode": "test", "org": "ARENAORG000001", "product": "banking",
+      "roles": ["finance_l1"],
+      "consumer": { "id": "ARENAU00000001", "type": "user" },
+      "impersonation": { "Type": "user_merchant", "Consumer": { "id": "ARENAM00000003", "type": "merchant" } }
+    },
+    "ARENAM00000003_finance_l2": {
+      "iss": "https://edge.razorpay.com", "sub": "https://payouts.razorpay.com",
+      "jti": "arena-jti-m3-fl2-0001", "iat": 0, "nbf": 0, "exp": 4102444800,
+      "identified": true, "authenticated": true, "mode": "test", "org": "ARENAORG000001", "product": "banking",
+      "roles": ["finance_l2"],
+      "consumer": { "id": "ARENAU00000002", "type": "user" },
+      "impersonation": { "Type": "user_merchant", "Consumer": { "id": "ARENAM00000003", "type": "merchant" } }
+    },
+    "ARENAM00000003_owner": {
+      "iss": "https://edge.razorpay.com", "sub": "https://payouts.razorpay.com",
+      "jti": "arena-jti-m3-owner-0001", "iat": 0, "nbf": 0, "exp": 4102444800,
+      "identified": true, "authenticated": true, "mode": "test", "org": "ARENAORG000001", "product": "banking",
+      "roles": ["owner"],
+      "consumer": { "id": "ARENAU00000003", "type": "user" },
+      "impersonation": { "Type": "user_merchant", "Consumer": { "id": "ARENAM00000003", "type": "merchant" } }
+    }
+  },
+  "internal_service_tokens": {
+    "_description": "Not passport JWTs -- internal service-to-service calls (FTS webhook, workflow callbacks, monolith relay) use HTTP Basic auth per findings/13_fts_payouts_status_path.md finding #1: middleware.BasicAuth(cred.API, cred.Workflow, cred.Xperience, cred.FTS, cred.VendorPayments, cred.Settlements, cred.Irctc). See README.md for the arena's synthetic Basic-Auth credential pairs (payouts_key, fts_key, x_balances_key, etc, per BOM Sec 1).",
+    "example_ledger_service_auth": { "username": "payouts_key", "password": "<generated per-arena secret, see secrets/>" }
+  },
+  "authz_role_bundle_note": "finance_l1/finance_l2/owner (M3) mirror the BOM Sec 4 role set (finance_l1/l2/l3/owner/view_only). AuthZ policy enforcement itself is BLOCKED_BY_FIDELITY_GAP per BOM Sec 4/8 -- the passport claim shape above is sufficient to exercise PS-side role-based branching (if any exists in payouts code), but real per-route authorization decisions live in the unreadable authz/api-monolith repos and cannot be fixture-verified end-to-end in this arena."
+}

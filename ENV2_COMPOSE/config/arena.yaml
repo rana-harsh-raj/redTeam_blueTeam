@@ -1,0 +1,102 @@
+# config/arena.yaml — Env 2 arena topology + non-secret settings.
+# Read by config/generate.py. NO CREDENTIALS IN THIS FILE -- those come only
+# from secrets/*.txt (generated per-arena by secrets/gen-secrets.sh).
+#
+# Every host/port value here MUST be an arena service name (as defined in
+# docker-compose.yml) or a substitutes/ stub -- never a real
+# razorpay.{com,in,vpc} hostname. preflight/preflight.py enforces this on
+# the RENDERED output, not on this file, but keep it true here too.
+
+arena_name: env2
+
+network:
+  arena: rzp-arena
+  ingress: rzp-ingress
+
+# ---------------------------------------------------------------------
+# Service endpoints -- single source of truth for every {{TOKEN}} that
+# templates/*.toml.tmpl reference for a downstream host:port. Keys here
+# are referenced by templates as {{SVC.<key>}}.
+# ---------------------------------------------------------------------
+services:
+  payouts_api: {host: payouts-api, port: 9400, metrics_port: 8001}
+  ledger_api: {host: ledger-api, port: 8080}
+  fts_web: {host: fts-web, port: 8080}
+  cfa_grpc: {host: cfa-server, port: 8080}
+  cfa_http: {host: cfa-server, port: 8081}
+  cfa_internal: {host: cfa-server, port: 8082}
+  xbalances_grpc: {host: xbalances-server, port: 8080}
+  xbalances_http: {host: xbalances-server, port: 8081}
+  xbalances_internal: {host: xbalances-server, port: 8082}
+  # user/dbname here MUST match the datastore containers' own MYSQL_USER/
+  # MYSQL_DATABASE / POSTGRES_USER / POSTGRES_DB / MONGO_INITDB_ROOT_USERNAME
+  # / MONGO_INITDB_DATABASE in docker-compose.yml -- config/generate.py has
+  # no other source of truth for these, so if you change one you MUST change
+  # the other. Password for every one of these is the matching
+  # secrets/<name>_root_password.txt / secrets/postgres_ledger_password.txt
+  # (the same secret compose's MYSQL_PASSWORD_FILE/MYSQL_ROOT_PASSWORD_FILE
+  # pair both point at, i.e. the app user's password equals root's here).
+  mysql_payouts: {host: mysql-payouts, port: 3306, user: payouts, dbname: payouts}
+  mysql_fts: {host: mysql-fts, port: 3306, user: fts, dbname: fts}
+  mysql_xbalances: {host: mysql-xbalances, port: 3306, user: rx_balances_rw, dbname: rx_balances_local}
+  # mysql-apidb-stub backs BOTH payouts' [db.api] and cfa/x-balances'
+  # [APIStore.Sql] -- one shared container, one shared api_local database.
+  mysql_apidb: {host: mysql-apidb-stub, port: 3306, user: api_rx, dbname: api_local}
+  postgres_ledger: {host: postgres-ledger, port: 5432, user: ledger, dbname: ledger}
+  # mongo-cfa only has a root user (MONGO_INITDB_ROOT_USERNAME) -- no
+  # docker-official-image mechanism creates a scoped non-root app user from
+  # env vars alone (unlike the MySQL images' MYSQL_USER/MYSQL_DATABASE).
+  # cfa connects as root, same as seeds/mongo/cfa_seed.js already does
+  # (mongosh --authenticationDatabase admin) -- see findings/30 for the
+  # open question of whether cfa's own Mongo client needs an explicit
+  # authSource=admin it isn't given a config field for.
+  mongo_cfa: {host: mongo-cfa, port: 27017, user: cfa_root, dbname: cfa}
+  redis: {host: redis, port: 6379}
+  localstack: {host: localstack, port: 4566}
+  kafka: {host: kafka, port: 9092}
+  kong_lite: {host: kong-lite, port: 8080}
+  monolith_stub: {host: monolith-stub, port: 8080}
+  dcs_stub: {host: dcs-stub, port: 8080}
+  splitz_stub: {host: splitz-stub, port: 8080}
+  shield_stub: {host: shield-stub, port: 8080}
+  pricing_stub: {host: pricing-stub, port: 8080}
+  asv_stub: {host: asv-stub, port: 8080}
+  stork_capture: {host: stork-capture, port: 8080}
+  merchant_webhook_sink: {host: merchant-webhook-sink, port: 8080}
+  xas_sink: {host: xas-sink, port: 8080}
+  # Selected by ARENA_MOZART_IMPL in .env.arena (mozart-sim default and
+  # PRIMARY -- the real mozart binary cannot be built in this environment,
+  # see substitutes/mozart-sim/CONTRACT.md; mozart-mock/mozart-real is an
+  # opt-in profile, not depended on by core) -- generate.py resolves
+  # {{SVC.mozart}} to whichever is active so templates don't need to know
+  # which impl is running.
+  mozart_mock: {host: mozart-mock, port: 8085}
+  mozart_sim: {host: mozart-sim, port: 8085}
+
+# ---------------------------------------------------------------------
+# Synthetic merchants (BOM §1 "Synthetic entities" row). IDs prefixed
+# ARENA per the task brief. Real bank/contact/fund-account details live in
+# seeds/, not here -- this block only carries what config templates need
+# (e.g. per-merchant DCS flags, below).
+# ---------------------------------------------------------------------
+merchants:
+  - id: ARENAM00000001
+    label: "Shared/Lite balance, ledger-backed"
+    mode: test
+  - id: ARENAM00000002
+    label: "Direct/current account RBL, x-balances mirror, in-flight reservation on"
+    mode: test
+  - id: ARENAM00000003
+    label: "Workflow-enabled, finance_l1/l2 users"
+    mode: test
+
+# ---------------------------------------------------------------------
+# DCS feature flags / Splitz variants: NOT sourced from this file anymore.
+# dcs-stub loads seeds/dcs/merchants.json directly (mounted read-only,
+# DCS_SEED_FILE env) and splitz-stub loads seeds/splitz/experiments.json
+# directly (SPLITZ_SEED_FILE env) -- both fixtures carry the real DCS
+# object/field shapes and the 8 named Splitz experiment ids respectively,
+# which arena.yaml's old flat flag-name table couldn't represent. See
+# substitutes/dcs-stub/CONTRACT.md and substitutes/splitz-stub/CONTRACT.md.
+# config/generate.py no longer renders generated/dcs-stub/dcs_flags.json.
+# ---------------------------------------------------------------------

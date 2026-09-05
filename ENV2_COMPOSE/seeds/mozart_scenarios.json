@@ -1,0 +1,92 @@
+{
+  "_source": "findings/25_stork_mozart.md:473-649, cross-checked directly against real files under mozart/app/testdata/fts/rbl/v1/{transfer_init,transfer_status,gateway_auth,account_balance}/. Real Mozart -mock matches a scenario by an EXACT string match on one specific field of the flattened inbound request -- transfer_init keys on entities.attempt.amount, *_status actions key on entities.attempt.gateway_ref_no (mozart/app/mock/mappings.go). Route shape: POST /{namespace}/{gateway}/{version}/{action}, e.g. /fts/rbl/v1/transfer_init.",
+  "_gap_note": "Real Mozart -mock is a STATIC fixture replay (one request field value -> one fixed response, no server-side state). The task's 'pending -> processed after 2 polls' scenario needs per-call-count state, which the real Mozart -mock cannot do. Two options, both documented: (a) use the lightweight stateful mozart-sim substitute (Python, ENV2_COMPOSE-style) for that one scenario only, keeping real Mozart -mock for the other 5; (b) accept a simplified single-poll pending->processed and note the fidelity gap. This spec assumes (a).",
+  "channel": "RBL", "gateway": "rbl", "version": "v1", "namespace": "fts",
+  "scenario_selection_key": {
+    "transfer_init": "entities.attempt.amount (paisa, as a string)",
+    "transfer_status": "entities.attempt.gateway_ref_no"
+  },
+  "scenarios": [
+    {
+      "id": "arena_processed_100100",
+      "flow": "transfer_init amount=100100 -> gateway_ref_no=ARENAUTR0000001 -> transfer_status(ARENAUTR0000001) processed",
+      "amount_paisa": "100100",
+      "gateway_ref_no": "ARENAUTR0000001",
+      "init_response": { "responseStatusCode": 200, "responseBody": { "data": { "gateway_ref_no": "ARENAUTR0000001", "bank_status_code": "INITIATED" }, "error": null, "success": true } },
+      "status_response": { "responseStatusCode": 200, "responseBody": { "data": { "bank_status_code": "SUCCESS", "utr": "ARENAUTR0000001", "is_credited": true, "is_debited": true, "remarks": "Success" }, "error": null, "success": true } },
+      "fts_meta_expected": "Processed: true (fts/internal/providers/mozart/error_code.go StatusSuccess mapping)"
+    },
+    {
+      "id": "arena_failed_insufficient_fund_100200",
+      "flow": "transfer_init amount=100200 -> immediate failure, bank_status_code INSUFFICIENT_FUND",
+      "amount_paisa": "100200",
+      "gateway_ref_no": "ARENAUTR0000002",
+      "init_response": {
+        "responseStatusCode": 200,
+        "responseBody": {
+          "data": { "bank_status_code": "INSUFFICIENT_FUND", "utr": null, "is_credited": false, "is_debited": false, "remarks": "Insufficient balance in remitter account" },
+          "error": { "description": "Insufficient balance in remitter account", "gateway_error_code": "INSUFFICIENT_FUND", "gateway_error_description": "Insufficient balance in remitter account", "gateway_status_code": 200, "internal_error_code": "INSUFFICIENT_FUND" },
+          "success": false
+        }
+      },
+      "fts_meta_expected": "RetriableError: true, Failed: true (StatusInsufficientFund mapping, findings/25:410-421)"
+    },
+    {
+      "id": "arena_pending_then_processed_100300",
+      "_requires": "stateful mozart-sim substitute, not real Mozart -mock (see _gap_note)",
+      "flow": "transfer_init amount=100300 -> gateway_ref_no=ARENAUTR0000003 -> poll 1: PENDING -> poll 2+: SUCCESS with UTR",
+      "amount_paisa": "100300",
+      "gateway_ref_no": "ARENAUTR0000003",
+      "poll_sequence": [
+        { "poll_number": 1, "responseStatusCode": 200, "responseBody": { "data": { "bank_status_code": "PENDING", "utr": null, "remarks": "Transaction is pending for Approval" }, "error": { "description": "Awaiting Confirmation", "gateway_error_code": "PENDING", "internal_error_code": "PENDING" }, "success": false } },
+        { "poll_number": "2+", "responseStatusCode": 200, "responseBody": { "data": { "bank_status_code": "SUCCESS", "utr": "ARENAUTR0000003", "is_credited": true, "is_debited": true, "remarks": "Success" }, "error": null, "success": true } }
+      ]
+    },
+    {
+      "id": "arena_cbs188_with_utr_100400",
+      "flow": "transfer_status returns ambiguous CBS:188 bank error but WITH a UTR present -- the ambiguous-success-with-UTR case referenced in BOM Sec 7 Mozart row ('UTR present iff processed or ambiguous-with-UTR')",
+      "amount_paisa": "100400",
+      "gateway_ref_no": "ARENAUTR0000004",
+      "status_response": {
+        "responseStatusCode": 200,
+        "responseBody": {
+          "data": { "bank_status_code": "CBS:188", "utr": "ARENAUTR0000004", "is_credited": null, "is_debited": null, "remarks": "Ambiguous response from core banking, manual reconciliation required" },
+          "error": { "description": "Core banking ambiguous response", "gateway_error_code": "CBS:188", "gateway_error_description": "Core banking ambiguous response", "gateway_status_code": 200, "internal_error_code": "TECHNICAL_ERROR_AMBIGUOUS" },
+          "success": false
+        }
+      },
+      "fts_meta_expected": "Ambiguous/manual-reconciliation bucket per fts error_code.go CBS:188 mapping; UTR present distinguishes from a clean failure"
+    },
+    {
+      "id": "arena_duplicate_txn_100500",
+      "flow": "transfer_init with a gateway_ref_no that was already used -> DUPLICATE_TXN",
+      "amount_paisa": "100500",
+      "gateway_ref_no": "ARENAUTR0000005",
+      "init_response": {
+        "responseStatusCode": 200,
+        "responseBody": {
+          "data": { "utr": null, "bank_status_code": "DUPLICATE_TXN" },
+          "error": { "gateway_error_code": "DUPLICATE_TXN", "gateway_error_description": "Duplicate transaction reference", "internal_error_code": "DUPLICATE_TXN" },
+          "success": false
+        }
+      },
+      "fts_meta_expected": "Pending: true (StatusDuplicateTxn mapping, findings/25:410-421) -- FTS treats as needing a status-check, not a hard failure"
+    },
+    {
+      "id": "arena_reversed_100600",
+      "flow": "transfer_status initially SUCCESS, then a later poll shows RETURNED (NEFT/IMPS return) -> Payouts remaps to reversed per FtsToPayoutStatusMap for Shared merchants (findings/13 finding #16)",
+      "amount_paisa": "100600",
+      "gateway_ref_no": "ARENAUTR0000006",
+      "poll_sequence": [
+        { "poll_number": 1, "responseStatusCode": 200, "responseBody": { "data": { "bank_status_code": "SUCCESS", "utr": "ARENAUTR0000006", "is_credited": true, "is_debited": true }, "error": null, "success": true } },
+        { "poll_number": 2, "responseStatusCode": 200, "responseBody": { "data": { "bank_status_code": "RETURNED", "return_utr": "ARENARETUTR000001", "remarks": "Beneficiary account closed, amount returned" }, "error": { "gateway_error_code": "RETURNED", "internal_error_code": "TECHNICAL_ERROR_RETURNED" }, "success": false } }
+      ],
+      "fts_meta_expected": "Failed: true (StatusReturned mapping) at the FTS transfer-status layer; Payouts' own FtsToPayoutStatusMap then remaps this to payout status 'reversed' for Shared/default accounts (M1, M3), or 'failed' for Direct+RBL (M2)"
+    }
+  ],
+  "real_fixture_precedent_files": [
+    "mozart/app/testdata/fts/rbl/v1/transfer_status/9999999151/ (real PENDING example)",
+    "mozart/app/testdata/fts/rbl/v1/transfer_status/9999999154/ (real FAILED example)",
+    "mozart/app/testdata/fts/axis/v1/account_balance/100/ (real SUCCESS example, different action)"
+  ]
+}

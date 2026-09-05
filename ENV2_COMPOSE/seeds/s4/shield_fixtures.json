@@ -1,0 +1,55 @@
+{
+  "_source": "findings/26_dcs_splitz_governor_shield.md:1140-1338 (shield-sdk/models/evaluate/payout_evaluate.go, payouts/internal/app/payouts/core.go:6883, payouts/config/default.toml:312-333).",
+  "_contract": {
+    "endpoint": "POST /v1/rules/evaluate/payout",
+    "auth": "HTTP Basic (shield.auth.username/password from payouts config)",
+    "timeout_ms": 200,
+    "content_type": "application/json",
+    "note": "Payouts only branches on action==\"block\"; \"allow\" and \"review\" are both treated as non-blocking (confirmed gap, findings/26:1296-1304). Any HTTP error/timeout fails open (payout proceeds).",
+    "exclusion": "purpose == \"rzp_fees\" payouts never call Shield at all (payouts/config/default.toml:330-333) -- the stub should never receive a request for such a payout if that config path is wired correctly in the arena."
+  },
+  "request_schema": {
+    "merchant_id": "string",
+    "entity_type": "payout",
+    "entity_id": "string",
+    "rulesets": null,
+    "skip_default_execution": false,
+    "input": {
+      "PayoutID": "string", "Mode": "string", "Narration": "string", "Currency": "INR",
+      "SourceAccountTypes": "string", "SourceChannel": "string", "SourceAccountNumber": "string",
+      "Purpose": "string", "PurposeType": "string", "MerchantID": "string", "MerchantMCC": "string",
+      "BeneficiaryName": "string", "BeneficiaryEmail": "string", "BeneficiaryMobile": "string",
+      "VPA": "string", "AccountNumber": "string", "IFSC": "string",
+      "UserID": "string", "SourceIP": "string", "SourceDevice": "string", "SourcePlatform": "string",
+      "OS": "string", "PaymentProduct": "string", "MerchantType": "string", "ConstitutionType": "string",
+      "EntityType": "payout", "CardLength": "string",
+      "PayoutAmount": 0, "MerchantCreatedAt": 0, "CreatedAt": 0, "FundAccountCreatedAt": 0,
+      "Balance": 0.0, "EvaluationUniqueness": false, "International": false
+    }
+  },
+  "response_schema": { "action": "allow|block|review", "triggered_rules": {}, "status_code": 200 },
+  "scripted_rules": {
+    "_evaluation_order": "Stub server evaluates rules top to bottom against the incoming input; first match wins; falls back to \"default\" if none match.",
+    "rules": [
+      {
+        "rule_id": "arena_block_bene_acct_suffix_9999",
+        "description": "Beneficiary account ending 9999 => block (task-specified scripted block)",
+        "match": { "field": "input.AccountNumber", "op": "ends_with", "value": "9999" },
+        "response": { "action": "block", "triggered_rules": { "velocity_check": "blocked_beneficiary_account_suffix" }, "status_code": 200 }
+      },
+      {
+        "rule_id": "arena_m1_velocity_block",
+        "description": "M1 vendor_payments purpose => block (mirrors findings/26's merchant_test_001 scripted seed, kept for parity)",
+        "match": { "field": "input.MerchantID", "op": "eq", "value": "ARENAM00000001", "and": { "field": "input.Purpose", "op": "eq", "value": "vendor_payments" } },
+        "response": { "action": "block", "triggered_rules": { "velocity_check": "exceeded_daily_limit" }, "status_code": 200 }
+      },
+      {
+        "rule_id": "arena_m3_review_new_beneficiary",
+        "description": "M3 => review verdict (Payouts treats review == allow today, see contract note above)",
+        "match": { "field": "input.MerchantID", "op": "eq", "value": "ARENAM00000003" },
+        "response": { "action": "review", "triggered_rules": { "new_beneficiary_high_amount": "flagged" }, "status_code": 200 }
+      }
+    ],
+    "default": { "action": "allow", "triggered_rules": {}, "status_code": 200 }
+  }
+}
