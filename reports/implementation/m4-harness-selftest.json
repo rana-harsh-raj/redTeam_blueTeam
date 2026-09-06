@@ -1,0 +1,37 @@
+{
+ "kind": "M4_HARNESS_SELFTEST",
+ "campaign_id": "m4-selftest-20260906T202448Z",
+ "generated_at": "2026-09-06T20:24:50.138858+00:00",
+ "run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-selftest-20260906T202448Z/m4-selftest-20260906T202448Z",
+ "note": "Positive live demonstrations against the real hypotheses/leases/state modules (no mocks).",
+ "G59_duplicate_suppression": {
+  "first_id": "H-001",
+  "first_was_duplicate": false,
+  "second_id": "H-001",
+  "second_was_duplicate": true,
+  "second_returns_same_id": true,
+  "distinct_id": "H-002",
+  "distinct_was_duplicate": false,
+  "distinct_is_new": true,
+  "passed": true,
+  "duplicate_suppressed_events": 0
+ },
+ "G60_lease_expiry_reassign": {
+  "acquired_by": "ctx-A",
+  "expired_count": 1,
+  "expired_lease_ids": [
+   "L-873f79111e"
+  ],
+  "reassigned_to": "ctx-B",
+  "new_lease_owner": "ctx-B",
+  "passed": true
+ },
+ "G61_checkpoint_resume": {
+  "state_hash_before": "695d80fd7df4cba4e4e1623272c4ca083297701c1453840cb0d96c9b2a5b425b",
+  "state_hash_after_reopen": "695d80fd7df4cba4e4e1623272c4ca083297701c1453840cb0d96c9b2a5b425b",
+  "stable": true,
+  "resume_snapshot_present": true,
+  "passed": true
+ },
+ "all_passed": true
+}

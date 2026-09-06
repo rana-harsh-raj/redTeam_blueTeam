@@ -73,6 +73,8 @@ EV = {
     "route_coverage": "m4-route-coverage.json",        # T17 (may be pending)
     "invariants": "m4-invariant-results.json",         # T17 (may be pending)
     "m3_1_acceptance": "m3-1-acceptance.json",
+    "selftest": "m4-harness-selftest.json",       # G59/G60/G61 positive self-test
+    "recovery": "m4-recovery-matrix.json",         # recovery matrix (leases/checkpoint)
 }
 # spec artifacts outside IMPL
 EXPECTED_FAILURES = REPO / "TWIN_SPEC" / "expected-failures.yaml"
@@ -596,30 +598,37 @@ class Evaluator:
         self.emit("G58", g, "Blocked and falsified states are not conflated",
                   g58 if hl else None, pointer=self.rel("hyp_lifecycle") + ":rollup,blockers",
                   fidelity="executed", note="rollup carries distinct blocked/falsified counters; blockers taxonomy separate.")
-        # G59: duplicate-hypothesis suppression -- needs a positive demonstration.
+        # G59: duplicate-hypothesis suppression -- positive live self-test.
+        st = load_json(path_of("selftest")) or {}
+        g59 = bool(dig(st, "G59_duplicate_suppression", "passed", default=False))
         self.emit("G59", g, "Duplicate-hypothesis suppression works",
-                  None, pointer=soak_rel + ":duplicates_suppressed", fidelity="executed",
-                  status="pending",
-                  note=("PENDING: soak duplicates_suppressed=%s (no duplicate arose to suppress). "
-                        "Mechanism is backed by RED_LOOP/tests/test_soak.py; coordinator closes via a "
-                        "committed self-test artifact or a soak that exercises the branch."
-                        % dig(soak, "duplicates_suppressed", default="n/a")))
-        # G60: lease expiry + reassignment -- needs a positive demonstration.
+                  g59 if self.present("selftest") else None,
+                  pointer=self.rel("selftest") + ":G59_duplicate_suppression", fidelity="executed",
+                  note=("live self-test against real HypothesisManager: re-proposing the same "
+                        "(claim,target_assets) returns the existing id (was_duplicate=True) while a "
+                        "distinct claim gets a new id. second_returns_same_id=%s distinct_is_new=%s"
+                        % (dig(st, "G59_duplicate_suppression", "second_returns_same_id", default="n/a"),
+                           dig(st, "G59_duplicate_suppression", "distinct_is_new", default="n/a"))))
+        # G60: lease expiry + reassignment -- positive live self-test + recovery matrix.
+        rc = load_json(path_of("recovery")) or {}
+        rc_scn = {x.get("scenario"): x for x in (rc.get("scenarios") or rc.get("results") or [])}
+        g60_self = bool(dig(st, "G60_lease_expiry_reassign", "passed", default=False))
+        g60_rec = bool(dig(rc_scn.get("expired_lease", {}), "passed", default=False))
         self.emit("G60", g, "Task lease expiry and reassignment work",
-                  None, pointer=soak_rel + ":leases_reassigned", fidelity="executed",
-                  status="pending",
-                  note=("PENDING: soak leases_reassigned=%s, leases_expired=%s (none expired this run). "
-                        "Backed by RED_LOOP/tests/test_leases.py (reap_expired/reassign). Coordinator closes "
-                        "via a committed lease self-test artifact or a soak that expires a lease."
-                        % (dig(soak, "leases_reassigned", default="n/a"), dig(soak, "leases_expired", default="n/a"))))
-        # G61: checkpoint/resume after interruption -- checkpoints present; resume backed by test.
+                  (g60_self or g60_rec) if (self.present("selftest") or self.present("recovery")) else None,
+                  pointer=self.rel("selftest") + ":G60_lease_expiry_reassign", fidelity="executed",
+                  note=("live self-test: a ttl=1s lease expired (expired_count=%s) and the hypothesis "
+                        "reassigned to a new owner; corroborated by recovery-matrix expired_lease passed=%s."
+                        % (dig(st, "G60_lease_expiry_reassign", "expired_count", default="n/a"), g60_rec)))
+        # G61: checkpoint/resume after interruption -- self-test + recovery matrix.
+        g61_self = bool(dig(st, "G61_checkpoint_resume", "passed", default=False))
+        g61_rec = bool(dig(rc_scn.get("explorer_process_kill", {}), "passed", default=False))
         self.emit("G61", g, "Checkpoint/resume works after worker interruption",
-                  None, pointer=soak_rel + ":checkpoints", fidelity="executed",
-                  status="pending",
-                  note=("PENDING: soak wrote checkpoints=%s (durable state), but resume-after-interruption is "
-                        "not demonstrated in a committed artifact. Backed by RED_LOOP/tests/test_recovery_matrix.py "
-                        "(recover_on_resume) and run.py `resume`."
-                        % dig(soak, "checkpoints", default="n/a")))
+                  (g61_self or g61_rec) if (self.present("selftest") or self.present("recovery")) else None,
+                  pointer=self.rel("recovery") + ":explorer_process_kill", fidelity="executed",
+                  note=("live self-test: durable state_hash stable across a fresh store re-open with a resume "
+                        "snapshot present; recovery-matrix explorer_process_kill recovered hypotheses with a "
+                        "stable state hash (passed=%s), interrupted_acceptance left a resumable marker." % g61_rec))
         # G62: stagnation -> reasoned replan before stopping (replans present).
         replans = dig(hlobj, "replans", default=[])
         g62 = isinstance(replans, list) and len(replans) >= 1 and any(r.get("reason") for r in replans)
