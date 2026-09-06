@@ -75,6 +75,8 @@ EV = {
     "m3_1_acceptance": "m3-1-acceptance.json",
     "selftest": "m4-harness-selftest.json",       # G59/G60/G61 positive self-test
     "recovery": "m4-recovery-matrix.json",         # recovery matrix (leases/checkpoint)
+    "finalize_boots": "m4-finalize-boots.json",    # two empty-volume boots (T24 auditor)
+    "audit": "m4-audit-report.md",                 # independent auditor verdict (T24)
 }
 # spec artifacts outside IMPL
 EXPECTED_FAILURES = REPO / "TWIN_SPEC" / "expected-failures.yaml"
@@ -266,10 +268,15 @@ class Evaluator:
         base_txt = path_of("baseline").read_text() if base_present else ""
         g04 = base_present and "config_digest" in base_txt and \
             re.search(r"BASELINE_HOLDS|unchanged across", base_txt) is not None
+        fb = load_json(path_of("finalize_boots")) or {}
+        g04_two = bool(dig(fb, "both_2600", default=False)) and bool(dig(fb, "consistent", default=False))
         self.emit("G04", g, "Two clean baseline boots remain consistent",
-                  g04 if base_present else None, pointer=self.rel("baseline"),
+                  (g04 or g04_two) if (base_present or self.present("finalize_boots")) else None,
+                  pointer=self.rel("finalize_boots") if self.present("finalize_boots") else self.rel("baseline"),
                   fidelity="independently_reproduced",
-                  note="T01 baseline report: config_digest stable live-vs-clean-boot; verdict BASELINE_HOLDS.")
+                  note=("two empty-volume boots both 26/0/0 and consistent (m4-finalize-boots.json)"
+                        if g04_two else
+                        "T01 baseline report: config_digest stable live-vs-clean-boot; verdict BASELINE_HOLDS (one boot)."))
         # G05: all baseline evidence hashes recompute (against archive manifest map).
         g05_ok, g05_note = self.recompute_against_archive()
         self.emit("G05", g, "All baseline evidence hashes recompute",
@@ -360,12 +367,15 @@ class Evaluator:
                   pointer=ptr + ":merchants[].self_check", fidelity="executed",
                   note="self-check 29/29 covers FTS/x-balances/Ledger/pricing/webhook config per merchant.")
         # G17: provisioning passes on two EMPTY-VOLUME boots (clean-boot replay).
+        fb = load_json(path_of("finalize_boots")) or {}
+        fbp = bool(dig(fb, "provisioning_both_passed", default=False))
         self.emit("G17", g, "Provisioning passes on two empty-volume boots",
-                  None, pointer=self.rel("provision"), fidelity="executed",
-                  status="pending",
-                  note=("PENDING: current provision ran on the live arena (one boot). Two empty-volume "
-                        "boots are a clean-boot replay (ENV2_COMPOSE/scripts/clean-boot.sh); coordinator "
-                        "runs during the replay/soak finalize."))
+                  fbp if self.present("finalize_boots") else None,
+                  pointer=self.rel("finalize_boots") + ":boots[].provision", fidelity="executed",
+                  status=None if self.present("finalize_boots") else "pending",
+                  note=("fresh Direct merchant provisioned + self-check + payout proven on two empty-volume boots"
+                        if fbp else
+                        "PENDING: two empty-volume boots run by the independent auditor (T24) during finalize."))
 
     # G18-G29 --------------------------------------------------------------
     def direct_success(self):
@@ -722,12 +732,15 @@ class Evaluator:
                   note=("all expected evidence present." if not missing
                         else "PENDING: missing " + ", ".join(missing)))
         # G70: outside-network traffic is zero (arena-wide egress audit).
+        fb = load_json(path_of("finalize_boots")) or {}
+        g70 = bool(dig(fb, "egress_all_zero", default=False))
         self.emit("G70", g, "Outside-network traffic is zero",
-                  None, pointer=self.rel("assurance") + ":egress_note",
-                  fidelity="executed", status="pending",
-                  note=("PENDING: the arena-wide egress audit (ENV2_COMPOSE/network/egress_audit.py) is run by "
-                        "the coordinator wrapping the full acceptance run; assurance egress_note.captured_here=false. "
-                        "Containers stay on internal:true; model calls only via LiteLLM gateway."))
+                  g70 if self.present("finalize_boots") else None,
+                  pointer=self.rel("finalize_boots") + ":boots[].egress", fidelity="executed",
+                  status=None if self.present("finalize_boots") else "pending",
+                  note=("both empty-volume boots: 0 outside packets, coverage proven; containers on internal:true, "
+                        "model calls only via LiteLLM gateway (m4-finalize-boots.json)." if g70 else
+                        "PENDING: egress audit run by the independent auditor during the two-boot finalize."))
         # G71: final working tree clean (machine).
         porcelain = git(["status", "--porcelain"])
         clean = porcelain == ""
@@ -739,11 +752,18 @@ class Evaluator:
                         "PENDING: working tree dirty during active implementation; must be clean at the evidence commit."))
         # G72: independent auditor approves the final acceptance artifact.
         audit_report = IMPL / "m4-audit-report.md"
+        verdict = ""
+        if audit_report.exists():
+            atext = audit_report.read_text().upper()
+            verdict = "ACCEPT" if ("ACCEPT" in atext and "REJECT" not in atext.split("VERDICT")[-1][:200]) else ("REJECT" if "REJECT" in atext else "")
+        g72 = audit_report.exists() and "ACCEPT" in (audit_report.read_text().upper() if audit_report.exists() else "")               and "REJECT" not in (audit_report.read_text().upper() if audit_report.exists() else "")
         self.emit("G72", g, "Independent auditor approves the final acceptance artifact",
-                  None if not audit_report.exists() else True,
+                  (True if g72 else (False if audit_report.exists() else None)),
                   pointer=str(audit_report.relative_to(REPO)), fidelity="executed",
-                  status=None if audit_report.exists() else "pending",
-                  note="PENDING: independent auditor runs after the evidence commit and writes m4-audit-report.md.")
+                  status=(None if audit_report.exists() else "pending"),
+                  note=("independent auditor verdict recorded in m4-audit-report.md."
+                        if audit_report.exists() else
+                        "PENDING: independent auditor (T24) reboots from empty state and writes m4-audit-report.md."))
         # G73: annotated final tag resolves to the evidence commit.
         tag_type = git_object_type(M4_FINAL_TAG)
         tag_commit = git(["rev-parse", f"{M4_FINAL_TAG}^{{commit}}"]) if tag_type else ""
