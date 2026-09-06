@@ -3,7 +3,7 @@ payouts-api (PS core v1-candidate),real_service,real,reports/implementation/m4-d
 fts-web (FTS v1-candidate),real_service,real,reports/implementation/m4-direct-provision.json,known,
 ledger-api (Ledger v1-candidate),real_service,real,reports/implementation/m4-xas-ledger.json:checks,unknown,C-010;DEV-001;DEV-002
 xbalances-server (x-balances v1-candidate),real_service,real,reports/implementation/m4-direct-provision.json,known,DEV-024
-cfa-server (v1-candidate),real_service,real,reports/implementation/m4-baseline-report.md,known,
+cfa-server (v1-candidate),real_service,real;fund_account_resolution_substitute_grade,reports/implementation/m4-baseline-report.md,known,T23-flag
 kong-lite (hardened edge),substitute,substitute,reports/implementation/m4-boundary-results.json,known,
 PS worker rbl_banking_account_statement (statement ingest),real_service,real-worker/substitute-bank,reports/implementation/m4-bas-ingest.json:all_pass,known,L-007
 mozart-sim (RBL v2 account_statement bank boundary),substitute,substitute,reports/implementation/m4-bas-ingest.json,unknown,L-003
@@ -23,7 +23,7 @@ Route B PS->monolith->FTS create,substitute,executed,reports/implementation/m4-s
 Route C FTS->bank (Mozart),substitute,executed,reports/implementation/m4-bas-ingest.json,unknown,L-003
 Route D FTS->PS direct status webhook,real_service,executed,reports/implementation/m4-xas-ledger.json:checks,known,
 Route E FTS->monolith->PS status,substitute,executed,reports/implementation/m4-route-coverage.json,known,L-013
-Route F FTS->Kafka->PS status,real_service,independently_reproduced,TWIN_SPEC/expected-failures.yaml:EF-002,unknown,EF-002;EF-003;U-05
+Route F FTS->Kafka->PS status (Direct FAILED/REVERSED drop),real_service,source_inferred,TWIN_SPEC/expected-failures.yaml:EF-002,unknown,EF-002;EF-003;U-05
 Route G Admin return (verify/safe_update),real_service,executed,reports/implementation/m4-source-map.md:#2,known,
 Route H FTS health/on-hold notify,substitute,unresolved,reports/implementation/m4-known-limits.md:L-010,unknown,EF-008;L-010
 Route I PS->XAS source event,substitute,implemented,reports/implementation/m4-xas-ledger.json:checks,unknown,L-005;U-06
