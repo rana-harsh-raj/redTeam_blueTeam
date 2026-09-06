@@ -1,0 +1,528 @@
+<title>M4 Executive Dashboard</title>
+<style>
+
+:root{
+  --bg:#f6f7f9; --card:#ffffff; --ink:#1b2733; --muted:#5b6b7b; --line:#e2e7ec;
+  --ok:#0f7b3f; --ok-bg:#e6f4ea; --warn:#8a5a00; --warn-bg:#fdf3e0;
+  --bad:#a01722; --bad-bg:#fbe7e9; --info:#215c98; --info-bg:#e7f0fb; --accent:#26374a;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);
+  font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  line-height:1.45;font-size:14px}
+code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.92em}
+a{color:var(--info);text-decoration:none}
+a:hover{text-decoration:underline}
+.hdr{background:var(--accent);color:#fff;padding:20px 24px}
+.hdr h1{margin:0 0 10px;font-size:20px;font-weight:650;line-height:1.25}
+.hdr-meta{display:flex;flex-wrap:wrap;gap:10px 18px;align-items:center;font-size:13px;color:#d7e0ea}
+.hdr-meta code{background:rgba(255,255,255,.14);padding:1px 5px;border-radius:4px;color:#fff}
+.hdr-meta strong{color:#fff}
+.notice{margin-top:12px;background:var(--warn-bg);color:var(--warn);padding:8px 12px;
+  border-radius:6px;font-size:12.5px;display:inline-block}
+.kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:12px;padding:18px 24px}
+.kpi{background:var(--card);border:1px solid var(--line);border-left-width:4px;border-radius:8px;
+  padding:12px 14px;border-left-color:var(--muted)}
+.kpi.ok{border-left-color:var(--ok)} .kpi.warn{border-left-color:var(--warn)}
+.kpi.bad{border-left-color:var(--bad)}
+.kpi-val{font-size:24px;font-weight:700;letter-spacing:-.5px}
+.kpi-lbl{font-size:12.5px;color:var(--muted);margin-top:2px;font-weight:600}
+.kpi-sub{font-size:11px;color:var(--muted);margin-top:3px}
+.sec{margin:0 24px 12px;background:var(--card);border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.sec>summary{cursor:pointer;padding:12px 16px;font-weight:650;list-style:none;
+  display:flex;align-items:baseline;gap:12px;background:#fbfcfd}
+.sec>summary::-webkit-details-marker{display:none}
+.sec>summary::before{content:"\25B8";color:var(--muted);font-size:12px}
+.sec[open]>summary::before{content:"\25BE"}
+.sec-title{font-size:15px}
+.sec-sub{font-size:12px;color:var(--muted);font-weight:500}
+.sec-body{padding:8px 16px 16px}
+table.gt{width:100%;border-collapse:collapse;font-size:12.5px;margin:6px 0}
+table.gt th{text-align:left;color:var(--muted);font-weight:600;border-bottom:2px solid var(--line);
+  padding:6px 8px;position:sticky;top:0;background:var(--card)}
+table.gt td{border-bottom:1px solid var(--line);padding:6px 8px;vertical-align:top}
+table.gt tr:hover td{background:#fafbfc}
+.mono-s{font-size:11.5px;color:var(--muted)}
+.fine{font-size:11px;color:var(--muted);margin-top:2px}
+.hint{font-size:12px;color:var(--muted);margin:12px 0 4px;font-weight:600}
+.pending-note{color:var(--warn);font-size:13px;padding:8px 0}
+.badge{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:12px;
+  font-size:11px;font-weight:650;white-space:nowrap}
+.badge .ic{font-size:11px}
+.badge.ok{background:var(--ok-bg);color:var(--ok)}
+.badge.warn{background:var(--warn-bg);color:var(--warn)}
+.badge.bad{background:var(--bad-bg);color:var(--bad)}
+.badge.info{background:var(--info-bg);color:var(--info)}
+.badge.neutral{background:#eef1f4;color:var(--muted)}
+.grp{margin:10px 0 14px}
+.grp-h{font-weight:650;font-size:13px;padding:4px 0;border-bottom:1px solid var(--line)}
+.grp-c{font-weight:500;color:var(--muted);font-size:12px}
+.flow{list-style:none;counter-reset:none;padding:0;margin:6px 0}
+.flow-step{border-left:2px solid var(--line);padding:0 0 14px 16px;margin-left:8px;position:relative}
+.flow-step::before{content:"";position:absolute;left:-6px;top:4px;width:10px;height:10px;
+  border-radius:50%;background:var(--ok)}
+.flow-head{display:flex;align-items:center;gap:8px}
+.flow-detail{font-size:12px;color:var(--muted);margin-top:2px}
+.cmp{font-size:11.5px;color:var(--muted);margin:4px 0;padding-left:18px}
+.cmp li{margin:2px 0}
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin:6px 0}
+.chip{font-size:11px;padding:3px 8px;border-radius:6px;background:#eef1f4;color:var(--muted)}
+.chip-on{background:var(--info-bg);color:var(--info)}
+.chip-hot{background:var(--bad-bg);color:var(--bad);font-weight:650}
+.chip-off{opacity:.6}
+.stat-row{display:flex;flex-wrap:wrap;gap:10px;margin:6px 0}
+.stat{background:#fbfcfd;border:1px solid var(--line);border-radius:6px;padding:8px 12px;min-width:120px}
+.stat span{display:block;font-size:11px;color:var(--muted)}
+.stat strong{font-size:15px}
+.finding{background:var(--bad-bg);border:1px solid #f0c6ca;border-radius:8px;padding:12px 14px;margin:4px 0 12px}
+.finding-h{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.finding-id{font-weight:700;font-size:14px}
+.finding-warn{font-size:12.5px;margin:8px 0 4px}
+.mini{margin:4px 0}
+.mini>summary{cursor:pointer;font-size:12px;color:var(--muted)}
+.mini-body{padding:4px 0 4px 8px}
+.steps{list-style:none;padding:0;margin:0;font-size:11.5px}
+.steps li{display:flex;align-items:center;gap:6px;padding:1px 0}
+.accepted .badge{font-size:13px;padding:4px 12px}
+.ftr{padding:16px 24px 28px;color:var(--muted);font-size:12px}
+.ftr code{background:#eef1f4;padding:1px 5px;border-radius:4px}
+
+</style>
+<header class="hdr">
+<h1>M4 — Direct Current-Account, Reconciliation, and Autonomous Architecture Assurance Expansion</h1>
+<div class="hdr-meta">
+<span class="accepted"><span class="badge bad"><span class="ic" aria-hidden="true">✗</span>NOT ACCEPTED</span></span>
+<span class="commit">gate status: <strong>DRY-RUN</strong></span>
+<span class="commit">tested&nbsp;commit: <code>49966f2d9474</code></span>
+<span class="commit">evidence&nbsp;commit: <code>pending</code></span>
+<span class="commit">baseline: <code>red-loop-m3.1</code></span>
+</div>
+<div class="notice">Gate status is <strong>DRY-RUN</strong> (evaluated without a live arena). The coordinator re-runs this dashboard at finalize once the acceptance JSON and soak summary are final.</div>
+</header>
+<section class="kpis" aria-label="Key metrics">
+<div class="kpi ok"><div class="kpi-val">58/74</div><div class="kpi-lbl">Gates pass</div><div class="kpi-sub">16 pending, 0 fail</div></div>
+<div class="kpi ok"><div class="kpi-val">7/7</div><div class="kpi-lbl">Journeys pass</div><div class="kpi-sub">Direct A–G</div></div>
+<div class="kpi ok"><div class="kpi-val">6/6</div><div class="kpi-lbl">Invariants pass</div><div class="kpi-sub">+ negative controls</div></div>
+<div class="kpi ok"><div class="kpi-val">3+1ef</div><div class="kpi-lbl">Routes covered</div><div class="kpi-sub">4 total (R1–R3, remap)</div></div>
+<div class="kpi ok"><div class="kpi-val">0/0</div><div class="kpi-lbl">Hypotheses accepted</div><div class="kpi-sub">autonomous runtime</div></div>
+<div class="kpi bad"><div class="kpi-val">1</div><div class="kpi-lbl">Findings verified</div><div class="kpi-sub">2 benign/faithful</div></div>
+<div class="kpi warn"><div class="kpi-val">pending</div><div class="kpi-lbl">Egress / isolation</div><div class="kpi-sub">outside traffic</div></div>
+<div class="kpi ok"><div class="kpi-val">2</div><div class="kpi-lbl">Merchants provisioned</div><div class="kpi-sub">fresh Direct A/B</div></div>
+</section>
+<details class="sec" open>
+<summary><span class="sec-title">Gate matrix</span><span class="sec-sub">58/74 pass (DRY-RUN)</span></summary>
+<div class="sec-body">
+<div class="grp"><div class="grp-h">BASELINE <span class="grp-c">5/5 pass</span></div>
+<table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
+<tr title="evidence: reports/implementation/m3-1-acceptance.json"><td><code>G01</code></td><td>Accepted Milestone 3.1 checkpoint resolves correctly</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: RED_LOOP/archive/evidence-manifest.json"><td><code>G02</code></td><td>Historical tag and evidence remain unchanged</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m3-1-acceptance.json"><td><code>G03</code></td><td>Existing 21 baseline gates still pass</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-baseline-report.md"><td><code>G04</code></td><td>Two clean baseline boots remain consistent</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
+<tr title="evidence: RED_LOOP/archive/evidence-manifest.json"><td><code>G05</code></td><td>All baseline evidence hashes recompute</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+</tbody></table></div>
+<div class="grp"><div class="grp-h">SOURCE_AND_SPEC <span class="grp-c">6/6 pass</span></div>
+<table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
+<tr title="evidence: reports/implementation/m4-source-map.md"><td><code>G06</code></td><td>Complete source-backed Direct journey map exists</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-source-map.md:#1.5,#6"><td><code>G07</code></td><td>BAS/XAS worker, queue, event, and matching path are identified</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">unknown</td></tr>
+<tr title="evidence: reports/implementation/m4-source-map.md:#4"><td><code>G08</code></td><td>Direct Ledger-success accounting path is identified</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">unknown</td></tr>
+<tr title="evidence: reports/implementation/m4-source-map.md:#1.2,#2"><td><code>G09</code></td><td>Money-source and status-transport axes remain separate</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-decisions.md"><td><code>G10</code></td><td>Specs, implementation, and fidelity declarations agree</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-source-map.md:#7"><td><code>G11</code></td><td>Every unresolved production/configuration assumption is explicit</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">production_reachability_unknown</td><td class="mono-s">unknown</td></tr>
+</tbody></table></div>
+<div class="grp"><div class="grp-h">PROVISIONING <span class="grp-c">5/6 pass, 1 pending</span></div>
+<table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:summary.all_green"><td><code>G12</code></td><td>Fresh Direct merchant provisioner succeeds</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:merchants[1]"><td><code>G13</code></td><td>A second independently generated Direct merchant succeeds</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:summary.self_check_counts"><td><code>G14</code></td><td>Provisioned records pass schema and relationship checks</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-provision.json"><td><code>G15</code></td><td>Direct routing-rule requirements are resolved or explicitly limited</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:merchants[].self_check"><td><code>G16</code></td><td>FTS, x-balances, Ledger, pricing, and webhook configuration self-verify</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-provision.json"><td><code>G17</code></td><td>Provisioning passes on two empty-volume boots</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+</tbody></table></div>
+<div class="grp"><div class="grp-h">DIRECT_SUCCESS <span class="grp-c">12/12 pass</span></div>
+<table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:summary.all_green"><td><code>G18</code></td><td>Public gateway creates a Direct payout</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:summary.all_green"><td><code>G19</code></td><td>Correct authenticated merchant identity is used</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:summary.all_green"><td><code>G20</code></td><td>Correct Direct/current source account is selected</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:summary.all_green"><td><code>G21</code></td><td>Correct FTS source mapping is observed</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:summary.all_green"><td><code>G22</code></td><td>Reservation is created in the correct state</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-bas-ingest.json:all_pass"><td><code>G23</code></td><td>Synthetic bank transfer reaches the correct state</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">substitute</td><td class="mono-s">unknown</td></tr>
+<tr title="evidence: reports/implementation/m4-bas-ingest.json:all_pass"><td><code>G24</code></td><td>Statement detail is generated and ingested</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">substitute</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:all_green"><td><code>G25</code></td><td>BAS/XAS processing executes</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">substitute</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:all_green"><td><code>G26</code></td><td>Reconciliation matches the correct payout</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">substitute</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G27</code></td><td>Ledger-confirmed Direct success accounting is observed</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">unknown</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:all_green"><td><code>G28</code></td><td>Reservation and x-balances reach the correct final state</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:merchants[].payout_proof"><td><code>G29</code></td><td>Correct merchant webhook is observed</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+</tbody></table></div>
+<div class="grp"><div class="grp-h">FAILURE_PENDING_ORDERING <span class="grp-c">10/10 pass</span></div>
+<table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
+<tr title="evidence: reports/implementation/m4-direct-provision.json:summary.all_green"><td><code>G30</code></td><td>Immediate failure reaches the correct payout state</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G31</code></td><td>Direct failure creates no inappropriate Shared reversal journal</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">unknown</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G32</code></td><td>Pending-to-success works</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">substitute</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G33</code></td><td>Pending-to-failure works</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">substitute</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G34"><td><code>G34</code></td><td>Duplicate status delivery is idempotent</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G35</code></td><td>Duplicate statement delivery is idempotent</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">substitute</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G36</code></td><td>Statement-first ordering has deterministic behaviour</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G37</code></td><td>Conflicting status/statement behaviour is documented and tested</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-known-limits.md:L-009"><td><code>G38</code></td><td>Balance-refresh and hold-release trigger is executed or honestly unresolved (expected-failure)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">deliberately_simplified</td><td class="mono-s">unknown</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G39</code></td><td>XAS reconciliation-repair update is executed or explicitly classified</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+</tbody></table></div>
+<div class="grp"><div class="grp-h">ROUTES_WEBHOOKS <span class="grp-c">3/6 pass, 3 pending</span></div>
+<table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G40</code></td><td>Direct status-return route is exercised</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-route-coverage.json"><td><code>G41</code></td><td>Monolith-mediated route is exercised where applicable</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">substitute</td><td class="mono-s">known</td></tr>
+<tr title="evidence: TWIN_SPEC/expected-failures.yaml:EF-002,EF-003"><td><code>G42</code></td><td>Event-driven route is exercised or preserved as a source-backed expected failure (expected-failure)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-route-coverage.json"><td><code>G43</code></td><td>Status remapping is validated by account type and channel</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-route-coverage.json"><td><code>G44</code></td><td>Webhook state, payload, tenant, and delivery evidence are correct</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G45"><td><code>G45</code></td><td>Webhook retry or duplicate behaviour is understood</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+</tbody></table></div>
+<div class="grp"><div class="grp-h">BOUNDARIES_INVARIANTS <span class="grp-c">8/10 pass, 2 pending</span></div>
+<table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
+<tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G46"><td><code>G46</code></td><td>Merchant A cannot read or change Merchant B&#x27;s Direct resources</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G47"><td><code>G47</code></td><td>Request-body merchant ID cannot override authenticated identity</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G48"><td><code>G48</code></td><td>Client headers cannot create service privilege</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G49"><td><code>G49</code></td><td>Merchant access cannot reach internal-only operations</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G50"><td><code>G50</code></td><td>Broker denial and gateway/service denial are distinguished</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G51</code></td><td>Direct accounting conservation invariant passes</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">unknown</td></tr>
+<tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G52"><td><code>G52</code></td><td>Concurrent idempotent payout creation converges to one logical payout</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-invariant-results.json"><td><code>G53</code></td><td>Reservation cannot be released twice</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G54</code></td><td>Ledger success cannot be posted twice</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-invariant-results.json"><td><code>G55</code></td><td>Cross-namespace webhook and event isolation passes</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+</tbody></table></div>
+<div class="grp"><div class="grp-h">AUTONOMOUS_RUNTIME <span class="grp-c">6/9 pass, 3 pending</span></div>
+<table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
+<tr title="evidence: reports/implementation/m4-hypothesis-lifecycle.json:gate"><td><code>G56</code></td><td>Every high-priority hypothesis reaches a terminal status</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-lifecycle-validation.json:arms_executed"><td><code>G57</code></td><td>At least one bounded experiment exists for each exercised hypothesis</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-hypothesis-lifecycle.json:rollup,blockers"><td><code>G58</code></td><td>Blocked and falsified states are not conflated</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json:duplicates_suppressed"><td><code>G59</code></td><td>Duplicate-hypothesis suppression works</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json:leases_reassigned"><td><code>G60</code></td><td>Task lease expiry and reassignment work</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json:checkpoints"><td><code>G61</code></td><td>Checkpoint/resume works after worker interruption</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-hypothesis-lifecycle.json:replans"><td><code>G62</code></td><td>Stagnation produces a reasoned replan before stopping</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-assurance-run.json:contexts_summary.policies"><td><code>G63</code></td><td>Four isolated assurance contexts run successfully</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json"><td><code>G64</code></td><td>An unattended soak completes with useful work and durable state</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+</tbody></table></div>
+<div class="grp"><div class="grp-h">REPLAY_EVIDENCE <span class="grp-c">3/10 pass, 7 pending</span></div>
+<table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
+<tr title="evidence: reports/implementation/m4-lifecycle-validation.json:independent_replay"><td><code>G65</code></td><td>Credible candidates are independently replayed from clean state</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
+<tr title="evidence: RED_LOOP/surface/m4_replay.py"><td><code>G66</code></td><td>Replay uses fresh merchant and resource IDs</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-lifecycle-validation.json:independent_replay.certificate"><td><code>G67</code></td><td>Negative controls remove or prevent the observed effect</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-e2e-evidence-manifest.json"><td><code>G68</code></td><td>All acceptance evidence hashes recompute</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-e2e-evidence-manifest.json"><td><code>G69</code></td><td>No expected evidence file is missing</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-assurance-run.json:egress_note"><td><code>G70</code></td><td>Outside-network traffic is zero</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: (git status --porcelain)"><td><code>G71</code></td><td>Final working tree is clean</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-audit-report.md"><td><code>G72</code></td><td>Independent auditor approves the final acceptance artifact</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: (git cat-file -t red-loop-m4)"><td><code>G73</code></td><td>Annotated final tag resolves to the evidence commit</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-known-limits.md"><td><code>G74</code></td><td>Final review clearly lists substitutions, approximations, unknowns, and non-claims</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">n/a</td></tr>
+</tbody></table></div>
+</div></details>
+<details class="sec" open>
+<summary><span class="sec-title">Direct journeys (A–G)</span><span class="sec-sub">7/7 pass</span></summary>
+<div class="sec-body">
+<table class="gt"><thead><tr><th>Journey</th><th>Title</th><th>Result</th><th>Merchant</th><th>Fidelity</th></tr></thead><tbody>
+<tr><td><strong>A</strong></td><td>Success (create-&gt;recon-&gt;DA ledger-&gt;webhook)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">ARENAD83881351</td><td class="mono-s">real payout/PS/FTS/ledger; real-worker statement; substitute xas matching</td></tr>
+<tr><td><strong>B</strong></td><td>Immediate failure (failed, no reversal, released, idempotent)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">ARENAD86313421</td><td class="mono-s">real</td></tr>
+<tr><td><strong>C</strong></td><td>Pending-&gt;success (poll1 PENDING, poll2 SUCCESS; recon once; idempotent)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">ARENAD83881351</td><td class="mono-s">real payout/PS/FTS/ledger; real-worker statement; substitute xas</td></tr>
+<tr><td><strong>D</strong></td><td>Pending-&gt;failure (failed, released, no shared reversal)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">ARENAD86313421</td><td class="mono-s">real</td></tr>
+<tr><td><strong>E</strong></td><td>Statement-first: FTS-direct guard refuses (R1) vs monolith-relay moves to failed (R2/F-T10-1)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">ARENAD83881351</td><td class="mono-s">real (VerifyPayoutFailedTransaction) + real-worker statement; substitute relay control</td></tr>
+<tr><td><strong>F</strong></td><td>Duplicate statement (no new row / no duplicate journal / no double release)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">ARENAD83881351</td><td class="mono-s">real-worker dedupe + real ledger dedup; substitute xas</td></tr>
+<tr><td><strong>G</strong></td><td>Conflict: credit-&gt;reversed (transaction_id) + wrong-amount-&gt;external (negative control)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">ARENAD86313421</td><td class="mono-s">real PS reversal + real ledger; credit stmt substitute_injected; substitute xas</td></tr>
+</tbody></table>
+<p class="hint">State-transition steps (per provisioned merchant, ok/failed):</p>
+<details class="mini"><summary>A — <code>ARENAD83881351</code> (38/38 steps ok)</summary><div class="mini-body">
+<ul class="steps">
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>apidb.merchants</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>apidb.balance</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>apidb.features.in_flight_reservation_enabled</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>apidb.banking_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>xbalances.balance</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.banking_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.counters</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.fund_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.bank_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.payout_purpose</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.banking_account_statement_details</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.bank_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.fund_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.source_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.source_account_mappings.IMPS(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.account_type_mappings.IMPS(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.preferred_routing_weights.IMPS(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.direct_account_routing_rules.IMPS</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.source_account_mappings.NEFT(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.account_type_mappings.NEFT(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.preferred_routing_weights.NEFT(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.direct_account_routing_rules.NEFT</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>ledger.accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>ledger.account_details</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>cfa</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>monolith.merchant_config</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>pricing.plan</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>monolith.fund_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>monolith.on_hold_slas</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>dcs.seed(copy_of_M2)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>splitz.seed(copy_of_M2)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>stork.seed</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>restart.monolith-stub</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>restart.bankingaccounts-stub</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>restart.dcs-stub</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>restart.splitz-stub</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>stork.live_create</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>kong.register</code></li>
+</ul></div></details>
+<details class="mini"><summary>B — <code>ARENAD86313421</code> (38/38 steps ok)</summary><div class="mini-body">
+<ul class="steps">
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>apidb.merchants</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>apidb.balance</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>apidb.features.in_flight_reservation_enabled</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>apidb.banking_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>xbalances.balance</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.banking_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.counters</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.fund_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.bank_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.payout_purpose</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>payouts.banking_account_statement_details</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.bank_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.fund_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.source_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.source_account_mappings.IMPS(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.account_type_mappings.IMPS(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.preferred_routing_weights.IMPS(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.direct_account_routing_rules.IMPS</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.source_account_mappings.NEFT(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.account_type_mappings.NEFT(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.preferred_routing_weights.NEFT(parity_only)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>fts.direct_account_routing_rules.NEFT</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>ledger.accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>ledger.account_details</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>cfa</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>monolith.merchant_config</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>pricing.plan</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>monolith.fund_accounts</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>monolith.on_hold_slas</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>dcs.seed(copy_of_M2)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>splitz.seed(copy_of_M2)</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>stork.seed</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>restart.monolith-stub</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>restart.bankingaccounts-stub</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>restart.dcs-stub</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>restart.splitz-stub</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>stork.live_create</code></li>
+<li><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><code>kong.register</code></li>
+</ul></div></details>
+</div></details>
+<details class="sec" open>
+<summary><span class="sec-title">Routes (matrix)</span><span class="sec-sub">4 routes</span></summary>
+<div class="sec-body">
+<table class="gt"><thead><tr><th>Route</th><th>Request event</th><th>Transport</th><th>Support</th><th>Status mapping</th></tr></thead><tbody>
+<tr><td><code>R1</code></td><td>FTS status webhook POST /v1/payouts/transfer_status_webhook</td><td class="mono-s">HTTP (FTS -&gt; payouts-api, direct)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>native</span></td><td class="mono-s">failed-&gt;refused when transaction_id set (VerifyPayoutFailedTransaction), else failed; processed-&gt;processed</td></tr>
+<tr><td><code>R2</code></td><td>FTS -&gt; monolith-stub /update_fts_fund_transfer -&gt; PS legacy source-update relay</td><td class="mono-s">HTTP relay</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>native</span></td><td class="mono-s">processed-&gt;processed; failed-&gt;failed (Direct rbl); no statement-first guard (F-T10-1)</td></tr>
+<tr><td><code>R3</code></td><td>Kafka topic rx-fts-status-update-events (FTS status message)</td><td class="mono-s">Kafka (FTS producer -&gt; broker -&gt; payouts kafka consumer)</td><td><span class="badge info"><span class="ic" aria-hidden="true">◈</span>expected-failure</span></td><td class="mono-s">FAILED/REVERSED -&gt; return nil, message Acked and DROPPED (no state change, no reversal, no journal, no webhook)</td></tr>
+<tr><td><code>R-remap</code></td><td>terminal status remap by account_type/channel</td><td class="mono-s">n/a (mapping logic)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>native</span></td><td class="mono-s">Direct (rbl) bank failed -&gt; payout FAILED (no reversal); Shared (nodal) bank failed -&gt; payout REVERSED</td></tr>
+</tbody></table>
+</div></details>
+<details class="sec" open>
+<summary><span class="sec-title">Invariants</span><span class="sec-sub">6/6 pass</span></summary>
+<div class="sec-body">
+<table class="gt"><thead><tr><th>Invariant</th><th>Result</th><th>Fidelity</th><th>Negative control</th></tr></thead><tbody>
+<tr><td>I-Direct-failure-no-shared-reversal(G31)<div class="fine">A failed Direct (rbl) payout produces NO reversal row and NO Shared-style reversal journal; the payout stays failed.</div></td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">real</td><td class="mono-s">Shared (nodal) account: bank failed remaps to REVERSED with a reversal row (V18, test_v18).</td></tr>
+<tr><td>I-Direct-success-no-duplicate-ledger(G54)<div class="fine">A processed Direct payout yields exactly two balanced DA journals (da_payout_processed + _recon); replaying the recon/payout_update path creates NO additional journal ((transactor_id,transactor_event) unique).</div></td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">real</td><td class="mono-s">Without ledger layer-2 ValidateJournalExist the replay would write 4 journals.</td></tr>
+<tr><td>I-reservation-not-released-twice(G53)<div class="fine">An in-flight reservation transitions live -&gt; awaiting_balance_refresh -&gt; released AT MOST ONCE; re-running the reconciler does not double-release or duplicate the item.</div></td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">real</td><td class="mono-s">A double terminal-hook would remove/decrement the counter twice.</td></tr>
+<tr><td>I-balance-not-decremented-twice(G28-adj)<div class="fine">A duplicate statement / replayed recon does not debit the merchant ledger balance a second time: no additional debit entries appear and the DA journal count is unchanged.</div></td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">real</td><td class="mono-s">Absent dedup, a second da_payout_processed would double the merchant-balance debit.</td></tr>
+<tr><td>I-conservation(G51)<div class="fine">For a successful Direct payout the DA journal entries sum to zero (sum_debit==sum_credit per journal) AND the modeled money-state is conserved across balance/reservation/ledger (reservation held==amount during pending, released on terminal; ledger merchant-balance debit==payout amount).</div></td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">real (ledger) + modeled (reservation/balance conservation)</td><td class="mono-s">An unbalanced journal or a reservation/ledger amount != payout amount breaks conservation.</td></tr>
+<tr><td>I-reconciliation-correct-tuple(G26)<div class="fine">Statement-&gt;payout matching uses the correct tuple: same merchant_id, account_number, currency, amount and statement-detail; the wrong-amount statement is NOT matched.</div></td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">real-worker statement + real PS link; substitute xas decision</td><td class="mono-s">G2 wrong-amount statement is the negative control (must NOT link).</td></tr>
+</tbody></table>
+</div></details>
+<details class="sec" open>
+<summary><span class="sec-title">Reconciliation path (source-event → XAS → Ledger)</span><span class="sec-sub">provisioning + BAS ingest + XAS/Ledger accounting</span></summary>
+<div class="sec-body">
+<ol class="flow">
+<li class="flow-step"><div class="flow-head"><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><strong>1. Fresh Direct merchant provisioning</strong></div><div class="flow-detail">2 merchants; self-check 29/29/29/29; payout proofs 15/15/15/15 <a href="m4-direct-provision.json">source</a></div></li>
+<li class="flow-step"><div class="flow-head"><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><strong>2. BAS ingest (statement → PS worker)</strong></div><div class="flow-detail">7/7 steps (real payouts worker + mozart-sim/bank stub) <a href="m4-bas-ingest.json">source</a></div></li>
+<li class="flow-step"><div class="flow-head"><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><strong>3. XAS substitute → source-event matching</strong></div><div class="flow-detail">36/36 checks (substitute xas-sim; contract-faithful) <a href="m4-xas-ledger.json">source</a></div></li>
+<li class="flow-step"><div class="flow-head"><span class="badge ok"><span class="ic" aria-hidden="true">✓</span></span><strong>4. Ledger Direct accounting (DA journals)</strong></div><div class="flow-detail">real ledger; monolith-stub DA emitter; da_payout_processed + _recon <a href="m4-xas-ledger.json">source</a></div></li>
+</ol>
+<p class="hint">Component fidelity (reconciliation):</p><ul class="cmp">
+<li><code>xas-sim</code>: substitute (contract-faithful; ENV2_COMPOSE/substitutes/xas-sim/CONTRACT.md)</li>
+<li><code>monolith-stub DA emitter</code>: substitute (reproduces api BankingAccountStatement/Core.php:5175-5278 + Transaction/Processor/Ledger/Payout.php:235-425)</li>
+<li><code>payouts</code>: real (accepted binary; UpdatePayoutAfterBASRecon, VerifyPayoutFailedTransaction, source-event producer)</li>
+<li><code>ledger</code>: real (AccountAPI CreateInBulk/Activate/CreateOnEvent, journal_create worker, direct_account_x config)</li>
+<li><code>fts / mozart-sim</code>: real fts, substitute bank</li>
+<li><code>statement ingestion</code>: substitute_injected unless a real rbl_banking_account_statement worker row existed for the UTR (see steps.c.statement_fidelity)</li>
+</ul>
+</div></details>
+<details class="sec" open>
+<summary><span class="sec-title">Autonomous runtime (lifecycle + soak)</span><span class="sec-sub">soak: cycle_cap_reached</span></summary>
+<div class="sec-body">
+<p class="hint">Hypotheses by lifecycle state:</p>
+<div class="chips">
+<span class="chip chip-off">proposed: <strong>0</strong></span>
+<span class="chip chip-off">claimed: <strong>0</strong></span>
+<span class="chip chip-off">experiment_defined: <strong>0</strong></span>
+<span class="chip chip-off">executing: <strong>0</strong></span>
+<span class="chip chip-off">evidence_gathered: <strong>0</strong></span>
+<span class="chip chip-off">falsified: <strong>0</strong></span>
+<span class="chip chip-off">blocked: <strong>0</strong></span>
+<span class="chip chip-off">supported: <strong>0</strong></span>
+<span class="chip chip-off">replay_requested: <strong>0</strong></span>
+<span class="chip chip-off">reproduced: <strong>0</strong></span>
+<span class="chip chip-off">rejected: <strong>0</strong></span>
+<span class="chip chip-off">accepted: <strong>0</strong></span>
+<span class="chip chip-off">closed: <strong>0</strong></span>
+<span class="chip chip-off">deprioritized: <strong>0</strong></span>
+</div>
+<div class="stat-row">
+<div class="stat"><span>Primary model</span><strong>kimi-k3</strong></div>
+<div class="stat"><span>Contexts</span><strong>4</strong></div>
+<div class="stat"><span>Total turns</span><strong>56</strong></div>
+<div class="stat"><span>Experiments</span><strong>14</strong></div>
+</div>
+<p class="hint">Latest soak run:</p>
+<div class="stat-row">
+<div class="stat"><span>Cycles</span><strong>2</strong></div>
+<div class="stat"><span>Turns</span><strong>8</strong></div>
+<div class="stat"><span>Elapsed (s)</span><strong>62</strong></div>
+<div class="stat"><span>Checkpoints</span><strong>2</strong></div>
+<div class="stat"><span>Duplicates suppressed</span><strong>0</strong></div>
+<div class="stat"><span>Experiments</span><strong>8</strong></div>
+<div class="stat"><span>Leases (exp/reassign/active)</span><strong>0/0/0</strong></div>
+<div class="stat"><span>Stop reason</span><strong>cycle_cap_reached</strong></div>
+</div>
+<p class="fine">Contexts: broad_coverage, deep_direct_accounting, identity_tenant_boundary, concurrency_event_order</p>
+</div></details>
+<details class="sec" open>
+<summary><span class="sec-title">Replay &amp; findings</span><span class="sec-sub">1 verified, 2 benign/faithful</span></summary>
+<div class="sec-body">
+<div class="finding">
+<div class="finding-h"><span class="badge bad"><span class="ic" aria-hidden="true">!</span>VERIFIED in twin</span><span class="finding-id">F-M4-001 — Cross-tenant free-payout attribute disclosure (IDOR)</span></div>
+<p class="finding-warn"><strong>Production reachability: UNKNOWN.</strong> Verified inside the authorized local synthetic twin only. This is NOT a claim about production behaviour and must not be presented as a confirmed production vulnerability.</p>
+<p class="fine">Route <code>GET /v1/payouts/free_payout/&#123;balance_id&#125;</code>; handler resolves banking account by balance_id with no merchant scoping. Deterministic effect + negative control + independent fresh-ID reproduction. Evidence: <a href="m4-direct-e2e-replay.json">m4-direct-e2e-replay.json</a> (candidate H-D3), <a href="m4-findings.md">m4-findings.md</a>.</p>
+</div>
+<p class="hint">Replay candidates:</p>
+<table class="gt"><thead><tr><th>ID</th><th>Classification</th><th>Fidelity</th><th>Claim</th></tr></thead><tbody>
+<tr><td><code>H-D3</code></td><td><span class="badge bad"><span class="ic" aria-hidden="true">!</span>VERIFIED_UNAUTHORIZED_EFFECT</span></td><td class="mono-s">real payouts-service route + real payouts DB counter; kong hardened edge</td><td>GET /v1/payouts/free_payout/{balance_id} returns 200 cross-tenant with no merchant scoping (freePayout/core.go GetFreePayoutAttributes); does it leak the victim&#x27;s distinct free-payout config (real IDOR) or only the caller&#x27;s own/default?</td></tr>
+<tr><td><code>H-D4</code></td><td><span class="badge info"><span class="ic" aria-hidden="true">○</span>NO_UNAUTHORIZED_EFFECT_BENIGN</span></td><td class="mono-s">real payouts-service create + real x-balances authority; CFA is an arena substitute</td><td>creating a payout as A quoting B&#x27;s fund_account_id: does the payout bind to B or draw B&#x27;s balance (money/state cross-tenant), or does it stay bound to A (benign)?</td></tr>
+<tr><td><code>F-T10-1</code></td><td><span class="badge info"><span class="ic" aria-hidden="true">○</span>SOURCE_FAITHFUL_ROUTE_ASYMMETRY</span></td><td class="mono-s">real payouts-service routes + real payouts DB; monolith relay is an arena substitute (monolith-stub); production monolith upstream guard is out-of-corpus</td><td>the statement-first VerifyPayoutFailedTransaction guard is only on the FTS-direct route (/v1/payouts/transfer_status_webhook); the monolith-relay route (HandlePayoutStatusUpdateViaFTS) lacks it and can move a link-before-terminal (transaction_id-set) payout to failed. Real invariant violation or source-faithful route asymmetry?</td></tr>
+</tbody></table>
+</div></details>
+<details class="sec" open>
+<summary><span class="sec-title">Fidelity matrix</span><span class="sec-sub">42 components</span></summary>
+<div class="sec-body">
+<table class="gt"><thead><tr><th>Component</th><th>Layer</th><th>Fidelity</th><th>Prod. reach</th><th>Deviations</th></tr></thead><tbody>
+<tr><td class="mono-s">payouts-api (PS core v1-candidate)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">fts-web (FTS v1-candidate)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">ledger-api (Ledger v1-candidate)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">unknown</td><td class="mono-s">C-010;DEV-001;DEV-002</td></tr>
+<tr><td class="mono-s">xbalances-server (x-balances v1-candidate)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">known</td><td class="mono-s">DEV-024</td></tr>
+<tr><td class="mono-s">cfa-server (v1-candidate)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">kong-lite (hardened edge)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">PS worker rbl_banking_account_statement (statement ingest)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real-worker/substitute-bank</span></td><td class="mono-s">known</td><td class="mono-s">L-007</td></tr>
+<tr><td class="mono-s">mozart-sim (RBL v2 account_statement bank boundary)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">unknown</td><td class="mono-s">L-003</td></tr>
+<tr><td class="mono-s">bankingaccounts-stub (RBL credentials route)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">known</td><td class="mono-s">L-003</td></tr>
+<tr><td class="mono-s">BASD rows (banking_account_statement_details)</td><td class="mono-s">fixture</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">known</td><td class="mono-s">L-006</td></tr>
+<tr><td class="mono-s">PS ART route /v1/banking_account_statement/process/batch (matcher a)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">xas-sim (XAS enrichment/matcher b)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">unknown</td><td class="mono-s">L-005;C-011;C-013;C-014</td></tr>
+<tr><td class="mono-s">PS x_account_statement_source_event queue</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">unknown</td><td class="mono-s">U-06</td></tr>
+<tr><td class="mono-s">PS UpdatePayoutAfterBASRecon (repair route)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">unknown</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">DA ledger journal emitter (processLedgerPayoutForDirect)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">unknown</td><td class="mono-s">L-004;C-004;C-010;U-08;U-09;EF-004</td></tr>
+<tr><td class="mono-s">DA ledger journals da_payout_processed(+_recon)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">unknown</td><td class="mono-s">L-016;DEV-001</td></tr>
+<tr><td class="mono-s">monolith-stub (create_fta relay + emitter)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">known</td><td class="mono-s">L-013;U-13</td></tr>
+<tr><td class="mono-s">dcs-stub (feature/config)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">unknown</td><td class="mono-s">DEV-120;DEV-172;U-01;U-02</td></tr>
+<tr><td class="mono-s">splitz-stub (experiment flags)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">unknown</td><td class="mono-s">DEV-025;U-03;U-04;U-05;U-06;U-07;U-08</td></tr>
+<tr><td class="mono-s">Route A PS-&gt;FTS create (PS-direct)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">Route B PS-&gt;monolith-&gt;FTS create</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s">L-013</td></tr>
+<tr><td class="mono-s">Route C FTS-&gt;bank (Mozart)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">unknown</td><td class="mono-s">L-003</td></tr>
+<tr><td class="mono-s">Route D FTS-&gt;PS direct status webhook</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">Route E FTS-&gt;monolith-&gt;PS status</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s">L-013</td></tr>
+<tr><td class="mono-s">Route F FTS-&gt;Kafka-&gt;PS status</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>independently_reproduced</span></td><td class="mono-s">unknown</td><td class="mono-s">EF-002;EF-003;U-05</td></tr>
+<tr><td class="mono-s">Route G Admin return (verify/safe_update)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">Route H FTS health/on-hold notify</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>unresolved</span></td><td class="mono-s">unknown</td><td class="mono-s">EF-008;L-010</td></tr>
+<tr><td class="mono-s">Route I PS-&gt;XAS source event</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>implemented</span></td><td class="mono-s">unknown</td><td class="mono-s">L-005;U-06</td></tr>
+<tr><td class="mono-s">Journey: Direct success (create-&gt;FTS-&gt;bank-&gt;statement-&gt;recon-&gt;ledger-&gt;webhook)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">unknown</td><td class="mono-s">C-010</td></tr>
+<tr><td class="mono-s">Journey: Direct immediate failure</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">Journey: pending-&gt;success (held-&gt;processed-&gt;ledger)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">unknown</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">Journey: pending-&gt;failure (held-&gt;failed-&gt;reversed)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">unknown</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">Journey: statement-first ordering</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">Balance-refresh / hold-release trigger A (BalanceRefreshEvent)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>deliberately_simplified</span></td><td class="mono-s">unknown</td><td class="mono-s">L-009;C-009;DEV-024;EF-007</td></tr>
+<tr><td class="mono-s">Reservation release (5-min reconciler trigger B)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s">C-015</td></tr>
+<tr><td class="mono-s">Tenant-isolation boundary (merchant A/B)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">Concurrent idempotency (payout create)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s">DEV-001</td></tr>
+<tr><td class="mono-s">Autonomous hypothesis lifecycle harness</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">n/a</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">Autonomous soak (bounded/checkpointed)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">n/a</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">Cross-provider replay machinery (calibration)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>independently_reproduced</span></td><td class="mono-s">n/a</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">SLICE Direct channel</td><td class="mono-s">fixture</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>deliberately_simplified</span></td><td class="mono-s">unknown</td><td class="mono-s">L-012</td></tr>
+<tr><td class="mono-s">Direct pricing (flat twin plan)</td><td class="mono-s">fixture</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>deliberately_simplified</span></td><td class="mono-s">unknown</td><td class="mono-s">L-017</td></tr>
+</tbody></table>
+</div></details>
+<details class="sec" open>
+<summary><span class="sec-title">Known limits &amp; contradictions</span><span class="sec-sub">18 limits; contradictions 9/15 resolved</span></summary>
+<div class="sec-body">
+<div class="stat-row">
+<div class="stat"><span>Contradictions resolved</span><strong>9</strong></div>
+<div class="stat"><span>Contradictions open</span><strong>6</strong></div>
+<div class="stat"><span>Total</span><strong>15</strong></div>
+</div>
+<table class="gt"><thead><tr><th>ID</th><th>Limit</th><th>Class</th></tr></thead><tbody>
+<tr><td><code>L-001</code></td><td>Only one arena at a time on this host (11.65 GiB Docker memory).</td><td class="mono-s">environment</td></tr>
+<tr><td><code>L-002</code></td><td>`xas-sink` at M3.1 is a health-only placeholder; no BAS/XAS ingestion exists in the twin yet.</td><td class="mono-s">substitute gap (to be closed in M4)</td></tr>
+<tr><td><code>L-003</code></td><td>Mozart RBL v2 `account_statement` is a mozart-sim substitute (base64 CSV, Success / &quot;No Records Found&quot;, next_key paging); Mozart itself is unbuildable (private modules). Direct vs Pool remain indistinguishable at the bank boundary (credentials ignored).</td><td class="mono-s">substitute</td></tr>
+<tr><td><code>L-004</code></td><td>The Direct-account (DA) ledger journal emitter is a monolith-stub substitute reproducing `processLedgerPayoutForDirect` (`api app/Models/BankingAccountStatement/Core.php:5175-5278`); PS posts no Direct journal at this HEAD (`payouts core.go:7284,7356` commented). Whether any live merchant still receives DA journals (`da_ledger_journal_writes`, `payout_service_txn_recon`) is unknown.</td><td class="mono-s">substitute + production_unknown</td></tr>
+<tr><td><code>L-005</code></td><td>XAS (x-account-statements) is substituted by `xas-sim`; the real service&#x27;s Kafka CDC dual-write (`mysql_cdc_events_prod_rx_account_statements_*`, Maxwell) is not reproducible, so outbound `payout_update` is issued directly (equivalent of `POST /v1/statement/dual_write`). The monolith&#x27;s own statement matcher and RBL fetch job are not modelled at all.</td><td class="mono-s">substitute</td></tr>
+<tr><td><code>L-006</code></td><td>`banking_account_statement_details` (BASD) rows are inserted by the provisioner; in production the monolith writes them into the PS DB at CA onboarding (`api app/Models/BankingAccountStatement/Details/Core.php:219-237`). PS never creates them.</td><td class="mono-s">substitute</td></tr>
+<tr><td><code>L-007</code></td><td>Which RBL statement fetcher is live in production (PS worker `rbl_banking_account_statement`, monolith `RblBankingAccountStatement`, or XAS multi-bank fetch) and the FastCron cadence of `/v1/cron/banking_account_statement/fetch/initiate` are unknown; kube shows all three fleets deployed. The twin drives the PS worker via cron-driver.</td><td class="mono-s">production_unknown</td></tr>
+<tr><td><code>L-008</code></td><td>Production values of DCS `in_flight_reservation_enabled`, monolith feature `enable_payouts_buffer`, feature `da_ledger_journal_writes`, Splitz `payout_service_txn_recon`, `fetch_balance_entity_from_x_balance`, `account_statement_source_event`, `xas_source_event_utr_and_grn_match_experiment`, `fts_request_from_payouts_service`, `create_transfer_meta_rollout`, `fire_status_update_kafka` are not derivable from repositories; the twin fixes them per merchant (see `m4-source-map.md` §7, gate G11).</td><td class="mono-s">production_unknown</td></tr>
+<tr><td><code>L-009</code></td><td>x-balances `BalanceRefreshEvent` (reservation release trigger A) cannot be produced by the twin: x-balances `[Queue] Driver=&quot;inmemory&quot;`, env prefix `arena-` vs payouts `stage-`, no `/v1/cron/balance/{channel}/fetch` caller, seed `status=&#x27;activated&#x27;`, Mozart/banking-accounts `Mock=true`. Tests inject the event into SQS or bump `balance.last_fetched_at` and run the reconciler. x-balances→monolith dual-write is likewise absent.</td><td class="mono-s">environment (substitute trigger)</td></tr>
+<tr><td><code>L-010</code></td><td>FTS partner-bank health notification to PS (`[payouts_service.notify_channel_status]`) is never emitted (placeholder URL `http://localhost:8080/`); Direct on-hold is exercised only by a direct `POST /v1/notify/health/update` with `cred.FTS`.</td><td class="mono-s">environment</td></tr>
+<tr><td><code>L-011</code></td><td>Only one arena fits on this host (L-001); Direct namespaces are per-merchant inside the live arena, and the provisioner&#x27;s stub restarts (monolith-stub, bankingaccounts-stub, dcs-stub, splitz-stub, kong-lite) wipe in-memory state for all tenants.</td><td class="mono-s">environment</td></tr>
+<tr><td><code>L-012</code></td><td>SLICE is excluded from the twin&#x27;s Direct scope: PS lists `slice` in `FtsToPayoutStatusMap[direct]` and `DirectChannelsForConnectedBanking`, the monolith does not (`Status.php:273-307`, `Settlement/Channel.php:304-313`), so a SLICE Direct payout would map FAILED differently per transport. RBL (IMPS) only; Direct NEFT/RTGS FTS workers (`rbl::direct::{initiate_transfer,check_transfer_status}`) are absent from compose.</td><td class="mono-s">simplification</td></tr>
+<tr><td><code>L-013</code></td><td>The monolith ingress is missing, so `X-Razorpay-Account` partner/sub-merchant scoping (`api app/Http/BasicAuth/BasicAuth.php:751,2619-2666`) and the SHARED-sub-merchant-on-Direct-master `create_fta` branch (`FundTransfer.php:2053-2072`) are unverifiable; PS never reads the header.</td><td class="mono-s">simplification</td></tr>
+<tr><td><code>L-014</code></td><td>FTS fund/source account ids `900001`/`900002` (and per-namespace `9000x1/9000x2`) are twin-only fixtures (zero hits in payouts/FTS/monolith); fresh Direct merchants use a disjoint integer range. The twin seeds one source account per merchant whereas prod RBL onboarding creates v1 and v2, so default-rule selection by `mozart_identifier` is never exercised.</td><td class="mono-s">simplification</td></tr>
+<tr><td><code>L-015</code></td><td>Twin seed casing/enum drift left in place pending runtime observation: FTS `source_accounts.account_type=&#x27;DIRECT&#x27;` (code `direct`, C-005), x-balances `account_type=&#x27;pool&#x27;` for Shared (code `shared`, C-007) and `status=&#x27;activated&#x27;` (code `active`, C-008). Fresh Direct merchants use the code values; the M2 fixture is untouched.</td><td class="mono-s">environment (open)</td></tr>
+<tr><td><code>L-016</code></td><td>The PS `transaction_id`/reversal `transaction_id` for Direct is set only by BAS recon; the `da_ext_*` and DA journals require ledger DA accounts created by two Twirp calls in `up.sh` — without them every DA journal is dropped as `ErrAccountDiscoveryFailure` with no retry (the M2 fixture has none).</td><td class="mono-s">substitute (seeding)</td></tr>
+<tr><td><code>L-017</code></td><td>Pricing for Direct is the flat twin plan (no `account_type`/`channel` hard-filter, no slabs); the monolith&#x27;s Direct/RBL default bands (500/900/1500 paise) and per-channel free-payout defaults are not modelled.</td><td class="mono-s">simplification</td></tr>
+<tr><td><code>L-018</code></td><td>payouts-api panics (`type mismatch: cannot convert int64 to bool`, `pkg/dcs/features/features.go:252` in `EnabledFeaturesForKeyFromResponse`) when the DCS response object for a fetched key contains a non-bool (int64) field; hit on route `GET /v1/payouts/_meta/summary` for a fresh Direct merchant during the autonomous contexts run. `EnabledFeaturesForKeyFromResponse` Ranges every field of the returned config object calling `.Bool()`. Container has no restart policy so it exited.</td><td class="mono-s">source_robustness / substitute-config</td></tr>
+</tbody></table>
+</div></details>
+<details class="sec">
+<summary><span class="sec-title">Evidence links &amp; sources</span><span class="sec-sub">relative links; open the JSON/MD artifacts</span></summary>
+<div class="sec-body">
+<table class="gt"><thead><tr><th>Source</th><th>Status</th><th>Path</th></tr></thead><tbody>
+<tr><td>acceptance</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>dry-run</span></td><td class="mono-s"><a href="m4-direct-e2e-acceptance.json">m4-direct-e2e-acceptance.json</a> <span class="fine">(committed acceptance JSON (dry_run=true))</span></td></tr>
+<tr><td>direct-journeys</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-journeys.json">m4-direct-journeys.json</a></td></tr>
+<tr><td>coverage</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-e2e-coverage.md">m4-direct-e2e-coverage.md</a></td></tr>
+<tr><td>route-coverage</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-route-coverage.json">m4-route-coverage.json</a></td></tr>
+<tr><td>invariants</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-invariant-results.json">m4-invariant-results.json</a></td></tr>
+<tr><td>xas-ledger</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-xas-ledger.json">m4-xas-ledger.json</a></td></tr>
+<tr><td>bas-ingest</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-bas-ingest.json">m4-bas-ingest.json</a></td></tr>
+<tr><td>direct-provision</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-provision.json">m4-direct-provision.json</a></td></tr>
+<tr><td>hypothesis-lifecycle</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-hypothesis-lifecycle.json">m4-hypothesis-lifecycle.json</a></td></tr>
+<tr><td>assurance-run</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-assurance-run.json">m4-assurance-run.json</a></td></tr>
+<tr><td>soak</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="../../RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json">../../RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json</a></td></tr>
+<tr><td>replay</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-e2e-replay.json">m4-direct-e2e-replay.json</a></td></tr>
+<tr><td>findings</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-findings.md">m4-findings.md</a></td></tr>
+<tr><td>fidelity-matrix</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-fidelity-matrix.csv">m4-fidelity-matrix.csv</a></td></tr>
+<tr><td>known-limits</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-known-limits.md">m4-known-limits.md</a></td></tr>
+<tr><td>contradictions</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-contradictions.md">m4-contradictions.md</a></td></tr>
+</tbody></table>
+</div></details>
+<footer class="ftr">
+<p>Generated 2026-09-06T20:45:31Z by <code>RED_LOOP/surface/m4_dashboard.py</code>. Every number is parsed from a committed artifact — none are hardcoded. Gate status is <strong>DRY-RUN</strong> and may be DRY-RUN until finalize.</p>
+<p class="fine">Self-contained: inline CSS/JS only, no external network assets. Regenerate with <code>python3 RED_LOOP/surface/m4_dashboard.py</code>.</p>
+</footer>
+<script>
+
+document.addEventListener('DOMContentLoaded',function(){
+  var bar=document.createElement('div');
+  bar.style.cssText='padding:6px 24px;display:flex;gap:8px;align-items:center;font-size:12px';
+  var mk=function(txt,open){
+    var b=document.createElement('button');
+    b.textContent=txt;
+    b.style.cssText='cursor:pointer;border:1px solid #d0d6dc;background:#fff;border-radius:6px;padding:4px 10px;font:inherit';
+    b.onclick=function(){document.querySelectorAll('details.sec').forEach(function(d){d.open=open});};
+    return b;
+  };
+  bar.appendChild(mk('Expand all',true));
+  bar.appendChild(mk('Collapse all',false));
+  var kpis=document.querySelector('.kpis');
+  if(kpis&&kpis.parentNode){kpis.parentNode.insertBefore(bar,kpis.nextSibling);}
+});
+
+</script>

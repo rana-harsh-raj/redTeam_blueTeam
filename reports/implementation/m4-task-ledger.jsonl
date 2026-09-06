@@ -41,3 +41,4 @@
 {"task_id": "T17", "status": "integrated", "at": "2026-09-06T20:38:44.867437+00:00", "summary": "journeys A-G 7/7, invariants 6/6, routes R1/R2/R-remap native + R3 expected-failure, fresh merchants ARENAD83881351/ARENAD86313421, nothing patched. Closes G18-G45 route/invariant + G26/G36/G37/G51/G53/G54."}
 {"task_id": "T21", "name": "world_model_graph", "description": "Stretch H: source/spec-generated world-model graph (graphml/json/mmd)", "status": "assigned", "created_at": "2026-09-06T20:40:27.587432+00:00"}
 {"task_id": "T22", "name": "exec_dashboard", "description": "Stretch E: static self-contained HTML executive dashboard generator", "status": "assigned", "created_at": "2026-09-06T20:40:27.587432+00:00"}
+{"task_id": "T22", "status": "integrated", "at": "2026-09-06T20:47:09.565802+00:00", "summary": "static self-contained dashboard generator (16 artifacts, 83KB, no external assets); preview HTML shows dry-run gate state; regenerated at finalize."}
