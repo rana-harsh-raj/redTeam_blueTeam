@@ -318,3 +318,10 @@ judgement as critic, **sound and honestly represented.**
 
 *Authored by T23. Read-only review; source corpus and runtime artifacts cited inline. No source, config, or
 evidence file was modified. Companion: `reports/implementation/m4-subagent-handoffs/T23.md`.*
+
+## Git references (finalized 2026-09-07)
+- Base (unaltered): `red-loop-m3.1` -> 3a044f83ed0eda6ead71585f07c450af2ed7978f
+- Tested commit: 5bde798168ea47174542085ec25824d1fc2bc31f
+- Evidence commit / annotated tag: `red-loop-m4` -> 3ae177328341ec4512bdb7de8ce454ce67a35513
+- Acceptance: reports/implementation/m4-direct-e2e-acceptance.json (accepted:true, 74/74). evidence_commit is recorded as null by design (self-reference avoided); the annotated tag `red-loop-m4` is the authoritative evidence commit and G73 verifies it.
+- Note on tag name: `red-loop-m4` follows the repo's `red-loop-m3.1` convention (the mandate's proposed `payouts-twin-m4-direct-e2e` is the same artifact under a different name).

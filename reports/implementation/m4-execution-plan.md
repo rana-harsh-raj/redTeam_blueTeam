@@ -28,7 +28,7 @@ either linked to a source symbol / artifact / commit or marked `[TODO]`.
 | 5 | Invariants and boundary tests | DONE (T14 boundary 10/1xfail, T17 invariants 6/6) |
 | 6 | Hypothesis-lifecycle hardening in RED_LOOP | DONE (T13 83 tests, T15 4-context run + calibration accept, G59-61 self-test) |
 | 7 | Multi-context + soak | 4-context DONE; 2h soak RUNNING (camp-...7511c5) |
-| 8 | Evidence, replay, acceptance, tag | acceptance evaluator DONE (68 pass/5 pending/G68 finalize); replay DONE (F-M4-001 verified); FINALIZE pending: soak-summary, 2-boot, egress, audit, tag |
+| 8 | Evidence, replay, acceptance, tag | DONE. ACCEPTED 74/74. tested_commit 5bde798, evidence_commit/tag red-loop-m4 -> 3ae1773 |
 
 ## Workstreams (subagent IDs in m4-task-ledger.jsonl)
 See ledger. Handoffs land in `reports/implementation/m4-subagent-handoffs/<task-id>.md`.
@@ -44,3 +44,12 @@ See ledger. Handoffs land in `reports/implementation/m4-subagent-handoffs/<task-
 2. Independent auditor: fresh context, reboot from empty state, rerun mandatory acceptance, recompute hashes (G72).
 3. Two empty-volume boots: provision fresh Direct merchant + subset journey on each (G17); consistency (G04); egress 0 (G70).
 4. Rebuild evidence manifest (G68/G69); acceptance --tested-commit; separate evidence commit; tag payouts-twin-m4-direct-e2e (G73); acceptance --evidence-commit.
+
+
+## FINAL VERDICT: ACCEPTED (2026-09-07)
+- **74/74 mandatory gates pass**; `reports/implementation/m4-direct-e2e-acceptance.json` `accepted:true` (independently re-verified out-of-tree).
+- Base: `red-loop-m3.1` (3a044f8), unaltered and intact. Tested commit **5bde798**. Evidence commit / annotated tag **red-loop-m4 -> 3ae1773**. Working tree clean.
+- Independent auditor (T24): **ACCEPT-WITH-CAVEATS**; all caveats resolved (C-018 baseline-boot skip, C-019 M3.1-evidence restore, G72 parser hardened, manifest built).
+- No accepted core-service source patched to go green (131-file diff = substitutes/config/verifier/harness/spec/reports only).
+- Verified finding **F-M4-001** (cross-tenant free_payout IDOR in accepted payouts `GetFreePayoutAttributes`); production reachability UNKNOWN; twin source unpatched.
+- Honest limits: soak stopped at 83 min under host memory pressure (still 41 cycles / 155 experiments, rotation + resume proven); the autonomous model loop discovered no live finding (its 6 recon hypotheses were coordinator-dispositioned); DA-journal production reachability UNKNOWN (real Ledger, substitute emitter); Kafka Direct-drop route source-inferred not run.
