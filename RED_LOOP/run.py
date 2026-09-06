@@ -106,14 +106,21 @@ def evidence_index(store):
 
 def run_campaign_cmd(args):
     from red_loop.campaign import run_campaign
-    from red_loop import reproducer
+    from red_loop import reproducer, provisioner
     from red_loop.state import CampaignStore
 
-    alloc = allocator.allocate()
-    attacker = alloc["attacker"]
     cid = new_campaign_id()
     store = CampaignStore(cid)
     since_ts = int(time.time())
+
+    # Per-campaign provisioning: fresh victim canaries + fresh idempotency
+    # namespace (Workstream B). fund_fresh_attacker=False -> fixture attacker with
+    # a fresh idempotency namespace (the fresh-funded-merchant path is available
+    # via provisioner.provision_funded_merchant but needs full seed parity).
+    prov = provisioner.provision_campaign(cid, fund_fresh_attacker=bool(getattr(args, "fresh_attacker", False)))
+    attacker = prov["attacker"]
+    alloc = {"attacker": attacker, "victims": prov["victims"],
+             "actor_merchants": prov["actor_merchants"]}
 
     ev = Evidence()
     opening = {m: ev.ledger_balance(m) for m in alloc["actor_merchants"]}
@@ -127,11 +134,14 @@ def run_campaign_cmd(args):
         "attacker_merchant_id": attacker["merchant_id"],
         "victim_control_merchants": [v["merchant_id"] for v in alloc["victims"]],
         "opening_ledger_balances": opening,
+        "gateway_route_policy": "KONG_ENFORCE_ROUTE_POLICY (source-derived public/internal split)",
         "network_policy": "attacker traffic only via kong-lite 127.0.0.1:18080; /_arena/* and "
                           "service planes denied; internal networks are docker-internal",
         "safety": {"kill_switch": str(store.root / "STOP"),
+                   "pause_switch": str(store.root / "PAUSE"),
                    "request_budget": 4000},
     }
+    manifest.update(prov["manifest"])                    # victim_canaries (judge-only), provenance
     store.write_manifest(manifest)
 
     # mandate with attacker identity (public view only)
@@ -320,6 +330,8 @@ def main():
     cp.add_argument("--emergency-turns", dest="emergency_turns", type=int, default=2000,
                     help="EMERGENCY safety backstop only; NOT a normal completion condition")
     cp.add_argument("--wall", type=int, default=None, help="optional wall-clock backstop seconds")
+    cp.add_argument("--fresh-attacker", dest="fresh_attacker", action="store_true",
+                    help="provision a brand-new funded attacker merchant (needs full seed parity)")
     cp.add_argument("--dry-run", action="store_true")
     rp = sub.add_parser("resume")
     rp.add_argument("campaign_id")
