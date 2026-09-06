@@ -1789,6 +1789,8 @@ services:
       # left off by default so the golden run's normal flows see in-order
       # delivery.
       STORK_REORDER: "0"
+      # M2 (RED_LOOP) additive control; default "0" is byte-identical to frozen behaviour.
+      STORK_DUPLICATE_TERMINAL: "${STORK_DUPLICATE_TERMINAL:-0}"
     <<: *runtime-security
     tmpfs:
       - /tmp
@@ -1905,6 +1907,37 @@ services:
     <<: *runtime-security
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8085/health"]
+      <<: *healthcheck-defaults
+
+  workflow-sim:
+    # M2 (RED_LOOP) additive: thin protocol-faithful stand-in for the Workflow/
+    # Cadence approval engine. Serves WorkflowAPI/Create (payout -> pending) and
+    # drives the REAL payouts approve/reject callbacks only via the control-plane
+    # POST /_arena/decide (never automatically). See substitutes/workflow-sim/CONTRACT.md.
+    # Activated by setting ARENA_WORKFLOW_HOST=http://workflow-sim:8092 (payouts
+    # [workflow] host); inert otherwise.
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: workflow-sim
+        STUB_NAME: workflow-sim
+        STUB_PORT: "8092"
+    image: rzp-arena/workflow-sim:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - secrets-kong:/run/secrets:ro
+    environment:
+      STUB_PORT: "8092"
+      WORKFLOW_INBOUND_USER: "workflow"
+      WORKFLOW_INBOUND_PASS: "workflow"
+      PS_API_URL: "http://payouts-api:9400"
+      WORKFLOW_CALLBACK_USER: "rzp_live"
+      WORKFLOW_CALLBACK_PASS_FILE: /run/secrets/auth_workflow_payouts
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8092/_arena/health"]
       <<: *healthcheck-defaults
 
   cron-driver:

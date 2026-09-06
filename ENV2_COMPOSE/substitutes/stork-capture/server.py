@@ -33,6 +33,22 @@ EVENTS_LOG_FILE = os.environ.get("STORK_EVENTS_LOG_FILE", "/data/events.jsonl")
 # violation reproducible on demand instead of accidental/rare.
 REORDER = os.environ.get("STORK_REORDER", "0") == "1"
 REORDER_DELAY_SEC = float(os.environ.get("STORK_REORDER_DELAY_SEC", "0.3"))
+# STORK_DUPLICATE_TERMINAL=1 (also accepts "true"): deliver each *terminal*
+# payout webhook TWICE with a byte-identical body AND an identical
+# X-Razorpay-Event-Id / Request-Id, to exercise merchant-side idempotency on
+# duplicate terminal deliveries. Real Stork is at-least-once (findings/25
+# §A.4), so a merchant can legitimately receive the same terminal event more
+# than once. Terminal event set defaults to payout.processed/failed/reversed
+# and is overridable via STORK_DUPLICATE_EVENTS (comma-separated). Default
+# OFF => behaviour is byte-identical to the frozen baseline: no duplicate,
+# event_id minted inside _deliver exactly as before.
+DUPLICATE_TERMINAL = os.environ.get("STORK_DUPLICATE_TERMINAL", "0").lower() in ("1", "true")
+_DEFAULT_DUPLICATE_EVENTS = "payout.processed,payout.failed,payout.reversed"
+DUPLICATE_EVENTS = frozenset(
+    e.strip()
+    for e in os.environ.get("STORK_DUPLICATE_EVENTS", _DEFAULT_DUPLICATE_EVENTS).split(",")
+    if e.strip()
+)
 
 _id_counter = itertools.count(1)
 _owner_delivery_count = {}  # owner_id -> int, used by the REORDER pairing above
@@ -121,8 +137,12 @@ def _list_webhooks(handler, body):
     return 200, {"webhooks": records}
 
 
-def _deliver(webhook, event):
-    event_id = _gen_id("ev")
+def _deliver(webhook, event, event_id=None):
+    # event_id defaults to a freshly minted id (unchanged legacy behaviour).
+    # STORK_DUPLICATE_TERMINAL passes an explicit id so the two deliveries of
+    # a terminal event share one X-Razorpay-Event-Id and a byte-identical body.
+    if event_id is None:
+        event_id = _gen_id("ev")
     headers = {
         "Content-Type": "application/json",
         "X-Razorpay-Event-Id": event_id,
@@ -176,15 +196,24 @@ def _process_event(handler, body):
             continue
         if event_name not in wh.get("subscriptions", []):
             continue
-        if REORDER:
-            n = _owner_delivery_count.get(owner_id, 0)
-            _owner_delivery_count[owner_id] = n + 1
-            if n % 2 == 0:
-                # delay this (even-indexed) delivery so the NEXT (odd-indexed)
-                # call's delivery -- fired without delay -- lands first.
-                threading.Timer(REORDER_DELAY_SEC, _deliver, args=(wh, event)).start()
-                continue
-        _deliver(wh, event)
+        # When STORK_DUPLICATE_TERMINAL is on AND this is a terminal event,
+        # mint ONE id up-front and reuse it for both deliveries (identical
+        # event_id + byte-identical body). Otherwise shared_event_id stays
+        # None and _deliver mints its id exactly as before -> the default-off
+        # path is byte-identical to the frozen baseline.
+        duplicate = DUPLICATE_TERMINAL and event_name in DUPLICATE_EVENTS
+        shared_event_id = _gen_id("ev") if duplicate else None
+        for _ in range(2 if duplicate else 1):
+            if REORDER:
+                n = _owner_delivery_count.get(owner_id, 0)
+                _owner_delivery_count[owner_id] = n + 1
+                if n % 2 == 0:
+                    # delay this (even-indexed) delivery so the NEXT (odd-indexed)
+                    # call's delivery -- fired without delay -- lands first.
+                    threading.Timer(REORDER_DELAY_SEC, _deliver, args=(wh, event),
+                                    kwargs={"event_id": shared_event_id}).start()
+                    continue
+            _deliver(wh, event, event_id=shared_event_id)
     return 200, {"event": event}
 
 

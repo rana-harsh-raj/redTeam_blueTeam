@@ -86,6 +86,30 @@ simple, deterministic way to reproduce Stork's real "at-least-once,
 no ordering guarantee" contract (findings/25 §A.4) on demand instead of by
 accident.
 
+## Duplicate terminal delivery (`STORK_DUPLICATE_TERMINAL`, default off)
+
+`STORK_DUPLICATE_TERMINAL=1` (also accepts `true`; default `"0"`) makes
+`ProcessEvent` deliver each **terminal** payout webhook **twice** to the same
+subscription, with an **identical `X-Razorpay-Event-Id` / `Request-Id`** and a
+**byte-identical body** (hence an identical `X-Razorpay-Signature`) — a
+deterministic way to exercise merchant-side idempotency against Stork's real
+at-least-once contract (findings/25 §A.4). The terminal event set defaults to
+`payout.processed,payout.failed,payout.reversed` and is overridable via
+`STORK_DUPLICATE_EVENTS` (comma-separated). Non-terminal events are always
+delivered once.
+
+Implementation: `_process_event` mints one `event_id` up front only when
+duplicating and passes it into `_deliver` (which now takes an optional
+`event_id`, defaulting to its original per-call minting); it then calls
+`_deliver` a second time reusing the same id.
+
+**Default-off neutrality:** when `STORK_DUPLICATE_TERMINAL` is unset/`"0"`,
+`shared_event_id` stays `None`, the delivery loop runs exactly once per
+subscription, and `_deliver` mints its `event_id` via `_gen_id("ev")` exactly
+as before — byte-identical to the frozen baseline (no extra id consumed from
+`_id_counter`, no duplicate POST). Verified by
+`test_stork_duplicate.py`.
+
 ## `Create` request (findings/25 §A.10 worked example)
 
 ```json

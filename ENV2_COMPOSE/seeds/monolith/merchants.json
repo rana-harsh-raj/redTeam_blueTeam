@@ -97,7 +97,8 @@
         "feature": [
           "payout_service_enabled",
           "banking",
-          "enable_approval_via_oauth"
+          "enable_approval_via_oauth",
+          "payout_workflows"
         ],
         "org_id": "ARENAORG000001",
         "created_at": 1735689600,

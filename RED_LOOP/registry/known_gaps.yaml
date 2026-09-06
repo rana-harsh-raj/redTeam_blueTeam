@@ -1,0 +1,140 @@
+# RED_LOOP judge-only known-gap registry (Section 14).
+#
+# NOT exposed to the primary red agent or the reproducer. The deterministic
+# judge consults this to decide, for a candidate that survives impact checks,
+# whether it is a NEW finding or a rediscovery of something already known:
+#   - kafka_expected_failure  -> if dynamically demonstrated: CALIBRATION_REDISCOVERY
+#   - declared_deviation      -> a declared v1 twin/prod difference; not a new finding
+#   - substitute_artifact     -> exists only because of arena scaffolding: TWIN_SPECIFIC_LEAD
+#   - fidelity_ceiling        -> the twin cannot decide this; NEEDS_HIGHER_FIDELITY
+#
+# Matching is advisory: the judge still requires deterministic impact evidence.
+# `match` fields are hints (substrings / state signatures) the judge scores
+# against a candidate's demonstrated capability + affected assets + root cause.
+
+schema_version: 1
+sources:
+  expected_failures: TWIN_SPEC/expected-failures.yaml         # EF-001/002/003 verbatim source
+  declared_deviations: ENV2_COMPOSE/config/declared-deviations.yaml  # 76 entries (DEV-*)
+  fixed_defects: reports/implementation/fixed-twin-defects.json      # FD-001/002/003
+
+known_gaps:
+
+  - id: KG-KAFKA-EF001
+    class: kafka_expected_failure
+    ref: EF-001
+    summary: >-
+      Shared-account PROCESSED delivered over the Kafka status route cannot enqueue
+      the processed Ledger journal (job.RegisterJobs never called on the Kafka
+      bootstrap); payout stays `initiated`, no terminal webhook. Production-source
+      defect reproduced faithfully.
+    match:
+      profile: kafka
+      payout_status: initiated
+      fts_status: PROCESSED
+      absent_webhooks: [payout.processed, payout.failed, payout.reversed]
+    disposition: CALIBRATION_REDISCOVERY
+    production_reachability: >-
+      UNKNOWN. Consumer is deployed (3 replicas) but per-merchant enablement is
+      Splitz PYGTRQEzO39PfB, fail-closed, no fixture. Not determinable from repo.
+
+  - id: KG-KAFKA-EF002
+    class: kafka_expected_failure
+    ref: EF-002
+    summary: FTS FAILED delivered over Kafka is acknowledged and dropped; no failed/reversed journal or webhook.
+    match:
+      profile: kafka
+      fts_status: FAILED
+      absent_webhooks: [payout.failed, payout.reversed]
+    disposition: CALIBRATION_REDISCOVERY
+    production_reachability: UNKNOWN (same Splitz gate as EF-001).
+
+  - id: KG-KAFKA-EF003
+    class: kafka_expected_failure
+    ref: EF-003
+    summary: FTS REVERSED delivered over Kafka is acknowledged and dropped (direct case).
+    match:
+      profile: kafka
+      fts_status: REVERSED
+      absent_webhooks: [payout.reversed]
+    disposition: CALIBRATION_REDISCOVERY
+    production_reachability: UNKNOWN (same Splitz gate as EF-001).
+
+  - id: KG-SUB-MINT
+    class: substitute_artifact
+    summary: >-
+      kong-lite exposes POST /_arena/mint, an UNAUTHENTICATED passport-signing
+      oracle for any ARENA* merchant id with arbitrary roles. It exists only to
+      let the verifier mint identities; a real Kong/edge has no such endpoint.
+    match:
+      path_contains: ["/_arena/mint"]
+      capability: [identity_forge, passport_mint]
+    disposition: TWIN_SPECIFIC_LEAD
+    note: >-
+      The RED_LOOP broker hard-denies /_arena/* so the attacker cannot reach this.
+      If a candidate depends on it, it is a substitute artifact, never a product finding.
+
+  - id: KG-SUB-MOZART-SCENARIO
+    class: substitute_artifact
+    summary: >-
+      mozart-sim exposes POST /_arena/scenario to force bank outcomes
+      (success/failure/hold/returned/timeout/...) per merchant/payout/source. Bank
+      behaviour is simulated; forcing an outcome via this control is not a finding.
+    match:
+      path_contains: ["/_arena/scenario"]
+      service: mozart-sim
+    disposition: TWIN_SPECIFIC_LEAD
+
+  - id: KG-SUB-WORKFLOW-DECIDE
+    class: substitute_artifact
+    summary: >-
+      workflow-sim (M2 addition) exposes POST /_arena/decide to approve/reject a
+      pending payout via the real Payouts callback. This is the CONTROL PLANE
+      standing in for the Cadence/Workflow engine; reaching it is not a merchant
+      capability. Approval is never automatic.
+    match:
+      path_contains: ["/_arena/decide", "/_arena/pending"]
+      service: workflow-sim
+    disposition: TWIN_SPECIFIC_LEAD
+
+  - id: KG-SUB-STORK-DUP
+    class: substitute_artifact
+    summary: >-
+      stork-capture (M2 addition) can duplicate a terminal webhook when the
+      control-plane env STORK_DUPLICATE_TERMINAL is set. This is a deterministic
+      control for exercising merchant-side dedupe; a merchant cannot set it.
+    match:
+      env: [STORK_DUPLICATE_TERMINAL]
+      capability: [duplicate_webhook]
+    disposition: TWIN_SPECIFIC_LEAD
+
+  - id: KG-FID-BANK
+    class: fidelity_ceiling
+    summary: >-
+      Only the RBL channel is modelled end-to-end and bank outcomes are produced
+      by mozart-sim from an amount-keyed table or forced scenario. Real bank
+      gateway behaviour, timing and error taxonomy are not reproduced.
+    match:
+      capability: [bank_outcome_manipulation]
+    disposition: NEEDS_HIGHER_FIDELITY
+
+  - id: KG-FID-MONOLITH
+    class: fidelity_ceiling
+    summary: >-
+      The API monolith is a stub (monolith-stub); merchant/feature/config fetch
+      and monolith-side authorization are represented, not the real monolith.
+      Findings that hinge on monolith internals cannot be adjudicated here.
+    match:
+      service: [monolith-stub, monolith]
+    disposition: NEEDS_HIGHER_FIDELITY
+
+  - id: KG-DEV-REGISTRY
+    class: declared_deviation
+    summary: >-
+      76 declared twin/production deviations (DEV-001..) are enumerated in
+      ENV2_COMPOSE/config/declared-deviations.yaml. A candidate whose entire
+      effect is explained by a declared deviation is not a new finding; cite the
+      DEV id. The judge loads that file to match by service+location.
+    match:
+      defer_to: ENV2_COMPOSE/config/declared-deviations.yaml
+    disposition: DECLARED_DEVIATION

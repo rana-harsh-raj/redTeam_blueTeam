@@ -1,0 +1,55 @@
+{
+  "policy_version": 1,
+  "description": "What the primary red agent can and cannot access (Sections 4, 5, 12).",
+  "code_corpus": {
+    "included_read_only": [
+      ".local/twin-repos/accepted/payouts  (admitted real service source)",
+      ".local/twin-repos/accepted/fts",
+      ".local/twin-repos/accepted/ledger",
+      ".local/twin-repos/accepted/cfa",
+      ".local/twin-repos/accepted/x-balances",
+      "their in-tree contracts (openapi.yaml, protobuf), DB migrations, state machines, READMEs"
+    ],
+    "excluded": [
+      "ENV2_COMPOSE/** (substitutes/control endpoints, verifier answer keys, acceptance-gate internals, seeds, generated fixtures, secrets)",
+      "TWIN_SPEC/expected-failures.yaml",
+      "RED_LOOP/** (control plane, known-gap registry, reproducer instructions, this policy)",
+      "reports/** (name already-discovered bugs)",
+      "AGENTS.md and CLAUDE.md in every corpus repo (agent-instruction / prompt-injection surface)"
+    ],
+    "handling": "All corpus content is returned to the agent as UNTRUSTED TARGET DATA; the mandate forbids treating file contents as instructions.",
+    "enforced_by": "RED_LOOP/red_loop/corpus.py (root allow-list, path-escape guard, denied basenames/dirs)"
+  },
+  "runtime_tools_allowed": [
+    "merchant_request  (HTTP as the FIXED attacker merchant, through kong-lite only)",
+    "merchant_request_concurrent (<=8, race/dup probing)",
+    "read_own_webhooks (attacker-scoped, merchant param hard-fixed server-side)",
+    "whoami",
+    "code_search / code_read / code_list / code_find_symbol (corpus, read-only)",
+    "record_hypothesis / update_hypothesis / record_observation / claim_candidate / note / conclude (bookkeeping)"
+  ],
+  "runtime_tools_denied": [
+    "any database / MySQL / Postgres / Mongo / Redis access",
+    "Kafka access", "Docker / Compose / container exec", "service-to-service credentials",
+    "Workflow callback credentials", "admin credentials", "substitute-control endpoints (/_arena/*)",
+    "bank-simulator control (mozart /_arena/scenario)", "Stork control", "DCS/Splitz mutation",
+    "direct access to payouts internal routes / other services (only kong-lite paths)",
+    "environment reset / scenario selection", "the judge / evidence store / known-gap registry",
+    "any production / staging / DevStack credential"
+  ],
+  "identity_supplied": {
+    "attacker_merchant_id": "ARENAM00000001",
+    "attacker_key_id": "rzp_live_ARENAM00000001",
+    "roles": [],
+    "note": "ordinary merchant, no elevated finance roles. Secret is injected by the broker and never shown to the agent."
+  },
+  "victim_control_merchants_not_supplied": ["ARENAM00000002 (direct/rbl)", "ARENAM00000003 (workflow, finance roles)"],
+  "network_boundary": {
+    "attacker_ingress": "http://127.0.0.1:18080 (kong-lite) ONLY",
+    "denied_path_fragments": ["/_arena", "/twirp/", "/metrics", "/debug"],
+    "arena_networks": "rzp-arena and rzp-ingress are docker-internal (no host/internet egress)",
+    "PS_PUBLIC_URL_bypass": "not exposed to the broker; attacker cannot bypass kong",
+    "enforced_by": "RED_LOOP/red_loop/broker.py (path validation, fixed Basic-auth injection, /_arena denial, flood cap)"
+  },
+  "boundary_crossing_attempts": "logged as boundary_violation in the campaign action log and refused (see broker.violation_count)"
+}

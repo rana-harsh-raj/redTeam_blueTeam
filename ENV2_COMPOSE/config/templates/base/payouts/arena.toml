@@ -297,7 +297,9 @@
         timeout = "2000ms"
 
 [workflow]
-    host = "http://127.0.0.1:1"
+    # M2: {{WORKFLOW_HOST}} defaults to the frozen dead address (http://127.0.0.1:1);
+    # set ARENA_WORKFLOW_HOST to point at the workflow-sim substitute.
+    host = "{{WORKFLOW_HOST}}"
     timeout = "100ms"
     httpClientName = "api"
     httpretryattempts = 3

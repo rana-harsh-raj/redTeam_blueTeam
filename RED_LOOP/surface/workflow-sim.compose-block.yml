@@ -1,0 +1,67 @@
+# PROPOSED docker-compose service block for the Workflow (Cadence) engine
+# substitute `workflow-sim`. This file is a PROPOSAL ONLY — it is intentionally
+# NOT merged into ENV2_COMPOSE/docker-compose.yml. Paste it under `services:`
+# (and add the volume + secret notes below) when activating workflow-sim.
+#
+# Peers copied for anchor/convention fidelity: mozart-sim (build args, health)
+# and kong-lite (secrets volume mount for /run/secrets, /_arena/health probe).
+# Anchors referenced (&runtime-security, &healthcheck-defaults) are already
+# defined at the top of docker-compose.yml.
+#
+# ---------------------------------------------------------------------------
+# ACTIVATION NOTE (required, else the substitute is never called):
+#   payouts' `[workflow] host` in
+#   config/templates/base/payouts/arena.toml is currently
+#       host = "http://127.0.0.1:1"      # dead port — workflow calls fail-fast
+#   Repoint it to
+#       host = "http://workflow-sim:8092"
+#   so payouts' outbound WorkflowAPI/Create reaches this substitute. The
+#   inbound Basic-Auth pair payouts sends is [workflow.auth] workflow/workflow,
+#   which WORKFLOW_INBOUND_USER/PASS below match. (Do NOT edit the real
+#   docker-compose.yml or arena.toml as part of writing this proposal.)
+# ---------------------------------------------------------------------------
+
+  workflow-sim:
+    # Thin protocol-faithful stand-in for the Workflow/Cadence approval engine.
+    # See substitutes/workflow-sim/CONTRACT.md. Parks a pending record on
+    # WorkflowAPI/Create and drives the real payouts approve/reject callbacks
+    # only via the control-plane POST /_arena/decide (never automatically).
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: workflow-sim
+        STUB_NAME: workflow-sim
+        STUB_PORT: "8092"
+    image: rzp-arena/workflow-sim:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      # cred.Workflow password (username rzp_live) — same docker secret payouts
+      # renders into its own [auth.workflow] password, so both sides agree.
+      - secrets-kong:/run/secrets:ro
+    environment:
+      STUB_PORT: "8092"
+      # Inbound: the Basic-Auth pair payouts uses to CALL Create
+      # (config [workflow.auth]).
+      WORKFLOW_INBOUND_USER: "workflow"
+      WORKFLOW_INBOUND_PASS: "workflow"
+      # Outbound: where the real payouts-api lives + the cred.Workflow callback
+      # credential (config [auth.workflow], username rzp_live).
+      PS_API_URL: "http://payouts-api:9400"
+      WORKFLOW_CALLBACK_USER: "rzp_live"
+      WORKFLOW_CALLBACK_PASS_FILE: /run/secrets/auth_workflow_payouts
+    # No depends_on payouts-api on purpose (same rationale as cron-driver):
+    # the two are in different profiles; workflow-sim only calls payouts-api
+    # lazily on /_arena/decide, and callbacks tolerate payouts-api being late.
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8092/_arena/health"]
+      <<: *healthcheck-defaults
+
+# NOTE on the secret: this reuses the existing `secrets-kong` named volume
+# (docker-compose.yml:108, populated by secrets/gen-secrets.sh, which already
+# writes `auth_workflow_payouts`, line 68). If a dedicated volume is preferred,
+# declare e.g. `secrets-workflow` under top-level `volumes:` and have
+# gen-secrets.sh populate `auth_workflow_payouts` into it; the mount path
+# (/run/secrets/auth_workflow_payouts) stays the same.

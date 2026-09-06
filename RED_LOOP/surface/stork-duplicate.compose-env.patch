@@ -1,0 +1,33 @@
+stork-duplicate — docker-compose.yml env addition (NOT applied here by design)
+==============================================================================
+
+Add ONE line to the `stork-capture` service's `environment:` block in
+ENV2_COMPOSE/docker-compose.yml (the block currently around lines 1784-1791,
+right after the existing `STORK_REORDER: "0"` line):
+
+      STORK_DUPLICATE_TERMINAL: "0"
+
+Resulting block (for reference — do not copy the surrounding lines, only add
+the one new key):
+
+    environment:
+      STUB_PORT: "8080"
+      STORK_SEED_FILE: /app/seed/subscriptions.json
+      STORK_EVENTS_LOG_FILE: /data/events.jsonl
+      STORK_REORDER: "0"
+      STORK_DUPLICATE_TERMINAL: "0"          # <-- ADD THIS LINE
+      # optional override of the terminal event set (default shown):
+      # STORK_DUPLICATE_EVENTS: "payout.processed,payout.failed,payout.reversed"
+
+Notes
+-----
+- Default is "0" (off) => byte-identical to the frozen baseline: exactly one
+  delivery per subscription, X-Razorpay-Event-Id minted inside _deliver as
+  before. Declaring the key at "0" changes NOTHING at runtime; it only makes
+  the control visible/toggleable.
+- Set to "1" (or "true") to have terminal payout webhooks
+  (payout.processed / payout.failed / payout.reversed) delivered twice with an
+  identical event_id and a byte-identical body.
+- This file is a note only. Per task constraints docker-compose.yml is NOT
+  edited by this change; apply the line above by hand when you want the toggle
+  exposed at the compose layer.

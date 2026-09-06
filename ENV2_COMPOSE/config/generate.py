@@ -226,6 +226,13 @@ def build_token_map(arena, secrets):
     tokens["MOZART.port"] = tokens.get("%s.port" % mozart_key, "")
     tokens["MOZART.url"] = tokens.get("%s.url" % mozart_key, "")
 
+    # M2 (RED_LOOP) additive surface: the Workflow/Cadence approval-engine
+    # substitute. Default preserves the FROZEN dead address (workflow-applicable
+    # payouts fail to reach pending, exactly as in twin-v1.0, so this token is
+    # behaviour-neutral by default); set ARENA_WORKFLOW_HOST=http://workflow-sim:8092
+    # to activate workflow-sim. scripts/up.sh sources .env.arena before this runs.
+    tokens["WORKFLOW_HOST"] = os.environ.get("ARENA_WORKFLOW_HOST", "http://127.0.0.1:1")
+
     tokens["ARENA.NAME"] = arena.get("arena_name", "env2")
 
     return tokens
