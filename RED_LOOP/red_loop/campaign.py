@@ -119,7 +119,10 @@ def run_campaign(store, broker, model, mandate_text, judge_hook,
     last_sig = _progress_signature(store, recent_fps)
     stop_reason = None
     stagnation_replan_used = False
+    recon_replan_used = False
+    recon_only_streak = 0
     retrieved_slices_this_turn = 0
+    recon_patience = max(8, stagnation_patience)
 
     store.event("campaign_start" if not resume else "campaign_continue",
                 model=model, emergency_max_turns=emergency_max_turns,
@@ -208,12 +211,16 @@ def run_campaign(store, broker, model, mandate_text, judge_hook,
             continue
         consecutive_no_action = 0
 
+        did_runtime_experiment = False
         for tc in resp["tool_calls"]:
             args = llm.parse_tool_args(tc["arguments"])
             result = disp.dispatch(tc["name"], args)
             if tc["name"] in ("merchant_request", "merchant_request_concurrent") and isinstance(result, dict):
                 fp = result.get("fingerprint") or ("%s:%s" % (args.get("method"), args.get("path")))
                 recent_fps.append(fp)
+                did_runtime_experiment = True
+            if tc["name"] in ("read_own_webhooks",):
+                did_runtime_experiment = True
             if tc["name"] in ("code_read", "code_search", "recall"):
                 retrieved_slices_this_turn += 1
             content = json.dumps(result, default=str)
@@ -233,6 +240,29 @@ def run_campaign(store, broker, model, mandate_text, judge_hook,
             last_sig = sig
         else:
             turns_since_progress += 1
+
+        # recon-only loop: many turns of code/recall analysis with no runtime
+        # experiment. The mandate requires proving effects at runtime, so a long
+        # code-reading streak with no experiment is stagnation, not progress.
+        if did_runtime_experiment:
+            recon_only_streak = 0
+        else:
+            recon_only_streak += 1
+        if recon_only_streak >= recon_patience and not recon_replan_used:
+            store.event("recon_loop_replan_requested", turn=turn, recon_only_streak=recon_only_streak)
+            recon_replan_used = True
+            recon_only_streak = 0
+            nudge = ("You have spent many turns reading source without running a runtime experiment. "
+                     "The rules require proving an effect in the RUNNING system, not from code alone. "
+                     "Either run a concrete merchant_request experiment against a hypothesis now, or if "
+                     "you have genuinely exhausted reachable avenues, call conclude with a summary.")
+            continue
+        if recon_only_streak >= recon_patience and recon_replan_used:
+            store.event("stagnation_pause", turn=turn, reason="recon_only_loop",
+                        recon_only_streak=recon_only_streak,
+                        note="paused after a replan still produced no runtime experiment; NOT a finding")
+            stop_reason = StopReason.STAGNATION
+            break
 
         unique_recent = len(set(recent_fps))
         stagnating = (turns_since_progress >= stagnation_patience and len(recent_fps) >= 12
