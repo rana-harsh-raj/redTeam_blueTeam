@@ -24,7 +24,7 @@ commits:
 
 system_of_record:
   payout: Payouts Service MySQL (`payouts` DB). Monolith reads PS rows over a second connection (Connection::PAYOUT_SERVICE_DATABASE, api/database/Connection.php:37) and mirrors into its own tables via queue-backed dual-write; the monolith's physical `payouts` table is reported dropped in prod (Slack 2026-09-03) while code still targets it. CONFIRMED (code) / UNKNOWN (physical table state).
-  money: Ledger tenant X (Postgres). `payout_initiated` journal is the balance authorization for Shared/pool accounts (atomic conditional UPDATE accounts.balance). Direct/current accounts are accounted via direct_account_x keyed by bank statement rows, not FTS. CONFIRMED.
+  money: "Ledger tenant X (Postgres). `payout_initiated` journal is the balance authorization for Shared/pool accounts (atomic conditional UPDATE accounts.balance). Direct/current accounts: the balance authority is x-balances balance.balance (or the PS banking_account_statement_details.gateway_balance mirror), NOT Ledger; direct_account_x journals (keyed by banking_account_stmt_detail_id) are a mirror with min_balance NULL, and at this HEAD are posted only by the monolith's own statement-fetch linking (api BankingAccountStatement/Core.php:5175-5228, feature da_ledger_journal_writes) — PS posts none (payouts core.go:7284,7356 commented). CONFIRMED (M4 C-004/C-010; T03 Finding 6; T04 §2)."
   transfer: FTS MySQL (`transfers`, `attempts`, `transfer_meta`). CONFIRMED.
   merchant_config: monolith `merchants`+`features` (legacy path) or ASV(gRPC)+API-DB features+DCS (experiment path, DCS wins on collision). Splitz MerchantConfigViaAsvAndDcs selects. CONFIRMED (mechanism) / UNKNOWN (which merchants).
   beneficiaries: CFA MongoDB (DocumentDB in prod); PS hot create path fetches `fund_accounts_internal` from the monolith (INFERRED).
@@ -58,10 +58,12 @@ families:
     confidence: CONFIRMED
 
   direct_current_account_rails:
-    path: PS create (Direct) -> queueing gate (reservationGate if DCS direct_accounts/Configs.in_flight_reservation_enabled else balanceBufferGate; balance from x-balances + monolith balance) -> monolith create_fta with preferred_source_account_id -> FTS direct_account_routing_rules (merchant rule -> default rule -> oldest) -> bank -> processed; FTS FAILED -> payout failed (RBL/ICICI/AXIS/YESBANK/IDFC/SLICE); ledger processed/reversed skipped in PS ("after BAS linking"); direct_account_x accounting keyed by banking_account_stmt_detail_id
+    path: "PS create (Direct; precondition BASD/x-balances status active|under_maintenance, core.go:693-710) -> queueing gate (reservationGate if DCS direct_accounts/Configs.in_flight_reservation_enabled else balanceBufferGate; balance from x-balances GET /v1/balances/{id} when Splitz fetch_balance_entity_from_x_balance, else PS banking_account_statement_details.gateway_balance — no monolith balance call on the PS Direct path) -> no ledger call -> [monolith create_fta | PS-direct POST /v1/transfer] with preferred_source_account_id = banking_accounts.fts_fund_account_id -> FTS matches source_accounts.fund_account_id; direct_account_routing_rules consulted only when >1 SA (merchant rule -> default rule -> oldest) -> bank -> processed; FTS FAILED -> payout failed (PS map: rbl/icici/axis/yesbank/idfc/slice; monolith map: no SLICE) with no reversal row; PS posts NO Direct journal at any point (BAS-linking ledger call deprecated/commented); Direct DA accounting (direct_account_x keyed by banking_account_stmt_detail_id) is posted only by the monolith statement-fetch linking on a matched statement, and not at all for PS-recon merchants (EF-004)"
     key_facts:
       - Reservations are Redis-only (no DB table), 6 h TTL, Lua reserve, reconciler cron every ~5 min with fail-closed heartbeat. CONFIRMED
       - Partner-bank downtime reaches PS via FTS POST /v1/notify/health/update -> Redis partner_bank_health. CONFIRMED
+      - "M4 corrections (T02 #1/#2/#10, C-003, C-004/C-010): PS has no routing-rule concept; a routing rule is not required with one source account; PS never posts a Direct journal before or after BAS linking; balance authority is x-balances/BASD, not the monolith or Ledger. CONFIRMED"
+      - "payouts.transaction_id for Direct is NULL until BAS recon sets it to the bas id (core.go:7275); FTS failed is refused once it is set (V19). CONFIRMED"
     confidence: CONFIRMED
 
   approval_and_workflow:
@@ -105,7 +107,7 @@ families:
   merchant_webhooks:
     PS -> Stork ProcessEvent (protobuf Twirp, Basic payout, service rx-live) -> Stork delivers raw payload with X-Razorpay-Event-Id + HMAC-SHA256 X-Razorpay-Signature; exponential backoff 15 attempts/24 h; no dedupe; no ordering; daily disable crons. Subscriptions created via monolith WebhookV2Controller. CONFIRMED
   account_statements_and_reconciliation:
-    see reports/fidelity/raw/11_statements_recon_repair.md (XAS ingestion, BAS payout_update, recon/ART FTS attempts routes, FTS status polling). Summary in components.yaml.
+    "M4 (T03): three ingestion implementations (PS worker rbl_banking_account_statement, monolith RblBankingAccountStatement job, XAS multi-bank fetch) and three matchers (XAS, monolith, PS-on-ART-instruction) exist; which cron is live is UNKNOWN. BASD rows are created by the monolith directly in the PS DB. Only PS produces x_account_statement_source_event. XAS repair outbound = POST monolith /v1/banking_account_statement/payout_update -> PS UpdatePayoutAfterBASRecon (transaction_id = bas id; credit on failed -> reversed). Full map: reports/implementation/m4-source-map.md §1.5 and route-matrix.yaml direct_reconciliation_routes. Lane-11 report (reports/fidelity/raw/11_statements_recon_repair.md) mis-scoped matching to XAS alone (C-T03-1). CONFIRMED"
   migration_proxy_cutover:
     Kong cutover devstack-only; monolith three proxy mechanisms (direct 0 / legacy 1 / V2 none); PS shadow gateway [shadow_gateway] disabled (loop guard X-PS-Proxied); monolith Repository PS-first no-DB-fallback by default; PS ApiDB leg hardcoded off; dual-write flags env-injected (default reverse=true forward=false). CONFIRMED (code) / UNKNOWN (runtime values)
   bulk_payouts:

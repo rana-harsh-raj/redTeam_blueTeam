@@ -19,7 +19,7 @@ components:
     repo: razorpay/api
     role: public/dashboard ingress, idempotency, OTP, role enforcement, proxy to PS, create_fta relay, FTS webhook relay, pricing, credits, balances, dual-write, admin/repair, bulk_approve, webhook registration, ~45 payout-relevant worker Deployments
     controls: [auth, tenant, approval, routing, balance, payout_state, idempotency, reversal, repair, fees]
-    today: "REPRESENTATIVE SUBSTITUTE (monolith-stub: PS-facing callbacks only; brute-force merchant lookup; several INCORRECT responses; no ingress)"
+    today: "REPRESENTATIVE SUBSTITUTE (monolith-stub: PS-facing callbacks only; brute-force merchant lookup; several INCORRECT responses; no ingress). Direct-specific: create_fta marker simplified (no channel condition, no SHARED sub-merchant case); update_fts_fund_transfer relay without FTA row; banking_account_statement/payout_update relay present but uncalled; NO BAS module (RBL fetch, matcher, BASD creation, batch/process front, source_event_info, DA ledger emitter). M4 adds a substitute DA journal emitter reproducing processLedgerPayoutForDirect (D-006 (3), EF-004) and BASD row insertion moves to the provisioner"
     target: CONTRACT-FAITHFUL SUBSTITUTE — direct PS-DB read, corrected route contracts, FTS create body, 1 s timeout/async fallback, stateful credits, balance-freshness update, plus an ingress module for dashboard/approval/admin families; split role-differentiated substitutes (dual-write, post-create, source-updater) if consistency tests are in scope
     real_feasibility: not feasible (PHP monolith, second DB connection into PS, Splitz/DCS/Raven/Credits deps)
     evidence: 01, 02, 05, 12
@@ -53,33 +53,33 @@ components:
     repo: razorpay/fts
     role: transfer creation, source-account routing, channel health, attempt retries, bank gateway calls, status propagation (webhook/direct/Kafka), ART repair routes, downtime notifications
     controls: [routing, transfer_state, reversal, repair]
-    today: REAL binary; seeds REPRESENTATIVE (RBL only, no DOWN rows, no default direct rule); Kafka producer disabled; 12 of ~157 workers
-    target: REAL — seed a second channel + DOWN rows + default direct rule; enable Kafka producer for a designated merchant; add workers for any additional bank
+    today: "REAL binary; seeds REPRESENTATIVE (RBL only, no DOWN rows; M2 source_accounts.account_type uppercase 'DIRECT' vs code lowercase 'direct' — C-005 OPEN; one SA per merchant vs prod v1+v2); Kafka producer enabled only under profile kafka; 12 of ~157 workers (Direct IMPS only; no rbl::direct NEFT/RTGS workers); health emitter to PS missing (EF-008)"
+    target: "REAL — seed a second channel + DOWN rows; enable Kafka producer for a designated merchant; add workers for any additional bank. NOTE (M4 C-003): a default/global direct_account_routing_rules row is NOT required — rules are only a tie-breaker when >1 source_accounts row matches (product, fund_account_id) (fts internal/account/service.go:5334-5349); with one SA the rule is never read. Seeding a merchant rule is harmless parity"
     evidence: 06, 09, 12
 
   mozart:
     repo: razorpay/mozart
     role: bank gateway adapter; response envelope without meta; -mock mode with fixtures
     controls: [transfer_state, reversal, final_state]
-    today: "REPRESENTATIVE SUBSTITUTE (mozart-sim: ignores gateway/version, 6 of ~140 codes, amount-keyed)"
-    target: CONTRACT-FAITHFUL SUBSTITUTE per substitute-contracts/mozart-sim.md; REAL blocked by private modules
+    today: "REPRESENTATIVE SUBSTITUTE (mozart-sim: ignores gateway/version and credentials — Direct vs Pool indistinguishable at the bank boundary; 6 of ~140 codes, amount-keyed; no razorpayx/rbl/v2/account_statement action)"
+    target: "CONTRACT-FAITHFUL SUBSTITUTE per substitute-contracts/mozart-sim.md; M4 adds POST /razorpayx/rbl/v2/account_statement (base64 CSV, Success / 'No Records Found', next_key paging — route-matrix R3); REAL blocked by private modules"
     evidence: 06, 12
 
   ledger:
     repo: razorpay/ledger
     role: money authority tenant X; journals; account discovery; balances; SNS journal-created; suspended CronJobs
     controls: [balance, reversal, final_state]
-    today: REAL binary; ledger_config REAL via CreateInBulk; account_details seed INCORRECT for M2 (fund_account_type nodal vs current; missing Current parents)
-    target: REAL with corrected seeds (via AccountAPI/CreateOnEvent events nodal_/current_pool_account_onboarding) and a monolith-stub caller for merchant-side onboarding events
+    today: "REAL binary; ledger_config REAL via CreateInBulk (shared_account_x + direct_account_x, 54 rows); M2 FTS-current pair keyed by fts id exists but NO direct_account_x parent accounts and NO per-merchant DA sub-accounts (merchant_da / banking_account_stmt_detail_id) — any DA journal would be dropped as ErrAccountDiscoveryFailure (T03 Finding 7)"
+    target: "REAL: AccountAPI/CreateInBulk{direct_account_x} once + AccountAPI/CreateOnEvent{direct_merchant_onboarding, entities:{banking_account_stmt_detail_id:[basd_<14>]}} per Direct merchant (route-matrix direct_reconciliation_routes.R11); journals from the monolith-stub DA emitter substitute (R12). PS itself posts no Direct payout journal at this HEAD (C-004/C-010; EF-004)"
     evidence: 05, 07
 
   x_balances:
     repo: razorpay/x-balances
     role: account selection (ListAccounts), Direct balance polling, Shared overwritten from ledger
     controls: [routing, balance]
-    today: REAL (1 worker vs 5 per-bank families)
-    target: REAL
-    evidence: 07, 12
+    today: "REAL binary (server + 1 worker vs 5 per-bank families) but the worker is INERT: [Queue] Driver=inmemory, Mozart/banking-accounts Mock=true, no fetch caller, seed status 'activated' vs code 'active' (C-008) and seed account_type 'pool' vs code 'shared' (C-007) — so no BalanceRefreshEvent, no dual-write to the monolith (T04 §9, EF-007). GET /v1/balances/{id} and /v1/accounts work (no status filter) and are the twin's Direct balance authority for M2"
+    target: "REAL; to make the refresh event real: [Queue] Driver=sqs with LocalStack + APP_ENV yielding the payouts queue prefix, status='active' seeds, mozart-sim account_balance in PayGenRes.Body.BalAmt.amountValue shape, credentials route, cron-driver fetch job (T04 handoff). Until then M4 injects the event / bumps last_fetched_at"
+    evidence: 07, 12, reports/implementation/m4-subagent-handoffs/T04.md
 
   cfa:
     repo: razorpay/cfa
@@ -91,10 +91,10 @@ components:
 
   banking_accounts:
     repo: razorpay/banking-accounts (k8s name banking-account)
-    role: banking account onboarding/state; PS calls GET /payouts/shield/merchant/{id}/details
-    controls: [tenant (direct account details)]
+    role: "banking account onboarding/state (system of record for Direct accounts: creates the FTS source account with account_type direct / bank_account_type CURRENT and publishes the x-balances account-activation event); PS calls GET /payouts/shield/merchant/{id}/details and, on the statement path, GET /merchant/{mid}/banking_account_by_account_number/{acct}/credentials (5 keys)"
+    controls: [tenant (direct account details), statement ingestion (credentials)]
     today: REPRESENTATIVE SUBSTITUTE (1 route)
-    target: keep substitute; add routes only if onboarding flows are tested
+    target: "keep substitute; M4 adds the credentials route (route-matrix R2) so the REAL PS rbl_banking_account_statement worker can run; onboarding/activation event remains substituted by the provisioner (SQL seed of x-balances balance row)"
     evidence: 07
 
   workflow_service:
@@ -174,11 +174,11 @@ components:
     evidence: 10
 
   xas_x_account_statements:
-    repo: x-account-statements, x-bank-statement-sync
-    role: statements ingestion, source-event matching, BAS payout_update
-    today: MISSING (xas-sink health only)
-    target: see lane 11 / substitute contract (statement rows, UTR match)
-    evidence: 10, 11
+    repo: x-account-statements (x-bank-statement-sync is an EMPTY repo — README + CI only; do not model, T03 C-T03-5)
+    role: "ONE OF THREE statement matchers (C-013): XAS matches its own fetches (utr -> grn -> cms + balance_id/account_number + amount; external when unmatched); the monolith matches its own fetches (saveAccountStatementV2); PS links only on ART instruction (process/batch) — its UTR auto-linker is a dead stub. XAS consumes exactly ONE inbound queue, x_account_statement_source_event, produced ONLY by PS for Direct terminal payouts; FTS only READS XAS (fetch_multiple_by_reference_numbers) and ledger never talks to XAS (C-011 corrects the xas-sink CONTRACT claim that payouts/ledger/FTS all enqueue). Outbound: POST monolith /v1/banking_account_statement/payout_update (9 fields) via Kafka CDC dual-write or POST /v1/statement/dual_write"
+    today: MISSING (xas-sink health only; FTS retry-preprocessor and PS VerifyPayoutFailedTransaction fail against it)
+    target: "CONTRACT-FAITHFUL SUBSTITUTE xas-sim (m4-decisions D-006 (2b)): consumes the REAL PS x_account_statement_source_event queue (preserving the event_created_timestamp/event_create_timestamp mismatch, EF-005), holds statements (from PS BAS rows or its own mozart-sim fetch), matches per x-account-statements enrich/service/service.go:44-148,190-218 with the >2 / dual-type guards and (event_id, entity_type) dedup, POSTs payout_update to monolith-stub (relay to REAL PS UpdatePayoutAfterBASRecon), and serves GET /v1/account_statements/fetch_multiple_by_reference_numbers for PS and FTS. REAL Go build is a stretch: Kafka CDC (Maxwell) not reproducible; POST /v1/statement/dual_write hook exists"
+    evidence: 10, 11, reports/implementation/m4-subagent-handoffs/T03.md Findings 3-5
 
   recon_art:
     repo: recon

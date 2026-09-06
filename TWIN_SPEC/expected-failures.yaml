@@ -68,7 +68,10 @@ expected_failures:
       (manager.go:186-189). For Shared accounts core.go:2589-2595 propagates that
       enqueue error and core.go:2472-2475 returns before OnEvent(EventProcessed),
       so the payout stays `initiated`. Direct accounts return at core.go:2575-2577
-      before the enqueue, which is why the Direct Kafka case passes.
+      before the enqueue, which is why the Direct PROCESSED Kafka case passes
+      (M4 T02 #3 correction: this guard is on the PROCESSED-ledger path only; the
+      Direct FAILED/REVERSED Kafka cases pass because the consumer drops those
+      messages before any handler runs — see EF-002/EF-003/EF-006).
     deployed_status: >-
       DEPLOYED. payouts-kafka-fts-status-updates-consumer (and the retry consumer)
       are templated with no enable gate; cde/payouts/values.yaml sets 1/1 replicas
@@ -173,3 +176,235 @@ expected_failures:
     notes: >-
       Direct accounts only, because a Shared account never reaches `processed`
       over Kafka in the first place (EF-001).
+
+  # ---------------------------------------------------------------------------
+  # M4 (2026-09-07, T12) — Direct reconciliation entries. Source refs from the
+  # Phase-1 handoffs reports/implementation/m4-subagent-handoffs/T02-T05.md.
+  # ---------------------------------------------------------------------------
+
+  - id: EF-004
+    title: PS-recon merchants receive no Direct-account (DA) Ledger journal on a matched debit statement
+    scope:
+      profile: any
+      cases:
+        - direct_debit_statement_linked_ps_recon
+    predicted_state:
+      payout_status: processed
+      fts_status: PROCESSED
+      journals:
+        absent:
+          - da_payout_processed
+          - da_payout_processed_recon
+          - payout_processed
+      webhooks:
+        present:
+          - payout.processed
+    source_refs:
+      - payouts internal/app/payouts/core.go:7208-7215
+      - payouts internal/app/payouts/core.go:7284
+      - payouts internal/app/payouts/core.go:7356
+      - api app/Models/Payout/Core.php:10292-10299,10327,10359
+      - api app/Models/BankingAccountStatement/Core.php:3081-3091
+      - api app/Models/BankingAccountStatement/Core.php:3538-3560
+      - api app/Models/BankingAccountStatement/Core.php:5175-5228
+      - api app/Models/Merchant/RazorxTreatment.php:364
+    mechanism: >-
+      Three sources could post the two Direct success journals
+      (da_payout_processed + da_payout_processed_recon). PS's
+      SendLedgerEventPostBasLinking is commented out at both call sites of
+      UpdatePayoutAfterBASRecon with the 2026-02 deprecation note ("X-Account
+      Statement have Merchant Account Statement and Recon run on those"). The
+      monolith's XAS-triggered payoutUpdateByBASRecon has the same call commented
+      out. The only live emitter is the monolith's own statement-fetch linking
+      (sendToLedgerPostSourceEntityProcessing -> processLedgerPayoutForDirect,
+      feature da_ledger_journal_writes), and for a PS-owned payout with Splitz
+      payout_service_txn_recon on it skips its own ledger event and calls PS
+      instead ("we make a call to ps which already does this") — but PS no longer
+      does. Result: payouts.transaction_id is set to the bas id, mail/SMS fire,
+      and no DA journal exists for that payout.
+    deployed_status: >-
+      Code state CONFIRMED in payouts 4bf3dbf9 and api 2d665f91. Whether any live
+      merchant is on payout_service_txn_recon, and whether da_ledger_journal_writes
+      is still assigned, is NOT DETERMINABLE from repositories (T03 Unresolved Q1;
+      Slack threads CNXASR0H3/p1770719696465979, p1770795070793089). The twin's
+      monolith-stub emitter reproduces the gate exactly: it posts the two journals
+      only when da_ledger_journal_writes is on AND payout_service_txn_recon is off
+      for the merchant (m4-decisions.md D-006).
+    classification: production-source gap (deprecation without replacement), reproduced faithfully
+    disposition: preserve
+    notes: >-
+      V08 (Direct failure -> zero journals) stays valid. Any twin assertion that
+      "Direct success posts da_payout_processed" must be attributed to the
+      monolith-stub substitute path, never to PS. Cross-ref m4-contradictions
+      C-004/C-010, m4-known-limits L-004.
+
+  - id: EF-005
+    title: PS source-event field name does not match the XAS consumer schema (event_created_timestamp vs event_create_timestamp)
+    scope:
+      profile: any
+      cases:
+        - direct_terminal_source_event
+    predicted_state:
+      payout_status: null
+      fts_status: null
+      journals: null
+      webhooks: null
+      xas_source_event:
+        event_create_timestamp: 0
+    source_refs:
+      - payouts internal/job/x_account_statement_source_event.go:37-56
+      - payouts internal/job/x_account_statement_source_event.go:41
+      - x-account-statements internal/source_events/model/dto.go:11-31
+      - x-account-statements internal/source_events/model/dto.go:15
+    mechanism: >-
+      PushXasSourceEventAndSyncEs serialises XasEventDetails with the JSON key
+      `event_created_timestamp`; XAS's SourceEvent DTO unmarshals
+      `event_create_timestamp`. The value is therefore lost and XAS persists 0
+      into source_events.event_create_timestamp (NOT NULL int). Nothing in XAS
+      matching reads the timestamp (keys are utr/grn/cms + balance/account +
+      amount), so the mismatch is functionally inert but is a real schema drift.
+    deployed_status: >-
+      Both files are at the pinned HEADs (payouts 4bf3dbf9, x-account-statements
+      e73fd5a). Whether the producer is active for any merchant depends on Splitz
+      account_statement_source_event (P9jMHiqpMI81A5) or the env whitelist
+      PAYOUTS_CONFIGS_ACCOUNT_STATEMENT_SOURCE_EVENT_* — NOT DETERMINABLE.
+    classification: production-source schema drift, reproduced faithfully
+    disposition: preserve
+    notes: >-
+      xas-sim MUST read the PS field name as XAS does (i.e. store 0) and record
+      the discrepancy in its trace; it must not "fix" the key. Cross-ref C-014.
+
+  - id: EF-006
+    title: FTS FAILED/REVERSED for a Direct payout delivered over Kafka are dropped — root cause is the consumer, not the account type
+    scope:
+      profile: kafka
+      cases:
+        - failed_dropped_direct
+        - reversed_dropped_direct
+    predicted_state:
+      payout_status: null   # see EF-002 (initiated) / EF-003 (processed)
+      fts_status: null
+      journals: null
+      webhooks: null
+    source_refs:
+      - payouts internal/taskHandlers/fts_status_updates.go:56-62
+      - payouts internal/taskHandlers/fts_status_updates_retry.go:58-64
+      - payouts internal/app/payouts/core.go:1465-1585
+      - payouts internal/app/payouts/core.go:2575-2577
+    mechanism: >-
+      Cross-reference entry only; the predicted states are exactly EF-002 and
+      EF-003. Recorded separately because the M4 source map (T02 #3) corrects the
+      attribution in EF-001's notes: the Kafka consumer discards `failed` and
+      `reversed` unconditionally before HandlePayoutStatusUpdateViaFTS runs, so
+      account_type never influences the outcome; core.go:2575-2577 is the
+      PROCESSED-path ledger skip and is not on the failed/reversed path. The
+      Kafka path also never applies FtsToPayoutStatusMap or
+      VerifyPayoutFailedTransaction (those exist only on the direct webhook
+      route), so the Direct-vs-Shared failed/reversed divergence is untestable
+      over Kafka by construction.
+    deployed_status: >-
+      As EF-002/EF-003.
+    classification: cross-reference (attribution correction)
+    disposition: preserve
+    notes: >-
+      Do not add new Kafka Direct cases expecting failed->failed; the transport
+      drops them. Already covered by kafka_scenarios.py failed_dropped_direct /
+      reversed_dropped_direct.
+
+  - id: EF-007
+    title: x-balances BalanceRefreshEvent (reservation release trigger A) is unreachable in the twin without event injection
+    scope:
+      profile: any
+      cases:
+        - direct_reservation_release_after_refresh
+    predicted_state:
+      payout_status: processed
+      fts_status: PROCESSED
+      journals: null
+      webhooks: null
+      reservation:
+        item_state: awaiting_balance_refresh
+        released_by_event: false
+    source_refs:
+      - x-balances internal/balance_fetch/service.go:378-457
+      - x-balances internal/balance_fetch/service.go:155-359
+      - x-balances internal/constant/constant.go:34
+      - x-balances internal/balance_fetch/repo/repo.go:57-71
+      - x-balances pkg/env:15-22
+      - payouts internal/job/x_balances_balance_refresh.go:27-36,102-123
+      - payouts internal/app/payouts/reservation_hook.go:349-394,236-333
+      - payouts internal/app/payouts/inflight_reservation_reconciler.go:387-404,303-313
+      - ENV2_COMPOSE/config/templates/base/xbalances/arena.toml:96-97,136-169
+      - ENV2_COMPOSE/scripts/cron-driver/driver.py:37-46
+      - ENV2_COMPOSE/seeds/s4/xbalances.sql:29-37
+    mechanism: >-
+      The only producer of BalanceRefreshEvent is x-balances' bank-fetch path,
+      which publishes after every successful fetch iff DCS
+      in_flight_reservation_enabled. In the arena that path cannot fire: (a) no
+      caller of POST /v1/cron/balance/{channel}/fetch or /v1/balance/fetch exists;
+      (b) FetchBalance filters status in ('active','under_maintenance') and the
+      seed writes 'activated'; (c) x-balances [Queue] Driver="inmemory" so a
+      publish never reaches LocalStack, and the worker's queue name would be
+      arena-x-balances-balance-refresh-live while payouts polls
+      stage-x-balances-balance-refresh-live; (d) Mozart/banking-accounts are
+      Mock=true. The payouts consumer worker and queue exist and are correct.
+      Trigger B (reconciler housekeeping) is executable but releases nothing
+      unless balance.last_fetched_at advances past dispatched_at + lag.
+    deployed_status: >-
+      Production x-balances publishes to SQS (constant.go:34) and the payouts
+      worker payouts-worker-x-balances-balance-refresh is deployed; the fetch
+      cadence / caller of /v1/cron/balance/{channel}/fetch is NOT DETERMINABLE
+      (kube prod/x-balances/values.yaml:413 crons: []; T04 U1).
+    classification: twin environment limitation (not a production defect)
+    disposition: substitute
+    notes: >-
+      M4 tests trigger release path A by injecting the event JSON into
+      stage-x-balances-balance-refresh-live and path B by bumping
+      balance.last_fetched_at then POSTing the reconciler route (T04 handoff).
+      A run that observes the item still awaiting after a processed payout, with
+      no injected event, matches this entry. Cross-ref C-009, DEV-024,
+      m4-known-limits L-009.
+
+  - id: EF-008
+    title: FTS partner-bank health notification to PS (route H) is never emitted in the twin
+    scope:
+      profile: any
+      cases:
+        - direct_partner_bank_down_on_hold
+    predicted_state:
+      payout_status: null
+      fts_status: null
+      journals: null
+      webhooks: null
+      partner_bank_health:
+        redis_hash_written_by_fts: false
+    source_refs:
+      - fts internal/downtime/notification.go:435-519
+      - fts internal/downtime/notification.go:479
+      - fts internal/downtime/notification.go:500-516
+      - payouts internal/routing/router/internal_routes.go:11-23
+      - payouts internal/app/payouts/partner_bank_health_manager.go:24-48,126-129
+      - payouts internal/app/payouts/processor/fundAccountPayoutDirect.go:570-610
+      - ENV2_COMPOSE/config/templates/base/fts/env.default.toml:837-841
+      - fts internal/routing/route_list.go:187-199
+    mechanism: >-
+      FTS sends PartnerHealthEvent to [webhook.payout.channel_status] (monolith)
+      and, when Feature.PSDowntimeNotificationOnHold is on, to
+      [payouts_service.notify_channel_status]. The twin's FTS config leaves
+      notify_channel_status.URL at the default placeholder http://localhost:8080/
+      with no arena override, and nothing in mozart-sim or FTS admin flips channel
+      health, so Redis partner_bank_health is never written by FTS. The payouts
+      side (POST /v1/notify/health/update, IsChannelDown -> on_hold with
+      queued_reason=gateway_degraded, release via process_queued_payouts) is
+      REAL and can be driven only by a direct POST with cred.FTS.
+    deployed_status: >-
+      DEPLOYED in prod-live (env.prod-live.toml:254-255 notify_channel_status ->
+      https://payouts.razorpay.com/v1/notify/health/update; :214 channel_status
+      to the monolith). Feature flag value NOT DETERMINABLE.
+    classification: twin substitute gap (FTS emitter side missing)
+    disposition: substitute
+    notes: >-
+      Route-matrix health_source is source-correct. Tests for Direct on_hold use
+      a direct POST /v1/notify/health/update with payload
+      {account_type:'direct', channel:'rbl', mode:'IMPS', status:'downtime'}
+      (T05 Finding 7). Cross-ref m4-known-limits L-010.
