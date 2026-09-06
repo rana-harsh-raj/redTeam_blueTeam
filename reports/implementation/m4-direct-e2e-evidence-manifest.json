@@ -2,17 +2,17 @@
   "schema_version": "1.0",
   "manifest_kind": "m4-direct-e2e-evidence",
   "milestone": "M4 \u2014 Direct Current-Account, Reconciliation, and Autonomous Architecture Assurance Expansion",
-  "generated_at": "2026-09-06T22:41:41Z",
+  "generated_at": "2026-09-06T22:42:26Z",
   "git": {
     "branch": "milestone-4-direct-reconciliation",
-    "commit": "5bde798168ea47174542085ec25824d1fc2bc31f",
+    "commit": "63a6d7f91d8bfac6c329e1a1120af0fd7202b405",
     "worktree_clean": false
   },
   "counts": {
     "artifacts": 21,
-    "committed": 17,
-    "external": 4,
-    "total_bytes": 482057
+    "committed": 18,
+    "external": 3,
+    "total_bytes": 482005
   },
   "missing_expected": [],
   "policy": {
@@ -24,10 +24,10 @@
   "artifacts": [
     {
       "path": "reports/implementation/m4-direct-e2e-acceptance.json",
-      "sha256": "57a638d7a631754d3fcaa67e23a1918a797795c98268bf34b8f401ad58275f9e",
-      "bytes": 53357,
+      "sha256": "2d09f11fab8a481e3c74658dec9255dcc1861229a7ba1c1f0b94636f476e06de",
+      "bytes": 53305,
       "kind": "acceptance_json",
-      "committed": false,
+      "committed": true,
       "committed_expected": true
     },
     {
@@ -191,5 +191,5 @@
       "committed_expected": false
     }
   ],
-  "self_sha256": "5c42e439d2b14c771487d01f5cf4aa7b86f3cffbc8f5f386e38fadba18040a1c"
+  "self_sha256": "8ccc772c1609bede3a5f1c112a19c3a0e1560a689dbfe25778d695ff024df7f1"
 }

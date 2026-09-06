@@ -1,7 +1,7 @@
 {
   "milestone": "M4 \u2014 Direct Current-Account, Reconciliation, and Autonomous Architecture Assurance Expansion",
   "schema": "m4-acceptance/1",
-  "generated_at": "2026-09-06T22:41:40Z",
+  "generated_at": "2026-09-06T22:41:59Z",
   "base_commit": {
     "ref": "red-loop-m3.1",
     "commit": "3a044f83ed0eda6ead71585f07c450af2ed7978f"
@@ -10,9 +10,9 @@
   "evidence_commit": null,
   "self_reference_note": "This acceptance JSON and its evidence manifest are committed in a SEPARATE evidence commit; they did NOT exist inside tested_commit. evidence_commit is null until the coordinator commits the evidence and re-runs with --evidence-commit.",
   "git": {
-    "head": "5bde798168ea47174542085ec25824d1fc2bc31f",
+    "head": "63a6d7f91d8bfac6c329e1a1120af0fd7202b405",
     "branch": "milestone-4-direct-reconciliation",
-    "worktree_clean": false
+    "worktree_clean": true
   },
   "dry_run": false,
   "service_image_digests": {
@@ -20,19 +20,19 @@
     "images": {
       "rzp-arena/verifier:v1-candidate": "sha256:3ed49c7ae280836cd4e7e7f8294d874ee5509d85a9564e065965cd8f6cbcf604",
       "rzp-arena/monolith-stub:v1-candidate": "sha256:f557bd8052f74d26be649c94a8c615ef209bdb608ac8847502027574b0acf0d1",
-      "rzp-arena/bankingaccounts-stub:v1-candidate": "sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d",
       "rzp-arena/xas-sim:v1-candidate": "sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7",
       "rzp-arena/dcs-stub:v1-candidate": "sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b",
+      "rzp-arena/bankingaccounts-stub:v1-candidate": "sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d",
       "rzp-arena/mozart-sim:v1-candidate": "sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9",
+      "rzp-arena/ledger-gate:v1-candidate": "sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f",
       "rzp-arena/workflow-sim:v1-candidate": "sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96",
+      "rzp-arena/asv-stub:v1-candidate": "sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f",
       "rzp-arena/xas-sink:v1-candidate": "sha256:242fc14ec1572d27ddd98dd902e258b2aeb9a92d7a690d46a974df933d4c1cb8",
       "rzp-arena/splitz-stub:v1-candidate": "sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a",
       "rzp-arena/merchant-webhook-sink:v1-candidate": "sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13",
-      "rzp-arena/ledger-gate:v1-candidate": "sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f",
-      "rzp-arena/asv-stub:v1-candidate": "sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f",
       "rzp-arena/stork-capture:v1-candidate": "sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c",
-      "rzp-arena/pricing-stub:v1-candidate": "sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05",
       "rzp-arena/shield-stub:v1-candidate": "sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43",
+      "rzp-arena/pricing-stub:v1-candidate": "sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05",
       "rzp-arena/kong-lite:v1-candidate": "sha256:16176c424d3538e42ca1cc5d406fbe33d5cd164611797cd26bc530733c64737a",
       "rzp-arena/payouts:v1-candidate": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
       "rzp-arena/cfa:v1-candidate": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
@@ -52,8 +52,8 @@
   },
   "counts": {
     "total": 74,
-    "pass": 73,
-    "pending": 1,
+    "pass": 74,
+    "pending": 0,
     "fail": 0
   },
   "gates": [
@@ -1004,7 +1004,7 @@
       "fidelity_level": "independently_reproduced",
       "production_reachability": "n/a",
       "evidence_pointer": "reports/implementation/m4-direct-e2e-evidence-manifest.json",
-      "evidence_sha256": "457d460a3637a4211b1de96b086ecd1126e90ffdeb9a7ca23994c4939b6724fc",
+      "evidence_sha256": "4ecd8ee71d13589377d7a44cb6a59ffddf5927c76d346d1bd0dafe5a141937e8",
       "expected_failure": false,
       "expected_failure_ref": null,
       "notes": "recomputed 20 manifest artifacts (acceptance JSON excluded \u2014 self-referential); 0 mismatch, 0 missing. Authoritative check: make m4-evidence-verify."
@@ -1018,7 +1018,7 @@
       "fidelity_level": "independently_reproduced",
       "production_reachability": "n/a",
       "evidence_pointer": "reports/implementation/m4-direct-e2e-evidence-manifest.json",
-      "evidence_sha256": "457d460a3637a4211b1de96b086ecd1126e90ffdeb9a7ca23994c4939b6724fc",
+      "evidence_sha256": "4ecd8ee71d13589377d7a44cb6a59ffddf5927c76d346d1bd0dafe5a141937e8",
       "expected_failure": false,
       "expected_failure_ref": null,
       "notes": "all expected evidence present."
@@ -1069,15 +1069,15 @@
       "gate_id": "G73",
       "group": "REPLAY_EVIDENCE",
       "title": "Annotated final tag resolves to the evidence commit",
-      "status": "pending",
-      "passed": null,
+      "status": "pass",
+      "passed": true,
       "fidelity_level": "independently_reproduced",
       "production_reachability": "n/a",
       "evidence_pointer": "(git cat-file -t red-loop-m4)",
       "evidence_sha256": null,
       "expected_failure": false,
       "expected_failure_ref": null,
-      "notes": "PENDING: annotated tag red-loop-m4 not yet created (coordinator tags the evidence commit)."
+      "notes": "tag resolves to 63a6d7f91d8bfac6c329e1a1120af0fd7202b405"
     },
     {
       "gate_id": "G74",
@@ -1115,15 +1115,13 @@
     "reports/implementation/m4-assurance-run.json": "c09d4207dfac58e92e48a88762f5ff9c1fc51b80b23627695e4a3ac49a1ada74",
     "RED_LOOP/runs/camp-20260906T200337Z-7511c5/m4-direct-e2e-soak.json": "00205fcdfb408013e4fa5bc7c3f05d473146855fbe4b148cdd9a9f4fc7dcf53e",
     "reports/implementation/m4-direct-e2e-replay.json": "9264e02342248eb0c051b655c11667c54816dc21904327b1df07b58af14bd878",
-    "reports/implementation/m4-direct-e2e-evidence-manifest.json": "457d460a3637a4211b1de96b086ecd1126e90ffdeb9a7ca23994c4939b6724fc",
+    "reports/implementation/m4-direct-e2e-evidence-manifest.json": "4ecd8ee71d13589377d7a44cb6a59ffddf5927c76d346d1bd0dafe5a141937e8",
     "(git status --porcelain)": null,
     "reports/implementation/m4-audit-report.md": "8d9ebef86c7804f4b9a8d10bcd74485a17085fdac67de4559ec731c23ce59093",
     "(git cat-file -t red-loop-m4)": null
   },
   "unmet_gates": [],
-  "pending_gates": [
-    "G73"
-  ],
+  "pending_gates": [],
   "declared_expected_failures": [
     {
       "gate_id": "G38",
@@ -1134,5 +1132,5 @@
       "ref": "EF-002/EF-003"
     }
   ],
-  "accepted": false
+  "accepted": true
 }
