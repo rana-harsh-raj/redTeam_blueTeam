@@ -752,18 +752,25 @@ class Evaluator:
                         "PENDING: working tree dirty during active implementation; must be clean at the evidence commit."))
         # G72: independent auditor approves the final acceptance artifact.
         audit_report = IMPL / "m4-audit-report.md"
-        verdict = ""
+        # Robust: read ONLY the explicit '## VERDICT:' line (report may quote
+        # verdict words elsewhere). Accept iff that line starts with ACCEPT.
+        g72 = None
+        verdict_line = ""
         if audit_report.exists():
-            atext = audit_report.read_text().upper()
-            verdict = "ACCEPT" if ("ACCEPT" in atext and "REJECT" not in atext.split("VERDICT")[-1][:200]) else ("REJECT" if "REJECT" in atext else "")
-        g72 = audit_report.exists() and "ACCEPT" in (audit_report.read_text().upper() if audit_report.exists() else "")               and "REJECT" not in (audit_report.read_text().upper() if audit_report.exists() else "")
+            g72 = False
+            for _ln in audit_report.read_text().splitlines():
+                _st = _ln.strip().lstrip('#').strip()
+                if _st.upper().startswith('VERDICT:'):
+                    verdict_line = _st.split(':', 1)[1].strip()
+                    g72 = verdict_line.upper().startswith('ACCEPT')
+                    break
         self.emit("G72", g, "Independent auditor approves the final acceptance artifact",
-                  (True if g72 else (False if audit_report.exists() else None)),
-                  pointer=str(audit_report.relative_to(REPO)), fidelity="executed",
+                  g72, pointer=str(audit_report.relative_to(REPO)) + ":## VERDICT",
+                  fidelity="executed",
                   status=(None if audit_report.exists() else "pending"),
-                  note=("independent auditor verdict recorded in m4-audit-report.md."
-                        if audit_report.exists() else
-                        "PENDING: independent auditor (T24) reboots from empty state and writes m4-audit-report.md."))
+                  note=(("independent auditor verdict: " + verdict_line) if verdict_line else
+                        ("m4-audit-report.md present but no '## VERDICT:' line parsed" if audit_report.exists() else
+                         "PENDING: independent auditor (T24) reboots from empty state and writes m4-audit-report.md.")))
         # G73: annotated final tag resolves to the evidence commit.
         tag_type = git_object_type(M4_FINAL_TAG)
         tag_commit = git(["rev-parse", f"{M4_FINAL_TAG}^{{commit}}"]) if tag_type else ""
