@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "manifest_kind": "redgrid-evidence-archive",
-  "generated_at": "2026-09-06T13:43:36Z",
+  "generated_at": "2026-09-06T16:05:37Z",
   "git": {
-    "branch": "milestone-3-1-clean-parity",
-    "commit": "39fe41e54d7ee7063ebdbac546334023b1aea5d5",
+    "branch": "milestone-3-1-claude-final",
+    "commit": "aca25d23aa7e62918a6ab50c08d68e82a26be862",
     "twin_v1_tag_commit": "78def24eb57112c0dc39a6ae9062b1f0d1c711fb",
     "runtime_freeze_commit": "219ca48bbb5e51db9347b335ac0a50241656045b",
     "m2_head": "a107612ed11344a8096e74dbf68616679855465e",
@@ -13,6 +13,18 @@
   },
   "campaign_ids": [
     "calib-20260906T095604Z",
+    "calibfx-20260906T145020Z-48fcd3",
+    "calibfx-20260906T145020Z-b117f1",
+    "calibfx-20260906T145021Z-11cf37",
+    "calibfx-20260906T150135Z-126b6a",
+    "calibfx-20260906T150143Z-6d8e1c",
+    "calibfx-20260906T150243Z-040d71",
+    "calibfx-20260906T150252Z-ec010c",
+    "calibfx-20260906T150340Z-62b96c",
+    "calibfx-20260906T150348Z-5f196a",
+    "calibfx-20260906T150404Z-245e8f",
+    "calibfx-20260906T150404Z-4f7158",
+    "calibfx-20260906T150405Z-5ba275",
     "camp-20260906T051000Z-c2f9d7",
     "camp-20260906T051023Z-3e0a03",
     "camp-20260906T051434Z-038390",
@@ -24,18 +36,57 @@
     "camp-20260906T095746Z-604320",
     "camp-20260906T100435Z-c02234",
     "camp-20260906T103235Z-170592",
+    "camp-20260906T150538Z-02f062",
+    "camp-20260906T150926Z-d03858",
+    "camp-20260906T154844Z-23100f",
     "cleanboot-m31-clean-a",
     "cleanboot-m31-clean-a-pollutionproof",
     "cleanboot-m31-clean-b"
   ],
   "counts": {
-    "artifacts": 1858,
-    "external_run_files": 1846,
+    "artifacts": 1917,
+    "external_run_files": 1905,
     "committed_files": 12,
-    "total_bytes": 98889472
+    "total_bytes": 99105680
   },
   "missing_expected_committed": [],
   "missing_expected_campaign_files": [
+    "calibfx-20260906T145020Z-48fcd3/manifest.json",
+    "calibfx-20260906T145020Z-48fcd3/model_calls.jsonl",
+    "calibfx-20260906T145020Z-48fcd3/events.jsonl",
+    "calibfx-20260906T145020Z-b117f1/manifest.json",
+    "calibfx-20260906T145020Z-b117f1/model_calls.jsonl",
+    "calibfx-20260906T145020Z-b117f1/events.jsonl",
+    "calibfx-20260906T145021Z-11cf37/manifest.json",
+    "calibfx-20260906T145021Z-11cf37/model_calls.jsonl",
+    "calibfx-20260906T145021Z-11cf37/events.jsonl",
+    "calibfx-20260906T150135Z-126b6a/manifest.json",
+    "calibfx-20260906T150135Z-126b6a/model_calls.jsonl",
+    "calibfx-20260906T150135Z-126b6a/events.jsonl",
+    "calibfx-20260906T150143Z-6d8e1c/manifest.json",
+    "calibfx-20260906T150143Z-6d8e1c/model_calls.jsonl",
+    "calibfx-20260906T150143Z-6d8e1c/events.jsonl",
+    "calibfx-20260906T150243Z-040d71/manifest.json",
+    "calibfx-20260906T150243Z-040d71/model_calls.jsonl",
+    "calibfx-20260906T150243Z-040d71/events.jsonl",
+    "calibfx-20260906T150252Z-ec010c/manifest.json",
+    "calibfx-20260906T150252Z-ec010c/model_calls.jsonl",
+    "calibfx-20260906T150252Z-ec010c/events.jsonl",
+    "calibfx-20260906T150340Z-62b96c/manifest.json",
+    "calibfx-20260906T150340Z-62b96c/model_calls.jsonl",
+    "calibfx-20260906T150340Z-62b96c/events.jsonl",
+    "calibfx-20260906T150348Z-5f196a/manifest.json",
+    "calibfx-20260906T150348Z-5f196a/model_calls.jsonl",
+    "calibfx-20260906T150348Z-5f196a/events.jsonl",
+    "calibfx-20260906T150404Z-245e8f/manifest.json",
+    "calibfx-20260906T150404Z-245e8f/model_calls.jsonl",
+    "calibfx-20260906T150404Z-245e8f/events.jsonl",
+    "calibfx-20260906T150404Z-4f7158/manifest.json",
+    "calibfx-20260906T150404Z-4f7158/model_calls.jsonl",
+    "calibfx-20260906T150404Z-4f7158/events.jsonl",
+    "calibfx-20260906T150405Z-5ba275/manifest.json",
+    "calibfx-20260906T150405Z-5ba275/model_calls.jsonl",
+    "calibfx-20260906T150405Z-5ba275/events.jsonl",
     "camp-20260906T051000Z-c2f9d7/model_calls.jsonl",
     "camp-20260906T051000Z-c2f9d7/events.jsonl",
     "cleanboot-m31-clean-a/manifest.json",
@@ -99,6 +150,276 @@
       "bytes": 1376,
       "type": "model_call_log",
       "owner": "calib-20260906T095604Z",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145020Z-48fcd3/fixture.json",
+      "sha256": "e00c1c2d8f343b61083c71f2fcb4de1ef7f1173913468a659cc30fcbb02c6593",
+      "bytes": 1311,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145020Z-48fcd3",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145020Z-48fcd3/oracle-result.json",
+      "sha256": "c91dbbb41291e3acbf1465fb79248db45af97932c372c66c78011b318a5d202b",
+      "bytes": 454,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145020Z-48fcd3",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145020Z-48fcd3/requester-evidence.json",
+      "sha256": "74f720f35180f70aae3f555ef7cf0c958a0205009718bb5dfcdb966ae8773c4f",
+      "bytes": 602,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145020Z-48fcd3",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145020Z-48fcd3/resolved-bundle.json",
+      "sha256": "fb1c808d257871a867351a146ab1e9f466803f88169b260484fbe6d951823e23",
+      "bytes": 571,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145020Z-48fcd3",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145020Z-b117f1/fixture.json",
+      "sha256": "190562c6bd0a135d400de54f471f93fee1c6005d85c4ff879ce6b44a974c95c1",
+      "bytes": 1311,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145020Z-b117f1",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145020Z-b117f1/oracle-result.json",
+      "sha256": "c91dbbb41291e3acbf1465fb79248db45af97932c372c66c78011b318a5d202b",
+      "bytes": 454,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145020Z-b117f1",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145020Z-b117f1/requester-evidence.json",
+      "sha256": "fc803479510e0903d37adcd275415aac1ea06c836dd15f10c7b5d233f03dfa11",
+      "bytes": 602,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145020Z-b117f1",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145020Z-b117f1/resolved-bundle.json",
+      "sha256": "c3aa1fc47585a6e5bc2b23950267c9928a292d574aaead70d2a37894bf0fb134",
+      "bytes": 571,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145020Z-b117f1",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145021Z-11cf37/fixture.json",
+      "sha256": "c771712348be923ab8355e239e80cb36f0ac17341b37ed9ee7e45f745adf6ff8",
+      "bytes": 1301,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145021Z-11cf37",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145021Z-11cf37/oracle-result.json",
+      "sha256": "1abf2f0925a4fe1a0192c7c3e757faa4ce5e3c7f41fc2ff5203a24dc98278f1e",
+      "bytes": 314,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145021Z-11cf37",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145021Z-11cf37/requester-evidence.json",
+      "sha256": "46e415728edeeaeb08f5addb81006c241feef60339e09af73d382e2f132dae0f",
+      "bytes": 376,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145021Z-11cf37",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T145021Z-11cf37/resolved-bundle.json",
+      "sha256": "755b5848226c2455bf644edf8e6fc499faafa74bc83cb86f41514faf21aaa77b",
+      "bytes": 571,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T145021Z-11cf37",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150135Z-126b6a/fixture.json",
+      "sha256": "7d530d47a703d5805f531bc25a74cb5e34c60864760c6a1fd8e0434893b86105",
+      "bytes": 1315,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150135Z-126b6a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150143Z-6d8e1c/fixture.json",
+      "sha256": "bac2a8b2ea2492f025e0b3958b22ff87856dee6792b895ef881541d40ed2871c",
+      "bytes": 1307,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150143Z-6d8e1c",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150243Z-040d71/fixture.json",
+      "sha256": "d72adcbb9f325be6a9dfbbd7bf1fbdac997460d1164d0191bb5118db68e06bf4",
+      "bytes": 1315,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150243Z-040d71",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150252Z-ec010c/fixture.json",
+      "sha256": "f1f236f3718da7f4c533b5e22ffe187f03b823be31a81d43072f43bb5ae4f847",
+      "bytes": 1307,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150252Z-ec010c",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150340Z-62b96c/fixture.json",
+      "sha256": "37dd5c9026d74f7c0ffcd090178bccd01e1e5b6398730392bafe768a6c1b4d5d",
+      "bytes": 1315,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150340Z-62b96c",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150348Z-5f196a/fixture.json",
+      "sha256": "35bf132f29c625b91040bd5b37fb50c852038109d038a99f463cdd9b9f73ab59",
+      "bytes": 1307,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150348Z-5f196a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150404Z-245e8f/fixture.json",
+      "sha256": "27abbd1bfc4db781f5145e068df686f359099ee32abaeef1e41febe4d0307bd5",
+      "bytes": 1311,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150404Z-245e8f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150404Z-245e8f/oracle-result.json",
+      "sha256": "c91dbbb41291e3acbf1465fb79248db45af97932c372c66c78011b318a5d202b",
+      "bytes": 454,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150404Z-245e8f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150404Z-245e8f/requester-evidence.json",
+      "sha256": "f42d1ab7a67e48033581011742a4900cf7bd0c09fd24217a5e1cc64bf963068b",
+      "bytes": 602,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150404Z-245e8f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150404Z-245e8f/resolved-bundle.json",
+      "sha256": "1be415883153b43551265f4539b960a090112e3ebd86b23fa173d133ed98df9b",
+      "bytes": 571,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150404Z-245e8f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150404Z-4f7158/fixture.json",
+      "sha256": "a32fd617c319cf5f2025d737998e5a861992a5328dc77741a6b403856bebd96b",
+      "bytes": 1311,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150404Z-4f7158",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150404Z-4f7158/oracle-result.json",
+      "sha256": "c91dbbb41291e3acbf1465fb79248db45af97932c372c66c78011b318a5d202b",
+      "bytes": 454,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150404Z-4f7158",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150404Z-4f7158/requester-evidence.json",
+      "sha256": "c659bb3f8ca39f0e696bfd9e8f1f6f155e807079814bb1a4c4c49d668e30c79e",
+      "bytes": 602,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150404Z-4f7158",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150404Z-4f7158/resolved-bundle.json",
+      "sha256": "e6e8d6e3f612ce152ac87100f2723456a150154fcbcacb646e9aae28302d9304",
+      "bytes": 571,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150404Z-4f7158",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150405Z-5ba275/fixture.json",
+      "sha256": "8584dcc7397f7b5f43770b312827fab139d5cf2c8bfb0c55f1eb873bed60947e",
+      "bytes": 1301,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150405Z-5ba275",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150405Z-5ba275/oracle-result.json",
+      "sha256": "1abf2f0925a4fe1a0192c7c3e757faa4ce5e3c7f41fc2ff5203a24dc98278f1e",
+      "bytes": 314,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150405Z-5ba275",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150405Z-5ba275/requester-evidence.json",
+      "sha256": "6918cfb4f0009c04f601204a3113a7e6488a76d692450e22cf78b3852931d35d",
+      "bytes": 376,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150405Z-5ba275",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/calibfx-20260906T150405Z-5ba275/resolved-bundle.json",
+      "sha256": "d0ac725076c8866ba538af437f76391bfd6be61da3d92897e18e8e0b1f07c6f5",
+      "bytes": 571,
+      "type": "calibration_bundle",
+      "owner": "calibfx-20260906T150405Z-5ba275",
       "committed": false,
       "redaction": "external_only_unredacted_synthetic"
     },
@@ -792,6 +1113,258 @@
       "bytes": 13156,
       "type": "attacker_response_capture",
       "owner": "camp-20260906T103235Z-170592",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150538Z-02f062/STOP",
+      "sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+      "bytes": 0,
+      "type": "other",
+      "owner": "camp-20260906T150538Z-02f062",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150538Z-02f062/actions.jsonl",
+      "sha256": "4c06e20afe1ec10aca0c8d008e9771420b41a08c317dc2218079393168891632",
+      "bytes": 985,
+      "type": "tool_call_log",
+      "owner": "camp-20260906T150538Z-02f062",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150538Z-02f062/context_metrics.jsonl",
+      "sha256": "d9642af1ece5ea32b1622fba187b6c0182e00dba7199eba894c42edc5f11be45",
+      "bytes": 4737,
+      "type": "context_metric_log",
+      "owner": "camp-20260906T150538Z-02f062",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150538Z-02f062/events.jsonl",
+      "sha256": "c4dd78d93dc9f2b43ca9299a23abc8e25f350bfc0849cf0d36e5321258cf4c41",
+      "bytes": 3058,
+      "type": "event_log",
+      "owner": "camp-20260906T150538Z-02f062",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150538Z-02f062/evidence-index.json",
+      "sha256": "cfe9d9bb02ed7037c3fda72088f0767aa51ed68bd543ae587bf30cb61a370203",
+      "bytes": 1109,
+      "type": "evidence_index",
+      "owner": "camp-20260906T150538Z-02f062",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150538Z-02f062/final-ledger.json",
+      "sha256": "77703b0734280c02197169a6de6b2ed9a71dae842f3d20cd69023e84d6670c7d",
+      "bytes": 2012,
+      "type": "judge_ledger",
+      "owner": "camp-20260906T150538Z-02f062",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150538Z-02f062/manifest.json",
+      "sha256": "cc39c6ff0bc1f33a1ac22dfa6267001e73cb084c89d324a8efbf6bd948cbf895",
+      "bytes": 8135,
+      "type": "campaign_manifest",
+      "owner": "camp-20260906T150538Z-02f062",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150538Z-02f062/model_calls.jsonl",
+      "sha256": "9395b1a35915780e9601d92938d07d7e3bd770f2d420feba0dd1536b1cf3e9bd",
+      "bytes": 7762,
+      "type": "model_call_log",
+      "owner": "camp-20260906T150538Z-02f062",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150538Z-02f062/responses.jsonl",
+      "sha256": "3a03bd6d873fa8352b75b426b492deb4ef35e5d2773bb9df9d18d376e3140225",
+      "bytes": 168,
+      "type": "attacker_response_capture",
+      "owner": "camp-20260906T150538Z-02f062",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150926Z-d03858/actions.jsonl",
+      "sha256": "440c788897c360cb8029f769b9624a3c02224e3fd35f4131f01c84d938b063fa",
+      "bytes": 3982,
+      "type": "tool_call_log",
+      "owner": "camp-20260906T150926Z-d03858",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150926Z-d03858/context_metrics.jsonl",
+      "sha256": "87e1547a2c9015ceddbaee80acb6d1f746a5508909b84dfa3196046bdd5afb5a",
+      "bytes": 12983,
+      "type": "context_metric_log",
+      "owner": "camp-20260906T150926Z-d03858",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150926Z-d03858/events.jsonl",
+      "sha256": "924ac3f72084a593a1b6e3611165c04d61aef6f0079aec0a73182ca3c2c18647",
+      "bytes": 6174,
+      "type": "event_log",
+      "owner": "camp-20260906T150926Z-d03858",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150926Z-d03858/evidence-index.json",
+      "sha256": "cd455efe0f343567dddb5496abc271fd14c61855f5af5adcb582ee7504cd2a7b",
+      "bytes": 1128,
+      "type": "evidence_index",
+      "owner": "camp-20260906T150926Z-d03858",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150926Z-d03858/final-ledger.json",
+      "sha256": "e548d1194d28a56bbe030add7d56e2a1cc7e1bbc3f1f671ffaa1b42b916776d8",
+      "bytes": 2336,
+      "type": "judge_ledger",
+      "owner": "camp-20260906T150926Z-d03858",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150926Z-d03858/hypotheses.jsonl",
+      "sha256": "00c8fddb2e20d03f4f8579927d8a2c9e7ae142407867a4f4c1f00947977f916a",
+      "bytes": 2286,
+      "type": "hypothesis_ledger",
+      "owner": "camp-20260906T150926Z-d03858",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150926Z-d03858/manifest.json",
+      "sha256": "c72108040da100783900bc799714d6702a18f192e535401298fc84042bc0da86",
+      "bytes": 8501,
+      "type": "campaign_manifest",
+      "owner": "camp-20260906T150926Z-d03858",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150926Z-d03858/model_calls.jsonl",
+      "sha256": "154082087b2167fa16c5c581d6714116728383876855140f763b8cd164d8d621",
+      "bytes": 25191,
+      "type": "model_call_log",
+      "owner": "camp-20260906T150926Z-d03858",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T150926Z-d03858/responses.jsonl",
+      "sha256": "979b5c75762b98604b71d2dd980e5e5f062088a06c433006e15281d3ee7da093",
+      "bytes": 5528,
+      "type": "attacker_response_capture",
+      "owner": "camp-20260906T150926Z-d03858",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T154844Z-23100f/actions.jsonl",
+      "sha256": "ac9fb6b4132b624382f46ad79398bb8c3281336d05c5c7256065e55a90f85a44",
+      "bytes": 6876,
+      "type": "tool_call_log",
+      "owner": "camp-20260906T154844Z-23100f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T154844Z-23100f/context_metrics.jsonl",
+      "sha256": "a4e7244e62f9a2409d05c31f088794a8e82acf66c31398240e076ed0a4a3f751",
+      "bytes": 25960,
+      "type": "context_metric_log",
+      "owner": "camp-20260906T154844Z-23100f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T154844Z-23100f/egress/egress.json",
+      "sha256": "d8942cd9b7c524ff9c88b9449088a7627bf6b136a35110ab0545712070b0936a",
+      "bytes": 1406,
+      "type": "acceptance_or_report_json",
+      "owner": "camp-20260906T154844Z-23100f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T154844Z-23100f/events.jsonl",
+      "sha256": "a7b6d3ed5a7968e1128a7a3eaf97f1f32b04118d4847c6d250f16808058098c4",
+      "bytes": 3362,
+      "type": "event_log",
+      "owner": "camp-20260906T154844Z-23100f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T154844Z-23100f/evidence-index.json",
+      "sha256": "52c4546ddee97dd618c3eb86b5d440d0860b02f46ce7c718e10ea23dbd2f6e62",
+      "bytes": 1128,
+      "type": "evidence_index",
+      "owner": "camp-20260906T154844Z-23100f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T154844Z-23100f/final-ledger.json",
+      "sha256": "cedd366e9744ddef9772ffcfb20bc7790b20468e0bdef9c1a9d58f14ca5f8164",
+      "bytes": 2009,
+      "type": "judge_ledger",
+      "owner": "camp-20260906T154844Z-23100f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T154844Z-23100f/hypotheses.jsonl",
+      "sha256": "5cf7796abf47f2d71b8a12cd015b0f60c94e47d1f3b4ec39a55c2e4b0ccb7f69",
+      "bytes": 1330,
+      "type": "hypothesis_ledger",
+      "owner": "camp-20260906T154844Z-23100f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T154844Z-23100f/manifest.json",
+      "sha256": "6228e51c293aaa30ab4fe56400aab86fb2abe2bd14f462d276e58d67b98989d1",
+      "bytes": 8148,
+      "type": "campaign_manifest",
+      "owner": "camp-20260906T154844Z-23100f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T154844Z-23100f/model_calls.jsonl",
+      "sha256": "ae75bd10f5ac1f0c077a067af693981c36988ced32cdf6c5cf6382aae22ed415",
+      "bytes": 37840,
+      "type": "model_call_log",
+      "owner": "camp-20260906T154844Z-23100f",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/camp-20260906T154844Z-23100f/responses.jsonl",
+      "sha256": "afb7e877521e2a8544b8e26018bb8a7d3a3921db9cfeb35763f29ce8725aaa65",
+      "bytes": 6672,
+      "type": "attacker_response_capture",
+      "owner": "camp-20260906T154844Z-23100f",
       "committed": false,
       "redaction": "external_only_unredacted_synthetic"
     },
@@ -2529,6 +3102,15 @@
       "bytes": 4568,
       "type": "other",
       "owner": "20260905T112903Z-11943",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "reports/implementation/runs/audit-20260906T155953-f85ce0/egress.json",
+      "sha256": "42c2910dcf9344f5f8c1593827e90634d981b5954b52f2ca70dd54bac3d22c01",
+      "bytes": 660,
+      "type": "acceptance_or_report_json",
+      "owner": "audit-20260906T155953-f85ce0",
       "committed": false,
       "redaction": "external_only_unredacted_synthetic"
     },
@@ -16780,5 +17362,5 @@
       "redaction": "committed_no_secrets"
     }
   ],
-  "self_sha256": "4c0e6453b161974205593621734eca598ca7d7f5e31f7907ed1a4da00707fd5d"
+  "self_sha256": "504b777dcb005823c8b36d9c3bfebb4db2f740cbf52a1d2fccab7020f03b6b73"
 }

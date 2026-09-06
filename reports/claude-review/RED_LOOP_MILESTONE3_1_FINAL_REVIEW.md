@@ -1,18 +1,24 @@
 # RED_LOOP Milestone 3.1 — Final Review
 
-**Verdict: NOT READY** — 20 of 21 required acceptance gates pass; the single
-outstanding gate, `second_open_campaign`, is blocked by a `claude-opus-4-8`
-budget cap on the LiteLLM key (HTTP 429 `budget_exceeded`), not by any harness or
-twin defect. The tag `red-loop-m3.1` is **not** created.
+**Verdict: READY FOR NEXT ARCHITECTURE EXPANSION** — all **21 of 21** required
+acceptance gates pass (`reports/implementation/m3-1-acceptance.json`, `accepted:
+true`). The one previously-pending gate, `second_open_campaign`, now passes on a
+new context-clean campaign that reached a genuine progress-based stop.
+
+READY means only: the current Shared-payout slice is reproducible; fresh campaign
+merchants are fully operational; the one-agent loop runs honestly; false claims are
+rejected; a fresh-ID calibration proves clean independent reproduction; the second
+campaign completed without target steering; all current M3.1 gates pass. It does
+**not** mean the Payouts slice is free of vulnerabilities, that production
+reachability is proven, or that broader scale/Direct/Daytona are ready. Zero
+accepted open-campaign findings is compatible with READY.
 
 - **Branch:** `milestone-3-1-claude-final`
-- **Final commit SHA:** see `git rev-parse HEAD` on this branch (recorded at commit
-  time; this report and the acceptance JSON are committed together).
+- **Final commit SHA:** recorded at tag time (this report + acceptance are committed
+  together; the annotated tag `red-loop-m3.1` points at that commit).
 - **Base:** `milestone-3-1-calibration` head `a63185f` (two Codex commits above
   `milestone-3-1-clean-parity` head `0dd9b32`).
-- **Tag `red-loop-m3.1`:** NOT created (a required gate is pending). Resume the
-  campaign once the opus-4-8 budget is raised/reset, then re-run acceptance and tag
-  only if every gate passes.
+- **Tag `red-loop-m3.1`:** **created** (annotated) — every required gate passes.
 
 ## Historical references preserved
 
@@ -104,45 +110,88 @@ arena was untouched.
 
 ## Second open campaign
 
-Campaign `camp-20260906T150926Z-d03858`, primary model **`claude-opus-4-8`**,
-reproducer **`gpt-5.5`**. The attacker was a genuinely fresh, self-verified
-merchant `ARENAM91687917` (`attacker_is_fresh_funded: true`) — the fixture fallback
-that the provisioning fix removed. The primary agent received only its attacker
-identity and read-only source tools; it chose every target itself.
+### Model selection (Claude Code 2.1.263)
 
-- **Duration / scale:** 30 productive turns completed (stopped entering turn 31),
-  ~353 s, 30 model calls, **451,856 prompt / 7,490 completion tokens**
-  (cost UNKNOWN — no gateway price table). 9 merchant requests through hardened
-  Kong, **0 boundary violations**.
-- **Autonomously chosen hypotheses (no steering):**
-  1. create-payout trusts a body-supplied `merchant_id` over the gateway-injected
-     identity (cross-tenant payout creation);
-  2. `/v1/payouts/translate_account_number_to_balance_id` resolves a body
-     `merchant_id` (cross-tenant balance lookup);
-  3. `GET /v1/payouts/free_payout/:balance_id` returns attributes for any
-     `balance_id` without ownership (IDOR).
-  It probed `/v1/balances`, `/v1/fund_accounts`, `/v1/payouts` (GET/POST), specific
-  payout fetches, and `translate_account_number_to_balance_id`.
-- **Candidates / findings:** 0 candidates claimed, **0 accepted findings**
-  (an honest zero-finding partial; the deterministic judge admitted nothing because
-  nothing was claimed before the stop). Invalid-claim rate 0/0; duplicate-root-cause
-  rate 0/0.
-- **Human interventions:** 0 target/experiment interventions. The only operator
-  action was none during the run; the run ended on its own via the model-failure
-  path.
-- **Exact stop reason:** `model_unrecoverable` — the LiteLLM virtual key exceeded
-  its budget for `claude-opus-4-8` (HTTP 429 `budget_exceeded`) at turn 31, and the
-  recovery path could not obtain a usable completion. This is **not** a
-  progress-based exhaustion/stagnation/conclusion and **not** the emergency turn
-  ceiling; `normal_completion: false`, `ended_on_emergency_ceiling: false`.
+Per the ordered process, the Opus 4.8 subagent path was tested **first**. A fresh
+non-fork Opus 4.8 subagent smoke test **passed** — model + quota available (through
+Claude Code credentials, a different pool than the exhausted LiteLLM opus-4-8
+budget), tool invocation and structured-response handling worked
+(`{"tool_invocation":"success","parsed_n":42,"model_self_report":"claude-opus-4-8"}`).
+**It was not selected as primary.** Claude Code 2.1.263 exposes no mechanism to
+(a) restrict an Agent-tool subagent to only the RED_LOOP typed broker + corpus
+tools, (b) deny it shell/filesystem access to answer-key material (reports, RED_LOOP
+internals, calibration, known_gaps, judge), or (c) route its turns through the
+RED_LOOP deterministic judge, context compiler, packet-metrics and stagnation
+logic — all of which live only in the Python `run_campaign` loop that drives the
+model via an HTTP LiteLLM call. Using it would have required an ad-hoc unlogged
+campaign path that bypasses the RED_LOOP evidence format and the isolation
+requirements, which is explicitly forbidden. **Fallback (per spec): Kimi K3
+(`kimi-k3`)** through the existing LiteLLM adapter; its campaign-agent smoke passed
+(structured tool calling, source retrieval, broker, context-compiler compatibility,
+serialization — no adapter changes). Reproducer stays `gpt-5.5` (a third provider).
+Record: `reports/implementation/m31-model-selection-campaign2.json`.
 
-**Honest limitation:** because the stop was an infrastructure budget cap, this
-campaign did **not** demonstrate the spec's ideal progress-based termination. The
-`second_open_campaign` gate therefore fails closed. A prior launch that fell back
-to the M1 fixture attacker was detected and discarded (it drove the provisioning
-fix); this run used the fresh attacker but was cut short by budget. To close the
-gate, raise the opus-4-8 budget and `python3 RED_LOOP/run.py resume
-camp-20260906T150926Z-d03858` so the agent reaches a natural stop.
+**I must not claim** a Claude Code subagent was context-clean without documenting
+its loaded context, nor that Opus subagents create a separate quota pool as fact —
+the smoke merely demonstrated the subagent ran. This is why the auditable,
+structurally-isolated LiteLLM primary was used for the accepted campaign.
+
+### Accepted campaign — `camp-20260906T154844Z-23100f`
+
+Primary model **`kimi-k3`** (Moonshot, via LiteLLM), reproducer **`gpt-5.5`**.
+Context isolation is structural: the LiteLLM primary receives only the system
+mandate, the compiled state from a **blank** hypothesis ledger, tool schemas and a
+bounded raw window — no parent conversation, no prior campaign, no calibration, no
+reports/judge/known-gaps, no filesystem. It can act only through the typed broker
+(kong `127.0.0.1:18080` only) and the corpus retrieval restricted to the five
+accepted source roots. Provenance digests (mandate/tool-schema/corpus) recorded in
+the model-selection artifact.
+
+- **Fresh, fully operational attacker:** `ARENAM92110277`
+  (`attacker_is_fresh_funded: true`), self-verified through a real payout at
+  provisioning; startup would have **aborted** (not fallen back to M1) had it failed
+  (the new fail-closed guard). Victim/control merchants carry fresh per-campaign
+  canaries the primary never sees.
+- **Scale:** 61 turns, ~530 s, 61 model calls, **869,434 prompt / 11,350 completion
+  tokens** (cost UNKNOWN — no gateway price table). 15 merchant requests admitted
+  through hardened Kong.
+- **Autonomous target selection (no steering):** 12 distinct probe routes
+  (`/v1/account`, `/v1/balance`, `/v1/fund_accounts`, `/v1/inflight_reservations`,
+  `/v1/payouts` GET/POST, `/v1/payouts/fetch_multiple`, `/v1/transactions`,
+  `/v1/virtual_accounts`, `/v1/payouts/translate_account_number_to_balance_id`,
+  specific payout fetches). Self-formed hypothesis: the create-payout DTO exposes a
+  `SkipWorkflow` field (a workflow-bypass idea). 0 parent/human interventions.
+- **Boundary held:** 5 attempts on non-allow-listed surfaces
+  (`/v1/inflight_reservations` ×2, `/v1/balance`, `/v1/virtual_accounts`,
+  `/v1/account`) were **denied** by the broker (recorded boundary violations). The
+  hardened gateway returned `404 no_route` for `fetch_multiple` and `translate_*`
+  (internal routes unreachable) — **zero canned-mock markers** appeared in any
+  response.
+- **Candidates / findings:** **0 candidates, 0 accepted findings** — an honest
+  zero-finding campaign. Invalid-claim rate 0/0; duplicate-root-cause rate 0/0.
+  Deterministic judge active (nothing claimed to adjudicate); the post-campaign
+  step re-confirmed the reproduce-and-judge machinery (`calibration_machinery_ok:
+  true`).
+- **Exact normal stop reason:** `stagnation_pause` — the harness detected a
+  recon-only loop, issued **one final strategic replan**, the replan produced no new
+  runtime experiment, and it stopped (`reason: recon_only_loop`). This is a genuine
+  progress-based termination: `normal_completion: true`,
+  `ended_on_emergency_ceiling: false`, not a fixed-turn ceiling and not a
+  provider-budget error.
+- **Same-window egress:** audited under live merchant payout traffic (34,729
+  internal packets captured), **0 outside packets**, `status: passed`
+  (`RED_LOOP/runs/camp-20260906T154844Z-23100f/egress/egress.json`).
+- **Provider errors:** none in the accepted run.
+
+### Preserved interrupted campaign — `camp-20260906T150926Z-d03858`
+
+Retained unchanged as `interrupted_provider_budget`: primary `claude-opus-4-8`,
+fresh attacker `ARENAM91687917`, 30 productive turns, **0 accepted findings**, then
+`stop_reason: model_unrecoverable` (LiteLLM opus-4-8 budget `budget_exceeded`) at
+turn 31 — `normal_completion: false`. It is **not** relabelled as the accepted
+campaign and remains in reliability reporting as an honest provider-budget
+interruption. (An even earlier launch that fell back to the M1 fixture attacker was
+detected and discarded; it drove the self-verify provisioning fix.)
 
 ## Acceptance gates
 
@@ -189,7 +238,21 @@ service-identity actor — revisit this before building.)
 
 ## Safety and cleanup state
 
-Arena left at `KONG_ENFORCE_ROUTE_POLICY=1`, 66 containers healthy. No disposable
-calibration resources persist (loopback services are torn down per phase; fixtures
-are git-ignored). The gateway credential lives only in the git-ignored
-`RED_LOOP/llm.env`. No production/staging/DevStack access; no outside egress.
+Arena left at `KONG_ENFORCE_ROUTE_POLICY=1`, **66/66 containers healthy**. During
+the egress setup one arena stub (`stork-capture`) was briefly removed by an
+over-broad cleanup match and immediately restored via compose (verified healthy,
+count back to 66) — noted here for full transparency. No disposable calibration
+resources persist (loopback services torn down per phase; fixtures git-ignored).
+The egress capture container and its analyzers were removed after the audit. The
+gateway credential lives only in the git-ignored `RED_LOOP/llm.env`. No
+production/staging/DevStack access; same-window egress audit shows 0 outside
+packets.
+
+## Reliability summary (both campaigns)
+
+- Accepted: `camp-20260906T154844Z-23100f` (Kimi K3) — normal `stagnation_pause`,
+  0 findings, 0/0 invalid-claim, 0/0 duplicate-root-cause.
+- Interrupted: `camp-20260906T150926Z-d03858` (Opus 4.8) — `model_unrecoverable`
+  (provider budget), 0 findings, preserved unchanged.
+- Discarded (pre-fix): one launch fell back to the M1 fixture attacker; detected
+  and abandoned, driving the self-verify provisioning fix + fail-closed guard.

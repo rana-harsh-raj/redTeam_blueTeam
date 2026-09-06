@@ -210,16 +210,32 @@ def build(campaign_id):
                       manifest_present=bool(md),
                       all_named_artifacts_hashable=all(v is not None for v in ev_hashes.values())))
 
-    # H. second open campaign (not ended on normal ceiling)
-    store_manifest = load(RUNS / (campaign_id or "") / "manifest.json") if campaign_id else None
-    comp = (store_manifest or {}).get("completion", {})
-    gates.append(gate("second_open_campaign",
-                      bool(comp) and comp.get("ended_on_emergency_ceiling") is False and comp.get("normal_completion") is True,
-                      status=("pending" if not comp else "pass" if
-                              comp.get("ended_on_emergency_ceiling") is False and
-                              comp.get("normal_completion") is True else "fail"),
+    # H. second open campaign. Must reach a genuinely PROGRESS-BASED normal stop
+    # (agent-concluded / stagnation / all-hypotheses-resolved) with a fresh,
+    # self-verified attacker and clean same-window egress. A fixed-turn ceiling,
+    # wall/budget ceiling, kill switch, or provider-budget (model_unrecoverable)
+    # stop does NOT satisfy the gate (Section 13).
+    PROGRESS_STOPS = ("agent_concluded", "stagnation_pause", "all_hypotheses_resolved")
+    cman = load(RUNS / (campaign_id or "") / "manifest.json") if campaign_id else None
+    comp = (cman or {}).get("completion", {})
+    ceg = load(RUNS / (campaign_id or "") / "egress" / "egress.json") if campaign_id else None
+    egress_clean = bool(ceg) and ceg.get("outside_packets") in (0, None) and ceg.get("status") == "passed"
+    fresh_attacker = bool(cman) and cman.get("attacker_is_fresh_funded") is True
+    progress_stop = bool(comp) and comp.get("stop_reason") in PROGRESS_STOPS \
+        and comp.get("normal_completion") is True and comp.get("ended_on_emergency_ceiling") is False
+    sc_pass = progress_stop and fresh_attacker and egress_clean and bool(cman and cman.get("primary_model"))
+    gates.append(gate("second_open_campaign", sc_pass,
+                      status=("pending" if not comp else "pass" if sc_pass else "fail"),
                       campaign_id=campaign_id, stop_reason=comp.get("stop_reason"),
-                      turns=comp.get("turns_completed")))
+                      progress_based_stop=progress_stop,
+                      normal_completion=comp.get("normal_completion"),
+                      attacker_is_fresh_funded=fresh_attacker,
+                      primary_model=(cman or {}).get("primary_model"),
+                      egress_clean=egress_clean,
+                      egress_outside_packets=(ceg or {}).get("outside_packets"),
+                      turns=comp.get("turns_completed"),
+                      candidates=comp.get("candidates"),
+                      boundary_violations=comp.get("broker_violations")))
 
     # G-retain: context efficiency recompute
     hr = load(IMPL / "m31-hardening-retention.json")
