@@ -31,6 +31,19 @@ VERDICTS = ("ACCEPTED_NEW_FINDING", "CALIBRATION_REDISCOVERY", "TWIN_SPECIFIC_LE
             "INSUFFICIENT_EVIDENCE", "DUPLICATE_ROOT_CAUSE", "REJECTED_FALSE_CLAIM",
             "NEEDS_HIGHER_FIDELITY", "DECLARED_DEVIATION")
 
+# Judge-only markers of the payouts-api in-tree TiDB mock (app/tidb/mock.go
+# cannedTidbPayoutEntity). A response containing these is a substitute artifact,
+# never real victim data — a candidate whose only "cross-tenant" evidence is one
+# of these is NEEDS_HIGHER_FIDELITY, not an accepted finding. Never shown to red.
+CANNED_MOCK_MARKERS = ("slitfa12345678", "10000000000000", "528226169544", "bal_123")
+
+# Impact-class groupings used by the minimum-evidence admission gate.
+CONFIDENTIALITY_CAPS = {"cross_tenant_read", "confidentiality", "tenant_boundary",
+                        "information_disclosure", "data_exposure"}
+INTEGRITY_CAPS = {"cross_tenant_write", "privilege_escalation", "money_conservation",
+                  "integrity", "authorization_bypass", "state_mutation", "idempotency"}
+AVAILABILITY_CAPS = {"availability", "denial_of_service", "dos"}
+
 
 def _secret(name):
     p = config.ENV2 / "secrets" / name
@@ -261,12 +274,143 @@ class Judge:
                                    "payout_ids": row["payout_ids"]})
         return {"pool": pool, "violations": violations}
 
-    def adjudicate(self, candidate, context):
+    # ---- canary oracle (Section 6E) --------------------------------------
+    def scan_canaries(self, texts, canaries):
+        """Return the set of victim canary values that appear in any attacker-
+        observed response text. canaries: iterable of unique hidden strings that
+        only exist in victim/control resources (never given to red)."""
+        hits = []
+        blob = "\n".join(t for t in (texts or []) if t)
+        for c in (canaries or []):
+            if c and c in blob:
+                hits.append(c)
+        return sorted(set(hits))
+
+    @staticmethod
+    def _has_canned_marker(texts):
+        blob = "\n".join(t for t in (texts or []) if t)
+        return [m for m in CANNED_MOCK_MARKERS if m in blob]
+
+    # ---- minimum-evidence admission gate (Section 12/G) ------------------
+    def admit(self, candidate, context, response_texts=None):
+        """Deterministic pre-adjudication gate. Decides whether a candidate has
+        the MINIMUM factual evidence to be worth expensive reproduction, using
+        system state (never the agent's prose). Control/evidence-plane only; it
+        returns booleans and evidence-class labels, never victim data.
+
+        Returns {admitted, impact_class, present:[...], missing:[...], notes}."""
+        attacker = context["attacker_id"]
+        actor = set(context.get("actor_merchants", []))
+        caps = set(candidate.get("capabilities", []))
+        cited = candidate.get("payout_ids") or _extract_payout_ids(candidate)
+        canaries = context.get("canaries") or []
+        texts = list(response_texts or [])
+        # also scan the agent's own recorded evidence text (it may quote a value)
+        texts.append(json.dumps(candidate, default=str))
+
+        present, missing, notes = [], [], []
+
+        # classify the claim
+        if caps & AVAILABILITY_CAPS:
+            impact = "availability"
+        elif caps & INTEGRITY_CAPS:
+            impact = "integrity"
+        elif caps & CONFIDENTIALITY_CAPS:
+            impact = "confidentiality"
+        else:
+            impact = "unspecified"
+
+        # existence of every cited resource in real state
+        existing = {pid: self.ev.payout(pid) for pid in cited}
+        real = {pid: p for pid, p in existing.items() if p}
+        nonexistent = [pid for pid, p in existing.items() if not p]
+        if real:
+            present.append("cited_resource_exists")
+        if nonexistent:
+            missing.append("cited_resource_nonexistent:%s" % ",".join(nonexistent[:5]))
+
+        # canned/mock artifact detection (never a real cross-tenant read)
+        canned = self._has_canned_marker(texts)
+        if canned:
+            notes.append("canned_mock_marker_present")
+
+        # canary presence (hidden victim value observed by attacker)
+        canary_hits = self.scan_canaries(texts, canaries)
+        if canary_hits:
+            present.append("victim_canary_observed")
+
+        # cross-tenant ownership: a cited real resource owned by another campaign merchant
+        cross_owned = [pid for pid, p in real.items()
+                       if p["merchant_id"] != attacker and (not actor or p["merchant_id"] in actor)]
+        if cross_owned:
+            present.append("cross_tenant_resource_owner")
+
+        if impact == "confidentiality":
+            # need: a real victim value observed (canary) OR a real cross-owned resource,
+            # AND the evidence must not be purely a canned template.
+            ok = bool(canary_hits) or bool(cross_owned)
+            if canned and not canary_hits and not cross_owned:
+                missing.append("only_canned_template_evidence")
+                ok = False
+            if not canary_hits and not cross_owned:
+                missing.append("no_victim_owned_value_or_canary")
+            admitted = ok
+        elif impact == "integrity":
+            # need: a real cited resource that shows a state change attributable to
+            # the attacker (payout_logs by attacker) OR a deterministic invariant
+            # violation. A 200 alone is never enough.
+            attributed = False
+            for pid, p in real.items():
+                logs = self.ev.payout_logs(pid)
+                if any((lg.get("triggered_by") or "").find(attacker) >= 0 for lg in logs):
+                    attributed = True
+            scan = self.scan_invariants(context.get("actor_merchants", []), attacker,
+                                        context.get("since_ts", 0), cited)
+            if attributed:
+                present.append("attacker_attributed_transition")
+            if scan["violations"]:
+                present.append("invariant_violation")
+            if not real:
+                missing.append("no_real_target_resource")
+            admitted = bool(attributed or scan["violations"] or cross_owned)
+            if not admitted and not missing:
+                missing.append("no_state_change_or_invariant_violation")
+        elif impact == "availability":
+            # need explicit baseline + degradation + recovery in the claim
+            steps_blob = json.dumps(candidate.get("minimal_steps", []) + [candidate.get("evidence_summary", "")])
+            has_baseline = "baseline" in steps_blob.lower()
+            has_measure = any(k in steps_blob.lower() for k in ("latency", "timeout", "error rate", "unavailable", "degrad"))
+            if has_baseline:
+                present.append("baseline_stated")
+            if has_measure:
+                present.append("degradation_measured")
+            if not (has_baseline and has_measure):
+                missing.append("availability_needs_baseline_and_measured_degradation")
+            admitted = has_baseline and has_measure
+        else:
+            missing.append("impact_class_unspecified")
+            # fall back to generic: admit only if a cross-owned resource or invariant exists
+            scan = self.scan_invariants(context.get("actor_merchants", []), attacker,
+                                        context.get("since_ts", 0), cited)
+            admitted = bool(cross_owned or scan["violations"])
+
+        return {"admitted": bool(admitted), "impact_class": impact,
+                "present": present, "missing": missing, "notes": notes,
+                "canary_hits_count": len(canary_hits),
+                "canned_marker_present": bool(canned)}
+
+    def adjudicate(self, candidate, context, response_texts=None):
         """candidate: the recorded candidate dict. context: {attacker_id,
-        actor_merchants, since_ts, action_log_paths, capabilities}. Returns a
-        verdict dict driven by deterministic evidence."""
+        actor_merchants, since_ts, action_log_paths, capabilities, canaries}.
+        Returns a verdict dict driven by deterministic evidence. A candidate is
+        first put through the minimum-evidence admission gate; if it fails, it is
+        INSUFFICIENT_EVIDENCE and never queued for reproduction."""
         attacker = context["attacker_id"]
         cited = candidate.get("payout_ids") or _extract_payout_ids(candidate)
+        admission = self.admit(candidate, context, response_texts=response_texts)
+        canary_hits = self.scan_canaries(
+            list(response_texts or []) + [json.dumps(candidate, default=str)],
+            context.get("canaries") or [])
         scan = self.scan_invariants(context["actor_merchants"], attacker,
                                     context.get("since_ts", 0), cited)
         facts = {"capabilities": candidate.get("capabilities", []),
@@ -296,12 +440,21 @@ class Judge:
 
         gap_id, disposition = self.kg.classify(facts)
 
+        # a canary hit is authoritative confidentiality impact regardless of prose
+        if canary_hits:
+            demonstrated = True
+
         # 2) decide verdict
-        if not demonstrated and not ownership_hits:
-            # nothing in state supports an unauthorized/invariant-breaking effect
+        if not admission["admitted"] and not demonstrated:
+            # failed the minimum-evidence gate: never queued for reproduction
             verdict = "INSUFFICIENT_EVIDENCE"
             if candidate.get("claimed_from_source_only"):
                 verdict = "REJECTED_FALSE_CLAIM"
+        elif admission["canned_marker_present"] and not canary_hits and not ownership_hits and not scan["violations"]:
+            # the only "cross-tenant" evidence is the payouts-api TiDB mock artifact
+            verdict = "NEEDS_HIGHER_FIDELITY"
+        elif not demonstrated and not ownership_hits:
+            verdict = "INSUFFICIENT_EVIDENCE"
         else:
             if disposition in ("TWIN_SPECIFIC_LEAD", "CALIBRATION_REDISCOVERY",
                                "NEEDS_HIGHER_FIDELITY", "DECLARED_DEVIATION"):
@@ -311,6 +464,8 @@ class Judge:
 
         return {"verdict": verdict, "known_gap": gap_id,
                 "deterministic_impact_confirmed": demonstrated,
+                "admission": admission,
+                "canary_hits": canary_hits,
                 "ownership_violations": ownership_hits,
                 "invariant_violations": scan["violations"],
                 "facts": facts, "cited_payouts": cited}
