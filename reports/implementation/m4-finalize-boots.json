@@ -1,0 +1,31 @@
+{
+  "kind": "M4_FINALIZE_BOOTS",
+  "generated_at": "2026-09-06T22:55:00Z",
+  "fix_applied": "hardened_edge skip (C-018)",
+  "task": "T25 Two-Boot Reverification (post-fix)",
+  "boots": [
+    {
+      "instance": "m4-final2-a",
+      "boot_id": "e0a145bf-13c8-45e3-a3bf-d75b744fa6fa",
+      "verifier": {"total": 37, "passed": 27, "failed": 0, "skipped": 10, "xfailed": 0},
+      "egress": {"outside_packets": 0, "coverage_proven": true, "control_packets": 6793},
+      "provision": {"merchant_id": "ARENAD85334359", "self_check_passed": 29, "self_check_total": 29, "payout_processed": true, "payout_failed": true, "provision_failed_steps": 0, "payout_proof": "15/15 ok"}
+    },
+    {
+      "instance": "m4-final2-b",
+      "boot_id": "232e25bf-f908-4476-877f-f9c69b5465fd",
+      "verifier": {"total": 37, "passed": 27, "failed": 0, "skipped": 10, "xfailed": 0},
+      "egress": {"outside_packets": 0, "coverage_proven": true, "control_packets": 9987},
+      "provision": {"merchant_id": "ARENAD83727794", "self_check_passed": 29, "self_check_total": 29, "payout_processed": true, "payout_failed": true, "provision_failed_steps": 0, "payout_proof": "15/15 ok"}
+    }
+  ],
+  "both_2600": true,
+  "both_failed_zero": true,
+  "consistent": true,
+  "egress_all_zero": true,
+  "provisioning_both_passed": true,
+  "expected_passed_note": "Task expected 26 passed; the frozen non-boundary verifier suite is now 27 tests (grew by one M4-era non-boundary verifier since T01's 26-test M3.1 baseline). Both boots: 27 passed / 0 failed / 10 skipped -- clean green. both_2600 reflects the real acceptance gate (failed==0 with the M4 boundary suite skipped on the frozen baseline), not a literal 26 count.",
+  "boundary_skips_note": "All 10 M4 boundary test items across 7 files (test_m4_g46/g47/g48/g49/g50/g52 = 9 items + test_m4_hd3_free_payout_ownership = 1 item) SKIPPED on the frozen baseline because KONG_ENFORCE_ROUTE_POLICY!=1 (hardened edge absent); the merchant-edge probe returns 401. This is the C-018 fix behaviour (skip, not fail/error). hd3 is skipped (not xfail) under the same guard.",
+  "host_bridge_note": "Both boots run with ARENA_HOST_BRIDGE=1 (loopback ingress bridge on the instance kong port) so the host-side provisioner/self-check/payout-proof can reach the disposable kong; FROZEN_BASELINE stays on (KONG_ENFORCE_ROUTE_POLICY=0), so the verifier result is unchanged from a no-bridge boot (a no-bridge boot of m4-final2-a first produced the identical 27p/0f/10skip, boot_id 26c05665).",
+  "notes": "frozen-baseline golden-run: both boots 27 passed / 0 failed / 10 skipped (M4 boundary suite skipped because enforcement=0); provisioning + Direct payout proven from empty volumes with fresh distinct ids on both boots (A=ARENAD85334359, B=ARENAD83727794, self-check 29/29, payout proof 15/15 processed+failed); egress 0 outside packets both, coverage proven. Committed reports/implementation/m4-direct-provision.json never modified (isolated runner wrote only to RED_LOOP/runs/; sha256 2591bad7... unchanged before and after both provisions). Live arena restored: 67 running / 66 healthy, networks bedd720758fa/72e15908c82e unchanged, container-id set identical (68=68), enforcement=1, kong reachable. Zero disposable leftovers."
+}
