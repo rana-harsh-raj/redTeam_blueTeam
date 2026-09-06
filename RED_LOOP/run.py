@@ -236,6 +236,15 @@ def resume_campaign_cmd(args):
         print(json.dumps({"error": "no manifest for campaign", "campaign_id": args.campaign_id}))
         return
     before = store.resume_snapshot()
+    # M4: recover any task leases stranded by the kill so expired ones are
+    # reassignable on resume (additive; no-op for legacy runs without leases).
+    try:
+        from red_loop.leases import LeaseManager
+        recovered = LeaseManager(store).recover_on_resume()
+        if recovered:
+            store.event("resume_lease_recovery", count=len(recovered))
+    except Exception as e:  # noqa: BLE001
+        store.event("resume_lease_recovery_error", detail=str(e)[:200])
     alloc = allocator.allocate()
     attacker = alloc["attacker"]
     if manifest.get("attacker_merchant_id") and manifest["attacker_merchant_id"] != attacker["merchant_id"]:
@@ -331,11 +340,50 @@ def _run_calibration(store, attacker):
     return result
 
 
+def lifecycle_gate_cmd(args):
+    """M4 closing gate: fails closed if a high-priority hypothesis is unresolved.
+    Gateway-free; reads only durable records. Exit 1 when the gate fails."""
+    from red_loop import lifecycle_gate as lg
+    result = lg.lifecycle_gate(args.campaign_id, claims_success=not args.no_success_claim)
+    print(json.dumps(result, indent=2, default=str))
+    return 0 if result["passed"] else 1
+
+
+def lifecycle_export_cmd(args):
+    """M4 exporter: writes m4-hypothesis-lifecycle.json for a campaign."""
+    from red_loop import lifecycle_gate as lg
+    doc = lg.export_lifecycle(args.campaign_id, out_path=args.out)
+    from red_loop.state import CampaignStore
+    out = args.out or str(CampaignStore(args.campaign_id).root / "m4-hypothesis-lifecycle.json")
+    print("wrote", out)
+    print(json.dumps({"rollup": doc["rollup"], "gate": doc["gate"]["passed"],
+                      "hypotheses": len(doc["hypotheses"])}, indent=2, default=str))
+
+
+def recovery_matrix_cmd(args):
+    """M4 failure-recovery matrix. Docker scenarios are environment-gated."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "m4_recovery_matrix", str(Path(__file__).resolve().parent / "surface" / "m4_recovery_matrix.py"))
+    mrm = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mrm)
+    return mrm.main(["--out", args.out] if args.out else [])
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("preflight")
     sub.add_parser("models")
+    lg = sub.add_parser("lifecycle-gate", help="M4 closing gate over a campaign's hypotheses")
+    lg.add_argument("campaign_id")
+    lg.add_argument("--no-success-claim", action="store_true",
+                    help="evaluate without asserting a successful close (never blocks)")
+    le = sub.add_parser("lifecycle-export", help="write m4-hypothesis-lifecycle.json")
+    le.add_argument("campaign_id")
+    le.add_argument("--out", default=None)
+    rm = sub.add_parser("recovery-matrix", help="run the M4 failure-recovery matrix")
+    rm.add_argument("--out", default=None)
     cp = sub.add_parser("campaign")
     cp.add_argument("--emergency-turns", dest="emergency_turns", type=int, default=2000,
                     help="EMERGENCY safety backstop only; NOT a normal completion condition")
@@ -359,6 +407,12 @@ def main():
         run_campaign_cmd(args)
     elif args.cmd == "resume":
         resume_campaign_cmd(args)
+    elif args.cmd == "lifecycle-gate":
+        raise SystemExit(lifecycle_gate_cmd(args))
+    elif args.cmd == "lifecycle-export":
+        lifecycle_export_cmd(args)
+    elif args.cmd == "recovery-matrix":
+        raise SystemExit(recovery_matrix_cmd(args))
 
 
 if __name__ == "__main__":

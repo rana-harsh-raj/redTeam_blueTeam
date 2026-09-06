@@ -46,6 +46,39 @@ Outputs land in `RED_LOOP/runs/<campaign_id>/` (git-ignored; hash-indexed in
 - `prompts/primary_mandate.txt` — the exact broad mandate (no hints)
 - `surface/`             — proposed compose blocks + `channel_control.py` (control-plane)
 
+## M4 lifecycle, contexts, soak, gate, recovery
+
+Gateway-free utilities (no model calls, read/verify durable records only):
+
+```
+# Closing gate over a campaign's hypotheses (exit 1 if it fails closed)
+python3 RED_LOOP/run.py lifecycle-gate <campaign_id>
+
+# Export the full lifecycle ledger (writes m4-hypothesis-lifecycle.json)
+python3 RED_LOOP/run.py lifecycle-export <campaign_id> [--out PATH]
+
+# Failure-recovery matrix (docker scenarios gated behind M4_DOCKER_RECOVERY=1)
+python3 RED_LOOP/run.py recovery-matrix [--out PATH]
+```
+
+- **Contexts** (`red_loop/contexts.py`): four exploration policies
+  (`broad_coverage`, `deep_direct_accounting`, `identity_tenant_boundary`,
+  `concurrency_event_order`). `ContextSupervisor(store, runner=...)` runs them
+  sequentially with per-context budgets; the coordinator supplies fresh Direct
+  merchants as `MerchantDescriptor`s per policy and injects a gateway-backed
+  runner. Only `concurrency_event_order` is granted `merchant_request_concurrent`.
+- **Soak** (`red_loop/soak.py`): `Soak(store, cycle_runner).run(wall_seconds=…,
+  max_cycles=…)` loops over contexts with checkpoints, scenario rotation, dup
+  suppression, stagnation detection and expired-lease reassignment; writes
+  `m4-direct-e2e-soak.json`. Stops honestly (`no_productive_work`) rather than
+  idle-looping.
+- **Lifecycle gate** (`red_loop/lifecycle_gate.py`): importable
+  `lifecycle_gate(campaign_id)` / `export_lifecycle(campaign_id)` — the hook the
+  M4 acceptance script calls.
+
+Tests: `python3 -m unittest discover RED_LOOP/tests` (host Python 3, stdlib only,
+in-process fake gateway, zero network).
+
 ## Safety
 No production/staging/DevStack, no real data or credentials, no internet egress,
 no Daytona. The agent reaches only kong-lite; it cannot touch datastores, Kafka,

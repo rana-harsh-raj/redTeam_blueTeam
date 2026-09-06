@@ -36,8 +36,21 @@ class CampaignStore:
             "events": self.root / "events.jsonl",
             "responses": self.root / "responses.jsonl",
             "context_metrics": self.root / "context_metrics.jsonl",
+            # --- M4 lifecycle v2 ledgers (additive; legacy files untouched) ---
+            "hypotheses_v2": self.root / "hypotheses_v2.jsonl",
+            "leases": self.root / "leases.jsonl",
+            "handoffs": self.root / "handoffs.jsonl",
+            "replans": self.root / "replans.jsonl",
+            "contexts": self.root / "contexts.jsonl",
         }
         self.manifest_path = self.root / "manifest.json"
+
+    def ensure_kind(self, kind, filename=None):
+        """Register an additional append-only ledger kind (idempotent). Used by
+        the M4 lifecycle managers so their durable files live in the run dir."""
+        if kind not in self._files:
+            self._files[kind] = self.root / (filename or (kind + ".jsonl"))
+        return self._files[kind]
 
     # -- manifest --------------------------------------------------------------
     def write_manifest(self, manifest):
@@ -168,7 +181,8 @@ class CampaignStore:
         pause/restart before/after evidence). Excludes volatile model_calls and
         context_metrics; includes the campaign's decision/state records."""
         h = hashlib.sha256()
-        for kind in ("hypotheses", "actions", "observations", "candidates", "responses", "events"):
+        for kind in ("hypotheses", "actions", "observations", "candidates", "responses",
+                     "events", "hypotheses_v2", "leases", "handoffs"):
             path = self._files[kind]
             if path.exists():
                 h.update(path.read_bytes())

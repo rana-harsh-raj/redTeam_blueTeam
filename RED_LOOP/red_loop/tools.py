@@ -113,19 +113,58 @@ TOOLS = [
         "name": "conclude",
         "description": "End the campaign when you judge you have exhausted productive avenues.",
         "parameters": {"type": "object", "properties": {"summary": {"type": "string"}}, "required": ["summary"]}}},
+    # --- M4 lifecycle tools (additive; only active when a hyp_manager is wired) ---
+    {"type": "function", "function": {
+        "name": "define_experiment",
+        "description": "Attach a bounded experiment to a hypothesis and advance it to experiment_defined. "
+                       "Provide actions/shape, success_condition, stop_condition, max_actions, max_duration_s.",
+        "parameters": {"type": "object", "properties": {
+            "hypothesis_id": {"type": "string"},
+            "experiment": {"type": "object"}, "success_condition": {"type": "string"},
+            "stop_condition": {"type": "string"}, "max_actions": {"type": "integer"},
+            "max_duration_s": {"type": "integer"}}, "required": ["hypothesis_id", "experiment"]}}},
+    {"type": "function", "function": {
+        "name": "mark_blocked",
+        "description": "Record that a hypothesis is BLOCKED (distinct from falsified). Requires a blocker "
+                       "from the fixed enum and a reason. A block is information, never proof of safety.",
+        "parameters": {"type": "object", "properties": {
+            "hypothesis_id": {"type": "string"},
+            "blocker": {"type": "string", "enum": [
+                "route_not_exposed", "required_actor_unavailable", "service_not_modeled",
+                "fidelity_insufficient", "missing_event_consumer", "missing_tool_capability",
+                "environment_failure", "time_budget_exhausted"]},
+            "reason": {"type": "string"}, "next_best_action": {"type": "string"}},
+            "required": ["hypothesis_id", "blocker", "reason"]}}},
+    {"type": "function", "function": {
+        "name": "request_replay",
+        "description": "Request independent replay of a SUPPORTED hypothesis by a different provider from a "
+                       "clean state. You cannot certify your own finding.",
+        "parameters": {"type": "object", "properties": {
+            "hypothesis_id": {"type": "string"}, "reason": {"type": "string"}},
+            "required": ["hypothesis_id"]}}},
 ]
 
 
 class Dispatcher:
-    def __init__(self, broker, store, candidate_hook):
+    def __init__(self, broker, store, candidate_hook, hyp_manager=None,
+                 lease_manager=None, allowed_tools=None, owner=None):
         self.broker = broker
         self.store = store
         self.candidate_hook = candidate_hook  # callable(candidate_record) -> coarse dict
         self.concluded = False
         self.conclude_summary = None
         self.candidate_count = 0
+        # M4 additive wiring (all optional; None preserves legacy behavior)
+        self.hyp_manager = hyp_manager
+        self.lease_manager = lease_manager
+        self.allowed_tools = set(allowed_tools) if allowed_tools is not None else None
+        self.owner = owner
 
     def dispatch(self, name, args):
+        if self.allowed_tools is not None and name not in self.allowed_tools:
+            self.store.event("tool_blocked_by_context", tool=name, owner=self.owner)
+            return {"blocked": True, "reason": "tool_not_in_context_allowlist",
+                    "tool": name, "owner": self.owner}
         try:
             return self._dispatch(name, args)
         except Exception as e:  # noqa: BLE001 -- never crash the loop on a tool error
@@ -169,7 +208,19 @@ class Dispatcher:
             h = self.store.add_hypothesis(
                 args["claim"], assets=args.get("assets"), weakness=args.get("suspected_weakness"),
                 expected_impact=args.get("expected_impact"), experiment=args.get("experiment"))
-            return {"hypothesis_id": h["hypothesis_id"]}
+            out = {"hypothesis_id": h["hypothesis_id"]}
+            # M4: mirror into the v2 lifecycle with duplicate suppression.
+            if self.hyp_manager is not None:
+                hid, dup = self.hyp_manager.propose(
+                    args["claim"], target_assets=args.get("target_assets") or args.get("assets"),
+                    suspected_cause=args.get("suspected_weakness"),
+                    expected_observation=args.get("expected_impact"),
+                    preconditions=args.get("preconditions"),
+                    experiment=args.get("experiment") if isinstance(args.get("experiment"), dict) else None,
+                    priority=args.get("priority"), owner=self.owner)
+                out["v2_hypothesis_id"] = hid
+                out["duplicate_suppressed"] = dup
+            return out
         if name == "update_hypothesis":
             self.store.update_hypothesis(args["hypothesis_id"], status=args.get("status"),
                                          note=args.get("note"))
@@ -217,4 +268,49 @@ class Dispatcher:
             self.concluded = True
             self.conclude_summary = args.get("summary", "")
             return {"ok": True, "note": "campaign will end"}
+        # --- M4 lifecycle tools (no-op unless a hyp_manager is wired) ---
+        if name in ("define_experiment", "mark_blocked", "request_replay"):
+            if self.hyp_manager is None:
+                return {"error": "lifecycle_not_enabled", "tool": name}
+            return self._dispatch_lifecycle(name, args)
+        return {"error": "unknown_tool", "name": name}
+
+    def _dispatch_lifecycle(self, name, args):
+        from . import hypotheses as hyp
+        hid = args.get("hypothesis_id")
+        mgr = self.hyp_manager
+        if name == "define_experiment":
+            rec = mgr.get(hid)
+            if rec is None:
+                return {"error": "unknown_hypothesis", "hypothesis_id": hid}
+            self.store._append(mgr.KIND, {
+                "hypothesis_id": hid, "_update": True,
+                "experiment": args.get("experiment"),
+                "success_condition": args.get("success_condition"),
+                "stop_condition": args.get("stop_condition"),
+                "max_actions": args.get("max_actions", rec.get("max_actions")),
+                "max_duration_s": args.get("max_duration_s", rec.get("max_duration_s"))})
+            # advance PROPOSED->CLAIMED->EXPERIMENT_DEFINED as needed
+            cur = mgr.get(hid)["status"]
+            if cur == hyp.HypothesisState.PROPOSED.value:
+                mgr.advance(hid, hyp.HypothesisState.CLAIMED, reason="experiment_defined", actor=self.owner)
+            mgr.advance(hid, hyp.HypothesisState.EXPERIMENT_DEFINED,
+                        reason="experiment_defined", actor=self.owner)
+            return {"ok": True, "hypothesis_id": hid, "status": mgr.get(hid)["status"]}
+        if name == "mark_blocked":
+            try:
+                mgr.advance(hid, hyp.HypothesisState.BLOCKED, reason=args.get("reason"),
+                            blocker=args.get("blocker"), actor=self.owner,
+                            next_best_action=args.get("next_best_action"))
+            except hyp.LifecycleError as e:
+                return {"error": "illegal_block", "detail": str(e)}
+            return {"ok": True, "hypothesis_id": hid, "status": "blocked",
+                    "blocker": args.get("blocker")}
+        if name == "request_replay":
+            try:
+                mgr.advance(hid, hyp.HypothesisState.REPLAY_REQUESTED,
+                            reason=args.get("reason") or "independent_replay", actor=self.owner)
+            except hyp.LifecycleError as e:
+                return {"error": "illegal_replay_request", "detail": str(e)}
+            return {"ok": True, "hypothesis_id": hid, "status": "replay_requested"}
         return {"error": "unknown_tool", "name": name}
