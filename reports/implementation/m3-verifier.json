@@ -1,0 +1,33 @@
+{
+  "generated_at": "2026-09-06T10:31:02Z",
+  "context": "frozen verifier run against the LIVE (already-seeded, test-polluted) arena with M3 code present, KONG_ENFORCE_ROUTE_POLICY=0 (frozen default behaviour).",
+  "passed": 22,
+  "failed": 4,
+  "total": 26,
+  "duration_s": 46.39,
+  "failures": [
+    {
+      "test": "v12 inflight_reservation_total_equals_live_reservations",
+      "cause": "state_pollution",
+      "detail": "6 live reservations vs expected 3 \u2014 extra payouts on the shared fixture merchant from M3 campaign/canary/provisioning tests"
+    },
+    {
+      "test": "v13 reservation_released_on_terminal_event",
+      "cause": "state_pollution",
+      "detail": "reserved_total 300 vs expected 200 \u2014 extra in-flight reservation from test payouts"
+    },
+    {
+      "test": "v17 reversal_row_committed_before_ledger_call_baseline",
+      "cause": "pipeline_congestion/pollution",
+      "detail": "new payout stuck 'initiated' \u2014 FTS/Kafka workers backed up behind ~100+ test payouts; not an M3 logic change"
+    },
+    {
+      "test": "v23 pricing_500_rejects_payout",
+      "cause": "state_pollution",
+      "detail": "2 payout rows vs expected 1 \u2014 extra payout on the fixture merchant"
+    }
+  ],
+  "analysis": "All four failures are state-count/timing assertions on the SHARED fixture merchants, polluted by the necessary M3 test payouts (campaign runs, victim canaries, fresh-merchant provisioning) on the live instance. None indicate an M3 logic regression: the M3-relevant authorization/isolation tests pass (v20 tenant isolation, v21 webhook completeness, v22 shield, v18/v19 remap/guard). This is exactly the condition Section 15 clean empty-volume boots exist to control; 26/26 CANNOT be honestly claimed on the polluted running instance.",
+  "clean_boot_2626_demonstrated": false,
+  "note": "A clean empty-volume boot (down->up->verify) is required for a true 26/26; not performed this session to avoid a risky destructive teardown of the running twin (Section 22 safe-state)."
+}

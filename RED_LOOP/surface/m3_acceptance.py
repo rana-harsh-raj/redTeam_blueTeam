@@ -143,7 +143,7 @@ def build(campaign_id):
     gates.append(gate("twin_verifier_health", bool(ver) and ver.get("passed") == ver.get("total")
                       and ver.get("total", 0) >= 26,
                       artifact="m3-verifier.json",
-                      passed=(ver or {}).get("passed"), total=(ver or {}).get("total")))
+                      verifier_passed=(ver or {}).get("passed"), verifier_total=(ver or {}).get("total")))
 
     # evidence hash index
     evidence = {}

@@ -1,0 +1,142 @@
+{
+  "milestone": "M3 \u2014 Merchant Gateway Fidelity and Red Loop Hardening",
+  "generated_at": "2026-09-06T10:33:13Z",
+  "git": {
+    "branch": "milestone-3-gateway-hardening",
+    "head": "21161c629aec0a703945c17eaefa3de507a4f6a6",
+    "twin_v1_commit": "78def24eb57112c0dc39a6ae9062b1f0d1c711fb",
+    "runtime_freeze_commit": "219ca48bbb5e51db9347b335ac0a50241656045b",
+    "m2_head": "a107612ed11344a8096e74dbf68616679855465e",
+    "worktree_clean": false
+  },
+  "models": {
+    "primary": "claude-opus-4-8",
+    "reproducer": "gpt-5.5"
+  },
+  "open_campaign": {
+    "campaign_id": "camp-20260906T100435Z-c02234",
+    "completion": {
+      "broker_requests": 37,
+      "broker_violations": 0,
+      "candidates": 0,
+      "elapsed_seconds": 274,
+      "ended_on_emergency_ceiling": false,
+      "final_state_hash": "0ae19cfbba339e5c64ac91b3f623837b63c5c45a816206096947b77ed3ed1f36",
+      "hypotheses": 9,
+      "normal_completion": true,
+      "observations": 0,
+      "stop_reason": "stagnation_pause",
+      "turns_completed": 200,
+      "usage": {
+        "by_model": {
+          "claude-opus-4-8": {
+            "calls": 40,
+            "completion_tokens": 11104,
+            "prompt_tokens": 818270,
+            "total_tokens": 829374
+          }
+        },
+        "calls": 40,
+        "completion_tokens": 11104,
+        "estimated_cost_usd": "UNKNOWN (no gateway price table exposed)",
+        "prompt_tokens": 818270,
+        "total_tokens": 829374
+      }
+    },
+    "victim_canaries_count": 4
+  },
+  "gates": [
+    {
+      "gate": "baseline_integrity",
+      "passed": true,
+      "twin_tag": "78def24eb57112c0dc39a6ae9062b1f0d1c711fb",
+      "m2_head": "a107612ed11344a8096e74dbf68616679855465e",
+      "branch": "milestone-3-gateway-hardening",
+      "worktree_clean": false
+    },
+    {
+      "gate": "gateway_route_policy_present",
+      "passed": true,
+      "route_policy_sha256": "c364f38cf8d2f354d732bede4ce3cdc6e48d832cbdf823d9f1c16992cee15ed1",
+      "classifier_sha256": "2ce94af4f44ab340d5e1c7809c99c4ecd20c362177af606ed61c752bfa445f62"
+    },
+    {
+      "gate": "gateway_fidelity",
+      "passed": true,
+      "artifact": "m3-gateway-acceptance.json",
+      "checks": [
+        "enforcement_active",
+        "internal_routes_unreachable",
+        "public_routes_functional",
+        "identity_header_cannot_swap_merchant"
+      ]
+    },
+    {
+      "gate": "cross_tenant_measurement_and_isolation",
+      "passed": true,
+      "artifact": "m3-namespace-acceptance.json"
+    },
+    {
+      "gate": "context_efficiency",
+      "passed": true,
+      "avg_prompt_tokens_per_turn": 21318,
+      "m2_avg_prompt_tokens_per_turn": 110000,
+      "reduction_fraction": 0.806,
+      "no_full_transcript_resent": true,
+      "turns_measured": 200
+    },
+    {
+      "gate": "campaign_completion_not_emergency_ceiling",
+      "passed": true,
+      "stop_reason": "stagnation_pause",
+      "turns_completed": 200,
+      "normal_completion": true
+    },
+    {
+      "gate": "pause_restart_resume_tested",
+      "passed": true,
+      "artifact": "m3-recovery-test.json"
+    },
+    {
+      "gate": "calibration_with_negative_control",
+      "passed": true,
+      "artifact": "m3-calibration.json",
+      "classification": "CALIBRATION_PASS"
+    },
+    {
+      "gate": "candidate_admission_present",
+      "passed": true,
+      "test": "RED_LOOP/tests/test_judge_admission.py"
+    },
+    {
+      "gate": "clean_empty_volume_acceptance",
+      "passed": false,
+      "artifact": "m3-clean-boot.json",
+      "note": "fail-closed: requires two empty-volume boots each passing the 26-test verifier"
+    },
+    {
+      "gate": "twin_verifier_health",
+      "passed": false,
+      "artifact": "m3-verifier.json",
+      "verifier_passed": 22,
+      "verifier_total": 26
+    }
+  ],
+  "evidence_sha256": {
+    "m3-gateway-acceptance.json": "59f60f34f7f474584431b614e71a3512332362485bd406e0ee41cfbfff20dcf0",
+    "m3-namespace-acceptance.json": "768264ce34369933f40168b8ad96e86504984c1f72933ca7c34cf9087aaded43",
+    "m3-recovery-test.json": "852d11529f7e6f009fd252aa07999cd3d8eaf73563185e2faa2696cb5448db75",
+    "m3-calibration.json": "1bee104941bdcffa0ab4f6b9a24f9778636fe45465d01913eeed0a9b6869ef5c",
+    "m3-verifier.json": "790aadc89061a7d54e146a4cd1a14fcc62d0eb56189e55166efa9ff5c2e5f92d",
+    "m3-clean-boot.json": null
+  },
+  "route_policy_sha256": {
+    "merchant-gateway-routes.json": "c364f38cf8d2f354d732bede4ce3cdc6e48d832cbdf823d9f1c16992cee15ed1",
+    "kong-lite/route_policy.py": "2ce94af4f44ab340d5e1c7809c99c4ecd20c362177af606ed61c752bfa445f62"
+  },
+  "accepted": false,
+  "unmet_gates": [
+    "clean_empty_volume_acceptance",
+    "twin_verifier_health"
+  ]
+}
