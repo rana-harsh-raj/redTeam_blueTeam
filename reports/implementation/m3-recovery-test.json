@@ -1,45 +1,45 @@
 {
-  "campaign_id": "camp-20260906T095401Z-504a2e",
+  "campaign_id": "camp-20260906T095305Z-e0a069",
   "timeline": [
     {
       "event": "launched",
-      "pid": 23912,
+      "pid": 23767,
       "t": 0
     },
     {
       "event": "campaign_started",
-      "campaign_id": "camp-20260906T095401Z-504a2e",
+      "campaign_id": "camp-20260906T095305Z-e0a069",
       "t": 1.0
     },
     {
       "event": "before_kill",
-      "t": 9.0,
+      "t": 29.1,
       "turns": 4,
       "actions": 1,
       "active_hypotheses": [],
-      "state_hash": "f5b02b1059408de235f50feecd93fa5f17a69308d645274db14ed0dce6b0e55d"
+      "state_hash": "cd181a4901e3f6d5025467f537ba3a15e320232c8e49625cbb9fe0a41cb06a37"
     },
     {
       "event": "killed",
-      "t": 11.0,
+      "t": 31.1,
       "still_alive": false
     },
     {
       "event": "resume_launched",
-      "pid": 23938,
-      "t": 11.0
+      "pid": 23858,
+      "t": 31.1
     },
     {
       "event": "after_resume",
-      "t": 19.0,
-      "turns": 6,
-      "actions": 2,
+      "t": 214.7,
+      "turns": 4,
+      "actions": 1,
       "active_hypotheses": [],
-      "state_hash": "fe22242f2a5968730e1e79b03e7bece2a0205f5c69d7d9dcf4f8208a40f93a7e"
+      "state_hash": "f387c1643df55ae634675a66b7bef668f205541cf94d298001b1655466ef599b"
     }
   ],
   "before": {
-    "campaign_id": "camp-20260906T095401Z-504a2e",
+    "campaign_id": "camp-20260906T095305Z-e0a069",
     "counts": {
       "hypotheses": 0,
       "actions": 1,
@@ -50,22 +50,22 @@
       "responses": 1,
       "context_metrics": 4
     },
-    "state_hash": "f5b02b1059408de235f50feecd93fa5f17a69308d645274db14ed0dce6b0e55d",
+    "state_hash": "cd181a4901e3f6d5025467f537ba3a15e320232c8e49625cbb9fe0a41cb06a37",
     "active_hypotheses": []
   },
   "after": {
-    "campaign_id": "camp-20260906T095401Z-504a2e",
+    "campaign_id": "camp-20260906T095305Z-e0a069",
     "counts": {
       "hypotheses": 0,
-      "actions": 2,
+      "actions": 1,
       "observations": 0,
       "candidates": 0,
-      "model_calls": 6,
+      "model_calls": 4,
       "events": 3,
-      "responses": 2,
-      "context_metrics": 6
+      "responses": 1,
+      "context_metrics": 4
     },
-    "state_hash": "fe22242f2a5968730e1e79b03e7bece2a0205f5c69d7d9dcf4f8208a40f93a7e",
+    "state_hash": "f387c1643df55ae634675a66b7bef668f205541cf94d298001b1655466ef599b",
     "active_hypotheses": []
   },
   "checks": [
@@ -75,11 +75,11 @@
     },
     {
       "name": "state_reconstructed_and_resumed",
-      "passed": true
+      "passed": false
     },
     {
       "name": "turns_advanced_after_resume",
-      "passed": true
+      "passed": false
     },
     {
       "name": "state_hash_changed",
@@ -90,5 +90,5 @@
       "passed": true
     }
   ],
-  "all_passed": true
+  "all_passed": false
 }
