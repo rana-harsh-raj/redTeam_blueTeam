@@ -338,7 +338,8 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
     # monolith merchants.json seed) is the create-500 root cause. Register the
     # merchant + a pricing plan + a free-payout counter (all reloaded by the
     # single monolith restart in step 7 below).
-    plan_id = "ARENAPLAN" + mid[-6:]
+    # pricing_rule_id is char(14); keep plan_id <=14 chars (M1 uses ARENAPLAN00001).
+    plan_id = ("ARENAPLAN" + hashlib.sha256(mid.encode()).hexdigest()[:5].upper())[:14]
     mono_m_err = _register_monolith_merchant(mid, ids, plan_id)
     step("monolith.merchant_config", 0 if not mono_m_err else 1, mono_m_err)
     price_err = _register_pricing(mid, plan_id, ids["balance_id"])

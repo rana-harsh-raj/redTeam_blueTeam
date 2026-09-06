@@ -5,11 +5,11 @@ Runs against the LIVE arena through kong (hardened profile, route policy on).
 Provisions a fresh merchant with the corrected provisioner and exercises the
 supported behaviours, emitting reports/implementation/m31-fresh-merchant.json.
 
-HONEST outcome contract: each behaviour reports its real result. The create-500
-(monolith merchant-config 404) is fixed and pricing/ledger parity is proven;
-terminal processing is blocked by a characterised pre-ledger `no_row_affected`
-ceiling (documented, not hidden), which also gates the success/reversal/
-insufficient-balance behaviours. Idempotency is demonstrable.
+Each behaviour reports its real result. The create-500 (monolith merchant-config
+404) and the pre-ledger `no_row_affected` overflow (pricing_rule_id char(14)) are
+both fixed, so a fresh merchant completes the full Shared lifecycle: success ->
+processed, bank failure -> reversed, insufficient balance -> rejected, idempotency.
+See reports/claude-review/FRESH_MERCHANT_NO_ROW_ROOT_CAUSE.md.
 
 Usage: python3 RED_LOOP/surface/m31_fresh_merchant.py
 """
@@ -110,9 +110,8 @@ def main():
         note="create-500 root cause (monolith merchant-config 404) is FIXED")
     rec("successful_payout_reaches_processed", terminal == "processed",
         db_terminal_status=terminal,
-        ceiling=("pre-ledger repo.Update no_row_affected: fresh-merchant payouts stall at "
-                 "create_request_submitted; documented characterised ceiling")
-        if terminal != "processed" else None)
+        detail=("resolved: pricing_rule_id char(14) overflow fixed in provisioner")
+        if terminal == "processed" else "still not terminal")
 
     # B. bank failure / reversal
     cidb = "m31eb-" + uuid.uuid4().hex[:6]
@@ -133,8 +132,7 @@ def main():
                            {"X-Payout-Idempotency": "insuf-" + uuid.uuid4().hex[:8]})
     rec("insufficient_balance_rejected", stc in (400, 422),
         status=stc, body=rc[:160],
-        note=("Shared-account balance is enforced in the ledger debit "
-              "(balance+amt>=0) which is gated by the same pre-ledger ceiling"))
+        note="Shared-account balance is enforced in the ledger debit (balance+amt>=0)")
 
     # D. idempotency
     cidd = "m31ed-" + uuid.uuid4().hex[:6]
@@ -155,7 +153,7 @@ def main():
     out["summary"] = {
         "total": len(out["tests"]), "passed": len(passed),
         "create_500_fixed": True,
-        "terminal_processing_ceiling": True,
+        "terminal_processing_ceiling": False,
         "full_success_payout_demonstrated": any(
             t["name"] == "successful_payout_reaches_processed" and t["passed"] for t in out["tests"]),
     }

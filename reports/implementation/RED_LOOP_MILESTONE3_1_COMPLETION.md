@@ -2,25 +2,27 @@
 
 ## Verdict
 
-**NOT READY FOR NEXT ARCHITECTURE EXPANSION.**
+**NOT READY FOR NEXT ARCHITECTURE EXPANSION** — but only two gates remain, both now
+unblocked.
 
-The milestone's headline blocker from Milestone 3 — the two independent
-empty-volume clean-boot acceptances and the unresolved verifier v17 — is now
-**resolved**. The milestone remains NOT READY strictly because three gates could not
-be met with genuine runtime evidence this session:
+The Milestone-3 blocker (two independent empty-volume clean-boot acceptances + the
+unresolved verifier v17) is **resolved**, and the fresh-merchant blocker is now
+**also resolved**: a freshly provisioned merchant completes the full Shared payout
+lifecycle to terminal `processed`. The `no_row_affected` failure was root-caused to a
+one-character column overflow (`pricing_rule_id char(14)` vs a 15-char plan id the
+M3.1 provisioner generated), masked by spine's `RowsAffected==0` guard; the fix is a
+provisioning change and is proven live (see
+`reports/claude-review/FRESH_MERCHANT_NO_ROW_ROOT_CAUSE.md` and the 8/8
+`m31-fresh-merchant.json`).
 
-1. **Fresh-merchant full payout success** is blocked by a precisely-characterised
-   compiled-service ceiling (pre-ledger `no_row_affected`), so a freshly provisioned
-   merchant cannot reach terminal `processed`.
-2. **Fresh-ID calibration** was not run — the twin has no genuine cross-tenant
-   vulnerability to exercise with fresh resource IDs (see Remaining ceilings).
-3. **The second open-ended campaign** was not run this session; its premise (a fresh
-   *fully operational* merchant) depends on (1).
+The machine gate (`reports/implementation/m3-1-acceptance.json`) now fails closed on
+exactly **two** gates, neither yet executed this session:
 
-A machine-generated gate (`reports/implementation/m3-1-acceptance.json`) fails closed
-on exactly these three; the other eight gates pass on named runtime evidence.
+1. **Fresh-ID calibration** — not run.
+2. **The second open-ended campaign** — not run. Its premise (a fresh *fully
+   operational* merchant) is now satisfied by the fix above, so it is executable.
 
-Zero of these three is faked green. This is the honest, evidence-backed state.
+Ten of twelve gates pass on named runtime evidence. Nothing is faked green.
 
 ## Branch and commit references
 
@@ -161,24 +163,24 @@ ledger were reached.
 After the fix a fresh merchant **authenticates and creates payouts returning 200 with
 correct pricing (IMPS fees 200 / tax 36 / valid `pricing_rule_id`)**.
 
-**Success / failure / insufficient-balance / idempotency.** Idempotency is **proven**
-(same key+body → same id; same key + different body → 400). Successful payout, bank
-failure/reversal, and insufficient-balance are all **blocked by one residual
-ceiling** and therefore not demonstrated end-to-end.
+**Success / failure / insufficient-balance / idempotency — all proven (8/8).** A
+fresh merchant now reaches terminal `processed` (success), `reversed` (bank failure),
+is rejected on insufficient balance, and honours idempotency (same key+body → same
+id; different body → 400). Evidence: `reports/implementation/m31-fresh-merchant.json`.
+No static-merchant Ledger/balance/FTS/pricing/account state is reused — the
+`payout_processed` journal references only the fresh merchant's own accounts
+(`ARENA<mtok>AC0001‑0004`) plus the shared nodal pool.
 
-**Residual ceiling (characterised to SQL, not resolved).** Runtime-provisioned fresh
-payouts stall at `create_request_submitted`: the pre-ledger transition
-(`payoutStateProcessingBeforeLedgerServiceCall`) calls spine `repo.Update`, whose
-full-model `UPDATE payouts SET …,status=?,… WHERE id=?` returns `no_row_affected`
-(0 rows) for a fresh merchant but 1 row for the boot-seeded M1 fixture. Ruled out:
-merchant-config (fixed), pricing (correct), ledger parity (4 rows match M1), payouts
-`merchant_configurations`/`settings` (empty for M1 too), id validity (the row is
-manually updatable by its id), a payouts-api cache (restart did not help), and warm-
-up/race (deterministic across 3 merchants × 3 consecutive payouts). Because the
-Shared-account balance check is enforced in the ledger debit
-(`balance + amount >= 0`), which never runs, the success/reversal/insufficient
-behaviours all depend on this one ceiling. It is a deterministic compiled-service
-behaviour for runtime-provisioned merchants, beyond seed-data fixes.
+**`no_row_affected` — root-caused and fixed (was called a "residual ceiling").** The
+pre-ledger transition's `UPDATE payouts SET …,pricing_rule_id=?,status=?,… WHERE id=?`
+**errored** with `Data too long for column 'pricing_rule_id'` (the column is
+`char(14)`; the M3.1 provisioner generated a 15-char plan id `"ARENAPLAN"+mid[-6:]`).
+The MySQL driver reports `RowsAffected=0` on a failed statement, and spine's
+`if q.RowsAffected == 0 { return NoRowAffected }` fires **before** `GetDBError(q)`,
+so the real 1406 error was reported as `no_row_affected`. M1 worked only because its
+plan id `ARENAPLAN00001` is exactly 14 characters. The fix keeps the plan id ≤14
+chars (`provisioner.py`); the repository guard was left untouched. Full analysis:
+`reports/claude-review/FRESH_MERCHANT_NO_ROW_ROOT_CAUSE.md`.
 
 ## Fresh-ID calibration and second campaign
 
@@ -188,10 +190,11 @@ behaviour for runtime-provisioned merchants, beyond seed-data fixes.
   clean boots (v20 `test_other_merchant_cannot_fetch_or_cancel` passes), and the only
   synthetic cross-tenant effect is the fixed payouts-api TiDB mock behind the M3
   enforcement toggle. This is a fidelity ceiling, disclosed rather than papered over.
-- **Second open-ended campaign: not run this session.** Its required premise — a
-  *fresh, fully operational* merchant — is blocked by the residual ceiling above; a
-  campaign with the fixture attacker would only replicate the M3 zero-finding result
-  and would not satisfy the requirement. Deferred pending the terminal-processing fix.
+- **Second open-ended campaign: not run this session, now executable.** Its required
+  premise — a *fresh, fully operational* merchant — is satisfied by the fresh-merchant
+  fix (a fresh merchant now completes the full lifecycle), so the campaign can run
+  with a genuinely fresh operational actor. Deferred only for session budget, not
+  blocked.
 
 ## Context efficiency (recomputed from raw logs)
 
@@ -201,13 +204,16 @@ Recomputed from `model_calls.jsonl` (203 calls, not the previously reported figu
 
 ## Remaining fidelity ceilings
 
-1. **Fresh-merchant terminal processing** (`no_row_affected`) — new this milestone;
-   the blocker for a fully operational fresh merchant.
-2. **No genuine cross-tenant vulnerability** in the twin — the only cross-tenant
-   exposure is the declared fixed TiDB mock, now merchant-unreachable with enforcement
-   on. Fresh-ID exploit calibration is therefore not demonstrable here.
-3. Retained from M2/M3: mozart-sim bank outcomes, RBL-only end-to-end channel, the
+1. **No genuine cross-tenant vulnerability** in the twin — the only cross-tenant
+   exposure is the declared fixed TiDB mock, merchant-unreachable with enforcement on
+   (tenant isolation v20 passes on both clean boots). A fresh-ID calibration can now
+   use fresh victim resource IDs against the enforcement-toggle effect, but the
+   "vulnerability" itself remains the synthetic toggle, not a real defect.
+2. Retained from M2/M3: mozart-sim bank outcomes, RBL-only end-to-end channel, the
    API monolith is a stub.
+
+(The fresh-merchant terminal-processing `no_row_affected` issue reported earlier this
+milestone is **resolved**, not a ceiling — see the fresh-merchant section.)
 
 ## Production reachability
 
@@ -216,11 +222,7 @@ translated to production impact.
 
 ## Recommendation for the next architecture family
 
-Resolve the fresh-merchant terminal-processing ceiling first (it gates every
-lifecycle proof and any credible fresh-merchant campaign): instrument the payouts-api
-`spine.Repo.Update` path to capture the exact bound `id`/changed-column set for a
-runtime-provisioned merchant vs a boot-seeded one — the single remaining unknown.
-Once a fresh merchant can complete a payout, the **next architecture family to add is
+With the fresh-merchant lifecycle working, the **next architecture family to add is
 the Direct (current-account) payout path** alongside the existing Shared path: it
 exercises a distinct FTS routing, ledger account shape and reversal contract, and is
 the smallest expansion that materially widens the merchant-reachable attack surface
