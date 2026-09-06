@@ -18,9 +18,10 @@ import uuid
 ROOT = Path(__file__).resolve().parents[1]
 IMAGE = 'python:3.12-alpine'
 CONFIG_GROUPS = ('payouts', 'ledger', 'fts', 'cfa', 'xbalances', 'mozart-mock')
-VOLUMES = {**{'config-' + group: 'rzp-arena-config-' + group for group in CONFIG_GROUPS},
-           'secrets-kong': 'rzp-arena-secrets-kong',
-           'secrets-monolith': 'rzp-arena-secrets-monolith'}
+_ARENA_SUFFIX = os.environ.get('ARENA_SUFFIX', '')  # M3.1: honour disposable-instance namespacing
+VOLUMES = {**{'config-' + group: 'rzp-arena-config-' + group + _ARENA_SUFFIX for group in CONFIG_GROUPS},
+           'secrets-kong': 'rzp-arena-secrets-kong' + _ARENA_SUFFIX,
+           'secrets-monolith': 'rzp-arena-secrets-monolith' + _ARENA_SUFFIX}
 OWNER_LABEL = 'io.rzp-arena.generated'
 
 INSTALL = '''import base64,hashlib,json,os,pathlib,shutil,sys

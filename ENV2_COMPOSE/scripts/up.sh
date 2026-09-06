@@ -20,7 +20,7 @@ compose() {
 
 generator_args=()
 if [ -n "${ARENA_SOURCE_REPOS_ROOT:-}" ]; then generator_args=(--repos-root "$ARENA_SOURCE_REPOS_ROOT"); fi
-python3 seeds/generator/generate.py --epoch "${ARENA_SEED_EPOCH:-$(date +%s)}" "${generator_args[@]}"
+python3 seeds/generator/generate.py --epoch "${ARENA_SEED_EPOCH:-$(date +%s)}" ${generator_args[@]+"${generator_args[@]}"}
 
 echo "############################################################"
 echo "# 1/8  secrets/gen-secrets.sh"

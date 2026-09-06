@@ -55,7 +55,8 @@ def audit(command, output, duration, command_container=None):
     old_handlers = {s: signal.signal(s, interrupt) for s in (signal.SIGINT, signal.SIGTERM)}
     try:
         run(['docker', 'image', 'inspect', IMAGE])  # never pull during runtime
-        networks = json.loads(run(['docker', 'network', 'inspect', 'rzp-arena', 'rzp-ingress']))
+        _sfx = os.environ.get('ARENA_SUFFIX', '')  # M3.1: audit the instance's own networks
+        networks = json.loads(run(['docker', 'network', 'inspect', 'rzp-arena' + _sfx, 'rzp-ingress' + _sfx]))
         if any(n.get('EnableIPv6') for n in networks):
             raise RuntimeError('IPv6 capture policy is not implemented; refusing incomplete audit')
         if any(not n.get('Internal') for n in networks):
