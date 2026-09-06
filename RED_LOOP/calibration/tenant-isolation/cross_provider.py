@@ -124,6 +124,7 @@ def _reproduce_once(fixture, profile, port, model, usage, max_turns=8):
     ]
     client = llm.ChatClient(model, usage=usage, max_tokens=1500)
     observed_bodies = []
+    target_evidence = None  # the real captured request/response for the target resource
     report = None
     calls = []
     refusal = None
@@ -153,6 +154,8 @@ def _reproduce_once(fixture, profile, port, model, usage, max_turns=8):
                 if tc["name"] == "fetch_resource":
                     ev = _fetch(endpoint, credential, args.get("resource_id", ""))
                     observed_bodies.append(ev.get("response_body", ""))
+                    if args.get("resource_id") == target:
+                        target_evidence = ev  # real captured response for the target
                     calls.append({"tool": "fetch_resource", "resource_id": args.get("resource_id"),
                                   "status": ev.get("status")})
                     tool_out = json.dumps({"status": ev.get("status"),
@@ -172,13 +175,17 @@ def _reproduce_once(fixture, profile, port, model, usage, max_turns=8):
         except Exception:  # noqa: BLE001
             proc.kill()
 
-    # Oracle judges the MODEL-OBSERVED response (control-plane truth vs capture).
-    blob = "\n".join(observed_bodies) + "\n" + json.dumps(report or {})
-    evidence = {"status": 200 if any('"owner_merchant_id"' in b for b in observed_bodies) else
-                (404 if observed_bodies else "ERR"),
-                "response_body": blob,
-                "request_route": "/calib/v1/resources/" + target,
-                "used_credential": credential, "url": endpoint + "/calib/v1/resources/" + target}
+    # The oracle judges the REAL captured request/response the model's tool produced
+    # for the target resource (control-plane truth vs capture). If the model never
+    # fetched the target, fall back to an explicit miss so the oracle fails closed.
+    if target_evidence is not None:
+        evidence = dict(target_evidence)
+    else:
+        evidence = {"status": "ERR", "response_body": "",
+                    "request_route": "/calib/v1/resources/" + target,
+                    "url": endpoint + "/calib/v1/resources/" + target}
+    evidence["used_credential"] = credential
+    evidence["model_reported_cross_tenant"] = bool(report and report.get("cross_tenant_resource_seen"))
     if profile == "regression":
         result = oracle.judge_regression(fixture, evidence)
     else:
@@ -204,8 +211,19 @@ def run(model=None):
     fx_fix = generator.generate_fixture("fixed", port=19112, seed_label="xprov-fixed")
     fix = _reproduce_once(fx_fix, "fixed", 19112, model, usage)
 
-    out["regression"] = reg
-    out["fixed_negative_control"] = fix
+    # Redact per-run secrets (canary + credentials) from the PERSISTED artifact.
+    # The oracle already judged the real, unredacted responses above; only the
+    # stored copy is scrubbed so the committed evidence carries no raw secret.
+    def _redact(block, fx):
+        secrets = [fx["canary"], fx["actors"]["attacker"]["credential"],
+                   fx["actors"]["victim"]["credential"]]
+        s = json.dumps(block)
+        for i, sec in enumerate(secrets):
+            s = s.replace(sec, "<redacted-%s>" % ["canary", "attacker_cred", "victim_cred"][i])
+        return json.loads(s)
+
+    out["regression"] = _redact(reg, fx_reg)
+    out["fixed_negative_control"] = _redact(fix, fx_fix)
     out["usage"] = usage.snapshot()
     out["passed"] = bool(reg["oracle"]["passed"] and fix["oracle"]["passed"])
     out["certificate"] = oracle.impact_certificate(reg["oracle"], fix["oracle"],
