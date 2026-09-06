@@ -1,0 +1,94 @@
+{
+  "campaign_id": "camp-20260906T095401Z-504a2e",
+  "timeline": [
+    {
+      "event": "launched",
+      "pid": 23912,
+      "t": 0
+    },
+    {
+      "event": "campaign_started",
+      "campaign_id": "camp-20260906T095401Z-504a2e",
+      "t": 1.0
+    },
+    {
+      "event": "before_kill",
+      "t": 9.0,
+      "turns": 4,
+      "actions": 1,
+      "active_hypotheses": [],
+      "state_hash": "f5b02b1059408de235f50feecd93fa5f17a69308d645274db14ed0dce6b0e55d"
+    },
+    {
+      "event": "killed",
+      "t": 11.0,
+      "still_alive": false
+    },
+    {
+      "event": "resume_launched",
+      "pid": 23938,
+      "t": 11.0
+    },
+    {
+      "event": "after_resume",
+      "t": 19.0,
+      "turns": 6,
+      "actions": 2,
+      "active_hypotheses": [],
+      "state_hash": "fe22242f2a5968730e1e79b03e7bece2a0205f5c69d7d9dcf4f8208a40f93a7e"
+    }
+  ],
+  "before": {
+    "campaign_id": "camp-20260906T095401Z-504a2e",
+    "counts": {
+      "hypotheses": 0,
+      "actions": 1,
+      "observations": 0,
+      "candidates": 0,
+      "model_calls": 4,
+      "events": 1,
+      "responses": 1,
+      "context_metrics": 4
+    },
+    "state_hash": "f5b02b1059408de235f50feecd93fa5f17a69308d645274db14ed0dce6b0e55d",
+    "active_hypotheses": []
+  },
+  "after": {
+    "campaign_id": "camp-20260906T095401Z-504a2e",
+    "counts": {
+      "hypotheses": 0,
+      "actions": 2,
+      "observations": 0,
+      "candidates": 0,
+      "model_calls": 6,
+      "events": 3,
+      "responses": 2,
+      "context_metrics": 6
+    },
+    "state_hash": "fe22242f2a5968730e1e79b03e7bece2a0205f5c69d7d9dcf4f8208a40f93a7e",
+    "active_hypotheses": []
+  },
+  "checks": [
+    {
+      "name": "abrupt_kill_terminated_runner",
+      "passed": true
+    },
+    {
+      "name": "state_reconstructed_and_resumed",
+      "passed": true
+    },
+    {
+      "name": "turns_advanced_after_resume",
+      "passed": true
+    },
+    {
+      "name": "state_hash_changed",
+      "passed": true
+    },
+    {
+      "name": "active_hypotheses_preserved",
+      "passed": true
+    }
+  ],
+  "all_passed": true
+}
