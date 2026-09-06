@@ -1,9 +1,9 @@
 {
   "milestone": "M3.1 \u2014 Clean Acceptance and Fresh Merchant Payout Parity",
-  "generated_at": "2026-09-06T13:43:36Z",
+  "generated_at": "2026-09-06T13:56:16Z",
   "git": {
-    "branch": "milestone-3-1-clean-parity",
-    "head": "39fe41e54d7ee7063ebdbac546334023b1aea5d5",
+    "branch": "milestone-3-1-calibration",
+    "head": "d20adb41ff7f8f0f6726b471268987ef488b84f0",
     "twin_v1_commit": "78def24eb57112c0dc39a6ae9062b1f0d1c711fb",
     "runtime_freeze_commit": "219ca48bbb5e51db9347b335ac0a50241656045b",
     "m2_head": "a107612ed11344a8096e74dbf68616679855465e",
@@ -13,8 +13,8 @@
     {
       "gate": "historical_integrity",
       "passed": true,
-      "branch": "milestone-3-1-clean-parity",
-      "head": "39fe41e54d7ee7063ebdbac546334023b1aea5d5"
+      "branch": "milestone-3-1-calibration",
+      "head": "d20adb41ff7f8f0f6726b471268987ef488b84f0"
     },
     {
       "gate": "evidence_archive_manifest",
@@ -97,13 +97,33 @@
       "note": "requires an end-to-end successful fresh payout (terminal processed)"
     },
     {
-      "gate": "freshid_calibration_with_control",
+      "gate": "fresh_id_calibration_fixture",
       "passed": false,
+      "status": "pending",
       "artifact": "m31-calibration-freshid.json"
     },
     {
-      "gate": "second_campaign_normal_completion",
+      "gate": "fresh_id_deterministic_replay",
       "passed": false,
+      "status": "pending",
+      "artifact": "m31-calibration-freshid.json"
+    },
+    {
+      "gate": "fresh_id_cross_provider_replay",
+      "passed": false,
+      "status": "pending",
+      "artifact": "m31-calibration-freshid.json"
+    },
+    {
+      "gate": "fresh_id_negative_control",
+      "passed": false,
+      "status": "pending",
+      "artifact": "m31-calibration-freshid.json"
+    },
+    {
+      "gate": "second_open_campaign",
+      "passed": false,
+      "status": "pending",
       "campaign_id": null,
       "stop_reason": null,
       "turns": null
@@ -123,7 +143,10 @@
   },
   "accepted": false,
   "unmet_or_pending_gates": [
-    "freshid_calibration_with_control",
-    "second_campaign_normal_completion"
+    "fresh_id_calibration_fixture",
+    "fresh_id_deterministic_replay",
+    "fresh_id_cross_provider_replay",
+    "fresh_id_negative_control",
+    "second_open_campaign"
   ]
 }
