@@ -1,6 +1,33 @@
 {
-  "policy_version": 1,
-  "description": "What the primary red agent can and cannot access (Sections 4, 5, 12).",
+  "policy_version": 2,
+  "description": "What the primary red agent can and cannot access (Sections 4, 5, 12). v2 adds the Milestone-3 corrected merchant-edge boundary.",
+  "m3_merchant_edge_boundary": {
+    "route_policy": "RED_LOOP/registry/merchant-gateway-routes.json (source-derived from payouts/internal/routing/router/*.go)",
+    "enforced_by": "kong-lite route_policy.classify_request under KONG_ENFORCE_ROUTE_POLICY=1",
+    "public_merchant_routes": [
+      "POST /v1/payouts", "GET /v1/payouts", "GET /v1/payouts/{pout_id}",
+      "POST /v1/payouts/cancel_payout/{id}", "GET /v1/payouts/free_payout/{balance_id}",
+      "GET /v1/payouts/payouts_status_reason_map", "GET /v1/payouts/_meta/summary",
+      "GET /v1/payouts/schedule/timeslots", "PATCH /v1/payouts/{pout_id}/attachments",
+      "POST /v2/payouts", "POST/GET /v1/fund_accounts/validations", "GET /v1/balances"
+    ],
+    "internal_admin_routes_now_unreachable_from_merchant_edge": [
+      "fetch_multiple", "manual_action", "rzp_fees_payout", "analytics", "retry",
+      "payouts_internal/{id}/approve|reject", "payouts_internal/{id}", "bulk", "attachments",
+      "status_details/{id}", "on_hold/process", "batch/process", "consistency_checker",
+      "/v1/admin/*", "/v1/workflow/*", "/v1/internal/*", "/v1/cron/*", "/v1/notify/*",
+      "/twirp/*", "/v1/contacts (not implemented inbound)", "/v1/fund_accounts CRUD (not implemented)"
+    ],
+    "service_credential_scoping": "cred.API injected ONLY for public payouts-api routes; never for the /v1/balances xbalances read surface; never on a denied path",
+    "identity_headers_stripped": ["x-merchant-id", "x-entity-id", "x-passport-jwt-v1", "client authorization"],
+    "identity_headers_preserved": ["x-razorpay-account (legitimate sub-account; genuine authz remains testable)"],
+    "unknown_id_behaviour": "the payouts-api TiDB mock (canned cross-tenant data) is reachable ONLY via the internal fetch_multiple route, which is now 404 at the merchant edge; the mock stays a declared low-fidelity deviation but is unreachable by a merchant"
+  },
+  "m3_cross_tenant_measurement": {
+    "victim_canaries": "each campaign mints fresh unique canary strings in control-merchant payouts (JUDGE-ONLY); if any attacker response contains one, the judge issues a confidentiality/tenant-boundary impact",
+    "red_never_receives": ["victim credentials", "victim resource ids", "canary values", "the judge-only campaign manifest"],
+    "candidate_admission": "RED_LOOP/red_loop/judge.py admit() — deterministic minimum-evidence gate before reproduction; nonexistent resources, canned templates, and 200-without-mutation cannot pass"
+  },
   "code_corpus": {
     "included_read_only": [
       ".local/twin-repos/accepted/payouts  (admitted real service source)",
