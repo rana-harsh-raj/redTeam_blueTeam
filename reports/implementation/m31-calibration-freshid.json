@@ -1,0 +1,85 @@
+{
+  "kind": "CALIBRATION_ONLY",
+  "milestone": "M3.1 fresh-ID tenant-isolation",
+  "generated_at": "2026-09-06T14:50:20Z",
+  "gateway_independent": true,
+  "fresh_id_calibration_fixture": {
+    "passed": true,
+    "fixture_a_run": "calibfx-20260906T145020Z-48fcd3",
+    "fixture_b_run": "calibfx-20260906T145020Z-b117f1",
+    "identities_disjoint": true,
+    "no_fixed_or_static_ids": true,
+    "attacker_a": "ARENACALATK5742A8C9",
+    "attacker_b": "ARENACALATKA176FBA8",
+    "victim_a": "ARENACALVIC439DD1E9",
+    "victim_b": "ARENACALVIC20B3892B"
+  },
+  "fresh_id_deterministic_replay": {
+    "passed": true,
+    "bundle_is_id_free": true,
+    "set_a": {
+      "run": "calibfx-20260906T145020Z-48fcd3",
+      "status": 200,
+      "oracle_passed": true,
+      "canary_disclosed": true,
+      "checks": {
+        "victim_resource_exists": true,
+        "resource_belongs_to_victim": true,
+        "authenticated_as_attacker": true,
+        "no_victim_credential_used": true,
+        "status_200": true,
+        "response_contains_canary": true,
+        "response_owner_is_victim": true,
+        "response_not_canned": true,
+        "request_response_artifacts_present": true
+      }
+    },
+    "set_b": {
+      "run": "calibfx-20260906T145020Z-b117f1",
+      "status": 200,
+      "oracle_passed": true,
+      "canary_disclosed": true,
+      "checks": {
+        "victim_resource_exists": true,
+        "resource_belongs_to_victim": true,
+        "authenticated_as_attacker": true,
+        "no_victim_credential_used": true,
+        "status_200": true,
+        "response_contains_canary": true,
+        "response_owner_is_victim": true,
+        "response_not_canned": true,
+        "request_response_artifacts_present": true
+      }
+    },
+    "different_ids_same_bundle": true
+  },
+  "fresh_id_negative_control": {
+    "passed": true,
+    "run": "calibfx-20260906T145021Z-11cf37",
+    "status": 404,
+    "canary_disclosed": false,
+    "checks": {
+      "victim_resource_exists": true,
+      "same_actor_class_and_request": true,
+      "canary_absent": true,
+      "victim_owner_field_absent": true,
+      "expected_forbidden_or_not_found": true,
+      "no_victim_credential_used": true
+    },
+    "note": "same semantic bundle, fixed profile => not-found, no victim data"
+  },
+  "certificate": {
+    "kind": "CALIBRATION_ONLY",
+    "classification": "CALIBRATION_REDISCOVERY",
+    "never_an_open_finding": true,
+    "effect_present_in_regression": true,
+    "effect_absent_in_fixed_negative_control": true,
+    "reproduced": true,
+    "note": "Self-contained tenant-isolation fixture used ONLY to exercise the fresh-ID reproduce-and-judge machinery and prove a causal negative control. NOT a Razorpay production finding."
+  },
+  "fresh_id_cross_provider_replay": {
+    "passed": false,
+    "status": "pending",
+    "reason": "run cross_provider.py with LITELLM_API_KEY set"
+  }
+}

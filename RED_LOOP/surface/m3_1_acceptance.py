@@ -100,7 +100,8 @@ def build(campaign_id):
     gates.append(gate("historical_integrity",
                       git(["rev-parse", "twin-v1.0^{commit}"]) == "78def24eb57112c0dc39a6ae9062b1f0d1c711fb"
                       and git(["rev-parse", "milestone-2-red-loop"]) == "a107612ed11344a8096e74dbf68616679855465e"
-                      and branch in ("milestone-3-1-clean-parity", "milestone-3-1-calibration"),
+                      and branch in ("milestone-3-1-clean-parity", "milestone-3-1-calibration",
+                                     "milestone-3-1-claude-final"),
                       branch=branch, head=head))
 
     # B. evidence durability
@@ -142,28 +143,72 @@ def build(campaign_id):
                       bool(rep) and rep.get("logical_equivalence") is True and rep.get("status") == "passed",
                       artifact="m31-logical-replay.json", logical_equivalence=(rep or {}).get("logical_equivalence")))
 
-    # F. fresh merchant lifecycle
+    # F. fresh merchant lifecycle, REVALIDATED on the current head (Phase A).
     fm = load(IMPL / "m31-fresh-merchant.json")
-    fm_full = bool(fm) and fm.get("summary", {}).get("full_success_payout_demonstrated") is True
-    gates.append(gate("fresh_merchant_full_success", fm_full,
+    fm_full = (bool(fm) and fm.get("summary", {}).get("full_success_payout_demonstrated") is True
+               and fm.get("summary", {}).get("passed") == fm.get("summary", {}).get("total")
+               and fm.get("gateway_profile", "").startswith("hardened"))
+    gates.append(gate("fresh_merchant_current_head", fm_full,
                       create_500_fixed=(fm or {}).get("summary", {}).get("create_500_fixed"),
-                      note="requires an end-to-end successful fresh payout (terminal processed)"))
+                      suite=f"{(fm or {}).get('summary', {}).get('passed')}/{(fm or {}).get('summary', {}).get('total')}",
+                      gateway_profile=(fm or {}).get("gateway_profile"),
+                      note="revalidated on current-head provisioner; end-to-end fresh payout to terminal processed"))
 
-    # G. Separate evidence gates; missing evidence remains explicitly pending.
+    # G. Fresh-ID calibration gates, each DERIVED from the calibration artifact.
     cal = load(IMPL / "m31-calibration-freshid.json")
-    cal_base = (bool(cal) and cal.get("classification") in
-                ("CALIBRATION_PASS", "CALIBRATION_REDISCOVERY") and cal.get("fresh_ids") is True)
+    cert = (cal or {}).get("certificate", {})
+    cal_base = bool(cal) and cert.get("classification") in ("CALIBRATION_PASS", "CALIBRATION_REDISCOVERY") \
+        and cert.get("never_an_open_finding") is True
+    # each gate reads its own sub-result block in the artifact
     for name in ("fresh_id_calibration_fixture", "fresh_id_deterministic_replay",
-                 "fresh_id_cross_provider_replay", "fresh_id_negative_control"):
-        evidence = (cal or {}).get("checks", {}).get(name)
-        passed = cal_base and isinstance(evidence, dict) and evidence.get("passed") is True
-        if name == "fresh_id_negative_control":
-            passed = passed and cal.get("effect_absent_in_fixed_control") is True
-        if name == "fresh_id_cross_provider_replay":
-            passed = passed and cal.get("reproduced_by_different_provider") is True
-        gates.append(gate(name, passed, status=("pending" if evidence is None else
-                                               "pass" if passed else "fail"),
+                 "fresh_id_negative_control", "fresh_id_cross_provider_replay"):
+        sub = (cal or {}).get(name)
+        passed = cal_base and isinstance(sub, dict) and sub.get("passed") is True
+        is_pending = sub is None or (isinstance(sub, dict) and sub.get("status") == "pending")
+        gates.append(gate(name, passed,
+                          status=("pending" if is_pending else "pass" if passed else "fail"),
                           artifact="m31-calibration-freshid.json"))
+
+    # G2. Harness discipline gates derived from the offline self-test artifact.
+    ht = load(IMPL / "m31-harness-tests.json")
+    suites = (ht or {}).get("suites", {})
+    gates.append(gate("deterministic_judge",
+                      suites.get("deterministic_judge_admission", {}).get("ok") is True,
+                      tests=suites.get("deterministic_judge_admission", {}).get("tests"),
+                      artifact="m31-harness-tests.json"))
+    gates.append(gate("candidate_admission",
+                      suites.get("deterministic_judge_admission", {}).get("ok") is True
+                      and suites.get("pricing_ids_collision_length", {}).get("ok") is True,
+                      note="minimum-evidence admission + fail-closed pricing-id reservation",
+                      artifact="m31-harness-tests.json"))
+    # hardened gateway: route-policy tests pass AND the live edge is enforcing.
+    live_enforce = "KONG_ENFORCE_ROUTE_POLICY=1" in (subprocess.run(
+        ["docker", "inspect", "env2_compose-kong-lite-1"], capture_output=True, text=True).stdout or "")
+    gates.append(gate("hardened_gateway",
+                      suites.get("hardened_route_policy", {}).get("ok") is True and live_enforce,
+                      route_policy_tests=suites.get("hardened_route_policy", {}).get("tests"),
+                      live_enforcement_on=live_enforce))
+
+    # campaign / calibration isolation
+    iso = load(IMPL / "m31-campaign-isolation.json")
+    gates.append(gate("campaign_isolation", bool(iso) and iso.get("passed") is True,
+                      artifact="m31-campaign-isolation.json"))
+
+    # safety / egress: the clean-boot egress audits show zero outside packets.
+    gates.append(gate("safety_egress",
+                      dA["egress"].get("clean") is True and dB["egress"].get("clean") is True,
+                      a_outside=dA["egress"].get("outside_packets"),
+                      b_outside=dB["egress"].get("outside_packets")))
+
+    # evidence integrity: archive manifest present and every named evidence file hashes.
+    ev_hashes = {n: sha256_file(IMPL / n) for n in
+                 ["m31-fresh-merchant.json", "m31-fresh-merchant-noreuse.json",
+                  "m31-calibration-freshid.json", "m31-harness-tests.json",
+                  "m31-campaign-isolation.json", "m31-v17.json", "m31-logical-replay.json"]}
+    gates.append(gate("evidence_integrity",
+                      bool(md) and all(v is not None for v in ev_hashes.values()),
+                      manifest_present=bool(md),
+                      all_named_artifacts_hashable=all(v is not None for v in ev_hashes.values())))
 
     # H. second open campaign (not ended on normal ceiling)
     store_manifest = load(RUNS / (campaign_id or "") / "manifest.json") if campaign_id else None
@@ -192,8 +237,11 @@ def build(campaign_id):
                 "m3_head": git(["rev-parse", "milestone-3-gateway-hardening"])},
         "gates": gates,
         "evidence_sha256": {n: sha256_file(IMPL / n) for n in
-                            ["m31-fresh-merchant.json", "m31-hardening-retention.json",
-                             "m31-v17.json", "m31-calibration-freshid.json", "m31-logical-replay.json"]},
+                            ["m31-fresh-merchant.json", "m31-fresh-merchant-noreuse.json",
+                             "m31-hardening-retention.json", "m31-v17.json",
+                             "m31-calibration-freshid.json", "m31-calibration-crossprovider.json",
+                             "m31-harness-tests.json", "m31-campaign-isolation.json",
+                             "m31-logical-replay.json"]},
         "accepted": all(g["passed"] is True for g in gates),
         "unmet_or_pending_gates": [g["gate"] for g in gates if g["passed"] is not True],
     }

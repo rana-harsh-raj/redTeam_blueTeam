@@ -1,0 +1,39 @@
+{
+  "generated_at": "2026-09-06T14:53:08Z",
+  "corpus_roots": [
+    "payouts",
+    "fts",
+    "ledger",
+    "cfa",
+    "x-balances"
+  ],
+  "calibration_code_under_corpus": false,
+  "broker_allowed_prefixes": [
+    "/v1/payouts",
+    "/v1/contacts",
+    "/v1/fund_accounts",
+    "/v1/balances",
+    "/v1/transactions",
+    "/v1/payout_links",
+    "/v1/payouts_batch"
+  ],
+  "broker_denied_fragments": [
+    "/_arena",
+    "/twirp/",
+    "/metrics",
+    "/debug"
+  ],
+  "broker_ingress": "http://127.0.0.1:18080",
+  "calibration_ports": [
+    19099,
+    19101,
+    19102,
+    19103,
+    19111,
+    19112
+  ],
+  "calibration_ports_disjoint_from_broker": true,
+  "calibration_service_loopback_only": true,
+  "corpus_traversal_to_calibration_blocked": true,
+  "passed": true
+}

@@ -1,6 +1,6 @@
 {
   "milestone": "M3.1-E fresh-funded-merchant parity + lifecycle",
-  "generated_at": "2026-09-06T13:41:07Z",
+  "generated_at": "2026-09-06T14:44:36Z",
   "gateway_profile": "hardened (KONG_ENFORCE_ROUTE_POLICY=1)",
   "tests": [
     {
@@ -8,7 +8,7 @@
       "passed": true,
       "failed_steps": [],
       "steps": 18,
-      "merchant_id": "ARENAM90999788"
+      "merchant_id": "ARENAM90546278"
     },
     {
       "name": "ledger_account_details_parity",
@@ -20,7 +20,7 @@
       "name": "create_returns_200_with_pricing",
       "passed": true,
       "status": 200,
-      "payout_id": "pout_TYlsi2ZvSJ8Eu0",
+      "payout_id": "pout_TYmxm31P2ny22w",
       "fees": 200,
       "tax": 36,
       "note": "create-500 root cause (monolith merchant-config 404) is FIXED"
@@ -47,8 +47,8 @@
     {
       "name": "idempotency_same_key_same_id",
       "passed": true,
-      "id1": "pout_TYluLmBtCeTsM9",
-      "id2": "pout_TYluLmBtCeTsM9"
+      "id1": "pout_TYmzQ09d1z2giK",
+      "id2": "pout_TYmzQ09d1z2giK"
     },
     {
       "name": "idempotency_diff_body_rejected",

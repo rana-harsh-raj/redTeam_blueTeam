@@ -1,9 +1,9 @@
 {
   "milestone": "M3.1 \u2014 Clean Acceptance and Fresh Merchant Payout Parity",
-  "generated_at": "2026-09-06T13:56:16Z",
+  "generated_at": "2026-09-06T14:54:21Z",
   "git": {
-    "branch": "milestone-3-1-calibration",
-    "head": "d20adb41ff7f8f0f6726b471268987ef488b84f0",
+    "branch": "milestone-3-1-claude-final",
+    "head": "a63185f8b81371b0ee73946ef92c9e3bfcc6fd5d",
     "twin_v1_commit": "78def24eb57112c0dc39a6ae9062b1f0d1c711fb",
     "runtime_freeze_commit": "219ca48bbb5e51db9347b335ac0a50241656045b",
     "m2_head": "a107612ed11344a8096e74dbf68616679855465e",
@@ -13,8 +13,8 @@
     {
       "gate": "historical_integrity",
       "passed": true,
-      "branch": "milestone-3-1-calibration",
-      "head": "d20adb41ff7f8f0f6726b471268987ef488b84f0"
+      "branch": "milestone-3-1-claude-final",
+      "head": "a63185f8b81371b0ee73946ef92c9e3bfcc6fd5d"
     },
     {
       "gate": "evidence_archive_manifest",
@@ -91,21 +91,29 @@
       "logical_equivalence": true
     },
     {
-      "gate": "fresh_merchant_full_success",
+      "gate": "fresh_merchant_current_head",
       "passed": true,
       "create_500_fixed": true,
-      "note": "requires an end-to-end successful fresh payout (terminal processed)"
+      "suite": "8/8",
+      "gateway_profile": "hardened (KONG_ENFORCE_ROUTE_POLICY=1)",
+      "note": "revalidated on current-head provisioner; end-to-end fresh payout to terminal processed"
     },
     {
       "gate": "fresh_id_calibration_fixture",
-      "passed": false,
-      "status": "pending",
+      "passed": true,
+      "status": "pass",
       "artifact": "m31-calibration-freshid.json"
     },
     {
       "gate": "fresh_id_deterministic_replay",
-      "passed": false,
-      "status": "pending",
+      "passed": true,
+      "status": "pass",
+      "artifact": "m31-calibration-freshid.json"
+    },
+    {
+      "gate": "fresh_id_negative_control",
+      "passed": true,
+      "status": "pass",
       "artifact": "m31-calibration-freshid.json"
     },
     {
@@ -115,10 +123,39 @@
       "artifact": "m31-calibration-freshid.json"
     },
     {
-      "gate": "fresh_id_negative_control",
-      "passed": false,
-      "status": "pending",
-      "artifact": "m31-calibration-freshid.json"
+      "gate": "deterministic_judge",
+      "passed": true,
+      "tests": 7,
+      "artifact": "m31-harness-tests.json"
+    },
+    {
+      "gate": "candidate_admission",
+      "passed": true,
+      "note": "minimum-evidence admission + fail-closed pricing-id reservation",
+      "artifact": "m31-harness-tests.json"
+    },
+    {
+      "gate": "hardened_gateway",
+      "passed": true,
+      "route_policy_tests": 9,
+      "live_enforcement_on": true
+    },
+    {
+      "gate": "campaign_isolation",
+      "passed": true,
+      "artifact": "m31-campaign-isolation.json"
+    },
+    {
+      "gate": "safety_egress",
+      "passed": true,
+      "a_outside": 0,
+      "b_outside": 0
+    },
+    {
+      "gate": "evidence_integrity",
+      "passed": true,
+      "manifest_present": true,
+      "all_named_artifacts_hashable": true
     },
     {
       "gate": "second_open_campaign",
@@ -135,18 +172,19 @@
     }
   ],
   "evidence_sha256": {
-    "m31-fresh-merchant.json": "c722e83d93b1155600e31aeb38acf0fd613e2dd123a44b51a52f2f1e2c2429a8",
+    "m31-fresh-merchant.json": "f1e20100a795418861eda34e1316cc7166119394de032308da84dd3fcfa96c42",
+    "m31-fresh-merchant-noreuse.json": "07b5c85166b683f4f494135f6de6b2ba361507c8806564ff0919e96b7d86cce8",
     "m31-hardening-retention.json": "5ae609e1926904ff4e23739e09b45d10136493d2f563795aa6e431b031392d1f",
     "m31-v17.json": "898ae8d1ac663b178ab1ff120bed7a7245ec5254814a2d5da4a61718aebbc54a",
-    "m31-calibration-freshid.json": null,
+    "m31-calibration-freshid.json": "38f2db0de753770afd92e3be03e0db8d3b686a479bdbbf808d2a76262fdbd53d",
+    "m31-calibration-crossprovider.json": null,
+    "m31-harness-tests.json": "3460e43bcdfadea15ce518c3e05d0924751c7844d6fd927554fab3c484a41531",
+    "m31-campaign-isolation.json": "091356b91c80e3dc57ef9ff714badf409243f7c3f219b5546fb7570f901dbd10",
     "m31-logical-replay.json": "4805a5281f117a33aca7fac67048890fab9cf6ed8136d5d58099a85cabe888b0"
   },
   "accepted": false,
   "unmet_or_pending_gates": [
-    "fresh_id_calibration_fixture",
-    "fresh_id_deterministic_replay",
     "fresh_id_cross_provider_replay",
-    "fresh_id_negative_control",
     "second_open_campaign"
   ]
 }

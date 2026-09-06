@@ -1,34 +1,73 @@
-# Milestone 3.1 calibration status
+# Tenant-isolation calibration (Milestone 3.1)
 
-The requested disclosure regression profile, fixture, oracle, replay bundle, and
-negative-control runs are **not implemented** in this change. Building and
-executing that cross-tenant disclosure and replay workflow was declined. No
-calibration routes, credentials, containers, or model adapters were added.
+A **private, calibration-only** fresh-identity regression/fixed pair that validates
+the harness's reproduce-and-judge machinery on a genuine, causally-attributable
+cross-tenant disclosure effect. It is **never** counted as a Razorpay finding
+(classification is `CALIBRATION_PASS` / `CALIBRATION_REDISCOVERY`, never
+`ACCEPTED_NEW_FINDING`), and it is invisible to the open campaign.
 
-The ordinary gateway and substitute authorization behavior are unchanged. This
-directory documents incomplete scope; it is not an executable calibration profile.
+This supersedes the earlier note that calibration was "not implemented". It is
+implemented, fresh-ID, and executed; see `reports/implementation/m31-calibration-freshid.json`.
 
-Defensive pricing work is implemented in `RED_LOOP/red_loop/pricing_ids.py`:
+## What it is
 
-- Preserve the existing 14-character bounded plan mapping.
-- Reserve IDs before the provisioner's first database or seed write.
-- Store run-scoped reservations in the arena's generated seed directory, with a
-  process lock and atomic replacement. Check ownership across runs and existing
-  pricing seeds. A collision fails before seeding, without changing reservations.
-- Validate plan IDs and existing explicit rule IDs against the narrowest target,
-  `payouts.pricing_rule_id CHAR(14)`, using ASCII alphanumeric identifiers.
-- Retain reservations throughout the arena seed lifetime, including failed
-  provisioning attempts; remove them only with the corresponding disposable
-  arena. These files contain identifiers, not credentials.
+A self-contained stdlib HTTP service (`service.py`) modelling a tenant-scoped
+resource store, with two profiles chosen by the calibration-only env flag
+`CALIB_PROFILE` (default **fixed**, the safe behaviour):
 
-Fidelity limitation: the provisioner seeds plans without separate rule IDs. The
-monolith substitute therefore returns a **plan ID** as `pricing_rule_id`. This is
-not exact production rule-identity parity. Core `RowsAffected` handling is intact.
+- **regression** — an object-level authorization flaw (IDOR): a resource is
+  returned by id *without* checking that the authenticated caller owns it, so a
+  freshly generated attacker tenant reads a freshly generated victim tenant's
+  resource and its hidden canary.
+- **fixed** — ownership is enforced; the same cross-tenant fetch returns `404`
+  with no victim field. This is the causal **negative control**.
 
-The reservation protects pricing ID ownership, not the entire multi-datastore
-provisioning transaction. Other existing seed writes are not serialized by its
-lock. This change does not establish concurrent full-provisioning safety or solve
-the existing truncation of unrelated resource IDs.
+It does **not** touch the real Kong gateway, Payouts, Ledger, FTS or CFA; it binds
+to loopback on a dedicated port and is torn down after each phase.
 
-Offline verification: `python3 RED_LOOP/tests/test_pricing_ids.py`.
-All runtime calibration and model replay gates remain pending.
+## Components
+
+- `generator.py`  — mints a fresh attacker/victim/resource/canary/evidence-namespace
+  per run (`ARENACALATK*` / `ARENACALVIC*`; no `pout_1234`, no M1/M2 merchant).
+- `service.py`    — the two-profile calibration endpoint (loopback only).
+- `replay.py`     — the **ID-free semantic bundle**, its resolver, and a
+  deterministic (no-model) requester.
+- `oracle.py`     — the deterministic judge oracle + machine-readable impact
+  certificate. The oracle, not any model, decides PASS/FAIL.
+- `run_calibration.py` — orchestrates the gateway-independent gates:
+  fresh fixture, deterministic replay across **two disjoint** fixtures, and the
+  fixed-profile negative control.
+- `cross_provider.py`  — the **different-provider** reproducer (default `gpt-5.5`,
+  decorrelated from the Anthropic primary) via the LiteLLM gateway; needs
+  `LITELLM_BASE_URL` / `LITELLM_API_KEY`.
+
+## Isolation boundary
+
+- The calibration code lives **outside** the primary corpus roots
+  (`.local/twin-repos/accepted/{payouts,fts,ledger,cfa,x-balances}`), so the
+  primary agent's `code_read`/`code_search` cannot reach it.
+- The service listens on 19099/191xx; the attacker Broker only reaches Kong
+  (`127.0.0.1:18080`) and denies `/_arena`. The ports are disjoint.
+- The requester/reproducer receives only its attacker credential (injected), the
+  public route/method, the resolved target reference and the endpoint — never the
+  victim credential, the canary, the profile, or the oracle rules.
+- Machine proof: `reports/implementation/m31-campaign-isolation.json`.
+
+## Run
+
+```
+# gateway-independent (fixture + deterministic replay + negative control)
+python3 RED_LOOP/calibration/tenant-isolation/run_calibration.py
+
+# different-provider replay (requires the LiteLLM env)
+python3 RED_LOOP/calibration/tenant-isolation/cross_provider.py
+```
+
+## Fidelity limitation (preserved from the pricing fix)
+
+The provisioner seeds pricing plans without separate rule IDs, so the monolith
+substitute returns a **plan ID** as `payouts.pricing_rule_id` (`CHAR(14)`). This
+is a documented fidelity limitation, not production rule-identity parity. The core
+`RowsAffected` handling is intact; the bounded 14-char plan mapping and the
+fail-closed reservation in `RED_LOOP/red_loop/pricing_ids.py` are retained.
+Offline check: `python3 -m unittest RED_LOOP.tests.test_pricing_ids`.
