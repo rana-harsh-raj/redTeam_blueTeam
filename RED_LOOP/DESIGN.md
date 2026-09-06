@@ -84,3 +84,72 @@ No production/staging/DevStack access, no real data/credentials, no internet
 egress, no Daytona, no repo-clone modification, no moving the frozen tag, no
 seeding/weakening to manufacture a finding. "No accepted finding" is an honest
 outcome.
+
+## Lifecycle v2 (M4)
+
+M4 adds a structured hypothesis lifecycle **additively** — the M1–M3.1 runtime
+(`campaign.py`/`state.py`/`judge.py`/`reproducer.py`) is unchanged and still runs
+exactly as before. New modules the loop opts into:
+
+- **`red_loop/hypotheses.py`** — the lifecycle state machine + semantic
+  fingerprinting. States: `proposed → claimed → experiment_defined → executing →
+  evidence_gathered → (falsified | blocked | supported) → replay_requested →
+  (reproduced | rejected) → (accepted | closed)`, plus coordinator-only
+  `deprioritized` (requires a machine-readable reason). Illegal transitions raise
+  `LifecycleError`. Every record carries id, semantic fingerprint (normalized
+  claim + target-assets hash), typed `target_assets`, `claim`, labelled
+  `preconditions` (`verified|observed|assumed`), `suspected_cause`,
+  `expected_observation`, a bounded `experiment` (actions/shape, success/stop
+  condition, `max_actions`, `max_duration_s`), `evidence_refs`, `owner`,
+  `priority` (int, **higher first**), `status`, `status_reason`, `blocker`
+  (fixed enum; **required iff** `status==blocked`), `next_best_action`,
+  timestamps, and a transition history. **`blocked` ≠ `falsified`**: falsifying
+  requires non-empty `evidence_refs` **and** an executed experiment; blocking
+  requires a `Blocker`. Duplicate proposals collide on fingerprint, return the
+  existing id and record a `duplicate_suppressed` event. Durable in
+  `hypotheses_v2.jsonl`; legacy `hypotheses.jsonl` is projected on read.
+- **`red_loop/leases.py`** — cooperative task leases (`leases.jsonl`): claim with
+  owner + TTL, heartbeat, expiry detection, reassignment with a handoff record
+  (`handoffs.jsonl`), restart-safe recovery of expired leases on resume.
+- **`red_loop/experiments.py`** — the cross-merchant / identity-override template
+  with mandatory arms (`own_merchant_control`, `merchant_b_variant`,
+  `malformed_or_absent_identity_variant`, `expected_denial_control`,
+  `state_observation`, `clean_reset`) and `replay_required_if_unauthorized_effect`.
+  A denial is recorded as `denied_at_layer ∈ {broker,gateway,service,unknown}` and
+  never counted as "service safe"; an own-merchant success is only a control. The
+  validator refuses `supported`/`falsified` unless the merchant-B arm executed
+  with a state observation, and refuses `accepted` without an independent replay.
+- **`red_loop/contexts.py`** — four exploration policies (`broad_coverage`,
+  `deep_direct_accounting`, `identity_tenant_boundary`, `concurrency_event_order`),
+  each a mandate suffix + tool allow-list + correlation-id prefix + artifact dir +
+  a merchant-namespace slot the coordinator fills with fresh Direct merchants
+  (accepts `MerchantDescriptor`s). `ContextSupervisor` runs them sequentially with
+  per-context budgets and a machine-readable summary. The `Dispatcher` gained an
+  optional `allowed_tools` filter (default `None` = all).
+- **`red_loop/soak.py`** — unattended loop over contexts: periodic checkpoints,
+  scenario rotation, fingerprint duplicate suppression, stagnation detection,
+  automatic reassignment on expired lease, wall-clock + cycle budgets, and a
+  final `m4-direct-e2e-soak.json`. Never idle-loops: with no productive work and
+  no open hypotheses it records `no_productive_work` and stops.
+- **`red_loop/lifecycle_gate.py`** — the closing gate: a run cannot close
+  `successful` while its highest-priority hypothesis is `proposed`/`claimed` (or
+  any top-tier hypothesis lacks a resolved status), a `blocked` lacks a valid
+  blocker, or a `supported` unauthorized effect lacks an independent replay.
+  Machine-readable reasons; `export_lifecycle()` writes
+  `m4-hypothesis-lifecycle.json`. This closes the M3.1 hole where acceptance
+  ignored hypotheses entirely.
+- **`surface/m4_recovery_matrix.py`** — failure-recovery scenarios
+  (`explorer_process_kill`, `subagent_kill`, `model_provider_timeout` via an
+  in-process fake gateway, `expired_lease`, `partially_written_artifact`,
+  `interrupted_replay`, `interrupted_acceptance`). The docker-dependent scenarios
+  (`service_restart`, `queue_consumer_restart`, `database_restart`) are
+  environment-gated: `blocked: environment_unavailable` unless
+  `M4_DOCKER_RECOVERY=1`. The model-timeout scenario uses a throwaway fake key and
+  never reads the real `LITELLM_API_KEY` or makes a real model call.
+
+Hooks into the existing loop are minimal: `campaign._progress_signature` also
+counts v2 terminal states; the stagnation/recon replans write a machine-readable
+`replans.jsonl` record before stopping; `tools.Dispatcher` optionally takes
+`hyp_manager`/`lease_manager`/`allowed_tools` and exposes the
+`define_experiment`/`mark_blocked`/`request_replay` tools (no-ops unless a
+`hyp_manager` is wired); `run.py resume` recovers stranded leases.
