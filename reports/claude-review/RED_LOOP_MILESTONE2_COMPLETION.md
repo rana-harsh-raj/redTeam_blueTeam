@@ -9,7 +9,9 @@ Branch `milestone-2-red-loop` off `twin-v1.0` (freeze `219ca48`). One sustained 
   `219ca48bbb5e51db9347b335ac0a50241656045b`). The tag, the runtime freeze
   commit, historical acceptance evidence, retained failed runs, and the company
   repository clones are UNCHANGED.
-- Milestone 2 branch: `milestone-2-red-loop`, created from `twin-v1.0`. All M2
+- Milestone 2 branch: `milestone-2-red-loop`, created from `twin-v1.0`; the
+  Milestone 2 work is its HEAD commit (resolve with `git rev-parse
+  milestone-2-red-loop`). All M2
   additions are layered on top and declared (`RED_LOOP/registry/m2-fidelity.md`).
 
 ## 2. What was built (`RED_LOOP/`)
