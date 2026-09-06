@@ -20,14 +20,14 @@ either linked to a source symbol / artifact / commit or marked `[TODO]`.
 ## Phases
 | Phase | Scope | Status |
 |---|---|---|
-| 0 | Baseline preservation & reverification (hash recompute, clean boot, baseline report) | in progress |
-| 1 | Source-grounded Direct map (payouts/api/fts/x-balances/ledger/XAS/BAS) | in progress (parallel subagents) |
-| 2 | Fresh Direct merchant provisioner + self-check | pending |
-| 3 | Direct payout + statement + reconciliation + Ledger path (A–G journeys) | pending |
+| 0 | Baseline preservation & reverification (hash recompute, clean boot, baseline report) | DONE (BASELINE_HOLDS, m4-base-a 26/0/0) |
+| 1 | Source-grounded Direct map (payouts/api/fts/x-balances/ledger/XAS/BAS) | DONE (T02-T07,T12; source-map+TWIN_SPEC v2) |
+| 2 | Fresh Direct merchant provisioner + self-check | DONE (T09: 2 merchants, 29/29 self-check, 15/15 proofs) |
+| 3 | Direct payout + statement + reconciliation + Ledger path (A-G journeys) | in progress (T10 ingestion, T11 xas/DA) |
 | 4 | Status-return route matrix | pending |
-| 5 | Invariants and boundary tests | pending |
-| 6 | Hypothesis-lifecycle hardening in RED_LOOP | pending |
-| 7 | Multi-context + soak | pending |
+| 5 | Invariants and boundary tests | in progress (T14) |
+| 6 | Hypothesis-lifecycle hardening in RED_LOOP | code DONE (T13, 83 tests); wiring in progress (T15) |
+| 7 | Multi-context + soak | in progress (T15) |
 | 8 | Evidence, replay, acceptance, tag | pending |
 
 ## Workstreams (subagent IDs in m4-task-ledger.jsonl)
