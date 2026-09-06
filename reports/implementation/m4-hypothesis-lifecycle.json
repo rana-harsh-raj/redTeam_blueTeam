@@ -1,7 +1,7 @@
 {
-  "campaign_id": "camp-20260906T193919Z-8d485d",
+  "campaign_id": "camp-20260906T194859Z-7d33b4",
   "source": "legacy_projection",
-  "generated_at": "2026-09-06T19:45:34Z",
+  "generated_at": "2026-09-06T19:55:46Z",
   "rollup": {
     "proposed": 0,
     "claimed": 0,
@@ -31,7 +31,16 @@
   "hypotheses": [],
   "leases": [],
   "handoffs": [],
-  "replans": [],
+  "replans": [
+    {
+      "kind": "campaign_replan",
+      "turn": 14,
+      "reason": "recon_only_loop",
+      "what_was_tried": "many code/recall turns without a runtime experiment",
+      "next_policy": "run one concrete merchant_request experiment or conclude",
+      "ts": "2026-09-06T19:53:59Z"
+    }
+  ],
   "gate": {
     "passed": true,
     "reasons": [],

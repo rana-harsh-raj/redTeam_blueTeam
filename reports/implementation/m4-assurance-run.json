@@ -1,0 +1,249 @@
+{
+  "kind": "M4_ASSURANCE_CONTEXTS",
+  "campaign_id": "camp-20260906T194859Z-7d33b4",
+  "generated_at": "2026-09-06T19:55:46Z",
+  "run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/camp-20260906T194859Z-7d33b4",
+  "primary_model": "kimi-k3",
+  "contexts_summary": {
+    "started_at": "2026-09-06T19:48:59Z",
+    "ended_at": "2026-09-06T19:55:46Z",
+    "policies": [
+      "broad_coverage",
+      "deep_direct_accounting",
+      "identity_tenant_boundary",
+      "concurrency_event_order"
+    ],
+    "total_turns": 56
+  },
+  "contexts": [
+    {
+      "policy": "broad_coverage",
+      "merchant_id": "ARENAD80422548",
+      "stop_reason": "emergency_turn_ceiling",
+      "turns_completed": 14,
+      "normal_completion": false,
+      "broker_requests": 7,
+      "new_hypotheses": 0,
+      "hypotheses_by_status": {
+        "proposed": 0,
+        "claimed": 0,
+        "experiment_defined": 0,
+        "executing": 0,
+        "evidence_gathered": 0,
+        "falsified": 0,
+        "blocked": 0,
+        "supported": 0,
+        "replay_requested": 0,
+        "reproduced": 0,
+        "rejected": 0,
+        "accepted": 0,
+        "closed": 0,
+        "deprioritized": 0
+      },
+      "usage": {
+        "calls": 14,
+        "prompt_tokens": 183188,
+        "completion_tokens": 2236,
+        "total_tokens": 185424,
+        "estimated_cost_usd": "UNKNOWN (no gateway price table exposed)",
+        "by_model": {
+          "kimi-k3": {
+            "calls": 14,
+            "prompt_tokens": 183188,
+            "completion_tokens": 2236,
+            "total_tokens": 185424
+          }
+        }
+      }
+    },
+    {
+      "policy": "deep_direct_accounting",
+      "merchant_id": "ARENAD86957107",
+      "stop_reason": "emergency_turn_ceiling",
+      "turns_completed": 14,
+      "normal_completion": false,
+      "broker_requests": 3,
+      "new_hypotheses": 0,
+      "hypotheses_by_status": {
+        "proposed": 0,
+        "claimed": 0,
+        "experiment_defined": 0,
+        "executing": 0,
+        "evidence_gathered": 0,
+        "falsified": 0,
+        "blocked": 0,
+        "supported": 0,
+        "replay_requested": 0,
+        "reproduced": 0,
+        "rejected": 0,
+        "accepted": 0,
+        "closed": 0,
+        "deprioritized": 0
+      },
+      "usage": {
+        "calls": 14,
+        "prompt_tokens": 183876,
+        "completion_tokens": 1459,
+        "total_tokens": 185335,
+        "estimated_cost_usd": "UNKNOWN (no gateway price table exposed)",
+        "by_model": {
+          "kimi-k3": {
+            "calls": 14,
+            "prompt_tokens": 183876,
+            "completion_tokens": 1459,
+            "total_tokens": 185335
+          }
+        }
+      }
+    },
+    {
+      "policy": "identity_tenant_boundary",
+      "merchant_id": "ARENAD86517499",
+      "stop_reason": "emergency_turn_ceiling",
+      "turns_completed": 14,
+      "normal_completion": false,
+      "broker_requests": 0,
+      "new_hypotheses": 0,
+      "hypotheses_by_status": {
+        "proposed": 0,
+        "claimed": 0,
+        "experiment_defined": 0,
+        "executing": 0,
+        "evidence_gathered": 0,
+        "falsified": 0,
+        "blocked": 0,
+        "supported": 0,
+        "replay_requested": 0,
+        "reproduced": 0,
+        "rejected": 0,
+        "accepted": 0,
+        "closed": 0,
+        "deprioritized": 0
+      },
+      "usage": {
+        "calls": 14,
+        "prompt_tokens": 232685,
+        "completion_tokens": 2567,
+        "total_tokens": 235252,
+        "estimated_cost_usd": "UNKNOWN (no gateway price table exposed)",
+        "by_model": {
+          "kimi-k3": {
+            "calls": 14,
+            "prompt_tokens": 232685,
+            "completion_tokens": 2567,
+            "total_tokens": 235252
+          }
+        }
+      }
+    },
+    {
+      "policy": "concurrency_event_order",
+      "merchant_id": "ARENAD88300565",
+      "stop_reason": "emergency_turn_ceiling",
+      "turns_completed": 14,
+      "normal_completion": false,
+      "broker_requests": 4,
+      "new_hypotheses": 0,
+      "hypotheses_by_status": {
+        "proposed": 0,
+        "claimed": 0,
+        "experiment_defined": 0,
+        "executing": 0,
+        "evidence_gathered": 0,
+        "falsified": 0,
+        "blocked": 0,
+        "supported": 0,
+        "replay_requested": 0,
+        "reproduced": 0,
+        "rejected": 0,
+        "accepted": 0,
+        "closed": 0,
+        "deprioritized": 0
+      },
+      "usage": {
+        "calls": 14,
+        "prompt_tokens": 185761,
+        "completion_tokens": 2208,
+        "total_tokens": 187969,
+        "estimated_cost_usd": "UNKNOWN (no gateway price table exposed)",
+        "by_model": {
+          "kimi-k3": {
+            "calls": 14,
+            "prompt_tokens": 185761,
+            "completion_tokens": 2208,
+            "total_tokens": 187969
+          }
+        }
+      }
+    }
+  ],
+  "merchants": [
+    {
+      "policy": "broad_coverage",
+      "merchant_id": "ARENAD80422548",
+      "provisioning": null
+    },
+    {
+      "policy": "deep_direct_accounting",
+      "merchant_id": "ARENAD86957107",
+      "provisioning": null
+    },
+    {
+      "policy": "identity_tenant_boundary",
+      "merchant_id": "ARENAD86517499",
+      "provisioning": null
+    },
+    {
+      "policy": "concurrency_event_order",
+      "merchant_id": "ARENAD88300565",
+      "provisioning": null
+    }
+  ],
+  "hypotheses_by_status": {
+    "proposed": 0,
+    "claimed": 0,
+    "experiment_defined": 0,
+    "executing": 0,
+    "evidence_gathered": 0,
+    "falsified": 0,
+    "blocked": 0,
+    "supported": 0,
+    "replay_requested": 0,
+    "reproduced": 0,
+    "rejected": 0,
+    "accepted": 0,
+    "closed": 0,
+    "deprioritized": 0
+  },
+  "experiments_executed": 14,
+  "blockers": [],
+  "gate_verdict": {
+    "passed": true,
+    "reasons": [],
+    "source": "legacy_projection",
+    "highest_priority_open": null,
+    "highest_priority_open_status": null
+  },
+  "lifecycle_rollup": {
+    "proposed": 0,
+    "claimed": 0,
+    "experiment_defined": 0,
+    "executing": 0,
+    "evidence_gathered": 0,
+    "falsified": 0,
+    "blocked": 0,
+    "supported": 0,
+    "replay_requested": 0,
+    "reproduced": 0,
+    "rejected": 0,
+    "accepted": 0,
+    "closed": 0,
+    "deprioritized": 0
+  },
+  "egress_note": {
+    "captured_here": false,
+    "reason": "arena-wide egress audit uses a privileged host-network capture container; it is run by the coordinator at acceptance, wrapping the full run. Not invoked in-line to avoid a heavy capture.",
+    "audit_tool": "ENV2_COMPOSE/network/egress_audit.py",
+    "attacker_boundary": "all context traffic is via the Broker to kong-lite (http://127.0.0.1:18080); /_arena/*, /twirp/, /metrics, /debug hard-denied; model calls only via the LiteLLM gateway."
+  }
+}
