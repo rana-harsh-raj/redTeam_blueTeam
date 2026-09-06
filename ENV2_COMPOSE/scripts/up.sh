@@ -149,7 +149,7 @@ CORE_SERVICES="$(compose --profile datastores --profile substitutes --profile co
 echo "  -- (post-core) ledger accounting configs: ledger's own seed sets via LedgerConfigAPI/CreateInBulk (shared_account_x, direct_account_x)"
 LEDGER_AUTH_B64="$(printf 'payouts_key:%s' "$(cat secrets/auth_payouts_ledger.txt)" | base64)"
 for ident in shared_account_x direct_account_x; do
-  docker run --rm --pull never --network rzp-arena curlimages/curl:latest -fsS -o /dev/null -w "     $ident -> HTTP %{http_code}\n" \
+  docker run --rm --pull never --network "rzp-arena${ARENA_SUFFIX:-}" curlimages/curl:latest -fsS -o /dev/null -w "     $ident -> HTTP %{http_code}\n" \
     -X POST -H "Authorization: Basic $LEDGER_AUTH_B64" -H "Ledger-Tenant: X" -H "Content-Type: application/json" \
     -d "{\"ledger_config_data_identifier\":\"$ident\"}" \
     http://ledger-api:8080/twirp/rzp.ledger.ledger_config.v1.LedgerConfigAPI/CreateInBulk

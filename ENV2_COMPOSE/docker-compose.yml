@@ -77,14 +77,14 @@ x-proxy-env: &proxy-env
 
 networks:
   rzp-arena:
-    name: rzp-arena
+    name: "rzp-arena${ARENA_SUFFIX:-}"
     internal: true
     driver: bridge
     ipam:
       config:
         - subnet: ${ARENA_SUBNET:-172.28.16.0/24}
   rzp-ingress:
-    name: rzp-ingress
+    name: "rzp-ingress${ARENA_SUFFIX:-}"
     internal: true
     driver: bridge
     ipam:
@@ -94,21 +94,21 @@ networks:
 volumes:
   # Generated synthetic material only; initialized with narrow consumer scope.
   config-payouts:
-    name: rzp-arena-config-payouts
+    name: "rzp-arena-config-payouts${ARENA_SUFFIX:-}"
   config-ledger:
-    name: rzp-arena-config-ledger
+    name: "rzp-arena-config-ledger${ARENA_SUFFIX:-}"
   config-fts:
-    name: rzp-arena-config-fts
+    name: "rzp-arena-config-fts${ARENA_SUFFIX:-}"
   config-cfa:
-    name: rzp-arena-config-cfa
+    name: "rzp-arena-config-cfa${ARENA_SUFFIX:-}"
   config-xbalances:
-    name: rzp-arena-config-xbalances
+    name: "rzp-arena-config-xbalances${ARENA_SUFFIX:-}"
   config-mozart-mock:
-    name: rzp-arena-config-mozart-mock
+    name: "rzp-arena-config-mozart-mock${ARENA_SUFFIX:-}"
   secrets-kong:
-    name: rzp-arena-secrets-kong
+    name: "rzp-arena-secrets-kong${ARENA_SUFFIX:-}"
   secrets-monolith:
-    name: rzp-arena-secrets-monolith
+    name: "rzp-arena-secrets-monolith${ARENA_SUFFIX:-}"
   mysql-payouts-data:
   mysql-fts-data:
   mysql-xbalances-data:
