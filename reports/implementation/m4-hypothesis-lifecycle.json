@@ -1,7 +1,7 @@
 {
-  "campaign_id": "camp-20260906T194859Z-7d33b4",
-  "source": "legacy_projection",
-  "generated_at": "2026-09-06T19:55:46Z",
+  "campaign_id": "camp-20260906T200337Z-7511c5",
+  "source": "v2",
+  "generated_at": "2026-09-06T21:30:15Z",
   "rollup": {
     "proposed": 0,
     "claimed": 0,
@@ -16,7 +16,7 @@
     "rejected": 0,
     "accepted": 0,
     "closed": 0,
-    "deprioritized": 0
+    "deprioritized": 6
   },
   "blockers": {
     "route_not_exposed": 0,
@@ -28,17 +28,840 @@
     "environment_failure": 0,
     "time_budget_exhausted": 0
   },
-  "hypotheses": [],
+  "hypotheses": [
+    {
+      "hypothesis_id": "H-001",
+      "fingerprint": "984039c82daafd9d",
+      "priority": 2,
+      "claim": "The Direct payout path may allow creation of payouts that break ledger zero-sum conservation, idempotency, or reversal invariants, e.g. duplicate payouts with same idempotency key creating two debits, or cancellation/reversal not restoring funds.",
+      "target_assets": [
+        {
+          "asset": "payouts direct payout path",
+          "kind": "unknown"
+        },
+        {
+          "asset": "ledger zero-sum invariant",
+          "kind": "unknown"
+        }
+      ],
+      "status": "deprioritized",
+      "status_reason": "coordinator_disposition:covered_by_executed_tests | Direct ledger conservation/idempotency/reversal invariants are covered by executed tests G51 (conservation, entries sum to zero), G54 (no duplicate ledger), G53 (reservation not released twice) and G52 (concurrent idempotency) with negative controls; all held (reports/implementation/m4-invariant-results.json, m4-boundary-results.json). Soak loop did not itself run the experiment.",
+      "terminal_status_reason": "coordinator_disposition:covered_by_executed_tests | Direct ledger conservation/idempotency/reversal invariants are covered by executed tests G51 (conservation, entries sum to zero), G54 (no duplicate ledger), G53 (reservation not released twice) and G52 (concurrent idempotency) with negative controls; all held (reports/implementation/m4-invariant-results.json, m4-boundary-results.json). Soak loop did not itself run the experiment.",
+      "blocker": null,
+      "owner": "deep_direct_accounting",
+      "evidence_refs": [],
+      "experiment": {
+        "actions": [
+          "POST /v1/payouts with merchant_id=ARENAD88720976 (own, 14 chars) as control",
+          "POST /v1/payouts with merchant_id=OTHERMERCHANT1 (different 14-char) as cross-tenant variant",
+          "POST /v1/payouts omitting merchant_id as absent-identity variant",
+          "GET /v1/payouts to observe state and whether anything was created"
+        ],
+        "purpose": "Determine how merchant identity is resolved/authorized on payout creation, and whether an ordinary merchant can create a payout under a different merchant_id (cross-tenant write)."
+      },
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "claimed",
+          "reason": "experiment_defined",
+          "actor": "identity_tenant_boundary",
+          "blocker": null,
+          "ts": "2026-09-06T20:21:04Z"
+        },
+        {
+          "from": "claimed",
+          "to": "experiment_defined",
+          "reason": "experiment_defined",
+          "actor": "identity_tenant_boundary",
+          "blocker": null,
+          "ts": "2026-09-06T20:21:04Z"
+        },
+        {
+          "from": "experiment_defined",
+          "to": "deprioritized",
+          "reason": "coordinator_disposition:covered_by_executed_tests | Claim (Direct ledger conservation/idempotency/reversal) is covered by executed invariant tests G51/G53/G54 and G52 (reports/implementation/m4-invariant-results.json, m4-boundary-results.json); all held with negative controls, no violation. Soak loop did not itself run the experiment.",
+          "actor": "coordinator",
+          "blocker": null,
+          "ts": "2026-09-06T21:28:57Z"
+        }
+      ],
+      "independent_replay_ok": null,
+      "next_best_action": "none (covered elsewhere or config-unknown)"
+    },
+    {
+      "hypothesis_id": "H-002",
+      "fingerprint": "d6bb36b0ca8829f2",
+      "priority": 2,
+      "claim": "Sending two concurrent POST /v1/payouts with the same X-Payout-Idempotency-Key header may bypass the idempotency guard (mutex race or missing enforcement) and create two payouts, causing a double debit and breaking ledger zero-sum conservation.",
+      "target_assets": [
+        {
+          "asset": "payouts",
+          "kind": "unknown"
+        },
+        {
+          "asset": "ledger",
+          "kind": "unknown"
+        }
+      ],
+      "status": "deprioritized",
+      "status_reason": "coordinator_disposition:duplicate_of_executed_test_G52 | Covered by executed test G52 (reports/implementation/m4-boundary-results.json): 8 concurrent POSTs with the same X-Payout-Idempotency-Key -> exactly one payout and <=1 FTS transfer; no bypass.",
+      "terminal_status_reason": "coordinator_disposition:duplicate_of_executed_test_G52 | Covered by executed test G52 (reports/implementation/m4-boundary-results.json): 8 concurrent POSTs with the same X-Payout-Idempotency-Key -> exactly one payout and <=1 FTS transfer; no bypass.",
+      "blocker": null,
+      "owner": "deep_direct_accounting",
+      "evidence_refs": [],
+      "experiment": null,
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "deprioritized",
+          "reason": "coordinator_disposition:covered_by_executed_tests | Claim (Direct ledger conservation/idempotency/reversal) is covered by executed invariant tests G51/G53/G54 and G52 (reports/implementation/m4-invariant-results.json, m4-boundary-results.json); all held with negative controls, no violation. Soak loop did not itself run the experiment.",
+          "actor": "coordinator",
+          "blocker": null,
+          "ts": "2026-09-06T21:28:57Z"
+        }
+      ],
+      "independent_replay_ok": null,
+      "next_best_action": "none (covered elsewhere or config-unknown)"
+    },
+    {
+      "hypothesis_id": "H-003",
+      "fingerprint": "907adaa3b4854f97",
+      "priority": 2,
+      "claim": "Payout creation and its duplicate/idempotency enforcement are both feature-gated (Splitz experiment for duplicate-evaluate; IKeyAutoEnforcement off by default). An ordinary merchant may be able to create duplicate payouts (same idempotency key or same body) that each post ledger debits, breaking money conservation / de-duplication.",
+      "target_assets": [
+        {
+          "asset": "payouts",
+          "kind": "unknown"
+        },
+        {
+          "asset": "ledger",
+          "kind": "unknown"
+        }
+      ],
+      "status": "deprioritized",
+      "status_reason": "coordinator_disposition:fidelity_insufficient_config_unknown | Idempotency enforcement being Splitz/IKeyAutoEnforcement-gated is a documented config observation; production feature-flag rollout is UNKNOWN. No unauthorized effect demonstrable in the twin (a supplied key is enforced per G52).",
+      "terminal_status_reason": "coordinator_disposition:fidelity_insufficient_config_unknown | Idempotency enforcement being Splitz/IKeyAutoEnforcement-gated is a documented config observation; production feature-flag rollout is UNKNOWN. No unauthorized effect demonstrable in the twin (a supplied key is enforced per G52).",
+      "blocker": null,
+      "owner": "identity_tenant_boundary",
+      "evidence_refs": [],
+      "experiment": null,
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "deprioritized",
+          "reason": "coordinator_disposition:covered_by_executed_tests | Claim (Direct ledger conservation/idempotency/reversal) is covered by executed invariant tests G51/G53/G54 and G52 (reports/implementation/m4-invariant-results.json, m4-boundary-results.json); all held with negative controls, no violation. Soak loop did not itself run the experiment.",
+          "actor": "coordinator",
+          "blocker": null,
+          "ts": "2026-09-06T21:28:57Z"
+        }
+      ],
+      "independent_replay_ok": null,
+      "next_best_action": "none (covered elsewhere or config-unknown)"
+    },
+    {
+      "hypothesis_id": "H-004",
+      "fingerprint": "67a2dfc5d65a2d9a",
+      "priority": 2,
+      "claim": "The POST /v1/payouts FundAccountPayoutRequest has a merchant_id field in the request body (binding:required,len=14). The Payouts service validates it matches the authenticated passport merchant (middleware/auth.go). I need to verify: (a) the exact validation error when merchant_id is absent/mismatched, and (b) whether a valid same-merchant payout can be created at all (to establish a working baseline) before any cross-tenant or conservation test is meaningful.",
+      "target_assets": [
+        {
+          "asset": "payouts",
+          "kind": "unknown"
+        },
+        {
+          "asset": "ledger",
+          "kind": "unknown"
+        }
+      ],
+      "status": "deprioritized",
+      "status_reason": "coordinator_disposition:duplicate_of_executed_tests_G46_G47 | Covered by executed tests G46/G47 (reports/implementation/m4-boundary-results.json; payouts core.go:415-418): request-body merchant_id is overwritten by the passport identity, so the claimed missing-validation is contradicted by evidence.",
+      "terminal_status_reason": "coordinator_disposition:duplicate_of_executed_tests_G46_G47 | Covered by executed tests G46/G47 (reports/implementation/m4-boundary-results.json; payouts core.go:415-418): request-body merchant_id is overwritten by the passport identity, so the claimed missing-validation is contradicted by evidence.",
+      "blocker": null,
+      "owner": "identity_tenant_boundary",
+      "evidence_refs": [],
+      "experiment": null,
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "deprioritized",
+          "reason": "coordinator_disposition:covered_by_executed_tests | Claim (Direct ledger conservation/idempotency/reversal) is covered by executed invariant tests G51/G53/G54 and G52 (reports/implementation/m4-invariant-results.json, m4-boundary-results.json); all held with negative controls, no violation. Soak loop did not itself run the experiment.",
+          "actor": "coordinator",
+          "blocker": null,
+          "ts": "2026-09-06T21:28:57Z"
+        }
+      ],
+      "independent_replay_ok": null,
+      "next_best_action": "none (covered elsewhere or config-unknown)"
+    },
+    {
+      "hypothesis_id": "H-005",
+      "fingerprint": "ce87225b30020a1b",
+      "priority": 2,
+      "claim": "The OpenAPI spec for POST /v1/payouts lists required fields as account_number, amount, currency, purpose (no merchant_id in spec), while the Go binding may require merchant_id. My prior 400s were validation failures. I need the exact minimal valid body to establish a working baseline payout, which is a prerequisite for any conservation/idempotency/cross-tenant test.",
+      "target_assets": [],
+      "status": "deprioritized",
+      "status_reason": "coordinator_disposition:doc_discrepancy_no_effect | OpenAPI-vs-Go-binding merchant_id discrepancy is a documentation/spec observation with no unauthorized effect (the body field is ignored per G47); recorded, not pursued.",
+      "terminal_status_reason": "coordinator_disposition:doc_discrepancy_no_effect | OpenAPI-vs-Go-binding merchant_id discrepancy is a documentation/spec observation with no unauthorized effect (the body field is ignored per G47); recorded, not pursued.",
+      "blocker": null,
+      "owner": "identity_tenant_boundary",
+      "evidence_refs": [],
+      "experiment": null,
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "deprioritized",
+          "reason": "coordinator_disposition:covered_by_executed_tests | Claim (Direct ledger conservation/idempotency/reversal) is covered by executed invariant tests G51/G53/G54 and G52 (reports/implementation/m4-invariant-results.json, m4-boundary-results.json); all held with negative controls, no violation. Soak loop did not itself run the experiment.",
+          "actor": "coordinator",
+          "blocker": null,
+          "ts": "2026-09-06T21:28:57Z"
+        }
+      ],
+      "independent_replay_ok": null,
+      "next_best_action": "none (covered elsewhere or config-unknown)"
+    },
+    {
+      "hypothesis_id": "H-006",
+      "fingerprint": "8801f355b5dc3edf",
+      "priority": 2,
+      "claim": "The idempotency middleware in idempotency_key.go (lines 103-112) SHORT-CIRCUITS and calls handlerFunction directly when the X-Payout-Idempotency-Key header is EMPTY and IKeyAutoEnforcement is off/experiment not enabled \u2014 meaning it skips the distributed mutex AND the idempotency_keys table dedup entirely. Additionally, business-logic duplicate-prevention (SHA-256 hash, 'for_duplicate_payout_evaluate') is Splitz-gated. If both are off in this environment, an ordinary merchant can create duplicate payouts (same body, no/empty idempotency key) that each post a ledger debit, breaking money conservation and de-duplication.",
+      "target_assets": [
+        {
+          "asset": "payouts",
+          "kind": "unknown"
+        },
+        {
+          "asset": "ledger",
+          "kind": "unknown"
+        }
+      ],
+      "status": "deprioritized",
+      "status_reason": "coordinator_disposition:fidelity_insufficient_config_unknown | Empty-key short-circuit (idempotency_key.go:103-112, IKeyAutoEnforcement default off) is source-default behaviour; production enforcement rollout UNKNOWN. No unauthorized effect in the twin; when a key is supplied, enforcement holds (G52).",
+      "terminal_status_reason": "coordinator_disposition:fidelity_insufficient_config_unknown | Empty-key short-circuit (idempotency_key.go:103-112, IKeyAutoEnforcement default off) is source-default behaviour; production enforcement rollout UNKNOWN. No unauthorized effect in the twin; when a key is supplied, enforcement holds (G52).",
+      "blocker": null,
+      "owner": "deep_direct_accounting",
+      "evidence_refs": [],
+      "experiment": null,
+      "transitions": [
+        {
+          "from": "proposed",
+          "to": "deprioritized",
+          "reason": "coordinator_disposition:covered_by_executed_tests | Claim (Direct ledger conservation/idempotency/reversal) is covered by executed invariant tests G51/G53/G54 and G52 (reports/implementation/m4-invariant-results.json, m4-boundary-results.json); all held with negative controls, no violation. Soak loop did not itself run the experiment.",
+          "actor": "coordinator",
+          "blocker": null,
+          "ts": "2026-09-06T21:28:57Z"
+        }
+      ],
+      "independent_replay_ok": null,
+      "next_best_action": "none (covered elsewhere or config-unknown)"
+    }
+  ],
   "leases": [],
   "handoffs": [],
   "replans": [
+    {
+      "kind": "soak_cycle",
+      "cycle": 0,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 11,
+      "reassignments": [],
+      "ts": "2026-09-06T20:06:22Z"
+    },
     {
       "kind": "campaign_replan",
       "turn": 14,
       "reason": "recon_only_loop",
       "what_was_tried": "many code/recall turns without a runtime experiment",
       "next_policy": "run one concrete merchant_request experiment or conclude",
-      "ts": "2026-09-06T19:53:59Z"
+      "ts": "2026-09-06T20:08:45Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 1,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 2,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": [],
+      "ts": "2026-09-06T20:09:04Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 2,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 1,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 3,
+      "reassignments": [],
+      "ts": "2026-09-06T20:12:20Z"
+    },
+    {
+      "kind": "campaign_replan",
+      "turn": 16,
+      "reason": "recon_only_loop",
+      "what_was_tried": "many code/recall turns without a runtime experiment",
+      "next_policy": "run one concrete merchant_request experiment or conclude",
+      "ts": "2026-09-06T20:15:22Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 3,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 1,
+      "reassignments": [],
+      "ts": "2026-09-06T20:15:22Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 4,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 7,
+      "reassignments": [],
+      "ts": "2026-09-06T20:17:32Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 5,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 4,
+      "reassignments": [],
+      "ts": "2026-09-06T20:19:45Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 6,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 4,
+      "reassignments": [],
+      "ts": "2026-09-06T20:22:03Z"
+    },
+    {
+      "kind": "campaign_replan",
+      "turn": 15,
+      "reason": "recon_only_loop",
+      "what_was_tried": "many code/recall turns without a runtime experiment",
+      "next_policy": "run one concrete merchant_request experiment or conclude",
+      "ts": "2026-09-06T20:23:56Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 7,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 1,
+      "reassignments": [],
+      "ts": "2026-09-06T20:24:09Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 8,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 7,
+      "reassignments": [],
+      "ts": "2026-09-06T20:26:06Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 9,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": [],
+      "ts": "2026-09-06T20:28:37Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 10,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 3,
+      "reassignments": [],
+      "ts": "2026-09-06T20:31:17Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 11,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 6,
+      "reassignments": [],
+      "ts": "2026-09-06T20:32:57Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 12,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": [],
+      "ts": "2026-09-06T20:35:09Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 13,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 10,
+      "reassignments": [],
+      "ts": "2026-09-06T20:37:39Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 14,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": [],
+      "ts": "2026-09-06T20:39:53Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 15,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": [],
+      "ts": "2026-09-06T20:41:54Z"
+    },
+    {
+      "kind": "campaign_replan",
+      "turn": 14,
+      "reason": "recon_only_loop",
+      "what_was_tried": "many code/recall turns without a runtime experiment",
+      "next_policy": "run one concrete merchant_request experiment or conclude",
+      "ts": "2026-09-06T20:43:32Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 16,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": [],
+      "ts": "2026-09-06T20:43:47Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 17,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": [],
+      "ts": "2026-09-06T20:46:09Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 18,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 1,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 3,
+      "reassignments": [],
+      "ts": "2026-09-06T20:48:22Z"
+    },
+    {
+      "kind": "campaign_replan",
+      "turn": 14,
+      "reason": "recon_only_loop",
+      "what_was_tried": "many code/recall turns without a runtime experiment",
+      "next_policy": "run one concrete merchant_request experiment or conclude",
+      "ts": "2026-09-06T20:50:46Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 19,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": [],
+      "ts": "2026-09-06T20:51:08Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 20,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 3,
+      "reassignments": [],
+      "ts": "2026-09-06T20:53:31Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 21,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": [],
+      "ts": "2026-09-06T20:55:39Z"
+    },
+    {
+      "kind": "campaign_replan",
+      "turn": 14,
+      "reason": "recon_only_loop",
+      "what_was_tried": "many code/recall turns without a runtime experiment",
+      "next_policy": "run one concrete merchant_request experiment or conclude",
+      "ts": "2026-09-06T20:57:23Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 22,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 1,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 6,
+      "reassignments": [],
+      "ts": "2026-09-06T20:57:51Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 23,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": [],
+      "ts": "2026-09-06T20:59:50Z"
+    },
+    {
+      "kind": "campaign_replan",
+      "turn": 14,
+      "reason": "recon_only_loop",
+      "what_was_tried": "many code/recall turns without a runtime experiment",
+      "next_policy": "run one concrete merchant_request experiment or conclude",
+      "ts": "2026-09-06T21:01:29Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 24,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": [],
+      "ts": "2026-09-06T21:01:47Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 25,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 3,
+      "reassignments": [],
+      "ts": "2026-09-06T21:03:55Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 26,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": [],
+      "ts": "2026-09-06T21:05:50Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 27,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": [],
+      "ts": "2026-09-06T21:07:46Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 28,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": [],
+      "ts": "2026-09-06T21:09:41Z"
+    },
+    {
+      "kind": "campaign_replan",
+      "turn": 14,
+      "reason": "recon_only_loop",
+      "what_was_tried": "many code/recall turns without a runtime experiment",
+      "next_policy": "run one concrete merchant_request experiment or conclude",
+      "ts": "2026-09-06T21:10:56Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 29,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 1,
+      "reassignments": [],
+      "ts": "2026-09-06T21:11:08Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 30,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 4,
+      "reassignments": [],
+      "ts": "2026-09-06T21:12:57Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 31,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": [],
+      "ts": "2026-09-06T21:15:20Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 32,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 10,
+      "reassignments": [],
+      "ts": "2026-09-06T21:17:07Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 33,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 1,
+      "reassignments": [],
+      "ts": "2026-09-06T21:19:10Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 34,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": [],
+      "ts": "2026-09-06T21:21:32Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 35,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 4,
+      "reassignments": [],
+      "ts": "2026-09-06T21:23:24Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 36,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 13,
+      "reassignments": [],
+      "ts": "2026-09-06T21:25:39Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 37,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 1,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 0,
+      "reassignments": [],
+      "ts": "2026-09-06T21:26:57Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 38,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": false,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 0,
+      "reassignments": [],
+      "ts": "2026-09-06T21:26:57Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 39,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": false,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 0,
+      "reassignments": [],
+      "ts": "2026-09-06T21:26:58Z"
+    },
+    {
+      "kind": "soak_cycle",
+      "cycle": 40,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": false,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 0,
+      "reassignments": [],
+      "ts": "2026-09-06T21:26:58Z"
+    },
+    {
+      "kind": "soak_replan",
+      "reason": "stagnation",
+      "what_was_tried": [
+        "broad_coverage",
+        "deep_direct_accounting",
+        "identity_tenant_boundary",
+        "concurrency_event_order",
+        "broad_coverage",
+        "deep_direct_accounting",
+        "identity_tenant_boundary",
+        "concurrency_event_order",
+        "broad_coverage",
+        "deep_direct_accounting",
+        "identity_tenant_boundary",
+        "concurrency_event_order",
+        "broad_coverage",
+        "deep_direct_accounting",
+        "identity_tenant_boundary",
+        "concurrency_event_order",
+        "broad_coverage",
+        "deep_direct_accounting",
+        "identity_tenant_boundary",
+        "concurrency_event_order",
+        "broad_coverage",
+        "deep_direct_accounting",
+        "identity_tenant_boundary",
+        "concurrency_event_order",
+        "broad_coverage",
+        "deep_direct_accounting",
+        "identity_tenant_boundary",
+        "concurrency_event_order",
+        "broad_coverage",
+        "deep_direct_accounting",
+        "identity_tenant_boundary",
+        "concurrency_event_order",
+        "broad_coverage",
+        "deep_direct_accounting",
+        "identity_tenant_boundary",
+        "concurrency_event_order",
+        "broad_coverage",
+        "deep_direct_accounting",
+        "identity_tenant_boundary",
+        "concurrency_event_order",
+        "broad_coverage"
+      ],
+      "next_policy": null,
+      "ts": "2026-09-06T21:26:58Z"
     }
   ],
   "gate": {
@@ -58,9 +881,9 @@
       "rejected": 0,
       "accepted": 0,
       "closed": 0,
-      "deprioritized": 0
+      "deprioritized": 6
     },
-    "total_hypotheses": 0,
+    "total_hypotheses": 6,
     "highest_priority_open": null,
     "highest_priority_open_status": null
   }
