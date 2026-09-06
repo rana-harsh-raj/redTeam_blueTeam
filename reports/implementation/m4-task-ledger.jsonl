@@ -43,3 +43,4 @@
 {"task_id": "T22", "name": "exec_dashboard", "description": "Stretch E: static self-contained HTML executive dashboard generator", "status": "assigned", "created_at": "2026-09-06T20:40:27.587432+00:00"}
 {"task_id": "T22", "status": "integrated", "at": "2026-09-06T20:47:09.565802+00:00", "summary": "static self-contained dashboard generator (16 artifacts, 83KB, no external assets); preview HTML shows dry-run gate state; regenerated at finalize."}
 {"task_id": "T23", "name": "fidelity_critic_final_review", "description": "workstream 17: adversarial fidelity review + author m4-direct-e2e-final-review.md (G74)", "status": "assigned", "created_at": "2026-09-06T20:48:15.906788+00:00"}
+{"task_id": "T21", "status": "integrated", "at": "2026-09-06T20:50:45.712982+00:00", "summary": "world-model graph 251 nodes/151 edges (real 152/substitute 67/missing 18/EF 11/fixture 3), json+graphml+mmd, deterministic, evidence-backed, F-M4-001 linked."}
