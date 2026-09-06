@@ -1,0 +1,271 @@
+{
+  "milestone": "M4-direct-reconciliation",
+  "task": "T19 evidence-and-replay",
+  "generated_at": "2026-09-06T20:29:34Z",
+  "arena": {
+    "compose_project": "env2_compose",
+    "network": "rzp-arena",
+    "kong": "http://127.0.0.1:18080"
+  },
+  "safety": {
+    "scope": "local synthetic arena env2_compose only",
+    "fresh_ids_per_run": true,
+    "self_certification_avoided": "deterministic oracle; H-D3 repro via a different mechanism (attacker Broker gateway path) on a second fresh pair"
+  },
+  "candidates": [
+    {
+      "id": "H-D3",
+      "claim": "GET /v1/payouts/free_payout/{balance_id} returns 200 cross-tenant with no merchant scoping (freePayout/core.go GetFreePayoutAttributes); does it leak the victim's distinct free-payout config (real IDOR) or only the caller's own/default?",
+      "classification": "VERIFIED_UNAUTHORIZED_EFFECT",
+      "fidelity": "real payouts-service route + real payouts DB counter; kong hardened edge",
+      "runs": {
+        "main": {
+          "attacker_id": "ARENAD85760073",
+          "victim_id": "ARENAD81710140",
+          "attacker_balance": "ARENADB5760073",
+          "victim_balance": "ARENADB1710140",
+          "attacker_provision": {
+            "steps_ok": true,
+            "self_check_passed": 29,
+            "self_check_total": 29,
+            "self_check_ready": true,
+            "failed_checks": []
+          },
+          "victim_provision": {
+            "steps_ok": true,
+            "self_check_passed": 29,
+            "self_check_total": 29,
+            "self_check_ready": true,
+            "failed_checks": []
+          }
+        }
+      },
+      "arms": {
+        "own_merchant_control": {
+          "status": 200,
+          "consumed_is_own_canary": true,
+          "note": "A reads its own balance_id -> should be 200 with A's own value"
+        },
+        "malformed_absent_identity": {
+          "wrong_secret_status": 401,
+          "empty_secret_status": 401,
+          "authenticated_as_A": true,
+          "note": "wrong/empty secret must 401 -> proves A is genuinely authenticated as A, not identity-free"
+        },
+        "negative_control_victim_undivergent": {
+          "status": 200,
+          "consumed_equals_default": true,
+          "distinctive_value_observed": false,
+          "note": "A reads B's balance_id while B is still at the default counter -> no distinctive value can be observed; establishes causality of the divergent config"
+        },
+        "merchant_b_variant": {
+          "status": 200,
+          "victim_distinct_value_present": true,
+          "equals_attacker_own_value": false,
+          "equals_canned_default": false,
+          "deterministic_repeat_equal": true,
+          "note": "A reads B's DIVERGENT balance_id; if the response carries B's distinct value (described, not raw) it is an unauthorized cross-tenant read"
+        },
+        "malformed_balance_id": {
+          "status": 400,
+          "rejected_400": true
+        },
+        "expected_denial_control": {
+          "note": "the scoped route GET /v1/payouts/{id} must deny a cross-tenant id (400/404), in contrast to free_payout",
+          "victim_payout_created": true,
+          "attacker_fetch_status": 400,
+          "scoped_route_denied_cross_tenant": true
+        },
+        "state_observation": {
+          "victim_counter_unchanged_by_reads": true,
+          "victim_row_mutated": false,
+          "attacker_obtained_victim_distinct_value": true,
+          "note": "reads must not mutate B; and record whether A obtained B's distinctive value"
+        }
+      },
+      "oracle": {
+        "unauthorized_effect": true,
+        "reasoning": {
+          "A_authenticated_as_A": true,
+          "no_victim_credential_used": true,
+          "victim_distinct_canary_present_in_A_response": true,
+          "response_not_caller_own_value": true,
+          "response_not_canned_default": true,
+          "divergent_config_causal": true
+        }
+      },
+      "negative_control": {
+        "effect_absent": true,
+        "mechanism": "same cross-tenant call while victim held the default counter (no divergent value)",
+        "deterministic_repeat": true
+      },
+      "independent_reproduction": {
+        "reproduced": true,
+        "mechanism": "attacker Broker fixed-identity injection through kong-lite gateway (distinct code path from the primary control-plane kong_call), fresh ids",
+        "provider": "deterministic oracle (no model)",
+        "attacker_id": "ARENAD87061746",
+        "victim_id": "ARENAD86770705",
+        "victim_distinct_value_present": true,
+        "broker_status": 200
+      },
+      "evidence_run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-replay-20260906T201805Z"
+    },
+    {
+      "id": "H-D4",
+      "claim": "creating a payout as A quoting B's fund_account_id: does the payout bind to B or draw B's balance (money/state cross-tenant), or does it stay bound to A (benign)?",
+      "classification": "NO_UNAUTHORIZED_EFFECT_BENIGN",
+      "fidelity": "real payouts-service create + real x-balances authority; CFA is an arena substitute",
+      "runs": {
+        "main": {
+          "attacker_id": "ARENAD85160482",
+          "victim_id": "ARENAD85998079",
+          "attacker_balance": "ARENADB5160482",
+          "victim_balance": "ARENADB5998079",
+          "attacker_provision": {
+            "steps_ok": true,
+            "self_check_passed": 29,
+            "self_check_total": 29,
+            "self_check_ready": true,
+            "failed_checks": []
+          },
+          "victim_provision": {
+            "steps_ok": true,
+            "self_check_passed": 29,
+            "self_check_total": 29,
+            "self_check_ready": true,
+            "failed_checks": []
+          }
+        }
+      },
+      "arms": {
+        "own_merchant_control": {
+          "status": 200,
+          "bound_to_attacker": true,
+          "note": "A creates with its own fund account -> payout must bind to A"
+        },
+        "merchant_b_variant": {
+          "status": 200,
+          "created": true,
+          "bound_to_victim_merchant": false,
+          "bound_to_victim_balance": false,
+          "bound_to_attacker": true,
+          "deterministic_repeat_equal": true,
+          "note": "A creates quoting B's fund_account_id; record binding of the resulting payout"
+        },
+        "expected_denial_control": {
+          "status": 200,
+          "body_merchant_id_ignored": true,
+          "note": "body merchant_id=B with A's own fund account -> payout must still bind to A (passport override; body merchant discarded)"
+        },
+        "malformed_fund_account": {
+          "status": 400,
+          "not_created": true
+        },
+        "state_observation": {
+          "victim_balance_unchanged": true,
+          "attacker_balance_before_after_differ": false,
+          "no_payout_bound_to_victim": true,
+          "note": "money isolation: B's balance must not move and no created payout may bind to B"
+        }
+      },
+      "oracle": {
+        "unauthorized_effect": false,
+        "reasoning": {
+          "A_authenticated_as_A": true,
+          "created_payout_bound_to_victim": false,
+          "victim_balance_moved": false
+        }
+      },
+      "negative_control": {
+        "effect_absent": true,
+        "mechanism": "own_merchant_control payout bound to A + B balance unchanged across all arms; deterministic repeat",
+        "deterministic_repeat": true
+      },
+      "independent_reproduction": {
+        "reproduced": null,
+        "mechanism": "n/a",
+        "note": "no unauthorized effect to reproduce"
+      },
+      "evidence_run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-replay-20260906T202306Z"
+    },
+    {
+      "id": "F-T10-1",
+      "claim": "the statement-first VerifyPayoutFailedTransaction guard is only on the FTS-direct route (/v1/payouts/transfer_status_webhook); the monolith-relay route (HandlePayoutStatusUpdateViaFTS) lacks it and can move a link-before-terminal (transaction_id-set) payout to failed. Real invariant violation or source-faithful route asymmetry?",
+      "classification": "SOURCE_FAITHFUL_ROUTE_ASYMMETRY",
+      "fidelity": "real payouts-service routes + real payouts DB; monolith relay is an arena substitute (monolith-stub); production monolith upstream guard is out-of-corpus",
+      "runs": {
+        "main": {
+          "merchant_id": "ARENAD82057079",
+          "balance_id": "ARENADB2057079",
+          "provision": {
+            "steps_ok": true,
+            "self_check_passed": 29,
+            "self_check_total": 29,
+            "self_check_ready": true,
+            "failed_checks": []
+          }
+        }
+      },
+      "arms": {
+        "route_fts_direct_with_txn": {
+          "note": "link-before-terminal payout posted failed on the FTS-direct route; the guard must refuse the terminal move while transaction_id is set",
+          "create": {
+            "create_status": 200
+          },
+          "webhook_status": 500,
+          "payout_status_after": "initiated",
+          "transaction_id_retained": true,
+          "guard_fired": true
+        },
+        "route_monolith_relay_with_txn": {
+          "note": "same link-before-terminal state, failed delivered through the monolith relay (route E, arena default); relay path has no VerifyPayoutFailedTransaction",
+          "create": {
+            "create_status": 200
+          },
+          "relay_status": 200,
+          "payout_status_after": "failed",
+          "transaction_id_retained": true,
+          "moved_to_failed_despite_txn": true,
+          "relay_observed": true
+        },
+        "negative_control_fts_direct_no_txn": {
+          "note": "no transaction_id set; the FTS-direct route should move the payout to failed (guard needs transaction_id) -> proves the guard's causality",
+          "create": {
+            "create_status": 200
+          },
+          "webhook_status": 200,
+          "payout_status_after": "failed",
+          "moved_to_failed_without_txn": true
+        }
+      },
+      "oracle": {
+        "unauthorized_effect": false,
+        "reasoning": {
+          "fts_direct_guard_fired_on_txn": true,
+          "monolith_relay_moved_to_failed_despite_txn": true,
+          "route_asymmetry_observed": true,
+          "guard_is_transaction_id_causal": true,
+          "relay_is_arena_substitute": true,
+          "production_monolith_upstream_guard": "out_of_corpus_unknown"
+        }
+      },
+      "negative_control": {
+        "effect_absent": true,
+        "mechanism": "FTS-direct route without transaction_id moves the payout to failed -> the guard's refusal is specifically caused by the transaction_id link"
+      },
+      "independent_reproduction": {
+        "reproduced": null,
+        "mechanism": "n/a \u2014 no unauthorized effect / invariant violation asserted; T10 run m4-bas-ingest-20260906T194947Z step (f) independently recorded the same asymmetry through the full BAS-link pipeline"
+      },
+      "source_citations": {
+        "guard_only_on_fts_direct": "fts_transfer_status_webhook.go:654-710 VerifyPayoutFailedTransaction (errors if payout.transaction_id set); route payout_internal_routes.go:153-158",
+        "relay_and_kafka_have_no_guard": "HandlePayoutStatusUpdateViaFTS core.go:1465-1585 (no VerifyPayoutFailedTransaction); T02 sec.8(b)(c), T05 route table D vs E"
+      },
+      "evidence_run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-replay-20260906T202821Z"
+    }
+  ],
+  "last_run_candidates": [
+    "F-T10-1"
+  ],
+  "last_run_evidence_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-replay-20260906T202821Z"
+}
