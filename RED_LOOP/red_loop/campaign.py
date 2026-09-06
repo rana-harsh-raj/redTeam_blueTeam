@@ -47,8 +47,21 @@ def _progress_signature(store, recent_fps):
     verified = sum(1 for o in store._read_all("observations") if o.get("deterministic_facts"))
     supported = sum(1 for h in store.latest_hypotheses().values()
                     if (h.get("status") or "").lower() in ("supported", "confirmed", "refuted"))
+    # M4: also count v2 terminal lifecycle states so lifecycle progress registers.
+    v2_terminal = 0
+    for rec in store._read_all("hypotheses_v2"):
+        st = (rec.get("status") or "").lower()
+        if st in ("falsified", "blocked", "supported", "accepted", "closed", "rejected"):
+            v2_terminal += 1
     return (c["hypotheses"], c["observations"], c["candidates"], verified, supported,
-            len(set(recent_fps)))
+            len(set(recent_fps)), v2_terminal)
+
+
+def _record_replan(store, turn, reason, what_was_tried, next_policy):
+    """Persist a machine-readable reasoned replan before a stagnation stop."""
+    store.ensure_kind("replans")
+    store._append("replans", {"kind": "campaign_replan", "turn": turn, "reason": reason,
+                              "what_was_tried": what_was_tried, "next_policy": next_policy})
 
 
 def _complete_with_model(client, messages, store, model, turn, phase="turn",
@@ -250,6 +263,9 @@ def run_campaign(store, broker, model, mandate_text, judge_hook,
             recon_only_streak += 1
         if recon_only_streak >= recon_patience and not recon_replan_used:
             store.event("recon_loop_replan_requested", turn=turn, recon_only_streak=recon_only_streak)
+            _record_replan(store, turn, "recon_only_loop",
+                           what_was_tried="many code/recall turns without a runtime experiment",
+                           next_policy="run one concrete merchant_request experiment or conclude")
             recon_replan_used = True
             recon_only_streak = 0
             nudge = ("You have spent many turns reading source without running a runtime experiment. "
@@ -270,6 +286,9 @@ def run_campaign(store, broker, model, mandate_text, judge_hook,
         if stagnating and not stagnation_replan_used:
             store.event("stagnation_replan_requested", turn=turn,
                         turns_since_progress=turns_since_progress, unique_recent=unique_recent)
+            _record_replan(store, turn, "fingerprint_stagnation",
+                           what_was_tried="repeated similar requests with no new evidence",
+                           next_policy="state one materially different hypothesis + new experiment, or conclude")
             stagnation_replan_used = True
             turns_since_progress = 0
             nudge = ("You appear to be repeating similar actions without new evidence. Step back: "
