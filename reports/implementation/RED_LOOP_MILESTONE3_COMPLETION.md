@@ -130,12 +130,23 @@ Evidence (live, enforcement on):
   effect (404), and the different-provider reproducer (`gpt-5.5`) reproduced it
   from a clean start. Classified CALIBRATION_PASS and explicitly never an
   open-campaign finding; the lane restores the enforcement-on profile at the end.
+  Honest limit: the effect is keyed to a FIXED mock trigger id (`pout_1234`), so
+  the replay does not exercise "fresh IDs" — that dimension does not apply to this
+  fixed-mock-id effect. The calibration therefore proves the unauthorized-effect
+  detection, cross-provider replay, and causal negative control, but not fresh-ID
+  semantic replay; a candidate whose resource is per-instance would exercise that.
 
 ## Open campaign (Section 16)
 One sustained open-ended campaign ran against the corrected gateway
 (`KONG_ENFORCE_ROUTE_POLICY=1`), campaign id `camp-20260906T100435Z-c02234`. The
 primary agent was given no named target and chose every hypothesis and experiment
-itself; no human supplied any attack.
+itself; no human supplied any attack. (Enforcement was on by operational sequence:
+the calibration lane restored `=1` immediately before launch and the arena was set
+back to `=0` only AFTER the campaign for the frozen-verifier run. The campaign did
+not itself probe a `/v1/payouts` internal literal, so its own log does not
+self-witness a 404 — the separate gateway acceptance, run with enforcement on, is
+the direct boundary proof; the campaign's payloadcrypt attempt was broker-refused
+before reaching kong.)
 
 | Metric | Value |
 |---|---|
@@ -193,15 +204,23 @@ M3 hardening with real evidence.
 
 Instead, the frozen verifier was run against the LIVE (already-seeded) arena with
 the M3 code present and `KONG_ENFORCE_ROUTE_POLICY=0` (frozen default):
-`reports/implementation/m3-verifier.json` — **22/26**. All four failures are
-state-count / timing assertions on the SHARED fixture merchants, polluted by the
-necessary M3 test payouts (campaign runs, victim canaries, fresh-merchant
-provisioning) on the live instance — e.g. 6 live reservations vs 3, a payout row
-count of 2 vs 1. None indicate an M3 logic regression: the M3-relevant
-authorization/isolation tests pass (v20 tenant isolation, v21 webhook
-completeness, v22 shield, v18/v19 remap/guard). This CONFIRMS the milestone's
-premise that clean empty-volume boots are required and cannot be substituted by a
-running-instance run; 26/26 cannot be honestly claimed on the polluted instance.
+`reports/implementation/m3-verifier.json` — **22/26**. Three of the four failures
+are record-count/total assertions on the SHARED fixture merchants, definitively
+polluted by the necessary M3 test payouts (campaign runs, victim canaries,
+fresh-merchant provisioning): v12 (`inflight_reservation_total_equals_live_reservations`,
+6 live reservations vs 3), v13 (`reservation_released_on_terminal_event`,
+reserved_total 300 vs 200), and v23 (`pricing_500_rejects_payout`, 2 rows vs 1) —
+each fails purely because extra payouts exist on the fixture merchant. The fourth,
+v17 (`reversal_row_committed_before_ledger_call_baseline`), is NOT a count
+assertion: it creates a payout and expects it to reach `reversed`, but the payout
+stayed `initiated`. This is a state-progression/timing failure most consistent
+with FTS/Kafka worker-queue congestion behind the ~100+ test payouts, but — unlike
+the three count failures — it is NOT definitively pollution and could reflect a
+stuck pipeline; only a clean boot isolates it. None of the M3-relevant
+authorization/isolation tests failed (v20 tenant isolation, v21 webhook
+completeness, v22 shield, v18/v19 remap/guard all pass). This CONFIRMS the
+milestone's premise that clean empty-volume boots are required; 26/26 cannot be
+honestly claimed on the polluted instance.
 
 The M3 gateway change is additive and default-off (`KONG_ENFORCE_ROUTE_POLICY=0` =
 frozen whole-prefix proxy), so a clean boot with the flag off is expected to
