@@ -1,0 +1,130 @@
+{
+  "milestone": "M3.1 \u2014 Clean Acceptance and Fresh Merchant Payout Parity",
+  "generated_at": "2026-09-06T12:33:21Z",
+  "git": {
+    "branch": "milestone-3-1-clean-parity",
+    "head": "d33944450ce7f3febc96264e542e6d25f0bf3702",
+    "twin_v1_commit": "78def24eb57112c0dc39a6ae9062b1f0d1c711fb",
+    "runtime_freeze_commit": "219ca48bbb5e51db9347b335ac0a50241656045b",
+    "m2_head": "a107612ed11344a8096e74dbf68616679855465e",
+    "m3_head": "3873e96ff9b8d510059bbccb9ab3553bf5c5c671"
+  },
+  "gates": [
+    {
+      "gate": "historical_integrity",
+      "passed": true,
+      "branch": "milestone-3-1-clean-parity",
+      "head": "d33944450ce7f3febc96264e542e6d25f0bf3702"
+    },
+    {
+      "gate": "evidence_archive_manifest",
+      "passed": true,
+      "manifest_sha256": "aa5f037111e3d12a3ba555366f28396e0d40282ee44b178f7b802e8a3ae073f4",
+      "artifacts": 1858
+    },
+    {
+      "gate": "runtime_isolation_no_overlap",
+      "passed": true,
+      "overlapping_instances": []
+    },
+    {
+      "gate": "clean_boot_a_26_0_0",
+      "passed": true,
+      "instance": "m31-clean-a",
+      "verifier": {
+        "total": 26,
+        "passed": 26,
+        "failed": 0,
+        "skipped": 0
+      },
+      "egress": {
+        "present": true,
+        "outside_packets": 0,
+        "status": "passed",
+        "clean": true
+      },
+      "boot_id": "f60691ce-be2e-44d9-86c0-85bb9e750232"
+    },
+    {
+      "gate": "clean_boot_b_26_0_0",
+      "passed": true,
+      "instance": "m31-clean-b",
+      "verifier": {
+        "total": 26,
+        "passed": 26,
+        "failed": 0,
+        "skipped": 0
+      },
+      "egress": {
+        "present": true,
+        "outside_packets": 0,
+        "status": "passed",
+        "clean": true
+      },
+      "boot_id": "8492d68c-ba3b-4609-a917-0de8f7c0c6a2"
+    },
+    {
+      "gate": "clean_boot_egress_clean",
+      "passed": true,
+      "a": {
+        "present": true,
+        "outside_packets": 0,
+        "status": "passed",
+        "clean": true
+      },
+      "b": {
+        "present": true,
+        "outside_packets": 0,
+        "status": "passed",
+        "clean": true
+      }
+    },
+    {
+      "gate": "v17_resolved",
+      "passed": true,
+      "classification": "HEALTHY_ON_CLEAN"
+    },
+    {
+      "gate": "logical_replay_material_match",
+      "passed": true,
+      "artifact": "m31-logical-replay.json",
+      "logical_equivalence": true
+    },
+    {
+      "gate": "fresh_merchant_full_success",
+      "passed": false,
+      "create_500_fixed": true,
+      "note": "requires an end-to-end successful fresh payout (terminal processed)"
+    },
+    {
+      "gate": "freshid_calibration_with_control",
+      "passed": false,
+      "artifact": "m31-calibration-freshid.json"
+    },
+    {
+      "gate": "second_campaign_normal_completion",
+      "passed": false,
+      "campaign_id": null,
+      "stop_reason": null,
+      "turns": null
+    },
+    {
+      "gate": "context_efficiency_recomputed",
+      "passed": true,
+      "reduction_fraction": 0.809
+    }
+  ],
+  "evidence_sha256": {
+    "m31-fresh-merchant.json": "72f770795f410d03431a3adfe257ebde97be27e48478a6f5ee91ab666165dba0",
+    "m31-hardening-retention.json": "5ae609e1926904ff4e23739e09b45d10136493d2f563795aa6e431b031392d1f",
+    "m31-v17.json": "898ae8d1ac663b178ab1ff120bed7a7245ec5254814a2d5da4a61718aebbc54a",
+    "m31-calibration-freshid.json": null,
+    "m31-logical-replay.json": "4805a5281f117a33aca7fac67048890fab9cf6ed8136d5d58099a85cabe888b0"
+  },
+  "accepted": false,
+  "unmet_or_pending_gates": [
+    "fresh_merchant_full_success",
+    "freshid_calibration_with_control",
+    "second_campaign_normal_completion"
+  ]
+}

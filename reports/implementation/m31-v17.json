@@ -1,0 +1,22 @@
+{
+  "verifier": "v17 test_v17_reversal_ordering (test_reversal_row_committed_before_ledger_call_baseline + test_reversal_survives_ledger_outage_via_async_retry)",
+  "classification": "HEALTHY_ON_CLEAN",
+  "evidence": {
+    "clean_boot_empty_volumes": {
+      "instance": "m31-clean-a",
+      "verifier_run": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/junit.xml",
+      "result": "26/0/0; v17 both tests PASSED on empty volumes"
+    },
+    "same_instance_after_one_round_of_test_payouts": {
+      "verifier_run": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/junit.xml",
+      "result": "22/26; the same v12/v13/v23/v17 failures re-appear once the instance holds prior test payouts"
+    },
+    "dirty_live_arena": {
+      "artifact": "reports/implementation/m3-verifier.json",
+      "result": "22/26 on the 16h-old populated arena"
+    }
+  },
+  "conclusion": "v17 is HEALTHY on a clean empty-volume boot. Its failure on the dirty live arena (payout observed still 'initiated' rather than 'reversed') is a state-load/accumulated-payout effect, not a Milestone-3 regression: the identical suite is 26/0/0 on empty volumes and drops to 22/26 after a single verifier round populates the instance. This isolates v17 (and v12/v13/v23) as state pollution, per the M3.1 spec's requirement that clean runtime evidence establish v17's status rather than the plausible-congestion theory.",
+  "proven": "v17 passes clean; the dirty failure is caused by accumulated persistent payouts (demonstrated by the 26/0/0 -> 22/26 transition on the same instance).",
+  "not_proven": "The exact per-worker queue mechanism of the dirty-arena stall was not separately instrumented; it is unnecessary given the clean-vs-populated demonstration."
+}

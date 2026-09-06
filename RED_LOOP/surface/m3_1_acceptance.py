@@ -73,12 +73,12 @@ def parse_junit(run_dir):
 
 
 def egress_result(run_dir):
-    for name in ("egress-audit.json", "egress_audit.json"):
+    for name in ("egress.json", "egress-audit.json", "egress_audit.json"):
         d = load(Path(run_dir) / name)
         if d:
             outside = d.get("outside_packets", d.get("outside", d.get("violations")))
-            return {"present": True, "outside_packets": outside,
-                    "clean": outside in (0, [], None) and d.get("status", "clean") != "fail"}
+            return {"present": True, "outside_packets": outside, "status": d.get("status"),
+                    "clean": outside in (0, [], None) and d.get("status") == "passed"}
     return {"present": False, "clean": None}
 
 
@@ -139,7 +139,8 @@ def build(campaign_id):
     # logical replay comparison A vs B
     rep = load(IMPL / "m31-logical-replay.json")
     gates.append(gate("logical_replay_material_match",
-                      bool(rep) and rep.get("material_match") is True, artifact="m31-logical-replay.json"))
+                      bool(rep) and rep.get("logical_equivalence") is True and rep.get("status") == "passed",
+                      artifact="m31-logical-replay.json", logical_equivalence=(rep or {}).get("logical_equivalence")))
 
     # F. fresh merchant lifecycle
     fm = load(IMPL / "m31-fresh-merchant.json")

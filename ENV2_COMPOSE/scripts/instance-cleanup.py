@@ -88,6 +88,18 @@ def main():
         if docker_exists_vol(vol):
             run(["docker", "volume", "rm", vol])
 
+    # 2b. Belt-and-braces suffix sweep: remove any rzp-arena*/<suffix> volume or
+    # network not in the active-profile compose render (e.g. config-mozart-mock,
+    # which is declared but unused when the boot falls back to mozart-sim).
+    suffix = p["env"]["ARENA_SUFFIX"]
+    if suffix:
+        for v in run(["docker", "volume", "ls", "--format", "{{.Name}}"]).stdout.split():
+            if v.endswith(suffix) and (v.startswith("rzp-arena") or v.startswith(project)):
+                run(["docker", "volume", "rm", v])
+        for n in run(["docker", "network", "ls", "--format", "{{.Name}}"]).stdout.split():
+            if n.endswith(suffix) and n.startswith(("rzp-arena", "rzp-ingress")):
+                run(["docker", "network", "rm", n])
+
     # 3. Verify absence.
     left_c = containers_for(project)
     left_n = [n for n in owns["networks"] if docker_exists_net(n)]

@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "manifest_kind": "redgrid-evidence-archive",
-  "generated_at": "2026-09-06T11:27:29Z",
+  "generated_at": "2026-09-06T12:32:49Z",
   "git": {
     "branch": "milestone-3-1-clean-parity",
-    "commit": "3873e96ff9b8d510059bbccb9ab3553bf5c5c671",
+    "commit": "d33944450ce7f3febc96264e542e6d25f0bf3702",
     "twin_v1_tag_commit": "78def24eb57112c0dc39a6ae9062b1f0d1c711fb",
     "runtime_freeze_commit": "219ca48bbb5e51db9347b335ac0a50241656045b",
     "m2_head": "a107612ed11344a8096e74dbf68616679855465e",
@@ -23,18 +23,30 @@
     "camp-20260906T095401Z-504a2e",
     "camp-20260906T095746Z-604320",
     "camp-20260906T100435Z-c02234",
-    "camp-20260906T103235Z-170592"
+    "camp-20260906T103235Z-170592",
+    "cleanboot-m31-clean-a",
+    "cleanboot-m31-clean-a-pollutionproof",
+    "cleanboot-m31-clean-b"
   ],
   "counts": {
-    "artifacts": 1668,
-    "external_run_files": 1656,
+    "artifacts": 1858,
+    "external_run_files": 1846,
     "committed_files": 12,
-    "total_bytes": 93726420
+    "total_bytes": 98889472
   },
   "missing_expected_committed": [],
   "missing_expected_campaign_files": [
     "camp-20260906T051000Z-c2f9d7/model_calls.jsonl",
-    "camp-20260906T051000Z-c2f9d7/events.jsonl"
+    "camp-20260906T051000Z-c2f9d7/events.jsonl",
+    "cleanboot-m31-clean-a/manifest.json",
+    "cleanboot-m31-clean-a/model_calls.jsonl",
+    "cleanboot-m31-clean-a/events.jsonl",
+    "cleanboot-m31-clean-a-pollutionproof/manifest.json",
+    "cleanboot-m31-clean-a-pollutionproof/model_calls.jsonl",
+    "cleanboot-m31-clean-a-pollutionproof/events.jsonl",
+    "cleanboot-m31-clean-b/manifest.json",
+    "cleanboot-m31-clean-b/model_calls.jsonl",
+    "cleanboot-m31-clean-b/events.jsonl"
   ],
   "policy": {
     "runs_are_external": true,
@@ -780,6 +792,1716 @@
       "bytes": 13156,
       "type": "attacker_response_capture",
       "owner": "camp-20260906T103235Z-170592",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/instance-plan.json",
+      "sha256": "8ca65c3f3bc63aad7a990f8cfc4eb29931fd476c38529075fedf27029a9ae0e2",
+      "bytes": 2247,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/up.log",
+      "sha256": "de81425acd0ed846ceb5fdb1303ef3bc274b42af48f3655e0a38ec123acb2e66",
+      "bytes": 80300,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/arena-fingerprint.json",
+      "sha256": "018f52fb6fda9423f6eb2d0fa5856f389f6ca02db74256871c8464689699fa5b",
+      "bytes": 23754,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/dns.json",
+      "sha256": "906dce3f4a2a6d90022f61ad1ec07d8bc14a7f66879954cc434da47798353ae1",
+      "bytes": 668,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/egress.json",
+      "sha256": "fe3188641b676a3324e376d11a3a2ece3c2a71f8a848bb1d259179147caff681",
+      "bytes": 1445,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/junit.xml",
+      "sha256": "265898b3a08cb71217d73daaf49b2210c48bd9314ebcd8f9b563493f7717b346",
+      "bytes": 3783,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_failed_webhook_remaps_differently_by_account_type.jsonl",
+      "sha256": "5ca52b40e29961a2dc076915ea3d6346c7bc1f5ff5331999f96e9aa639a02778",
+      "bytes": 30773,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_fts_transfer_dedupe_on_source_id_and_type.jsonl",
+      "sha256": "d8f316d6e457bea4e5409259703ac32e57fa3dad052e4b7530dd349a1c134f7d",
+      "bytes": 20545,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_idempotent_create_same_key_different_body_rejected.jsonl",
+      "sha256": "5c952445fa9c4c1964b3ac43e972964430f0336a92f3102b2c6c6f7ead7646fc",
+      "bytes": 27901,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_idempotent_create_same_key_same_body.jsonl",
+      "sha256": "094b401bb9339ceaae7fbc3e672cd5e70be9cf16e022e87dfac195c2dc9ba5ab",
+      "bytes": 30698,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_inflight_reservation_total_equals_live_reservations.jsonl",
+      "sha256": "d67c71f2caf5246739a1a22c7b38bbb92d387ea2c7fdebae7aba0e249ab26736",
+      "bytes": 46752,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_insufficient_balance_fails_when_queue_if_low_balance_false.jsonl",
+      "sha256": "b4447ba2d737581b35c607a5d485b5a73f7156ddc0ca38bfde9dd252b004d7bf",
+      "bytes": 13652,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_insufficient_balance_queues_when_queue_if_low_balance_true.jsonl",
+      "sha256": "8315aa5eca631d36adb05952b86b10bcc4cfbd9380125279145ae47013e729b7",
+      "bytes": 16257,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_ledger_journal_dedupe_on_transactor_id_and_event.jsonl",
+      "sha256": "671071411a705310277525766c483b98411f7afee633169fbac986c93126613a",
+      "bytes": 20496,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_merchant_balance_debited_synchronously.jsonl",
+      "sha256": "04fedfb0b82b78549e0dd29c8a2931d545c29eb59405827db417ea07bd1eda30",
+      "bytes": 23456,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_no_illegal_transition_in_payout_logs.jsonl",
+      "sha256": "abc95cf7c9f002510ef1f167ddaf9607bb3be927ee0e8d4918736f96c8d78134",
+      "bytes": 23511,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_other_merchant_cannot_fetch_or_cancel.jsonl",
+      "sha256": "8baefe8e943e0f46845409d16ab58ec6760a260a5d17e63dab56d8607ec3d559",
+      "bytes": 21817,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_payout_failed_direct_account_no_reversal_no_ledger.jsonl",
+      "sha256": "b39bb2c292e1a14c1e09c19a454207be00e14fbb7e5e75fa2847dbac52fb8201",
+      "bytes": 23119,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_payout_initiated_journal_sums_to_zero_and_debits_merchant.jsonl",
+      "sha256": "090e3fe90974457bf5cdcb1dc5ab9c63313a894cdaae0e18f029a34407c800d1",
+      "bytes": 28128,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_payout_processed_journal_mirrors_ledger.jsonl",
+      "sha256": "7b769088a922276c2e018d0bda3df1d2fa2b0948d1de1b05b388f3a07685843b",
+      "bytes": 56291,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_payout_reversed_journal_and_reversal_entity.jsonl",
+      "sha256": "20a7e76a0aae50853b256410ab9530ae32b5991f77632b4c5ff943d59c2862cc",
+      "bytes": 29806,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_pricing_500_rejects_payout.jsonl",
+      "sha256": "469e2d3cda0198fef453267577dfdbc88c017e6f8667a4c71092b295e0d61655",
+      "bytes": 18504,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_queued_low_balance_payout_dequeues_after_topup_and_cron.jsonl",
+      "sha256": "41b367077a7e4e54188a6ac47db9636628790165629254444c754cada6fed276",
+      "bytes": 36981,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_reservation_released_on_terminal_event.jsonl",
+      "sha256": "7f998f419c3fee2a6444848e1741b78bed47fe319ecf8ed934ea61691508ca73",
+      "bytes": 56960,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_reversal_row_committed_before_ledger_call_baseline.jsonl",
+      "sha256": "6a8d0866bab0be5c8ebce02bd7893dca673449b7de4e916abeea6b5f3465def8",
+      "bytes": 43298,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_reversal_survives_ledger_outage_via_async_retry.jsonl",
+      "sha256": "438c82fdd3368f4380443420829c354855ef665d1bd6304455b070bdb649b989",
+      "bytes": 45998,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_scheduled_payout_dequeues_after_slot_and_cron.jsonl",
+      "sha256": "1e48f314ff139ab0d3e026a2c4531edfb10e3405a1ed41a43f7c9615589623b5",
+      "bytes": 31163,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_shield_timeout_fails_open.jsonl",
+      "sha256": "7864ea064da84d7bcaba99998895f5a6d00ee5070b2717751f19497e800788a7",
+      "bytes": 25238,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_stuck_initiated_payout_has_no_automated_repair.jsonl",
+      "sha256": "8ac39b4989ec8d14b0e1b6907044c18b16348c3fd63f0ef0334cfc385a33d003",
+      "bytes": 310300,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_terminal_webhook_fires_exactly_once.jsonl",
+      "sha256": "7f090c1ce86a06064e505e918dd891254d5894cfdade49f273679f9910dfcd4b",
+      "bytes": 84432,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_transaction_id_set_blocks_failed_transition.jsonl",
+      "sha256": "642b2a4f709922e2c2c7e1d5d3f75b2b2163073433a9f0f186567be7a961c05c",
+      "bytes": 36429,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run/test_webhook_on_cancelled_payout_is_noop.jsonl",
+      "sha256": "585131063fb0be8cd228f58c0975d6c9351a1adb353f481640479d4e7d9cb0e0",
+      "bytes": 25934,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/arena-fingerprint.json",
+      "sha256": "018f52fb6fda9423f6eb2d0fa5856f389f6ca02db74256871c8464689699fa5b",
+      "bytes": 23754,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/dns.json",
+      "sha256": "906dce3f4a2a6d90022f61ad1ec07d8bc14a7f66879954cc434da47798353ae1",
+      "bytes": 668,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/egress.json",
+      "sha256": "fe3188641b676a3324e376d11a3a2ece3c2a71f8a848bb1d259179147caff681",
+      "bytes": 1445,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/junit.xml",
+      "sha256": "265898b3a08cb71217d73daaf49b2210c48bd9314ebcd8f9b563493f7717b346",
+      "bytes": 3783,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_failed_webhook_remaps_differently_by_account_type.jsonl",
+      "sha256": "08bbd3164535f81995d93e25e1ce346e41d761cb02e5cc0d8330ab8628651ad9",
+      "bytes": 15390,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_fts_transfer_dedupe_on_source_id_and_type.jsonl",
+      "sha256": "9f1d6e1d5e7fbb1c78ed4a8c487104a309326be2dd9fa812e933117637843249",
+      "bytes": 10273,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_idempotent_create_same_key_different_body_rejected.jsonl",
+      "sha256": "6f47e3b1c5b9312abf7f8649da45758447431717e366380eef3ba8ab2dc188ea",
+      "bytes": 14093,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_idempotent_create_same_key_same_body.jsonl",
+      "sha256": "6705070f798fffde450bfa7368c25a982cc28529bb607f3c6a88e031730071c6",
+      "bytes": 15350,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_inflight_reservation_total_equals_live_reservations.jsonl",
+      "sha256": "fcd95d473025664856de34fdfe0be8dca5cc65b8f70a934b56dac83474331813",
+      "bytes": 23240,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_insufficient_balance_fails_when_queue_if_low_balance_false.jsonl",
+      "sha256": "aff4b096a9a6f836a94558227609db4b241041c647620821564e542fba9145cb",
+      "bytes": 6826,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_insufficient_balance_queues_when_queue_if_low_balance_true.jsonl",
+      "sha256": "6f34803db0ff43ad0331a8cac512b9ba0765cb5b36bacae632ffc1ff3ecbb852",
+      "bytes": 8129,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_ledger_journal_dedupe_on_transactor_id_and_event.jsonl",
+      "sha256": "38bd15dad878b553c60bc79ed23880bef74684e504ab08c233e470a8bd8ee76d",
+      "bytes": 10249,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_merchant_balance_debited_synchronously.jsonl",
+      "sha256": "32840330d902ded5ffd115646ee6b77d30ce0cbf94eaa94690d2219bdad2ea87",
+      "bytes": 11865,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_no_illegal_transition_in_payout_logs.jsonl",
+      "sha256": "20b2ad99f460424861f2430b63c3facaa9be7cc3fc268ba84458d794f26ebcab",
+      "bytes": 11611,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_other_merchant_cannot_fetch_or_cancel.jsonl",
+      "sha256": "0d4cb9a197617ec817dd870378695e6bc742eeae49faf671b6063ba170ed152b",
+      "bytes": 10910,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_payout_failed_direct_account_no_reversal_no_ledger.jsonl",
+      "sha256": "221d426868c6b90d70bcc80a64a222099507c0753ab38ce94ae9bb0955a7cac3",
+      "bytes": 11559,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_payout_initiated_journal_sums_to_zero_and_debits_merchant.jsonl",
+      "sha256": "f392d3d6d29bc7de38454db09ea033cfb8e2c32c152d524a270ebdc76e4b2021",
+      "bytes": 14209,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_payout_processed_journal_mirrors_ledger.jsonl",
+      "sha256": "8c0cbc3194477c42b03bca025fcca7b2e0f18e510a1c66d6135bec7b21e0e9f0",
+      "bytes": 28709,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_payout_reversed_journal_and_reversal_entity.jsonl",
+      "sha256": "2c7275da5abfc34c14a4417fa9237993586a8b088ea26d69648071a5c00ec13c",
+      "bytes": 14355,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_pricing_500_rejects_payout.jsonl",
+      "sha256": "71a72f479b00a549651a28b903ed62d2da3e672edae21503a89934216411eea2",
+      "bytes": 9252,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_queued_low_balance_payout_dequeues_after_topup_and_cron.jsonl",
+      "sha256": "829fa38eb7219f6ff4d3f4acee5be7157252a0992aeb821421b69f5eaecfba2c",
+      "bytes": 17926,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_reservation_released_on_terminal_event.jsonl",
+      "sha256": "1b48f297738956965adfeca4e3c67999396344d43ad29ef217d9c80985d86d2b",
+      "bytes": 27937,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_reversal_row_committed_before_ledger_call_baseline.jsonl",
+      "sha256": "54b31fd192ca7648a5e39411702823be74f2c93771b9b5e5d99705e2b3795d2e",
+      "bytes": 20956,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_reversal_survives_ledger_outage_via_async_retry.jsonl",
+      "sha256": "acb20cee7fb75322c9a652d8ee9a7bc45402f76da7520a3a1b4474c322010a54",
+      "bytes": 22451,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_scheduled_payout_dequeues_after_slot_and_cron.jsonl",
+      "sha256": "679742f769b77a5c218ac45b4f4b44e6202c2391de423c2836650472828913ab",
+      "bytes": 15581,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_shield_timeout_fails_open.jsonl",
+      "sha256": "449ad06e61c58dd063636fce4de23dde225564c46667885632e9548bf14eb271",
+      "bytes": 12621,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_stuck_initiated_payout_has_no_automated_repair.jsonl",
+      "sha256": "e8139abb00b04415828de35f5584491ec5c92934748b0e64461a918bdb1ff7e1",
+      "bytes": 155338,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_terminal_webhook_fires_exactly_once.jsonl",
+      "sha256": "80505448882a343d4270d6fc343984269307f5b67a43d6b695fd03d40f547456",
+      "bytes": 42935,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_transaction_id_set_blocks_failed_transition.jsonl",
+      "sha256": "983961af87799714dcade486499779f103c0b557c5a2413a3117ce75bcd84763",
+      "bytes": 18758,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run-clean/test_webhook_on_cancelled_payout_is_noop.jsonl",
+      "sha256": "66c6936e571864f7d91bca15fb9835afabc76ebc9d2f7c93bb25390398ee4146",
+      "bytes": 12972,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/arena-fingerprint.json",
+      "sha256": "27c925120ed849ccf80c4cbfd113f1ab6b2713c8b2cb89c43d868b8f4ce0cd96",
+      "bytes": 23754,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/dns.json",
+      "sha256": "0d5e98c95984c8c97bc286a98f7c09a3f54b46e0181dd621b7e34e036c5f21c0",
+      "bytes": 668,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/egress.json",
+      "sha256": "6c19ce64a4a3e951fc28c0858605f4a2a92a5b61db06cf5e12a3fde78b8f27d7",
+      "bytes": 1444,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/junit.xml",
+      "sha256": "3d21cd7865fb50f8c8d40ca8c159446bafca41d046bc6b6ab9f7804cae48435b",
+      "bytes": 9006,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_failed_webhook_remaps_differently_by_account_type.jsonl",
+      "sha256": "7559e3ba6a22fd9437ae0bb3199fdea1760c99175971c85ff090bfb3ca03cb89",
+      "bytes": 16468,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_fts_transfer_dedupe_on_source_id_and_type.jsonl",
+      "sha256": "9d61253d3f4b26df5ad9eefa7df3acb32a619f8de86f2cd95fdf662862ac0ce7",
+      "bytes": 10282,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_idempotent_create_same_key_different_body_rejected.jsonl",
+      "sha256": "f7a378bee5114bde16dbbd801ed81e7002587afdb91bd1c1e483f8df287c2e53",
+      "bytes": 14102,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_idempotent_create_same_key_same_body.jsonl",
+      "sha256": "5f4adb7670be3429b3e202e47e06d6a894b4df588bfae751173b8f089cc9a81f",
+      "bytes": 15075,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_inflight_reservation_total_equals_live_reservations.jsonl",
+      "sha256": "772b7ef8ad6247389f569155d60780d136935e4a8c3853d4370055bcfcd6e256",
+      "bytes": 10749,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_insufficient_balance_fails_when_queue_if_low_balance_false.jsonl",
+      "sha256": "e2206c22575de48e5a6e319fab1abf7fbb3cb151a25b2e0f0f01fa59ed09642f",
+      "bytes": 6828,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_insufficient_balance_queues_when_queue_if_low_balance_true.jsonl",
+      "sha256": "16adfb7bef93325ed6879318983bb40e1068acd9c099ba66fbd68b066cd6ef6a",
+      "bytes": 8126,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_ledger_journal_dedupe_on_transactor_id_and_event.jsonl",
+      "sha256": "200f095c98cc35fd66205a86ce5716256caa596258e5ee73eca5af7a879694e5",
+      "bytes": 10246,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_merchant_balance_debited_synchronously.jsonl",
+      "sha256": "f361113a7c76d106dd091684ca86bf8dea23833531948fd832444d1dedcf24dd",
+      "bytes": 11874,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_no_illegal_transition_in_payout_logs.jsonl",
+      "sha256": "900fa058d12b2c0c79ede47fbf4da6410480bf820fe32ac32daebea2ad888acd",
+      "bytes": 13279,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_other_merchant_cannot_fetch_or_cancel.jsonl",
+      "sha256": "f1c8053d298be890b05fce39284c3718e9c1ca3867a55be3b525d74a0f16c412",
+      "bytes": 10908,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_payout_failed_direct_account_no_reversal_no_ledger.jsonl",
+      "sha256": "0dd8f46e9b7c12a5f844e188887886e2c7707787b00515b2868cf54f27916ae7",
+      "bytes": 11564,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_payout_initiated_journal_sums_to_zero_and_debits_merchant.jsonl",
+      "sha256": "b97ae685474921ff1f206dca607fb191b1157f94a1e664df63507d63f9d966aa",
+      "bytes": 14213,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_payout_processed_journal_mirrors_ledger.jsonl",
+      "sha256": "6d41cd0ab7d6cfd7d0a2260e6de915a9f28399ee072e516b234d75a569efb0d2",
+      "bytes": 166721,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_payout_reversed_journal_and_reversal_entity.jsonl",
+      "sha256": "4a14c0146ba8fec9e5eec05d1f3d37f87b4e5a8d67b09b6ae9fec68830384f99",
+      "bytes": 14358,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_pricing_500_rejects_payout.jsonl",
+      "sha256": "c9fa9c09424ddc84c0afb3967d2bfe3010392d62648f1bb37f1e5bd50ffcc02f",
+      "bytes": 9819,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_queued_low_balance_payout_dequeues_after_topup_and_cron.jsonl",
+      "sha256": "7a88d203885603904c76a5290376f47a88c8170880b48dc5eb686bb6c5fdc82e",
+      "bytes": 17926,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_reservation_released_on_terminal_event.jsonl",
+      "sha256": "521622ee1a4f92db2470cff8c8f3d3f984afdb80e078c5e290a2f7b29852ca14",
+      "bytes": 11861,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_reversal_row_committed_before_ledger_call_baseline.jsonl",
+      "sha256": "af5d0670dbd2be4f71daa842cec43d05ddf309118b94bdd0ec24b8b438662e25",
+      "bytes": 19715,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_reversal_survives_ledger_outage_via_async_retry.jsonl",
+      "sha256": "74c90a81349323571d07ad267a8f2677731a938562fc002ecdf20b0498709e24",
+      "bytes": 23532,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_scheduled_payout_dequeues_after_slot_and_cron.jsonl",
+      "sha256": "0b5e196d16e0c0d5ac6ae7e979c407510ed6ab8d5a733d8115b01e6d66d1f4fe",
+      "bytes": 16683,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_shield_timeout_fails_open.jsonl",
+      "sha256": "91953b91e6b69982f88049460fcf7b99df36d5d1592ebc00b24b892e42a61bfe",
+      "bytes": 12982,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_stuck_initiated_payout_has_no_automated_repair.jsonl",
+      "sha256": "b6aed2f38907a5d253848d14139a9479a06d79c34fe636a890dc68fd698e9c51",
+      "bytes": 400795,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_terminal_webhook_fires_exactly_once.jsonl",
+      "sha256": "0084fa666c353bcbf5f8e3c0b6ad2dbb0e683622891210a024332ab9aec675b5",
+      "bytes": 51582,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_transaction_id_set_blocks_failed_transition.jsonl",
+      "sha256": "a4c5c4261aabe8e26d1ed9ce3bc8f0d7efb6461ea2ea1b83504ccfbe11847d1e",
+      "bytes": 17955,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier-run2/test_webhook_on_cancelled_payout_is_noop.jsonl",
+      "sha256": "42cc8de57536f44d2613afab87703ff2e5a5e60ac78d68d10224c5b230907b51",
+      "bytes": 12964,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a/verifier.log",
+      "sha256": "631df5e42e2ea9434e706df33a730294a4988add3c3cf5e8d59e9b0710d808c3",
+      "bytes": 5440,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/instance-plan.json",
+      "sha256": "8ca65c3f3bc63aad7a990f8cfc4eb29931fd476c38529075fedf27029a9ae0e2",
+      "bytes": 2247,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/up.log",
+      "sha256": "9bf6d4ce15acc3a4906d991ccb2fe72dd9e4ec1b618fac9f32b7e966adea9ddf",
+      "bytes": 81122,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/arena-fingerprint.json",
+      "sha256": "27c925120ed849ccf80c4cbfd113f1ab6b2713c8b2cb89c43d868b8f4ce0cd96",
+      "bytes": 23754,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/dns.json",
+      "sha256": "0d5e98c95984c8c97bc286a98f7c09a3f54b46e0181dd621b7e34e036c5f21c0",
+      "bytes": 668,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/egress.json",
+      "sha256": "3087f6bc1a7f884ce1e07d1a4d3656f4c7d2551195c3ba1ebce4172f5a464751",
+      "bytes": 1491,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/junit.xml",
+      "sha256": "33754be883cf3c1ee7edbefa0fa77affaf37a0ed4b2852fdb1d30f9434a61852",
+      "bytes": 3783,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_failed_webhook_remaps_differently_by_account_type.jsonl",
+      "sha256": "1adba720bd0a9484b279b84ba509fbe29edd8a12231fa83317fa9f5e95303a84",
+      "bytes": 15383,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_fts_transfer_dedupe_on_source_id_and_type.jsonl",
+      "sha256": "e372060348aeb9b62c5d4f688f007935f8ff9e8312a751223926644c249030e7",
+      "bytes": 10272,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_idempotent_create_same_key_different_body_rejected.jsonl",
+      "sha256": "59f7e49e7e59f1539f4103a1e33daf49d2c7c1b8dcacaac61c6d16238cb3257a",
+      "bytes": 13808,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_idempotent_create_same_key_same_body.jsonl",
+      "sha256": "3c41a7c2ab2fc82809c707dd12a447680dfd78fb424a868f8bc5219465d74bf4",
+      "bytes": 15348,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_inflight_reservation_total_equals_live_reservations.jsonl",
+      "sha256": "759c5215bf5e8aff2c34f4c56038d8ab25569d9ceb0903b190d553643bf72b34",
+      "bytes": 23512,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_insufficient_balance_fails_when_queue_if_low_balance_false.jsonl",
+      "sha256": "e8face5f4659add4babf1d5b9a6d20c242bae0469678b5f5345512d3e14df3cd",
+      "bytes": 6826,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_insufficient_balance_queues_when_queue_if_low_balance_true.jsonl",
+      "sha256": "2473273812cb65d5f66899f4c815d0fae15c33e472cddeedaca95044215ec5d7",
+      "bytes": 8128,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_ledger_journal_dedupe_on_transactor_id_and_event.jsonl",
+      "sha256": "b6ecb74d4d550fd1217cd75d925a56dea79b89ac88bdd734c8ea74da7110a84d",
+      "bytes": 10247,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_merchant_balance_debited_synchronously.jsonl",
+      "sha256": "7e8938341cef61f2f3765e9a80a7f0d10d240512a29e7bf6124269ce2d62f089",
+      "bytes": 11591,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_no_illegal_transition_in_payout_logs.jsonl",
+      "sha256": "328bf4b1ca4cad04987d094039ba3b7f5f7f22f975db50aa9d2a3d7b57141099",
+      "bytes": 11900,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_other_merchant_cannot_fetch_or_cancel.jsonl",
+      "sha256": "822cf05be14bf641ce85f443a2977e2285d0afef18a8ee41f40d6eb8fbca133c",
+      "bytes": 10907,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_payout_failed_direct_account_no_reversal_no_ledger.jsonl",
+      "sha256": "e630af3b245b7379aaae341ad2bc9ce899b5b6cace1a50499a24b8a41394811e",
+      "bytes": 11560,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_payout_initiated_journal_sums_to_zero_and_debits_merchant.jsonl",
+      "sha256": "080ea32b54da49322f2256eacae90fcc14559f6178dd8d176cee86d3aa850a77",
+      "bytes": 13919,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_payout_processed_journal_mirrors_ledger.jsonl",
+      "sha256": "31cc1b6902d1664f8a741c57907a820e5986edc573c21b49a1e8335813a7af64",
+      "bytes": 27582,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_payout_reversed_journal_and_reversal_entity.jsonl",
+      "sha256": "f7fc96630fa87cb7a7e811abfdc2f2bad0c66f4d2ccdfd5562f556c5605024f2",
+      "bytes": 15451,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_pricing_500_rejects_payout.jsonl",
+      "sha256": "f5fdeddff47ccf92e9f5e89579e56f3f798acf62a7a9c25742d2a77b12dffd1e",
+      "bytes": 9252,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_queued_low_balance_payout_dequeues_after_topup_and_cron.jsonl",
+      "sha256": "e3ac18ea59f264e73022e7de5cc8c5bb91e26e97e392896688aea190ff8aad46",
+      "bytes": 19055,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_reservation_released_on_terminal_event.jsonl",
+      "sha256": "ee2731b7cc6d1406b35d24e6ee37f3b1ec54d47888ad8f14aa443405277ad66f",
+      "bytes": 29023,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_reversal_row_committed_before_ledger_call_baseline.jsonl",
+      "sha256": "8178b465bd79c234cb4283aa653abd09dd160cde14c0f6e46c1bee6904728403",
+      "bytes": 22342,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_reversal_survives_ledger_outage_via_async_retry.jsonl",
+      "sha256": "bb97c910230f2d4aa7d39c2fb35d4b0bc7c49f0b6baab06388cce651d50c676c",
+      "bytes": 23547,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_scheduled_payout_dequeues_after_slot_and_cron.jsonl",
+      "sha256": "7532ea85295e651c1522b9ce1a0be5e96a9741a4500820ef79f346b15bd3c2ed",
+      "bytes": 15582,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_shield_timeout_fails_open.jsonl",
+      "sha256": "70ea0a054e8b3a40278bf238cb5f94cc316b24d63aed1fc64c23d616fa29e77a",
+      "bytes": 12617,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_stuck_initiated_payout_has_no_automated_repair.jsonl",
+      "sha256": "7cdb39678ef848252b6fa6273b968b189c4feef3471a5983f5035fb820d39083",
+      "bytes": 154962,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_terminal_webhook_fires_exactly_once.jsonl",
+      "sha256": "56b47ee248e47bdecb2cc3feff263e8ff3d4e244b17a329c9eeaf7abeae0e912",
+      "bytes": 41497,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_transaction_id_set_blocks_failed_transition.jsonl",
+      "sha256": "9ead5ebcb626d95ed580a5c84789b60df8968376cd6144b866c8b5ed76e37f1e",
+      "bytes": 17671,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run/test_webhook_on_cancelled_payout_is_noop.jsonl",
+      "sha256": "72ad9266ffbc88b1d7f043d039bbec85df623622481fc29c922288b7b48f9c4f",
+      "bytes": 12962,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/arena-fingerprint.json",
+      "sha256": "27c925120ed849ccf80c4cbfd113f1ab6b2713c8b2cb89c43d868b8f4ce0cd96",
+      "bytes": 23754,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/dns.json",
+      "sha256": "0d5e98c95984c8c97bc286a98f7c09a3f54b46e0181dd621b7e34e036c5f21c0",
+      "bytes": 668,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/egress.json",
+      "sha256": "6c19ce64a4a3e951fc28c0858605f4a2a92a5b61db06cf5e12a3fde78b8f27d7",
+      "bytes": 1444,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/junit.xml",
+      "sha256": "3d21cd7865fb50f8c8d40ca8c159446bafca41d046bc6b6ab9f7804cae48435b",
+      "bytes": 9006,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_failed_webhook_remaps_differently_by_account_type.jsonl",
+      "sha256": "7559e3ba6a22fd9437ae0bb3199fdea1760c99175971c85ff090bfb3ca03cb89",
+      "bytes": 16468,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_fts_transfer_dedupe_on_source_id_and_type.jsonl",
+      "sha256": "9d61253d3f4b26df5ad9eefa7df3acb32a619f8de86f2cd95fdf662862ac0ce7",
+      "bytes": 10282,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_idempotent_create_same_key_different_body_rejected.jsonl",
+      "sha256": "f7a378bee5114bde16dbbd801ed81e7002587afdb91bd1c1e483f8df287c2e53",
+      "bytes": 14102,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_idempotent_create_same_key_same_body.jsonl",
+      "sha256": "5f4adb7670be3429b3e202e47e06d6a894b4df588bfae751173b8f089cc9a81f",
+      "bytes": 15075,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_inflight_reservation_total_equals_live_reservations.jsonl",
+      "sha256": "772b7ef8ad6247389f569155d60780d136935e4a8c3853d4370055bcfcd6e256",
+      "bytes": 10749,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_insufficient_balance_fails_when_queue_if_low_balance_false.jsonl",
+      "sha256": "e2206c22575de48e5a6e319fab1abf7fbb3cb151a25b2e0f0f01fa59ed09642f",
+      "bytes": 6828,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_insufficient_balance_queues_when_queue_if_low_balance_true.jsonl",
+      "sha256": "16adfb7bef93325ed6879318983bb40e1068acd9c099ba66fbd68b066cd6ef6a",
+      "bytes": 8126,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_ledger_journal_dedupe_on_transactor_id_and_event.jsonl",
+      "sha256": "200f095c98cc35fd66205a86ce5716256caa596258e5ee73eca5af7a879694e5",
+      "bytes": 10246,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_merchant_balance_debited_synchronously.jsonl",
+      "sha256": "f361113a7c76d106dd091684ca86bf8dea23833531948fd832444d1dedcf24dd",
+      "bytes": 11874,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_no_illegal_transition_in_payout_logs.jsonl",
+      "sha256": "900fa058d12b2c0c79ede47fbf4da6410480bf820fe32ac32daebea2ad888acd",
+      "bytes": 13279,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_other_merchant_cannot_fetch_or_cancel.jsonl",
+      "sha256": "f1c8053d298be890b05fce39284c3718e9c1ca3867a55be3b525d74a0f16c412",
+      "bytes": 10908,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_payout_failed_direct_account_no_reversal_no_ledger.jsonl",
+      "sha256": "0dd8f46e9b7c12a5f844e188887886e2c7707787b00515b2868cf54f27916ae7",
+      "bytes": 11564,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_payout_initiated_journal_sums_to_zero_and_debits_merchant.jsonl",
+      "sha256": "b97ae685474921ff1f206dca607fb191b1157f94a1e664df63507d63f9d966aa",
+      "bytes": 14213,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_payout_processed_journal_mirrors_ledger.jsonl",
+      "sha256": "6d41cd0ab7d6cfd7d0a2260e6de915a9f28399ee072e516b234d75a569efb0d2",
+      "bytes": 166721,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_payout_reversed_journal_and_reversal_entity.jsonl",
+      "sha256": "4a14c0146ba8fec9e5eec05d1f3d37f87b4e5a8d67b09b6ae9fec68830384f99",
+      "bytes": 14358,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_pricing_500_rejects_payout.jsonl",
+      "sha256": "c9fa9c09424ddc84c0afb3967d2bfe3010392d62648f1bb37f1e5bd50ffcc02f",
+      "bytes": 9819,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_queued_low_balance_payout_dequeues_after_topup_and_cron.jsonl",
+      "sha256": "7a88d203885603904c76a5290376f47a88c8170880b48dc5eb686bb6c5fdc82e",
+      "bytes": 17926,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_reservation_released_on_terminal_event.jsonl",
+      "sha256": "521622ee1a4f92db2470cff8c8f3d3f984afdb80e078c5e290a2f7b29852ca14",
+      "bytes": 11861,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_reversal_row_committed_before_ledger_call_baseline.jsonl",
+      "sha256": "af5d0670dbd2be4f71daa842cec43d05ddf309118b94bdd0ec24b8b438662e25",
+      "bytes": 19715,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_reversal_survives_ledger_outage_via_async_retry.jsonl",
+      "sha256": "74c90a81349323571d07ad267a8f2677731a938562fc002ecdf20b0498709e24",
+      "bytes": 23532,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_scheduled_payout_dequeues_after_slot_and_cron.jsonl",
+      "sha256": "0b5e196d16e0c0d5ac6ae7e979c407510ed6ab8d5a733d8115b01e6d66d1f4fe",
+      "bytes": 16683,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_shield_timeout_fails_open.jsonl",
+      "sha256": "91953b91e6b69982f88049460fcf7b99df36d5d1592ebc00b24b892e42a61bfe",
+      "bytes": 12982,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_stuck_initiated_payout_has_no_automated_repair.jsonl",
+      "sha256": "b6aed2f38907a5d253848d14139a9479a06d79c34fe636a890dc68fd698e9c51",
+      "bytes": 400795,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_terminal_webhook_fires_exactly_once.jsonl",
+      "sha256": "0084fa666c353bcbf5f8e3c0b6ad2dbb0e683622891210a024332ab9aec675b5",
+      "bytes": 51582,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_transaction_id_set_blocks_failed_transition.jsonl",
+      "sha256": "a4c5c4261aabe8e26d1ed9ce3bc8f0d7efb6461ea2ea1b83504ccfbe11847d1e",
+      "bytes": 17955,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier-run2/test_webhook_on_cancelled_payout_is_noop.jsonl",
+      "sha256": "42cc8de57536f44d2613afab87703ff2e5a5e60ac78d68d10224c5b230907b51",
+      "bytes": 12964,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-a-pollutionproof/verifier.log",
+      "sha256": "f51127a9929e34922a2ee8cb58e1ce953716e4b2b9f7a33f965c0a6b379af861",
+      "bytes": 5460,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-a-pollutionproof",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/instance-plan.json",
+      "sha256": "0fe77ff9fc8853d7586966cddbe6f3129b5a7f613ebac395b91332e12d4d1290",
+      "bytes": 2247,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/up.log",
+      "sha256": "eca55e4b9d9dbbe04a05944113046a39a4673999e3e1032b69fa9b94a873e02b",
+      "bytes": 80591,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/arena-fingerprint.json",
+      "sha256": "a19ad0ec493d1331a89447a6534e3f83a627e0c337f2be6a749986e615280f18",
+      "bytes": 23754,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/dns.json",
+      "sha256": "e17caf945774a1e8473b85a7e94300c40e8c745b736e12158cff2dcb577841c7",
+      "bytes": 668,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/egress.json",
+      "sha256": "184bebff58ddf4e23888aca382081a707ad13fbd7d448a01fb48bb7c1c4fdc56",
+      "bytes": 1445,
+      "type": "acceptance_or_report_json",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/junit.xml",
+      "sha256": "27ee06c8cd644a73c98570f3129bcefc7c129c1ee9c4946be069a2915f1eef12",
+      "bytes": 3784,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_failed_webhook_remaps_differently_by_account_type.jsonl",
+      "sha256": "f1ed811f7d0cb6e5abf60bef626b680ebc9d3c73e602a3f0aebdf4d2b2ba5188",
+      "bytes": 16497,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_fts_transfer_dedupe_on_source_id_and_type.jsonl",
+      "sha256": "28ce8d4c98b8d04ed77785ea4af665d472543db8aa485db0a0ce54b31d2c0d5f",
+      "bytes": 10273,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_idempotent_create_same_key_different_body_rejected.jsonl",
+      "sha256": "305a86cdabda31018482476a1a6351bc9bf2f15c0c25b1ce0064fa26fba27514",
+      "bytes": 13817,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_idempotent_create_same_key_same_body.jsonl",
+      "sha256": "d8a44bb86f7fbeaef5b0dee6d6603e21993aad54fcbd772a233b4aa354e3c1e9",
+      "bytes": 15633,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_inflight_reservation_total_equals_live_reservations.jsonl",
+      "sha256": "104856a9cb078da8d9a4019f2df52b8965e1b7e47ca087c94f462af7eb5c908a",
+      "bytes": 23234,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_insufficient_balance_fails_when_queue_if_low_balance_false.jsonl",
+      "sha256": "c357d2b608a572694c2c173f9811fa75ca2d7b237e6fe85ffac7159373caf903",
+      "bytes": 6825,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_insufficient_balance_queues_when_queue_if_low_balance_true.jsonl",
+      "sha256": "a462dd8aecbb66cd84e93c2821eb4bb8dea1698862c73477960dc9bfe6705d1e",
+      "bytes": 8127,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_ledger_journal_dedupe_on_transactor_id_and_event.jsonl",
+      "sha256": "aed48118306e2dd4f27abbd80b9140a340b9c079775925e9e147c729ed90a84a",
+      "bytes": 10248,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_merchant_balance_debited_synchronously.jsonl",
+      "sha256": "abbbd43ed211af7ba0d416c67341afba190cf32db68ed51f87edc1e49f79a25e",
+      "bytes": 11873,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_no_illegal_transition_in_payout_logs.jsonl",
+      "sha256": "059ae3c416377e7087c43e0a678abe051bf2ff80975c83723858bfa393955f35",
+      "bytes": 11900,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_other_merchant_cannot_fetch_or_cancel.jsonl",
+      "sha256": "07321b281747edd88d14f655eabeac71f159f8f501b598213aaa4a9aa59bfe84",
+      "bytes": 10907,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_payout_failed_direct_account_no_reversal_no_ledger.jsonl",
+      "sha256": "6ef0558d5750ab11692be98ba89c58962de799a39223243e0fb479dda1d05bd2",
+      "bytes": 10472,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_payout_initiated_journal_sums_to_zero_and_debits_merchant.jsonl",
+      "sha256": "93a0aa1532818660a2bd7f3098ab3a12d9b56800cc77f0d7a1d9001fbdcb2001",
+      "bytes": 13925,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_payout_processed_journal_mirrors_ledger.jsonl",
+      "sha256": "845778c477727ef070faa4a86dc8e44fc1621dcbd3cbad5be7bf1ed2260fcd54",
+      "bytes": 27324,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_payout_reversed_journal_and_reversal_entity.jsonl",
+      "sha256": "2a4b8b2381792e5f021aa9fa5bb4d3d7511e560785cbc9db8c01380740876ced",
+      "bytes": 14393,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_pricing_500_rejects_payout.jsonl",
+      "sha256": "9a3088e8879a5cb1ef3b2b6093058250f47112b7f83c834108461826bc385722",
+      "bytes": 9254,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_queued_low_balance_payout_dequeues_after_topup_and_cron.jsonl",
+      "sha256": "704c1683dff9871dc6a0a717962820fd461610b529f0b114011174c7c70d96e9",
+      "bytes": 19058,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_reservation_released_on_terminal_event.jsonl",
+      "sha256": "1452a97558a1bded4f4b9df5d356c8270d71a349ff26491f5db806ed297c530b",
+      "bytes": 27946,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_reversal_row_committed_before_ledger_call_baseline.jsonl",
+      "sha256": "dcae74ad74d8c025ca9a7a27cdbbdf099c29373dd75493919d050d32e9338d7f",
+      "bytes": 23160,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_reversal_survives_ledger_outage_via_async_retry.jsonl",
+      "sha256": "763064a8c41f627f02913975d6e01b04f09fe06040dd9c7ee0da8ce4bbb84117",
+      "bytes": 43713,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_scheduled_payout_dequeues_after_slot_and_cron.jsonl",
+      "sha256": "882157c8b1963963acacfdae6559c8c95fe23b3c1ba00d1071c281a5ebc1ff10",
+      "bytes": 16687,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_shield_timeout_fails_open.jsonl",
+      "sha256": "aa1abc849f340edf490496a875f980e82524ede39dba678924759c5f7b9e5720",
+      "bytes": 12620,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_stuck_initiated_payout_has_no_automated_repair.jsonl",
+      "sha256": "fb7edb0fff90e7c1a39824c37d3532769bd5966a5194cc38c9a096c7da2882de",
+      "bytes": 154902,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_terminal_webhook_fires_exactly_once.jsonl",
+      "sha256": "924544181bbeb900b92cba25842586bc3a220b50257f5a57ccfe08b43e999f11",
+      "bytes": 42947,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_transaction_id_set_blocks_failed_transition.jsonl",
+      "sha256": "879018176d02ac0321b077519949333b71b4988b12275bff2a819068e511e94a",
+      "bytes": 17671,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier-run/test_webhook_on_cancelled_payout_is_noop.jsonl",
+      "sha256": "200f32b0c4548a77f1a402aabdc469c3377168634164754c2c97e0976fd4ace1",
+      "bytes": 12970,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/cleanboot-m31-clean-b/verifier.log",
+      "sha256": "29d77c64961d2a763192497e4dacd692ac5a19891e9f5e88fadde66bcd56ae7e",
+      "bytes": 5440,
+      "type": "other",
+      "owner": "cleanboot-m31-clean-b",
+      "committed": false,
+      "redaction": "external_only_unredacted_synthetic"
+    },
+    {
+      "path": "RED_LOOP/runs/live-arena-snapshot-20260906T120713Z.json",
+      "sha256": "da83eb4f4d5c8658f618e2c607735734d6deb38ebf980c2a29fa412ebf9cb08a",
+      "bytes": 5099,
+      "type": "acceptance_or_report_json",
+      "owner": "live-arena-snapshot-20260906T120713Z.json",
       "committed": false,
       "redaction": "external_only_unredacted_synthetic"
     },
@@ -15058,5 +16780,5 @@
       "redaction": "committed_no_secrets"
     }
   ],
-  "self_sha256": "13c3164ab79f2f71e66ee602f4a9f2d7830893bfb9249983a64c912d69ec387d"
+  "self_sha256": "f66b8bb334dcde97fc991c16544e9233f6dad072d6cd7718ef6a9ca6e5c68150"
 }

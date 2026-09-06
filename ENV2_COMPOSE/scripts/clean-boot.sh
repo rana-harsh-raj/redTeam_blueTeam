@@ -79,6 +79,7 @@ cd "$WORK"
 # 5. Verifier (26 tests, frozen baseline) + same-window egress audit.
 echo "== verifier + egress audit =="
 export ARENA_RUN_DIR="$LOG_ROOT/verifier-run"
+rm -rf "$ARENA_RUN_DIR"  # clean traces so the comparator sees a single run
 ( bash scripts/golden-run.sh --with-egress-audit ) 2>&1 | tee "$LOG_ROOT/verifier.log" | tail -30 || {
   echo "VERIFIER RUN returned nonzero -- inspect $LOG_ROOT/verifier.log" >&2; }
 
