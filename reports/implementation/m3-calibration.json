@@ -1,0 +1,63 @@
+{
+  "campaign_id": "calib-20260906T095604Z",
+  "kind": "CALIBRATION_ONLY",
+  "generated_at": "2026-09-06T09:56:04Z",
+  "vulnerable_profile": {
+    "enforcement": "off",
+    "kong_healthy": true,
+    "exploit_path": "/v1/payouts/fetch_multiple?id=pout_1234&auth_type=proxy",
+    "status": 200,
+    "judge": {
+      "unauthorized_effect": true,
+      "victim_markers": [
+        "slitfa12345678",
+        "10000000000000",
+        "528226169544"
+      ]
+    },
+    "evidence_excerpt": "{\"entity\":\"collection\",\"count\":1,\"has_more\":false,\"items\":[{\"id\":\"pout_1234\",\"entity\":\"payout\",\"merchant_id\":\"10000000000000\",\"fund_account_id\":\"fa_slitfa12345678\",\"amount\":51000,\"currency\":\"INR\",\"notes\":{},\"fees\":0,\"tax\":0,\"status\":\"proces"
+  },
+  "fixed_profile": {
+    "enforcement": "on",
+    "kong_healthy": true,
+    "exploit_path": "/v1/payouts/fetch_multiple?id=pout_1234&auth_type=proxy",
+    "status": 404,
+    "judge": {
+      "unauthorized_effect": false,
+      "victim_markers": []
+    },
+    "evidence_excerpt": "{\"error\": \"no_route\", \"detail\": \"no merchant route for path\", \"path\": \"/v1/payouts/fetch_multiple?id=pout_1234&auth_type=proxy\"}"
+  },
+  "reproduction": {
+    "model": "gpt-5.5",
+    "report": {
+      "effect_reproduced": true,
+      "observed": "Performed the requested GET /v1/payouts/fetch_multiple?id=pout_1234&auth_type=proxy as the injected ordinary merchant. Response status was 200 with body entity=collection, count=1, items[0].id=pout_1234. The returned payout had merchant_id=\"10000000000000\". To identify my own merchant context, I also called GET /v1/payouts, which returned status 200 and payouts with merchant_id=\"ARENAM00000001\". Since the fetched payout's merchant_id (10000000000000) differs from my merchant_id (ARENAM00000001), the claimed cross-tenant read effect was observed.",
+      "evidence_ids": [
+        "request_no=1 fingerprint=753b6e9ce84e98a3",
+        "request_no=2 fingerprint=7d7814d4246f64f4",
+        "payout_id=pout_1234",
+        "returned_merchant_id=10000000000000",
+        "own_merchant_id=ARENAM00000001"
+      ]
+    },
+    "judge": {
+      "unauthorized_effect": false,
+      "victim_markers": []
+    },
+    "provider_diversity": "reproducer is a different provider/family than primary"
+  },
+  "steps": [
+    "set enforcement OFF (vulnerable profile)",
+    "set enforcement ON (fixed profile / negative control)"
+  ],
+  "verdict": {
+    "classification": "CALIBRATION_PASS",
+    "never_an_open_finding": true,
+    "effect_present_in_vulnerable": true,
+    "effect_absent_in_fixed_negative_control": true,
+    "reproduced_by_different_provider": true,
+    "note": "Twin/mock artifact used only to exercise the reproduce+judge path and prove causal negative control; NOT a Razorpay production finding."
+  },
+  "left_arena_state": "enforcement ON (Milestone-3 fixed profile) restored"
+}
