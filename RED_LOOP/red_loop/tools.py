@@ -95,6 +95,17 @@ TOOLS = [
                              "description": "impact classes, e.g. cross_tenant_write, money_conservation"}},
             "required": ["claimed_outcome", "minimal_steps", "evidence_summary"]}}},
     {"type": "function", "function": {
+        "name": "recall",
+        "description": "Reopen your own older records that were compacted out of the visible context: "
+                       "past hypotheses, observations, actions/requests, or candidates. Filter by kind "
+                       "and optional id or keyword substring. Your compiled state shows only the recent "
+                       "and active items; use this to retrieve anything older.",
+        "parameters": {"type": "object", "properties": {
+            "kind": {"type": "string", "enum": ["hypotheses", "observations", "actions", "candidates", "events"]},
+            "id": {"type": "string", "description": "optional exact record id (e.g. H-003, O-0004, C-002)"},
+            "keyword": {"type": "string", "description": "optional substring filter"},
+            "limit": {"type": "integer"}}, "required": ["kind"]}}},
+    {"type": "function", "function": {
         "name": "note",
         "description": "Write a short working note to your campaign scratchpad.",
         "parameters": {"type": "object", "properties": {"text": {"type": "string"}}, "required": ["text"]}}},
@@ -120,14 +131,26 @@ class Dispatcher:
         except Exception as e:  # noqa: BLE001 -- never crash the loop on a tool error
             return {"error": "tool_exception", "detail": str(e)[:400]}
 
+    def _capture_response(self, path, result):
+        """Persist an attacker-observed response body for the judge's canary scan."""
+        if isinstance(result, dict) and "body" in result:
+            self.store.add_response({"path": path, "status": result.get("status"),
+                                     "fingerprint": result.get("fingerprint"),
+                                     "body": (result.get("body") or "")[:8000]})
+
     def _dispatch(self, name, args):
         if name == "merchant_request":
-            return self.broker.request(args.get("method", "GET"), args.get("path", ""),
-                                       headers=args.get("headers"), body=args.get("body"))
+            r = self.broker.request(args.get("method", "GET"), args.get("path", ""),
+                                    headers=args.get("headers"), body=args.get("body"))
+            self._capture_response(args.get("path", ""), r)
+            return r
         if name == "merchant_request_concurrent":
-            return self.broker.concurrent(args.get("method", "GET"), args.get("path", ""),
-                                          args.get("count", 2), headers=args.get("headers"),
-                                          body=args.get("body"))
+            r = self.broker.concurrent(args.get("method", "GET"), args.get("path", ""),
+                                       args.get("count", 2), headers=args.get("headers"),
+                                       body=args.get("body"))
+            for sub in (r.get("results") or []):
+                self._capture_response(args.get("path", ""), sub)
+            return r
         if name == "read_own_webhooks":
             return self.broker.read_own_webhooks(since_ts=args.get("since_ts"),
                                                  payout_id=args.get("payout_id"))
@@ -169,6 +192,24 @@ class Dispatcher:
                 "status": "claimed"})
             coarse = self.candidate_hook(rec)  # deterministic pre-adjudication (coarse only)
             return coarse
+        if name == "recall":
+            kind = args.get("kind")
+            if kind not in self.store._files:
+                return {"error": "unknown_kind", "kind": kind}
+            rows = self.store._read_all(kind)
+            rid = args.get("id")
+            kw = (args.get("keyword") or "").lower()
+            limit = int(args.get("limit") or 20)
+            id_field = {"hypotheses": "hypothesis_id", "observations": "observation_id",
+                        "candidates": "candidate_id"}.get(kind)
+            out = []
+            for r in rows:
+                if rid and id_field and r.get(id_field) != rid:
+                    continue
+                if kw and kw not in json.dumps(r, default=str).lower():
+                    continue
+                out.append(r)
+            return {"kind": kind, "count": len(out), "records": out[-limit:]}
         if name == "note":
             self.store.event("note", text=args.get("text", "")[:2000])
             return {"ok": True}

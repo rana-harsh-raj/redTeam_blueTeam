@@ -34,6 +34,8 @@ class CampaignStore:
             "candidates": self.root / "candidates.jsonl",
             "model_calls": self.root / "model_calls.jsonl",
             "events": self.root / "events.jsonl",
+            "responses": self.root / "responses.jsonl",
+            "context_metrics": self.root / "context_metrics.jsonl",
         }
         self.manifest_path = self.root / "manifest.json"
 
@@ -120,6 +122,24 @@ class CampaignStore:
     def add_model_call(self, record):
         return self._append("model_calls", record)
 
+    def add_response(self, record):
+        """Capture an attacker-observed response body (bounded) so the judge can
+        independently scan it for victim canaries — not relying on the agent's
+        self-report."""
+        return self._append("responses", record)
+
+    def response_texts(self, cap=4000, limit=400):
+        """Return recent attacker-observed response bodies for judge scanning."""
+        out = []
+        for r in self._read_all("responses")[-limit:]:
+            b = r.get("body")
+            if b:
+                out.append(b[:cap])
+        return out
+
+    def add_context_metric(self, record):
+        return self._append("context_metrics", record)
+
     def event(self, kind, **fields):
         fields["event"] = kind
         return self._append("events", fields)
@@ -142,6 +162,24 @@ class CampaignStore:
     # -- resume ----------------------------------------------------------------
     def counts(self):
         return {k: len(self._read_all(k)) for k in self._files}
+
+    def state_hash(self):
+        """Stable content hash of the durable append-only ledgers (for
+        pause/restart before/after evidence). Excludes volatile model_calls and
+        context_metrics; includes the campaign's decision/state records."""
+        h = hashlib.sha256()
+        for kind in ("hypotheses", "actions", "observations", "candidates", "responses", "events"):
+            path = self._files[kind]
+            if path.exists():
+                h.update(path.read_bytes())
+        return h.hexdigest()
+
+    def resume_snapshot(self):
+        """Everything a restarted runner needs to continue from durable state."""
+        return {"campaign_id": self.campaign_id, "counts": self.counts(),
+                "state_hash": self.state_hash(),
+                "active_hypotheses": [hid for hid, h in self.latest_hypotheses().items()
+                                      if (h.get("status") or "proposed").lower() in ("proposed", "testing")]}
 
     def latest_hypotheses(self):
         """Fold _update records over base hypotheses to current state."""

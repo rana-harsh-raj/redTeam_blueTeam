@@ -142,12 +142,16 @@ def run_campaign_cmd(args):
     broker = Broker(attacker, store.add_action, request_budget=manifest["safety"]["request_budget"])
     judge = Judge()
 
+    canaries = manifest.get("victim_canaries", [])
+
     def judge_hook(candidate):
         ctx = {"attacker_id": attacker["merchant_id"], "actor_merchants": alloc["actor_merchants"],
                "since_ts": since_ts, "profile": "monolith",
-               "capabilities": candidate.get("capabilities", [])}
+               "capabilities": candidate.get("capabilities", []),
+               "canaries": canaries}
         try:
-            verdict = judge.adjudicate(candidate, ctx)
+            # judge independently scans the attacker's captured responses for canaries
+            verdict = judge.adjudicate(candidate, ctx, response_texts=store.response_texts())
         except Exception as e:  # noqa: BLE001
             verdict = {"verdict": "INSUFFICIENT_EVIDENCE", "error": str(e)[:300],
                        "deterministic_impact_confirmed": False}
@@ -169,7 +173,8 @@ def run_campaign_cmd(args):
         return
 
     summary = run_campaign(store, broker, config.PRIMARY_MODEL, mandate, judge_hook,
-                           max_turns=args.turns, max_wall_seconds=args.wall)
+                           emergency_max_turns=args.emergency_turns,
+                           max_wall_seconds=args.wall)
 
     # post-campaign: fold candidates, reproduce positives, else calibrate
     candidates = _fold_candidates(store)
@@ -195,6 +200,62 @@ def run_campaign_cmd(args):
     print(json.dumps({"campaign_id": cid, "run_dir": str(store.root),
                       "summary": summary, "verdicts": _verdict_breakdown(candidates),
                       "positives": len(positives)}, indent=2, default=str))
+
+
+def resume_campaign_cmd(args):
+    """Resume a killed/paused campaign purely from its durable records (Workstream F).
+    Reconstructs the store, attacker boundary and judge from the manifest; the
+    compiled context re-derives active hypotheses/verified facts from the store,
+    so the discarded model conversation is not needed."""
+    from red_loop.campaign import run_campaign
+    from red_loop.state import CampaignStore
+
+    store = CampaignStore(args.campaign_id)
+    manifest = store.read_manifest()
+    if not manifest:
+        print(json.dumps({"error": "no manifest for campaign", "campaign_id": args.campaign_id}))
+        return
+    before = store.resume_snapshot()
+    alloc = allocator.allocate()
+    attacker = alloc["attacker"]
+    if manifest.get("attacker_merchant_id") and manifest["attacker_merchant_id"] != attacker["merchant_id"]:
+        # keep provenance honest if a non-default attacker was used
+        store.event("resume_attacker_mismatch", manifest_attacker=manifest.get("attacker_merchant_id"),
+                    reallocated=attacker["merchant_id"])
+    since_ts = manifest.get("since_ts", 0)
+    canaries = manifest.get("victim_canaries", [])
+    broker = Broker(attacker, store.add_action,
+                    request_budget=manifest.get("safety", {}).get("request_budget", 4000))
+    # already-spent requests should count against the budget on resume
+    broker.request_count = int(manifest.get("broker_requests", 0) or 0)
+    judge = Judge()
+
+    def judge_hook(candidate):
+        ctx = {"attacker_id": attacker["merchant_id"], "actor_merchants": alloc["actor_merchants"],
+               "since_ts": since_ts, "profile": "monolith",
+               "capabilities": candidate.get("capabilities", []), "canaries": canaries}
+        try:
+            verdict = judge.adjudicate(candidate, ctx, response_texts=store.response_texts())
+        except Exception as e:  # noqa: BLE001
+            verdict = {"verdict": "INSUFFICIENT_EVIDENCE", "error": str(e)[:300],
+                       "deterministic_impact_confirmed": False}
+        ev_ref = store.put_evidence(verdict, label="verdict-" + candidate.get("candidate_id", "C"))
+        store.add_candidate({"candidate_id": candidate.get("candidate_id"), "status": "adjudicated",
+                             "verdict": verdict.get("verdict"),
+                             "deterministic_impact_confirmed": verdict.get("deterministic_impact_confirmed"),
+                             "verdict_ref": ev_ref["ref"]})
+        return {"recorded": True,
+                "deterministic_impact_confirmed": bool(verdict.get("deterministic_impact_confirmed"))}
+
+    mandate = (config.PROMPTS_DIR / "primary_mandate.txt").read_text()
+    mandate = mandate.replace("{attacker_merchant_id}", attacker["merchant_id"]) \
+                     .replace("{attacker_key_id}", attacker["key_id"])
+    summary = run_campaign(store, broker, config.PRIMARY_MODEL, mandate, judge_hook,
+                           emergency_max_turns=args.emergency_turns, max_wall_seconds=args.wall,
+                           resume=True)
+    after = store.resume_snapshot()
+    print(json.dumps({"resumed": args.campaign_id, "before": before, "after": after,
+                      "summary": summary}, indent=2, default=str))
 
 
 def _fold_candidates(store):
@@ -256,9 +317,14 @@ def main():
     sub.add_parser("preflight")
     sub.add_parser("models")
     cp = sub.add_parser("campaign")
-    cp.add_argument("--turns", type=int, default=160)
-    cp.add_argument("--wall", type=int, default=10800)
+    cp.add_argument("--emergency-turns", dest="emergency_turns", type=int, default=2000,
+                    help="EMERGENCY safety backstop only; NOT a normal completion condition")
+    cp.add_argument("--wall", type=int, default=None, help="optional wall-clock backstop seconds")
     cp.add_argument("--dry-run", action="store_true")
+    rp = sub.add_parser("resume")
+    rp.add_argument("campaign_id")
+    rp.add_argument("--emergency-turns", dest="emergency_turns", type=int, default=2000)
+    rp.add_argument("--wall", type=int, default=None)
     args = ap.parse_args()
 
     if args.cmd == "preflight":
@@ -269,6 +335,8 @@ def main():
         print(json.dumps(art["selected"], indent=2))
     elif args.cmd == "campaign":
         run_campaign_cmd(args)
+    elif args.cmd == "resume":
+        resume_campaign_cmd(args)
 
 
 if __name__ == "__main__":

@@ -152,6 +152,61 @@ class ChatClient:
         }
 
 
+def is_unusable(resp):
+    """Return a short reason string if a completion is blank / content-filtered /
+    refused / interrupted (Workstream D), else None. A filtered turn produces no
+    usable action and must be recovered, not counted as progress."""
+    if resp is None:
+        return "no_response"
+    fr = (resp.get("finish_reason") or "").lower()
+    if fr in ("content_filter", "content_management_policy"):
+        return "content_filter"
+    content = (resp.get("content") or "").strip()
+    if not resp.get("tool_calls") and not content:
+        return "blank_no_action"
+    if fr == "length" and not resp.get("tool_calls") and len(content) < 3:
+        return "truncated_empty"
+    return None
+
+
+def list_models(timeout=25):
+    """Return the sorted list of model ids the gateway currently exposes, for
+    fallback selection. Empty list on failure (never raises)."""
+    try:
+        req = urllib.request.Request(
+            config.gateway_base() + "/v1/models",
+            headers={"Authorization": "Bearer " + config.gateway_key()})
+        with urllib.request.urlopen(req, timeout=timeout) as r:
+            data = json.loads(r.read())
+        return sorted(m.get("id") for m in data.get("data", []) if m.get("id"))
+    except Exception:  # noqa: BLE001
+        return []
+
+
+def pick_fallback(current, prefer_families=("claude", "gpt", "gemini"), available=None):
+    """Choose a DIFFERENT approved large model than `current` from the live
+    inventory, preferring the same-then-other strong families. Returns None if
+    no distinct model is available. No hard-coded unavailable models."""
+    available = available if available is not None else list_models()
+    cand = [m for m in available if m != current]
+    if not cand:
+        return None
+    # prefer a strong model of the current family first, then other families
+    cur_fam = next((f for f in prefer_families if f in (current or "")), None)
+    def score(m):
+        ml = m.lower()
+        fam_rank = 99
+        for i, f in enumerate(prefer_families):
+            if f in ml:
+                fam_rank = i
+                break
+        same_fam = 0 if (cur_fam and cur_fam in ml) else 1
+        mini = 1 if any(x in ml for x in ("mini", "nano", "small", "haiku", "lite")) else 0
+        return (same_fam, fam_rank, mini, m)
+    cand.sort(key=score)
+    return cand[0]
+
+
 def parse_tool_args(raw):
     """Tolerant JSON parse of a tool-call arguments string."""
     if isinstance(raw, dict):
