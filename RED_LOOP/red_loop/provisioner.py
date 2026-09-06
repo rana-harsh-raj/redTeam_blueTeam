@@ -25,6 +25,7 @@ Control-plane only. The red agent never imports or reaches this module.
 import base64
 import hashlib
 import json
+import os
 import subprocess
 import time
 import urllib.error
@@ -35,7 +36,31 @@ from . import allocator, config
 from .pricing_ids import reserve_plan_id, validate_pricing_id
 
 KONG = config.KONG_LITE_URL
-C_PAYOUTS = "env2_compose-mysql-payouts-1"
+
+
+# --- container naming (shared by the Shared and Direct provisioners) -------
+# The compose project name is configurable so a disposable instance
+# (instance-plan.py -> COMPOSE_PROJECT_NAME=env2c_<id>, network rzp-arena-<id>,
+# kong secrets volume rzp-arena-secrets-kong-<id>) can be targeted without
+# editing code. Defaults reproduce the live env2_compose arena exactly.
+def compose_project():
+    return os.environ.get("ARENA_COMPOSE_PROJECT", os.environ.get("COMPOSE_PROJECT_NAME", "env2_compose"))
+
+
+def cname(service):
+    """Container name for a compose service in the targeted project."""
+    return "%s-%s-1" % (compose_project(), service)
+
+
+def arena_network():
+    return os.environ.get("ARENA_NETWORK", "rzp-arena" + os.environ.get("ARENA_SUFFIX", ""))
+
+
+def kong_secrets_volume():
+    return os.environ.get("ARENA_KONG_SECRETS_VOLUME", "rzp-arena-secrets-kong" + os.environ.get("ARENA_SUFFIX", ""))
+
+
+C_PAYOUTS = cname("mysql-payouts")
 
 
 def _secret_for(mkey):
@@ -176,7 +201,7 @@ def _mysql(container, db, pw, sql):
 
 
 def _psql(pw, sql):
-    out = subprocess.run(["docker", "exec", "env2_compose-postgres-ledger-1", "sh", "-c",
+    out = subprocess.run(["docker", "exec", cname("postgres-ledger"), "sh", "-c",
                           "PGPASSWORD=%s psql -U ledger -d ledger -tA -c %s" % (_sh(pw), _sh(sql))],
                          capture_output=True, text=True, timeout=30)
     return out.returncode, out.stdout, out.stderr[:400]
@@ -223,11 +248,11 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
         result["steps"].append({"step": name, "ok": rc == 0, "err": err if rc != 0 else None})
 
     # 1 apidb-stub
-    rc, _, e = _mysql("env2_compose-mysql-apidb-stub-1", "api_local", pw_api,
+    rc, _, e = _mysql(cname("mysql-apidb-stub"), "api_local", pw_api,
         "INSERT IGNORE INTO merchants (id,name,live,activated,created_at) "
         "VALUES ('%s','Arena Fresh %s',1,1,%d);" % (mid, role, ts))
     step("apidb.merchants", rc, e)
-    rc, _, e = _mysql("env2_compose-mysql-apidb-stub-1", "api_local", pw_api,
+    rc, _, e = _mysql(cname("mysql-apidb-stub"), "api_local", pw_api,
         "INSERT IGNORE INTO `balance` (id,merchant_id,balance,currency,type,name,on_hold,credits,"
         "fee_credits,refund_credits,account_number,account_type,channel,locked_balance,created_at,updated_at) "
         "VALUES ('%s','%s',%d,'INR','banking','fresh',0,0,0,0,'2323230099999999','shared',NULL,0,%d,%d);"
@@ -235,7 +260,7 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
     step("apidb.balance", rc, e)
 
     # 2 x-balances
-    rc, _, e = _mysql("env2_compose-mysql-xbalances-1", "rx_balances_local", pw_xbal,
+    rc, _, e = _mysql(cname("mysql-xbalances"), "rx_balances_local", pw_xbal,
         "INSERT IGNORE INTO balance (id,created_at,updated_at,status,merchant_id,account_number,"
         "account_type,channel,currency,balance,priority,last_change_at,last_fetched_at,last_attempted_at,"
         "fts_fund_account_id) VALUES ('%s',%d,%d,'activated','%s','2323230099999999','pool','rbl','INR',"
@@ -299,14 +324,14 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
     # 6 fts merchant->pool mapping (source_account_mappings + account_type_mappings)
     pw_fts = _pw("mysql_fts_root_password.txt")
     for mode in ("IMPS", "NEFT"):
-        rc, _, e = _mysql("env2_compose-mysql-fts-1", "fts", pw_fts,
+        rc, _, e = _mysql(cname("mysql-fts"), "fts", pw_fts,
             "INSERT IGNORE INTO source_account_mappings (operation,merchant_id,product,channel,"
             "mozart_identifier,source_account_id,source_account_type,account_type,mode,title,priority,"
             "routing_enabled,created_at,created_by,updated_at,integration_type,creation_reason) VALUES "
             "('TRANSFER','%s','PAYOUT','RBL','v1',900001,'NODAL','POOL','%s','fresh_%s',1,1,%d,'arena_seed',%d,"
             "'API','arena fresh');" % (mid, mode, mode, ts, ts))
         step("fts.source_account_mappings.%s" % mode, rc, e)
-        rc, _, e = _mysql("env2_compose-mysql-fts-1", "fts", pw_fts,
+        rc, _, e = _mysql(cname("mysql-fts"), "fts", pw_fts,
             "INSERT IGNORE INTO account_type_mappings (mode,product,account_type,merchant_id,created_at,"
             "created_by,updated_at) VALUES ('%s','PAYOUT','NODAL','%s',%d,'arena_seed',%d);"
             % (mode, mid, ts, ts))
@@ -330,7 +355,7 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
          mid, ts * 1000, ids["num"] % 10000000, ts * 1000, ids["fa_account_id"], fa_hash,
          ids["num"] % 10000000, ts * 1000)
     mongo_pw = _pw("mongo_cfa_root_password.txt")
-    out = subprocess.run(["docker", "exec", "env2_compose-mongo-cfa-1", "mongosh", "cfa",
+    out = subprocess.run(["docker", "exec", cname("mongo-cfa"), "mongosh", "cfa",
                           "--quiet", "--username", "cfa_root", "--password", mongo_pw,
                           "--authenticationDatabase", "admin", "--eval", js],
                          capture_output=True, text=True, timeout=30)
@@ -403,7 +428,7 @@ def _register_monolith_merchant(merchant_id, ids, plan_id, restart=False):
             "iec_code": ""}}
     path.write_text(json.dumps(doc, indent=2))
     if restart:
-        rs = subprocess.run(["docker", "restart", "env2_compose-monolith-stub-1"],
+        rs = subprocess.run(["docker", "restart", cname("monolith-stub")],
                             capture_output=True, text=True, timeout=40)
         if rs.returncode != 0:
             return "monolith restart failed: %s" % rs.stderr[:200]
@@ -463,7 +488,7 @@ def _register_monolith_fund_account(merchant_id, ids, contact_id, restart=True):
         doc = fas
     path.write_text(json.dumps(doc, indent=2))
     if restart:
-        rs = subprocess.run(["docker", "restart", "env2_compose-monolith-stub-1"],
+        rs = subprocess.run(["docker", "restart", cname("monolith-stub")],
                             capture_output=True, text=True, timeout=40)
         if rs.returncode != 0:
             return "monolith restart failed: %s" % rs.stderr[:200]
@@ -487,14 +512,14 @@ def register_kong_key(merchant_id, secret, secret_file=None, restart=True):
     # write secret into the kong secrets volume via a helper container
     hostdir = config.ENV2 / "secrets" / "merchant-keys"
     (hostdir / (secret_file + ".txt")).write_text(secret)
-    cp = subprocess.run(["docker", "run", "--rm", "-v", "rzp-arena-secrets-kong:/s",
+    cp = subprocess.run(["docker", "run", "--rm", "-v", kong_secrets_volume() + ":/s",
                          "-v", "%s:/in:ro" % hostdir, "alpine", "sh", "-c",
                          "cp /in/%s.txt /s/merchants/" % secret_file],
                         capture_output=True, text=True, timeout=40)
     if cp.returncode != 0:
         return "secret volume copy failed: %s" % cp.stderr[:200]
     if restart:
-        rs = subprocess.run(["docker", "restart", "env2_compose-kong-lite-1"],
+        rs = subprocess.run(["docker", "restart", cname("kong-lite")],
                             capture_output=True, text=True, timeout=40)
         if rs.returncode != 0:
             return "kong restart failed: %s" % rs.stderr[:200]

@@ -1,0 +1,2519 @@
+{
+  "milestone": "M4-T09 fresh Direct merchant provisioning",
+  "generated_at": "2026-09-06T19:09:43Z",
+  "tested_commit": "3e51857f0a0206dd46453b9029e581ae0e21da36",
+  "arena_fingerprint": {
+    "boot_id": "06330f7e-3099-4299-ab0c-9b9d50c43899",
+    "compose_project": "env2_compose",
+    "route_profile": "monolith",
+    "config_digest": "839a4da8c312d11fb6753b99318f7c22d2cc349b46a01b838eeb5e4b1aacf092",
+    "git_head": "39fe41e54d7ee7063ebdbac546334023b1aea5d5"
+  },
+  "container_prefix": "env2_compose",
+  "arena_network": "rzp-arena",
+  "gateway_profile": "hardened (KONG_ENFORCE_ROUTE_POLICY=1) via http://127.0.0.1:18080",
+  "run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-direct-provision-20260906T190253Z",
+  "merchants": [
+    {
+      "campaign_id": "m4d-64e9df7f",
+      "merchant_id": "ARENAD83156710",
+      "balance_id": "ARENADB3156710",
+      "banking_account_id": "ARENADA3156710",
+      "account_number": "2323000083156710",
+      "fund_account_id": "fa_ARENADX3156710",
+      "fts_fund_account_id": "996710",
+      "fts_source_account_id": "996710",
+      "pricing_plan_id": "ARENAPLAN36070",
+      "channel": "rbl",
+      "opening_balance": 10000000,
+      "restarts": [
+        "monolith-stub",
+        "bankingaccounts-stub",
+        "dcs-stub",
+        "splitz-stub",
+        "kong-lite"
+      ],
+      "provision_steps": [
+        {
+          "step": "apidb.merchants",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.balance",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.features.in_flight_reservation_enabled",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.banking_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "xbalances.balance",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.banking_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.counters",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.fund_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.bank_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.payout_purpose",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.banking_account_statement_details",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.bank_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.fund_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_account_mappings.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.account_type_mappings.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.preferred_routing_weights.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.direct_account_routing_rules.IMPS",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_account_mappings.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.account_type_mappings.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.preferred_routing_weights.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.direct_account_routing_rules.NEFT",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "ledger.accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "ledger.account_details",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "cfa",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "monolith.merchant_config",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "pricing.plan",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "monolith.fund_accounts",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "monolith.on_hold_slas",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "dcs.seed(copy_of_M2)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "splitz.seed(copy_of_M2)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "stork.seed",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "restart.monolith-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.bankingaccounts-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.dcs-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.splitz-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "stork.live_create",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "kong.register",
+          "ok": true,
+          "existed": null,
+          "err": null
+        }
+      ],
+      "failed_steps": [],
+      "existed_steps": [],
+      "self_check": {
+        "merchant_id": "ARENAD83156710",
+        "checks": [
+          {
+            "name": "apidb.balance.direct",
+            "ok": true,
+            "detail": "ARENADB3156710\tdirect\trbl\t2323000083156710"
+          },
+          {
+            "name": "apidb.features.in_flight_reservation_enabled",
+            "ok": true,
+            "detail": "in_flight_reservation_enabled"
+          },
+          {
+            "name": "xbalances.balance.row",
+            "ok": true,
+            "detail": "ARENADB3156710\tactive\tdirect\trbl\t996710\t10000000"
+          },
+          {
+            "name": "xbalances.http.GET_v1_balances",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "balance": {
+                "id": "ARENADB3156710",
+                "status": "active",
+                "merchantId": "ARENAD83156710",
+                "accountNumber": "2323000083156710",
+                "accountType": "direct",
+                "channel": "rbl",
+                "currency": "INR",
+                "balance": "10000000",
+                "lastChangedAt": "1788721373",
+                "lastFetchedAt": "1788721373",
+                "lastAttemptedAt": "0",
+                "createdAt": "1788721373",
+                "ftsFundAccountId": "996710"
+              }
+            }
+          },
+          {
+            "name": "payouts.banking_accounts.direct",
+            "ok": true,
+            "detail": "ARENADA3156710\tARENADB3156710\trbl\tdirect\t996710\t2323000083156710\tactivated"
+          },
+          {
+            "name": "relationship.balance_id_equal(payouts==apidb==xbalances)",
+            "ok": true,
+            "detail": {
+              "payouts": [
+                "ARENADB3156710"
+              ],
+              "apidb": [
+                "ARENADB3156710"
+              ],
+              "xbalances": [
+                "ARENADB3156710"
+              ]
+            }
+          },
+          {
+            "name": "payouts.counters.direct",
+            "ok": true,
+            "detail": "direct"
+          },
+          {
+            "name": "payouts.banking_account_statement_details.active",
+            "ok": true,
+            "detail": "active\tdirect\t10000000"
+          },
+          {
+            "name": "payouts.fund_accounts",
+            "ok": true,
+            "detail": "1"
+          },
+          {
+            "name": "fts.source_accounts.current_direct",
+            "ok": true,
+            "detail": "996710\t996710\tRBL\tCURRENT\tdirect\tv1"
+          },
+          {
+            "name": "relationship.fts_fund_account_id==source_accounts.fund_account_id",
+            "ok": true,
+            "detail": {
+              "payouts.fts_fund_account_id": [
+                "996710"
+              ],
+              "fts.fund_account_id": [
+                "996710"
+              ]
+            }
+          },
+          {
+            "name": "fts.fund_accounts",
+            "ok": true,
+            "detail": "996710\tARENAD83156710\tBANK_ACCOUNT\t996710"
+          },
+          {
+            "name": "fts.direct_account_routing_rules.IMPS+NEFT",
+            "ok": true,
+            "detail": "IMPS,NEFT"
+          },
+          {
+            "name": "fts.source_account_mappings.IMPS+NEFT(parity_only)",
+            "ok": true,
+            "detail": "IMPS,NEFT"
+          },
+          {
+            "name": "fts.channel_information_status.global_UP_rows",
+            "ok": true,
+            "detail": "10"
+          },
+          {
+            "name": "ledger.account_details.topology(2 fts-current + 4 merchant)",
+            "ok": true,
+            "detail": "current,current,merchant_va,merchant_va_vendor,merchant_va,va_gst"
+          },
+          {
+            "name": "ledger.journal.none_for_merchant",
+            "ok": true,
+            "detail": "0"
+          },
+          {
+            "name": "cfa.contact+fund_account",
+            "ok": true,
+            "detail": "{\"fa\":true,\"mid\":\"ARENAD83156710\",\"contact\":true,\"bat\":\"current\"}"
+          },
+          {
+            "name": "monolith.GET_internal_merchants",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "merchant": {
+                "activated": true,
+                "billing_label": "Arena Direct ARENAD83156710",
+                "business_banking": true,
+                "category": "other",
+                "category2": "other",
+                "country_code": "IN",
+                "created_at": 1788721376,
+                "email": "direct@arena.test",
+                "feature": [
+                  "payout_service_enabled",
+                  "banking",
+                  "in_flight_reservation_enabled"
+                ],
+                "hold_funds": false,
+                "id": "ARENAD83156710",
+                "live": true,
+                "name": "Arena Direct Merchant (RBL)",
+                "org_id": "ARENAORG000001",
+                "pricing_plan_id": "ARENAPLAN36070",
+                "purpose_code": "P0806"
+              }
+            }
+          },
+          {
+            "name": "monolith.seed.account_type_direct+numeric_fts_id",
+            "ok": true,
+            "detail": {
+              "account_type": "direct",
+              "channel": "rbl",
+              "fts_fund_account_id": 996710,
+              "fts_source_account_id": 996710
+            }
+          },
+          {
+            "name": "monolith.GET_fund_accounts_internal",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "body": "{\"account_type\": \"bank_account\", \"active\": true, \"bank_account\": {\"account_number\": \"1112220099\", \"account_type\": null, \"bank_identifier\": \"RATN\", \"bank_name\": \"RBL Bank\", \"id\": \"ba_ARENADK3156710\", \""
+            }
+          },
+          {
+            "name": "pricing.plan_resolves",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "body": {
+                "fees": 200,
+                "tax": 36,
+                "pricing_rule_id": "ARENAPLAN36070",
+                "error": "",
+                "code": ""
+              }
+            }
+          },
+          {
+            "name": "bankingaccounts.shield_merchant_details",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "body": "{\"data\": {\"merchant_id\": \"ARENAD83156710\", \"business_id\": \"ARENABIZ156710\", \"business_type\": \"private_limited_company\", \"sales_team\": \"SME\", \"account_number\": \"2323000083156710\"}}\n"
+            }
+          },
+          {
+            "name": "dcs.direct_accounts.Configs.in_flight_reservation_enabled",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "value_b64": "CAE=",
+              "expect": "CAE= (field1 varint 1)"
+            }
+          },
+          {
+            "name": "splitz.Rjdj0sAd4paXMG(fetch_balance_entity_from_x_balance)=on",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "variant": "on"
+            }
+          },
+          {
+            "name": "stork.subscription.payout_events",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "count": 1,
+              "events": [
+                "payout.failed",
+                "payout.initiated",
+                "payout.pending",
+                "payout.processed",
+                "payout.queued",
+                "payout.rejected",
+                "payout.reversed",
+                "payout.updated"
+              ]
+            }
+          },
+          {
+            "name": "sink.reachable",
+            "ok": true,
+            "detail": 200
+          },
+          {
+            "name": "kong.auth_probe(200_vs_401)",
+            "ok": true,
+            "detail": {
+              "good_secret": 200,
+              "bad_secret": 401
+            }
+          },
+          {
+            "name": "redis.reconciler_heartbeat_present",
+            "ok": true,
+            "detail": "1"
+          }
+        ],
+        "ready": true,
+        "passed": 29,
+        "total": 29
+      },
+      "payout_proof": {
+        "merchant_id": "ARENAD83156710",
+        "balance_id": "ARENADB3156710",
+        "started_at": "2026-09-06T19:04:58Z",
+        "gateway": "kong hardened (KONG_ENFORCE_ROUTE_POLICY=1)",
+        "create_body_note": "queue_if_low_balance=true so the Direct queueing strategy (reservation gate) runs",
+        "success": {
+          "mozart_hold": [
+            200,
+            "{\"key\": \"ARENAD83156710\", \"scenario\": \"hold\", \"polls\": 2}\n"
+          ],
+          "reservations_before": {
+            "status": 200,
+            "body": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD83156710",
+              "balance_id": "ARENADB3156710",
+              "reserved_total": 0,
+              "items": []
+            },
+            "redis_counter": "",
+            "redis_items": ""
+          },
+          "create": {
+            "status": 200,
+            "payout_id": "TYrOIWSsr7gktJ",
+            "fees": 200,
+            "tax": 36,
+            "status_field": "processing",
+            "body": null
+          },
+          "ledger_journals_after_create": "0",
+          "payout_row_pending": {
+            "status": "initiated",
+            "balance_id": "ARENADB3156710",
+            "merchant_id": "ARENAD83156710",
+            "fts_transfer_id": "29",
+            "transaction_id": null,
+            "queued_reason": "",
+            "utr": null,
+            "fees": "200",
+            "tax": "36",
+            "amount": "5000"
+          },
+          "fts_transfer_pending": {
+            "id": "29",
+            "status": "INITIATED",
+            "preferred_source_account_id": "996710",
+            "source_account_id": "996710",
+            "source_account_primary_id": "996710",
+            "fund_account_id": "996710",
+            "channel": "RBL",
+            "mode": "IMPS",
+            "utr": null,
+            "sa_account_type": "direct",
+            "sa_bank_account_type": "CURRENT",
+            "attempt_id": "29"
+          },
+          "reservations_pending": {
+            "status": 200,
+            "body": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD83156710",
+              "balance_id": "ARENADB3156710",
+              "reserved_total": 5000,
+              "items": [
+                {
+                  "payout_id": "TYrOIWSsr7gktJ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721499,
+                  "state": "live"
+                }
+              ]
+            },
+            "redis_counter": "5000",
+            "redis_items": "TYrOIWSsr7gktJ\n5000:1788721499:live"
+          },
+          "mozart_success": [
+            200,
+            "{\"key\": \"29\", \"scenario\": \"success\", \"polls\": 2}\n"
+          ],
+          "fts_check": [
+            200,
+            "null\n"
+          ],
+          "payout_row_terminal": {
+            "status": "processed",
+            "balance_id": "ARENADB3156710",
+            "merchant_id": "ARENAD83156710",
+            "fts_transfer_id": "29",
+            "transaction_id": null,
+            "queued_reason": "",
+            "utr": "ARENA0000000029",
+            "fees": "200",
+            "tax": "36",
+            "amount": "5000"
+          },
+          "fts_transfer_terminal": {
+            "id": "29",
+            "status": "PROCESSED",
+            "preferred_source_account_id": "996710",
+            "source_account_id": "996710",
+            "source_account_primary_id": "996710",
+            "fund_account_id": "996710",
+            "channel": "RBL",
+            "mode": "IMPS",
+            "utr": "ARENA0000000029",
+            "sa_account_type": "direct",
+            "sa_bank_account_type": "CURRENT",
+            "attempt_id": "29"
+          },
+          "reservations_after": {
+            "status": 200,
+            "body": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD83156710",
+              "balance_id": "ARENADB3156710",
+              "reserved_total": 5000,
+              "items": [
+                {
+                  "payout_id": "TYrOIWSsr7gktJ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721500,
+                  "state": "awaiting_balance_refresh"
+                }
+              ]
+            },
+            "redis_counter": "5000",
+            "redis_items": "TYrOIWSsr7gktJ\n5000:1788721500:awaiting_balance_refresh",
+            "before_reconciler": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD83156710",
+              "balance_id": "ARENADB3156710",
+              "reserved_total": 5000,
+              "items": [
+                {
+                  "payout_id": "TYrOIWSsr7gktJ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721499,
+                  "state": "live"
+                }
+              ]
+            },
+            "reconciler_once": {
+              "rc": 0,
+              "out": "[cron-driver] /v1/cron/process_inflight_reservation_reconciliation -> 200\n"
+            }
+          },
+          "reservation_transition_source": "reconciler_pass",
+          "monolith_relay_log": [
+            {
+              "kind": "update_fts_fund_transfer_inbound",
+              "payload": {
+                "bank_account_type": "CURRENT",
+                "bank_processed_time": "",
+                "bank_status_code": "SUCCESS",
+                "channel": "RBL",
+                "extra_info": {
+                  "bank_status_codes": {
+                    "transfer_init": "INITIATED",
+                    "transfer_status": "SUCCESS"
+                  },
+                  "beneficiary_acc_no": "",
+                  "beneficiary_acc_type": "",
+                  "beneficiary_bank": "",
+                  "beneficiary_name": "",
+                  "beneficiary_validation_mode": "",
+                  "cms_ref_no": "",
+                  "deemed_success": {
+                    "creation_time": 0,
+                    "gateway_error_code": ""
+                  },
+                  "internal_error": false,
+                  "is_pending": false,
+                  "payee_ifsc": "",
+                  "ponum": ""
+                },
+                "failure_reason": "",
+                "fund_transfer_id": 29,
+                "gateway_error_code": "",
+                "gateway_ref_no": "TYrOJqa10FwT",
+                "mode": "IMPS",
+                "narration": "",
+                "remarks": "",
+                "return_utr": "",
+                "source_account_id": 996710,
+                "source_id": "TYrOIWSsr7gktJ",
+                "source_type": "payout",
+                "status": "PROCESSED",
+                "status_details": null,
+                "utr": "ARENA0000000029"
+              }
+            },
+            {
+              "kind": "payout_merchant_resolved",
+              "payload": {
+                "payout_id": "TYrOIWSsr7gktJ",
+                "merchant_id": "ARENAD83156710",
+                "origin": "payouts.payouts"
+              }
+            },
+            {
+              "kind": "update_payouts_details_with_fts",
+              "payload": {
+                "status": 200,
+                "body": {
+                  "source_id": "TYrOIWSsr7gktJ",
+                  "fund_transfer_id": 29,
+                  "utr": "ARENA0000000029",
+                  "mode": "IMPS",
+                  "channel": "RBL",
+                  "bank_status_code": "SUCCESS",
+                  "gateway_ref_no": "TYrOJqa10FwT",
+                  "fta_status": "processed"
+                }
+              }
+            },
+            {
+              "kind": "source_update",
+              "payload": {
+                "payout_id": "TYrOIWSsr7gktJ",
+                "source_details": [
+                  {}
+                ],
+                "previous_status": "initiated",
+                "expected_current_status": "processed"
+              }
+            },
+            {
+              "kind": "mail_and_sms",
+              "payload": {
+                "entity": "payout",
+                "entity_id": "TYrOIWSsr7gktJ",
+                "type": "contact_communication_payout_processed",
+                "metadata": {
+                  "is_vanilla_payout": true,
+                  "is_vendor_payment": false
+                }
+              }
+            },
+            {
+              "kind": "payout_status_relay",
+              "payload": {
+                "body": {
+                  "source_id": "TYrOIWSsr7gktJ",
+                  "status": "processed",
+                  "failure_reason": "",
+                  "bank_status_code": "SUCCESS",
+                  "fts_fund_account_id": "996710",
+                  "fts_account_type": "current",
+                  "fts_status": "processed"
+                },
+                "status": 200
+              }
+            }
+          ],
+          "status_route_observed": "monolith relay (route E: FTS -> monolith-stub /update_fts_fund_transfer -> PS)",
+          "ledger_journals_after_processed": "0",
+          "payout_meta_temporary": "fts_info\t{\"status\": \"processed\", \"account_type\": \"current\", \"fund_account_id\": \"996710\"}",
+          "webhooks": {
+            "status": 200,
+            "deliveries": [
+              {
+                "event": "payout.initiated",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrOIWSsr7gktJ",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.updated",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrOIWSsr7gktJ",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.processed",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrOIWSsr7gktJ",
+                "payout_status": "processed"
+              }
+            ]
+          },
+          "fts_worker_route_observed": {
+            "fts-worker-rbl-direct-imps-initiate-transfer": 9,
+            "fts-worker-rbl-direct-imps-check-transfer-status": 9,
+            "fts-worker-initiate-transfer": 8
+          },
+          "xbalances_GET_v1_balances_calls_during_flow": 18,
+          "balance_authority_observed": "x-balances GET /v1/balances/{id} (Splitz Rjdj0sAd4paXMG=on)"
+        },
+        "failure": {
+          "mozart_failure": [
+            200,
+            "{\"key\": \"ARENAD83156710\", \"scenario\": \"failure\", \"polls\": 2}\n"
+          ],
+          "create": {
+            "status": 200,
+            "payout_id": "TYrPYlrgv88dU2",
+            "body": null
+          },
+          "payout_row_terminal": {
+            "status": "failed",
+            "balance_id": "ARENADB3156710",
+            "merchant_id": "ARENAD83156710",
+            "fts_transfer_id": "30",
+            "transaction_id": null,
+            "queued_reason": "",
+            "utr": null,
+            "fees": "200",
+            "tax": "36",
+            "amount": "5001"
+          },
+          "fts_transfer_terminal": {
+            "id": "30",
+            "status": "FAILED",
+            "preferred_source_account_id": "996710",
+            "source_account_id": "996710",
+            "source_account_primary_id": "996710",
+            "fund_account_id": "996710",
+            "channel": "RBL",
+            "mode": "IMPS",
+            "utr": null,
+            "sa_account_type": "direct",
+            "sa_bank_account_type": "CURRENT",
+            "attempt_id": "30"
+          },
+          "reversal_rows": "0",
+          "ledger_journals": "0",
+          "reservations_after": {
+            "status": 200,
+            "body": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD83156710",
+              "balance_id": "ARENADB3156710",
+              "reserved_total": 5000,
+              "items": [
+                {
+                  "payout_id": "TYrOIWSsr7gktJ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721500,
+                  "state": "awaiting_balance_refresh"
+                }
+              ]
+            },
+            "redis_counter": "5000",
+            "redis_items": "TYrOIWSsr7gktJ\n5000:1788721500:awaiting_balance_refresh",
+            "before_reconciler": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD83156710",
+              "balance_id": "ARENADB3156710",
+              "reserved_total": 10001,
+              "items": [
+                {
+                  "payout_id": "TYrPYlrgv88dU2",
+                  "amount": 5001,
+                  "dispatched_at": 1788721570,
+                  "state": "live"
+                },
+                {
+                  "payout_id": "TYrOIWSsr7gktJ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721500,
+                  "state": "awaiting_balance_refresh"
+                }
+              ]
+            },
+            "reconciler_once": {
+              "rc": 0,
+              "out": "[cron-driver] /v1/cron/process_inflight_reservation_reconciliation -> 200\n"
+            }
+          },
+          "reservation_transition_source": "reconciler_pass",
+          "monolith_relay_log": [
+            {
+              "kind": "update_payouts_details_with_fts",
+              "payload": {
+                "status": 200,
+                "body": {
+                  "source_id": "TYrPYlrgv88dU2",
+                  "fund_transfer_id": 30,
+                  "mode": "IMPS",
+                  "channel": "RBL",
+                  "gateway_ref_no": "TYrPaBRYBm52",
+                  "fta_status": "initiated"
+                }
+              }
+            },
+            {
+              "kind": "update_fts_fund_transfer_inbound",
+              "payload": {
+                "bank_account_type": "CURRENT",
+                "bank_processed_time": "",
+                "bank_status_code": "INVALID_ACCOUNT_NUMBER",
+                "channel": "RBL",
+                "extra_info": {
+                  "bank_status_codes": {
+                    "transfer_init": "INVALID_ACCOUNT_NUMBER",
+                    "transfer_status": ""
+                  },
+                  "beneficiary_acc_no": "",
+                  "beneficiary_acc_type": "",
+                  "beneficiary_bank": "",
+                  "beneficiary_name": "",
+                  "beneficiary_validation_mode": "",
+                  "cms_ref_no": "",
+                  "deemed_success": {
+                    "creation_time": 0,
+                    "gateway_error_code": ""
+                  },
+                  "internal_error": false,
+                  "is_pending": false,
+                  "payee_ifsc": "",
+                  "ponum": ""
+                },
+                "failure_reason": "",
+                "fund_transfer_id": 30,
+                "gateway_error_code": "INVALID_ACCOUNT_NUMBER",
+                "gateway_ref_no": "TYrPaBRYBm52",
+                "mode": "IMPS",
+                "narration": "",
+                "remarks": "synthetic failure",
+                "return_utr": "",
+                "source_account_id": 996710,
+                "source_id": "TYrPYlrgv88dU2",
+                "source_type": "payout",
+                "status": "FAILED",
+                "status_details": null,
+                "utr": ""
+              }
+            },
+            {
+              "kind": "payout_merchant_resolved",
+              "payload": {
+                "payout_id": "TYrPYlrgv88dU2",
+                "merchant_id": "ARENAD83156710",
+                "origin": "payouts.payouts"
+              }
+            },
+            {
+              "kind": "update_payouts_details_with_fts",
+              "payload": {
+                "status": 200,
+                "body": {
+                  "source_id": "TYrPYlrgv88dU2",
+                  "fund_transfer_id": 30,
+                  "mode": "IMPS",
+                  "channel": "RBL",
+                  "bank_status_code": "INVALID_ACCOUNT_NUMBER",
+                  "remarks": "synthetic failure",
+                  "gateway_ref_no": "TYrPaBRYBm52",
+                  "fta_status": "failed"
+                }
+              }
+            },
+            {
+              "kind": "source_update",
+              "payload": {
+                "payout_id": "TYrPYlrgv88dU2",
+                "source_details": [
+                  {}
+                ],
+                "previous_status": "initiated",
+                "expected_current_status": "failed"
+              }
+            },
+            {
+              "kind": "payout_status_relay",
+              "payload": {
+                "body": {
+                  "source_id": "TYrPYlrgv88dU2",
+                  "status": "failed",
+                  "failure_reason": "",
+                  "bank_status_code": "INVALID_ACCOUNT_NUMBER",
+                  "fts_fund_account_id": "996710",
+                  "fts_account_type": "current",
+                  "fts_status": "failed"
+                },
+                "status": 200
+              }
+            }
+          ],
+          "webhooks": {
+            "status": 200,
+            "deliveries": [
+              {
+                "event": "payout.initiated",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrPYlrgv88dU2",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.updated",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrPYlrgv88dU2",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.failed",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrPYlrgv88dU2",
+                "payout_status": "failed"
+              }
+            ]
+          }
+        },
+        "checks": [
+          {
+            "name": "success.create_200",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "payout_id": "TYrOIWSsr7gktJ",
+              "fees": 200,
+              "tax": 36,
+              "status_field": "processing",
+              "body": null
+            }
+          },
+          {
+            "name": "success.reservation_live_while_pending",
+            "ok": true,
+            "detail": {
+              "items": [
+                {
+                  "payout_id": "TYrOIWSsr7gktJ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721499,
+                  "state": "live"
+                }
+              ],
+              "redis_items": "TYrOIWSsr7gktJ\n5000:1788721499:live"
+            }
+          },
+          {
+            "name": "success.payout_uses_direct_banking_account",
+            "ok": true,
+            "detail": {
+              "status": "initiated",
+              "balance_id": "ARENADB3156710",
+              "merchant_id": "ARENAD83156710",
+              "fts_transfer_id": "29",
+              "transaction_id": null,
+              "queued_reason": "",
+              "utr": null,
+              "fees": "200",
+              "tax": "36",
+              "amount": "5000"
+            }
+          },
+          {
+            "name": "success.fts_preferred_source_account_id==new_fund_account_id",
+            "ok": true,
+            "detail": {
+              "id": "29",
+              "status": "INITIATED",
+              "preferred_source_account_id": "996710",
+              "source_account_id": "996710",
+              "source_account_primary_id": "996710",
+              "fund_account_id": "996710",
+              "channel": "RBL",
+              "mode": "IMPS",
+              "utr": null,
+              "sa_account_type": "direct",
+              "sa_bank_account_type": "CURRENT",
+              "attempt_id": "29"
+            }
+          },
+          {
+            "name": "success.terminal_processed",
+            "ok": true,
+            "detail": {
+              "status": "processed",
+              "balance_id": "ARENADB3156710",
+              "merchant_id": "ARENAD83156710",
+              "fts_transfer_id": "29",
+              "transaction_id": null,
+              "queued_reason": "",
+              "utr": "ARENA0000000029",
+              "fees": "200",
+              "tax": "36",
+              "amount": "5000"
+            }
+          },
+          {
+            "name": "success.reservation_awaiting_balance_refresh_after_processed",
+            "ok": true,
+            "detail": {
+              "items": [
+                {
+                  "payout_id": "TYrOIWSsr7gktJ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721500,
+                  "state": "awaiting_balance_refresh"
+                }
+              ],
+              "redis": "TYrOIWSsr7gktJ\n5000:1788721500:awaiting_balance_refresh",
+              "transition_source": "reconciler_pass"
+            }
+          },
+          {
+            "name": "success.no_ledger_journal",
+            "ok": true,
+            "detail": "0"
+          },
+          {
+            "name": "success.webhook_payout.processed_delivered_to_own_sink_path",
+            "ok": true,
+            "detail": [
+              {
+                "event": "payout.initiated",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrOIWSsr7gktJ",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.updated",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrOIWSsr7gktJ",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.processed",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrOIWSsr7gktJ",
+                "payout_status": "processed"
+              }
+            ]
+          },
+          {
+            "name": "success.webhooks_scoped_to_merchant",
+            "ok": true,
+            "detail": [
+              "ARENAD83156710",
+              "ARENAD83156710",
+              "ARENAD83156710"
+            ]
+          },
+          {
+            "name": "failure.create_200",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "payout_id": "TYrPYlrgv88dU2",
+              "body": null
+            }
+          },
+          {
+            "name": "failure.terminal_failed_not_reversed",
+            "ok": true,
+            "detail": {
+              "status": "failed",
+              "balance_id": "ARENADB3156710",
+              "merchant_id": "ARENAD83156710",
+              "fts_transfer_id": "30",
+              "transaction_id": null,
+              "queued_reason": "",
+              "utr": null,
+              "fees": "200",
+              "tax": "36",
+              "amount": "5001"
+            }
+          },
+          {
+            "name": "failure.no_reversal_row",
+            "ok": true,
+            "detail": "0"
+          },
+          {
+            "name": "failure.no_ledger_journal",
+            "ok": true,
+            "detail": "0"
+          },
+          {
+            "name": "failure.reservation_released",
+            "ok": true,
+            "detail": {
+              "items": [
+                {
+                  "payout_id": "TYrOIWSsr7gktJ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721500,
+                  "state": "awaiting_balance_refresh"
+                }
+              ],
+              "transition_source": "reconciler_pass"
+            }
+          },
+          {
+            "name": "failure.webhook_payout.failed_delivered",
+            "ok": true,
+            "detail": [
+              {
+                "event": "payout.initiated",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrPYlrgv88dU2",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.updated",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrPYlrgv88dU2",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.failed",
+                "merchant": "ARENAD83156710",
+                "signature_valid": true,
+                "payout_id": "pout_TYrPYlrgv88dU2",
+                "payout_status": "failed"
+              }
+            ]
+          }
+        ],
+        "reconciler_once": {
+          "rc": 0,
+          "out": "[cron-driver] /v1/cron/process_inflight_reservation_reconciliation -> 200\n"
+        },
+        "heartbeat_before_dispatch": "1",
+        "passed": 15,
+        "total": 15,
+        "ok": true,
+        "finished_at": "2026-09-06T19:07:20Z"
+      }
+    },
+    {
+      "campaign_id": "m4d-fe70dcaa",
+      "merchant_id": "ARENAD84125766",
+      "balance_id": "ARENADB4125766",
+      "banking_account_id": "ARENADA4125766",
+      "account_number": "2323000084125766",
+      "fund_account_id": "fa_ARENADX4125766",
+      "fts_fund_account_id": "975766",
+      "fts_source_account_id": "975766",
+      "pricing_plan_id": "ARENAPLAN885C2",
+      "channel": "rbl",
+      "opening_balance": 10000000,
+      "restarts": [
+        "monolith-stub",
+        "bankingaccounts-stub",
+        "dcs-stub",
+        "splitz-stub",
+        "kong-lite"
+      ],
+      "provision_steps": [
+        {
+          "step": "apidb.merchants",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.balance",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.features.in_flight_reservation_enabled",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.banking_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "xbalances.balance",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.banking_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.counters",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.fund_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.bank_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.payout_purpose",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.banking_account_statement_details",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.bank_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.fund_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_account_mappings.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.account_type_mappings.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.preferred_routing_weights.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.direct_account_routing_rules.IMPS",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_account_mappings.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.account_type_mappings.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.preferred_routing_weights.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.direct_account_routing_rules.NEFT",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "ledger.accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "ledger.account_details",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "cfa",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "monolith.merchant_config",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "pricing.plan",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "monolith.fund_accounts",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "monolith.on_hold_slas",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "dcs.seed(copy_of_M2)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "splitz.seed(copy_of_M2)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "stork.seed",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "restart.monolith-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.bankingaccounts-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.dcs-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.splitz-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "stork.live_create",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "kong.register",
+          "ok": true,
+          "existed": null,
+          "err": null
+        }
+      ],
+      "failed_steps": [],
+      "existed_steps": [],
+      "self_check": {
+        "merchant_id": "ARENAD84125766",
+        "checks": [
+          {
+            "name": "apidb.balance.direct",
+            "ok": true,
+            "detail": "ARENADB4125766\tdirect\trbl\t2323000084125766"
+          },
+          {
+            "name": "apidb.features.in_flight_reservation_enabled",
+            "ok": true,
+            "detail": "in_flight_reservation_enabled"
+          },
+          {
+            "name": "xbalances.balance.row",
+            "ok": true,
+            "detail": "ARENADB4125766\tactive\tdirect\trbl\t975766\t10000000"
+          },
+          {
+            "name": "xbalances.http.GET_v1_balances",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "balance": {
+                "id": "ARENADB4125766",
+                "status": "active",
+                "merchantId": "ARENAD84125766",
+                "accountNumber": "2323000084125766",
+                "accountType": "direct",
+                "channel": "rbl",
+                "currency": "INR",
+                "balance": "10000000",
+                "lastChangedAt": "1788721432",
+                "lastFetchedAt": "1788721432",
+                "lastAttemptedAt": "0",
+                "createdAt": "1788721432",
+                "ftsFundAccountId": "975766"
+              }
+            }
+          },
+          {
+            "name": "payouts.banking_accounts.direct",
+            "ok": true,
+            "detail": "ARENADA4125766\tARENADB4125766\trbl\tdirect\t975766\t2323000084125766\tactivated"
+          },
+          {
+            "name": "relationship.balance_id_equal(payouts==apidb==xbalances)",
+            "ok": true,
+            "detail": {
+              "payouts": [
+                "ARENADB4125766"
+              ],
+              "apidb": [
+                "ARENADB4125766"
+              ],
+              "xbalances": [
+                "ARENADB4125766"
+              ]
+            }
+          },
+          {
+            "name": "payouts.counters.direct",
+            "ok": true,
+            "detail": "direct"
+          },
+          {
+            "name": "payouts.banking_account_statement_details.active",
+            "ok": true,
+            "detail": "active\tdirect\t10000000"
+          },
+          {
+            "name": "payouts.fund_accounts",
+            "ok": true,
+            "detail": "1"
+          },
+          {
+            "name": "fts.source_accounts.current_direct",
+            "ok": true,
+            "detail": "975766\t975766\tRBL\tCURRENT\tdirect\tv1"
+          },
+          {
+            "name": "relationship.fts_fund_account_id==source_accounts.fund_account_id",
+            "ok": true,
+            "detail": {
+              "payouts.fts_fund_account_id": [
+                "975766"
+              ],
+              "fts.fund_account_id": [
+                "975766"
+              ]
+            }
+          },
+          {
+            "name": "fts.fund_accounts",
+            "ok": true,
+            "detail": "975766\tARENAD84125766\tBANK_ACCOUNT\t975766"
+          },
+          {
+            "name": "fts.direct_account_routing_rules.IMPS+NEFT",
+            "ok": true,
+            "detail": "IMPS,NEFT"
+          },
+          {
+            "name": "fts.source_account_mappings.IMPS+NEFT(parity_only)",
+            "ok": true,
+            "detail": "IMPS,NEFT"
+          },
+          {
+            "name": "fts.channel_information_status.global_UP_rows",
+            "ok": true,
+            "detail": "10"
+          },
+          {
+            "name": "ledger.account_details.topology(2 fts-current + 4 merchant)",
+            "ok": true,
+            "detail": "current,current,merchant_va,merchant_va_vendor,merchant_va,va_gst"
+          },
+          {
+            "name": "ledger.journal.none_for_merchant",
+            "ok": true,
+            "detail": "0"
+          },
+          {
+            "name": "cfa.contact+fund_account",
+            "ok": true,
+            "detail": "{\"fa\":true,\"mid\":\"ARENAD84125766\",\"contact\":true,\"bat\":\"current\"}"
+          },
+          {
+            "name": "monolith.GET_internal_merchants",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "merchant": {
+                "activated": true,
+                "billing_label": "Arena Direct ARENAD84125766",
+                "business_banking": true,
+                "category": "other",
+                "category2": "other",
+                "country_code": "IN",
+                "created_at": 1788721434,
+                "email": "direct@arena.test",
+                "feature": [
+                  "payout_service_enabled",
+                  "banking",
+                  "in_flight_reservation_enabled"
+                ],
+                "hold_funds": false,
+                "id": "ARENAD84125766",
+                "live": true,
+                "name": "Arena Direct Merchant (RBL)",
+                "org_id": "ARENAORG000001",
+                "pricing_plan_id": "ARENAPLAN885C2",
+                "purpose_code": "P0806"
+              }
+            }
+          },
+          {
+            "name": "monolith.seed.account_type_direct+numeric_fts_id",
+            "ok": true,
+            "detail": {
+              "account_type": "direct",
+              "channel": "rbl",
+              "fts_fund_account_id": 975766,
+              "fts_source_account_id": 975766
+            }
+          },
+          {
+            "name": "monolith.GET_fund_accounts_internal",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "body": "{\"account_type\": \"bank_account\", \"active\": true, \"bank_account\": {\"account_number\": \"1112220099\", \"account_type\": null, \"bank_identifier\": \"RATN\", \"bank_name\": \"RBL Bank\", \"id\": \"ba_ARENADK4125766\", \""
+            }
+          },
+          {
+            "name": "pricing.plan_resolves",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "body": {
+                "fees": 200,
+                "tax": 36,
+                "pricing_rule_id": "ARENAPLAN885C2",
+                "error": "",
+                "code": ""
+              }
+            }
+          },
+          {
+            "name": "bankingaccounts.shield_merchant_details",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "body": "{\"data\": {\"merchant_id\": \"ARENAD84125766\", \"business_id\": \"ARENABIZ125766\", \"business_type\": \"private_limited_company\", \"sales_team\": \"SME\", \"account_number\": \"2323000084125766\"}}\n"
+            }
+          },
+          {
+            "name": "dcs.direct_accounts.Configs.in_flight_reservation_enabled",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "value_b64": "CAE=",
+              "expect": "CAE= (field1 varint 1)"
+            }
+          },
+          {
+            "name": "splitz.Rjdj0sAd4paXMG(fetch_balance_entity_from_x_balance)=on",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "variant": "on"
+            }
+          },
+          {
+            "name": "stork.subscription.payout_events",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "count": 1,
+              "events": [
+                "payout.failed",
+                "payout.initiated",
+                "payout.pending",
+                "payout.processed",
+                "payout.queued",
+                "payout.rejected",
+                "payout.reversed",
+                "payout.updated"
+              ]
+            }
+          },
+          {
+            "name": "sink.reachable",
+            "ok": true,
+            "detail": 200
+          },
+          {
+            "name": "kong.auth_probe(200_vs_401)",
+            "ok": true,
+            "detail": {
+              "good_secret": 200,
+              "bad_secret": 401
+            }
+          },
+          {
+            "name": "redis.reconciler_heartbeat_present",
+            "ok": true,
+            "detail": "1"
+          }
+        ],
+        "ready": true,
+        "passed": 29,
+        "total": 29
+      },
+      "payout_proof": {
+        "merchant_id": "ARENAD84125766",
+        "balance_id": "ARENADB4125766",
+        "started_at": "2026-09-06T19:07:20Z",
+        "gateway": "kong hardened (KONG_ENFORCE_ROUTE_POLICY=1)",
+        "create_body_note": "queue_if_low_balance=true so the Direct queueing strategy (reservation gate) runs",
+        "success": {
+          "mozart_hold": [
+            200,
+            "{\"key\": \"ARENAD84125766\", \"scenario\": \"hold\", \"polls\": 2}\n"
+          ],
+          "reservations_before": {
+            "status": 200,
+            "body": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD84125766",
+              "balance_id": "ARENADB4125766",
+              "reserved_total": 0,
+              "items": []
+            },
+            "redis_counter": "",
+            "redis_items": ""
+          },
+          "create": {
+            "status": 200,
+            "payout_id": "TYrQofkJPpURqQ",
+            "fees": 200,
+            "tax": 36,
+            "status_field": "processing",
+            "body": null
+          },
+          "ledger_journals_after_create": "0",
+          "payout_row_pending": {
+            "status": "initiated",
+            "balance_id": "ARENADB4125766",
+            "merchant_id": "ARENAD84125766",
+            "fts_transfer_id": "31",
+            "transaction_id": null,
+            "queued_reason": "",
+            "utr": null,
+            "fees": "200",
+            "tax": "36",
+            "amount": "5000"
+          },
+          "fts_transfer_pending": {
+            "id": "31",
+            "status": "INITIATED",
+            "preferred_source_account_id": "975766",
+            "source_account_id": "975766",
+            "source_account_primary_id": "975766",
+            "fund_account_id": "975766",
+            "channel": "RBL",
+            "mode": "IMPS",
+            "utr": null,
+            "sa_account_type": "direct",
+            "sa_bank_account_type": "CURRENT",
+            "attempt_id": "31"
+          },
+          "reservations_pending": {
+            "status": 200,
+            "body": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD84125766",
+              "balance_id": "ARENADB4125766",
+              "reserved_total": 5000,
+              "items": [
+                {
+                  "payout_id": "TYrQofkJPpURqQ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721642,
+                  "state": "live"
+                }
+              ]
+            },
+            "redis_counter": "5000",
+            "redis_items": "TYrQofkJPpURqQ\n5000:1788721642:live"
+          },
+          "mozart_success": [
+            200,
+            "{\"key\": \"31\", \"scenario\": \"success\", \"polls\": 2}\n"
+          ],
+          "fts_check": [
+            200,
+            "null\n"
+          ],
+          "payout_row_terminal": {
+            "status": "processed",
+            "balance_id": "ARENADB4125766",
+            "merchant_id": "ARENAD84125766",
+            "fts_transfer_id": "31",
+            "transaction_id": null,
+            "queued_reason": "",
+            "utr": "ARENA0000000031",
+            "fees": "200",
+            "tax": "36",
+            "amount": "5000"
+          },
+          "fts_transfer_terminal": {
+            "id": "31",
+            "status": "PROCESSED",
+            "preferred_source_account_id": "975766",
+            "source_account_id": "975766",
+            "source_account_primary_id": "975766",
+            "fund_account_id": "975766",
+            "channel": "RBL",
+            "mode": "IMPS",
+            "utr": "ARENA0000000031",
+            "sa_account_type": "direct",
+            "sa_bank_account_type": "CURRENT",
+            "attempt_id": "31"
+          },
+          "reservations_after": {
+            "status": 200,
+            "body": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD84125766",
+              "balance_id": "ARENADB4125766",
+              "reserved_total": 5000,
+              "items": [
+                {
+                  "payout_id": "TYrQofkJPpURqQ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721642,
+                  "state": "awaiting_balance_refresh"
+                }
+              ]
+            },
+            "redis_counter": "5000",
+            "redis_items": "TYrQofkJPpURqQ\n5000:1788721642:awaiting_balance_refresh",
+            "before_reconciler": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD84125766",
+              "balance_id": "ARENADB4125766",
+              "reserved_total": 5000,
+              "items": [
+                {
+                  "payout_id": "TYrQofkJPpURqQ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721642,
+                  "state": "live"
+                }
+              ]
+            },
+            "reconciler_once": {
+              "rc": 0,
+              "out": "[cron-driver] /v1/cron/process_inflight_reservation_reconciliation -> 200\n"
+            }
+          },
+          "reservation_transition_source": "reconciler_pass",
+          "monolith_relay_log": [
+            {
+              "kind": "update_fts_fund_transfer_inbound",
+              "payload": {
+                "bank_account_type": "CURRENT",
+                "bank_processed_time": "",
+                "bank_status_code": "SUCCESS",
+                "channel": "RBL",
+                "extra_info": {
+                  "bank_status_codes": {
+                    "transfer_init": "INITIATED",
+                    "transfer_status": "SUCCESS"
+                  },
+                  "beneficiary_acc_no": "",
+                  "beneficiary_acc_type": "",
+                  "beneficiary_bank": "",
+                  "beneficiary_name": "",
+                  "beneficiary_validation_mode": "",
+                  "cms_ref_no": "",
+                  "deemed_success": {
+                    "creation_time": 0,
+                    "gateway_error_code": ""
+                  },
+                  "internal_error": false,
+                  "is_pending": false,
+                  "payee_ifsc": "",
+                  "ponum": ""
+                },
+                "failure_reason": "",
+                "fund_transfer_id": 31,
+                "gateway_error_code": "",
+                "gateway_ref_no": "TYrQpCaPKOLX",
+                "mode": "IMPS",
+                "narration": "",
+                "remarks": "",
+                "return_utr": "",
+                "source_account_id": 975766,
+                "source_id": "TYrQofkJPpURqQ",
+                "source_type": "payout",
+                "status": "PROCESSED",
+                "status_details": null,
+                "utr": "ARENA0000000031"
+              }
+            },
+            {
+              "kind": "payout_merchant_resolved",
+              "payload": {
+                "payout_id": "TYrQofkJPpURqQ",
+                "merchant_id": "ARENAD84125766",
+                "origin": "payouts.payouts"
+              }
+            },
+            {
+              "kind": "update_payouts_details_with_fts",
+              "payload": {
+                "status": 200,
+                "body": {
+                  "source_id": "TYrQofkJPpURqQ",
+                  "fund_transfer_id": 31,
+                  "utr": "ARENA0000000031",
+                  "mode": "IMPS",
+                  "channel": "RBL",
+                  "bank_status_code": "SUCCESS",
+                  "gateway_ref_no": "TYrQpCaPKOLX",
+                  "fta_status": "processed"
+                }
+              }
+            },
+            {
+              "kind": "source_update",
+              "payload": {
+                "payout_id": "TYrQofkJPpURqQ",
+                "source_details": [
+                  {}
+                ],
+                "previous_status": "initiated",
+                "expected_current_status": "processed"
+              }
+            },
+            {
+              "kind": "mail_and_sms",
+              "payload": {
+                "entity": "payout",
+                "entity_id": "TYrQofkJPpURqQ",
+                "type": "contact_communication_payout_processed",
+                "metadata": {
+                  "is_vanilla_payout": true,
+                  "is_vendor_payment": false
+                }
+              }
+            },
+            {
+              "kind": "payout_status_relay",
+              "payload": {
+                "body": {
+                  "source_id": "TYrQofkJPpURqQ",
+                  "status": "processed",
+                  "failure_reason": "",
+                  "bank_status_code": "SUCCESS",
+                  "fts_fund_account_id": "975766",
+                  "fts_account_type": "current",
+                  "fts_status": "processed"
+                },
+                "status": 200
+              }
+            }
+          ],
+          "status_route_observed": "monolith relay (route E: FTS -> monolith-stub /update_fts_fund_transfer -> PS)",
+          "ledger_journals_after_processed": "0",
+          "payout_meta_temporary": "fts_info\t{\"status\": \"processed\", \"account_type\": \"current\", \"fund_account_id\": \"975766\"}",
+          "webhooks": {
+            "status": 200,
+            "deliveries": [
+              {
+                "event": "payout.initiated",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrQofkJPpURqQ",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.updated",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrQofkJPpURqQ",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.processed",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrQofkJPpURqQ",
+                "payout_status": "processed"
+              }
+            ]
+          },
+          "fts_worker_route_observed": {
+            "fts-worker-rbl-direct-imps-initiate-transfer": 9,
+            "fts-worker-rbl-direct-imps-check-transfer-status": 9,
+            "fts-worker-initiate-transfer": 8
+          },
+          "xbalances_GET_v1_balances_calls_during_flow": 21,
+          "balance_authority_observed": "x-balances GET /v1/balances/{id} (Splitz Rjdj0sAd4paXMG=on)"
+        },
+        "failure": {
+          "mozart_failure": [
+            200,
+            "{\"key\": \"ARENAD84125766\", \"scenario\": \"failure\", \"polls\": 2}\n"
+          ],
+          "create": {
+            "status": 200,
+            "payout_id": "TYrS4Z09vRfADR",
+            "body": null
+          },
+          "payout_row_terminal": {
+            "status": "failed",
+            "balance_id": "ARENADB4125766",
+            "merchant_id": "ARENAD84125766",
+            "fts_transfer_id": "32",
+            "transaction_id": null,
+            "queued_reason": "",
+            "utr": null,
+            "fees": "200",
+            "tax": "36",
+            "amount": "5001"
+          },
+          "fts_transfer_terminal": {
+            "id": "32",
+            "status": "FAILED",
+            "preferred_source_account_id": "975766",
+            "source_account_id": "975766",
+            "source_account_primary_id": "975766",
+            "fund_account_id": "975766",
+            "channel": "RBL",
+            "mode": "IMPS",
+            "utr": null,
+            "sa_account_type": "direct",
+            "sa_bank_account_type": "CURRENT",
+            "attempt_id": "32"
+          },
+          "reversal_rows": "0",
+          "ledger_journals": "0",
+          "reservations_after": {
+            "status": 200,
+            "body": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD84125766",
+              "balance_id": "ARENADB4125766",
+              "reserved_total": 5000,
+              "items": [
+                {
+                  "payout_id": "TYrQofkJPpURqQ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721642,
+                  "state": "awaiting_balance_refresh"
+                }
+              ]
+            },
+            "redis_counter": "5000",
+            "redis_items": "TYrQofkJPpURqQ\n5000:1788721642:awaiting_balance_refresh",
+            "before_reconciler": {
+              "store_trusted": true,
+              "merchant_id": "ARENAD84125766",
+              "balance_id": "ARENADB4125766",
+              "reserved_total": 10001,
+              "items": [
+                {
+                  "payout_id": "TYrS4Z09vRfADR",
+                  "amount": 5001,
+                  "dispatched_at": 1788721713,
+                  "state": "live"
+                },
+                {
+                  "payout_id": "TYrQofkJPpURqQ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721642,
+                  "state": "awaiting_balance_refresh"
+                }
+              ]
+            },
+            "reconciler_once": {
+              "rc": 0,
+              "out": "[cron-driver] /v1/cron/process_inflight_reservation_reconciliation -> 200\n"
+            }
+          },
+          "reservation_transition_source": "reconciler_pass",
+          "monolith_relay_log": [
+            {
+              "kind": "update_payouts_details_with_fts",
+              "payload": {
+                "status": 200,
+                "body": {
+                  "source_id": "TYrS4Z09vRfADR",
+                  "fund_transfer_id": 32,
+                  "mode": "IMPS",
+                  "channel": "RBL",
+                  "gateway_ref_no": "TYrS50gKrvKn",
+                  "fta_status": "initiated"
+                }
+              }
+            },
+            {
+              "kind": "update_fts_fund_transfer_inbound",
+              "payload": {
+                "bank_account_type": "CURRENT",
+                "bank_processed_time": "",
+                "bank_status_code": "INVALID_ACCOUNT_NUMBER",
+                "channel": "RBL",
+                "extra_info": {
+                  "bank_status_codes": {
+                    "transfer_init": "INVALID_ACCOUNT_NUMBER",
+                    "transfer_status": ""
+                  },
+                  "beneficiary_acc_no": "",
+                  "beneficiary_acc_type": "",
+                  "beneficiary_bank": "",
+                  "beneficiary_name": "",
+                  "beneficiary_validation_mode": "",
+                  "cms_ref_no": "",
+                  "deemed_success": {
+                    "creation_time": 0,
+                    "gateway_error_code": ""
+                  },
+                  "internal_error": false,
+                  "is_pending": false,
+                  "payee_ifsc": "",
+                  "ponum": ""
+                },
+                "failure_reason": "",
+                "fund_transfer_id": 32,
+                "gateway_error_code": "INVALID_ACCOUNT_NUMBER",
+                "gateway_ref_no": "TYrS50gKrvKn",
+                "mode": "IMPS",
+                "narration": "",
+                "remarks": "synthetic failure",
+                "return_utr": "",
+                "source_account_id": 975766,
+                "source_id": "TYrS4Z09vRfADR",
+                "source_type": "payout",
+                "status": "FAILED",
+                "status_details": null,
+                "utr": ""
+              }
+            },
+            {
+              "kind": "payout_merchant_resolved",
+              "payload": {
+                "payout_id": "TYrS4Z09vRfADR",
+                "merchant_id": "ARENAD84125766",
+                "origin": "payouts.payouts"
+              }
+            },
+            {
+              "kind": "update_payouts_details_with_fts",
+              "payload": {
+                "status": 200,
+                "body": {
+                  "source_id": "TYrS4Z09vRfADR",
+                  "fund_transfer_id": 32,
+                  "mode": "IMPS",
+                  "channel": "RBL",
+                  "bank_status_code": "INVALID_ACCOUNT_NUMBER",
+                  "remarks": "synthetic failure",
+                  "gateway_ref_no": "TYrS50gKrvKn",
+                  "fta_status": "failed"
+                }
+              }
+            },
+            {
+              "kind": "source_update",
+              "payload": {
+                "payout_id": "TYrS4Z09vRfADR",
+                "source_details": [
+                  {}
+                ],
+                "previous_status": "initiated",
+                "expected_current_status": "failed"
+              }
+            },
+            {
+              "kind": "payout_status_relay",
+              "payload": {
+                "body": {
+                  "source_id": "TYrS4Z09vRfADR",
+                  "status": "failed",
+                  "failure_reason": "",
+                  "bank_status_code": "INVALID_ACCOUNT_NUMBER",
+                  "fts_fund_account_id": "975766",
+                  "fts_account_type": "current",
+                  "fts_status": "failed"
+                },
+                "status": 200
+              }
+            }
+          ],
+          "webhooks": {
+            "status": 200,
+            "deliveries": [
+              {
+                "event": "payout.initiated",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrS4Z09vRfADR",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.updated",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrS4Z09vRfADR",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.failed",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrS4Z09vRfADR",
+                "payout_status": "failed"
+              }
+            ]
+          }
+        },
+        "checks": [
+          {
+            "name": "success.create_200",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "payout_id": "TYrQofkJPpURqQ",
+              "fees": 200,
+              "tax": 36,
+              "status_field": "processing",
+              "body": null
+            }
+          },
+          {
+            "name": "success.reservation_live_while_pending",
+            "ok": true,
+            "detail": {
+              "items": [
+                {
+                  "payout_id": "TYrQofkJPpURqQ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721642,
+                  "state": "live"
+                }
+              ],
+              "redis_items": "TYrQofkJPpURqQ\n5000:1788721642:live"
+            }
+          },
+          {
+            "name": "success.payout_uses_direct_banking_account",
+            "ok": true,
+            "detail": {
+              "status": "initiated",
+              "balance_id": "ARENADB4125766",
+              "merchant_id": "ARENAD84125766",
+              "fts_transfer_id": "31",
+              "transaction_id": null,
+              "queued_reason": "",
+              "utr": null,
+              "fees": "200",
+              "tax": "36",
+              "amount": "5000"
+            }
+          },
+          {
+            "name": "success.fts_preferred_source_account_id==new_fund_account_id",
+            "ok": true,
+            "detail": {
+              "id": "31",
+              "status": "INITIATED",
+              "preferred_source_account_id": "975766",
+              "source_account_id": "975766",
+              "source_account_primary_id": "975766",
+              "fund_account_id": "975766",
+              "channel": "RBL",
+              "mode": "IMPS",
+              "utr": null,
+              "sa_account_type": "direct",
+              "sa_bank_account_type": "CURRENT",
+              "attempt_id": "31"
+            }
+          },
+          {
+            "name": "success.terminal_processed",
+            "ok": true,
+            "detail": {
+              "status": "processed",
+              "balance_id": "ARENADB4125766",
+              "merchant_id": "ARENAD84125766",
+              "fts_transfer_id": "31",
+              "transaction_id": null,
+              "queued_reason": "",
+              "utr": "ARENA0000000031",
+              "fees": "200",
+              "tax": "36",
+              "amount": "5000"
+            }
+          },
+          {
+            "name": "success.reservation_awaiting_balance_refresh_after_processed",
+            "ok": true,
+            "detail": {
+              "items": [
+                {
+                  "payout_id": "TYrQofkJPpURqQ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721642,
+                  "state": "awaiting_balance_refresh"
+                }
+              ],
+              "redis": "TYrQofkJPpURqQ\n5000:1788721642:awaiting_balance_refresh",
+              "transition_source": "reconciler_pass"
+            }
+          },
+          {
+            "name": "success.no_ledger_journal",
+            "ok": true,
+            "detail": "0"
+          },
+          {
+            "name": "success.webhook_payout.processed_delivered_to_own_sink_path",
+            "ok": true,
+            "detail": [
+              {
+                "event": "payout.initiated",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrQofkJPpURqQ",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.updated",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrQofkJPpURqQ",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.processed",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrQofkJPpURqQ",
+                "payout_status": "processed"
+              }
+            ]
+          },
+          {
+            "name": "success.webhooks_scoped_to_merchant",
+            "ok": true,
+            "detail": [
+              "ARENAD84125766",
+              "ARENAD84125766",
+              "ARENAD84125766"
+            ]
+          },
+          {
+            "name": "failure.create_200",
+            "ok": true,
+            "detail": {
+              "status": 200,
+              "payout_id": "TYrS4Z09vRfADR",
+              "body": null
+            }
+          },
+          {
+            "name": "failure.terminal_failed_not_reversed",
+            "ok": true,
+            "detail": {
+              "status": "failed",
+              "balance_id": "ARENADB4125766",
+              "merchant_id": "ARENAD84125766",
+              "fts_transfer_id": "32",
+              "transaction_id": null,
+              "queued_reason": "",
+              "utr": null,
+              "fees": "200",
+              "tax": "36",
+              "amount": "5001"
+            }
+          },
+          {
+            "name": "failure.no_reversal_row",
+            "ok": true,
+            "detail": "0"
+          },
+          {
+            "name": "failure.no_ledger_journal",
+            "ok": true,
+            "detail": "0"
+          },
+          {
+            "name": "failure.reservation_released",
+            "ok": true,
+            "detail": {
+              "items": [
+                {
+                  "payout_id": "TYrQofkJPpURqQ",
+                  "amount": 5000,
+                  "dispatched_at": 1788721642,
+                  "state": "awaiting_balance_refresh"
+                }
+              ],
+              "transition_source": "reconciler_pass"
+            }
+          },
+          {
+            "name": "failure.webhook_payout.failed_delivered",
+            "ok": true,
+            "detail": [
+              {
+                "event": "payout.initiated",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrS4Z09vRfADR",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.updated",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrS4Z09vRfADR",
+                "payout_status": "processing"
+              },
+              {
+                "event": "payout.failed",
+                "merchant": "ARENAD84125766",
+                "signature_valid": true,
+                "payout_id": "pout_TYrS4Z09vRfADR",
+                "payout_status": "failed"
+              }
+            ]
+          }
+        ],
+        "reconciler_once": {
+          "rc": 0,
+          "out": "[cron-driver] /v1/cron/process_inflight_reservation_reconciliation -> 200\n"
+        },
+        "heartbeat_before_dispatch": "1",
+        "passed": 15,
+        "total": 15,
+        "ok": true,
+        "finished_at": "2026-09-06T19:09:43Z"
+      }
+    }
+  ],
+  "summary": {
+    "merchants_provisioned": 2,
+    "provision_clean": true,
+    "self_check_ready": [
+      true,
+      true
+    ],
+    "self_check_counts": [
+      "29/29",
+      "29/29"
+    ],
+    "proof_counts": [
+      "15/15",
+      "15/15"
+    ],
+    "proof_ok": [
+      true,
+      true
+    ],
+    "all_green": true
+  }
+}
