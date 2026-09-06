@@ -93,31 +93,31 @@ table.gt tr:hover td{background:#fafbfc}
 <div class="hdr-meta">
 <span class="accepted"><span class="badge bad"><span class="ic" aria-hidden="true">✗</span>NOT ACCEPTED</span></span>
 <span class="commit">gate status: <strong>DRY-RUN</strong></span>
-<span class="commit">tested&nbsp;commit: <code>49966f2d9474</code></span>
+<span class="commit">tested&nbsp;commit: <code>37075da32b2d</code></span>
 <span class="commit">evidence&nbsp;commit: <code>pending</code></span>
 <span class="commit">baseline: <code>red-loop-m3.1</code></span>
 </div>
 <div class="notice">Gate status is <strong>DRY-RUN</strong> (evaluated without a live arena). The coordinator re-runs this dashboard at finalize once the acceptance JSON and soak summary are final.</div>
 </header>
 <section class="kpis" aria-label="Key metrics">
-<div class="kpi ok"><div class="kpi-val">58/74</div><div class="kpi-lbl">Gates pass</div><div class="kpi-sub">16 pending, 0 fail</div></div>
+<div class="kpi ok"><div class="kpi-val">71/74</div><div class="kpi-lbl">Gates pass</div><div class="kpi-sub">3 pending, 0 fail</div></div>
 <div class="kpi ok"><div class="kpi-val">7/7</div><div class="kpi-lbl">Journeys pass</div><div class="kpi-sub">Direct A–G</div></div>
 <div class="kpi ok"><div class="kpi-val">6/6</div><div class="kpi-lbl">Invariants pass</div><div class="kpi-sub">+ negative controls</div></div>
 <div class="kpi ok"><div class="kpi-val">3+1ef</div><div class="kpi-lbl">Routes covered</div><div class="kpi-sub">4 total (R1–R3, remap)</div></div>
-<div class="kpi ok"><div class="kpi-val">0/0</div><div class="kpi-lbl">Hypotheses accepted</div><div class="kpi-sub">autonomous runtime</div></div>
+<div class="kpi ok"><div class="kpi-val">0/6</div><div class="kpi-lbl">Hypotheses accepted</div><div class="kpi-sub">autonomous runtime</div></div>
 <div class="kpi bad"><div class="kpi-val">1</div><div class="kpi-lbl">Findings verified</div><div class="kpi-sub">2 benign/faithful</div></div>
-<div class="kpi warn"><div class="kpi-val">pending</div><div class="kpi-lbl">Egress / isolation</div><div class="kpi-sub">outside traffic</div></div>
+<div class="kpi ok"><div class="kpi-val">pass</div><div class="kpi-lbl">Egress / isolation</div><div class="kpi-sub">outside traffic</div></div>
 <div class="kpi ok"><div class="kpi-val">2</div><div class="kpi-lbl">Merchants provisioned</div><div class="kpi-sub">fresh Direct A/B</div></div>
 </section>
 <details class="sec" open>
-<summary><span class="sec-title">Gate matrix</span><span class="sec-sub">58/74 pass (DRY-RUN)</span></summary>
+<summary><span class="sec-title">Gate matrix</span><span class="sec-sub">71/74 pass (DRY-RUN)</span></summary>
 <div class="sec-body">
 <div class="grp"><div class="grp-h">BASELINE <span class="grp-c">5/5 pass</span></div>
 <table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
 <tr title="evidence: reports/implementation/m3-1-acceptance.json"><td><code>G01</code></td><td>Accepted Milestone 3.1 checkpoint resolves correctly</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
 <tr title="evidence: RED_LOOP/archive/evidence-manifest.json"><td><code>G02</code></td><td>Historical tag and evidence remain unchanged</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
 <tr title="evidence: reports/implementation/m3-1-acceptance.json"><td><code>G03</code></td><td>Existing 21 baseline gates still pass</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
-<tr title="evidence: reports/implementation/m4-baseline-report.md"><td><code>G04</code></td><td>Two clean baseline boots remain consistent</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-finalize-boots.json"><td><code>G04</code></td><td>Two clean baseline boots remain consistent</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
 <tr title="evidence: RED_LOOP/archive/evidence-manifest.json"><td><code>G05</code></td><td>All baseline evidence hashes recompute</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
 </tbody></table></div>
 <div class="grp"><div class="grp-h">SOURCE_AND_SPEC <span class="grp-c">6/6 pass</span></div>
@@ -129,14 +129,14 @@ table.gt tr:hover td{background:#fafbfc}
 <tr title="evidence: reports/implementation/m4-decisions.md"><td><code>G10</code></td><td>Specs, implementation, and fidelity declarations agree</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">n/a</td></tr>
 <tr title="evidence: reports/implementation/m4-source-map.md:#7"><td><code>G11</code></td><td>Every unresolved production/configuration assumption is explicit</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">production_reachability_unknown</td><td class="mono-s">unknown</td></tr>
 </tbody></table></div>
-<div class="grp"><div class="grp-h">PROVISIONING <span class="grp-c">5/6 pass, 1 pending</span></div>
+<div class="grp"><div class="grp-h">PROVISIONING <span class="grp-c">6/6 pass</span></div>
 <table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
 <tr title="evidence: reports/implementation/m4-direct-provision.json:summary.all_green"><td><code>G12</code></td><td>Fresh Direct merchant provisioner succeeds</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-direct-provision.json:merchants[1]"><td><code>G13</code></td><td>A second independently generated Direct merchant succeeds</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-direct-provision.json:summary.self_check_counts"><td><code>G14</code></td><td>Provisioned records pass schema and relationship checks</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-direct-provision.json"><td><code>G15</code></td><td>Direct routing-rule requirements are resolved or explicitly limited</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">n/a</td></tr>
 <tr title="evidence: reports/implementation/m4-direct-provision.json:merchants[].self_check"><td><code>G16</code></td><td>FTS, x-balances, Ledger, pricing, and webhook configuration self-verify</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
-<tr title="evidence: reports/implementation/m4-direct-provision.json"><td><code>G17</code></td><td>Provisioning passes on two empty-volume boots</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-finalize-boots.json:boots[].provision"><td><code>G17</code></td><td>Provisioning passes on two empty-volume boots</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 </tbody></table></div>
 <div class="grp"><div class="grp-h">DIRECT_SUCCESS <span class="grp-c">12/12 pass</span></div>
 <table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
@@ -166,16 +166,16 @@ table.gt tr:hover td{background:#fafbfc}
 <tr title="evidence: reports/implementation/m4-known-limits.md:L-009"><td><code>G38</code></td><td>Balance-refresh and hold-release trigger is executed or honestly unresolved (expected-failure)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">deliberately_simplified</td><td class="mono-s">unknown</td></tr>
 <tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G39</code></td><td>XAS reconciliation-repair update is executed or explicitly classified</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 </tbody></table></div>
-<div class="grp"><div class="grp-h">ROUTES_WEBHOOKS <span class="grp-c">3/6 pass, 3 pending</span></div>
+<div class="grp"><div class="grp-h">ROUTES_WEBHOOKS <span class="grp-c">6/6 pass</span></div>
 <table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
 <tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G40</code></td><td>Direct status-return route is exercised</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
-<tr title="evidence: reports/implementation/m4-route-coverage.json"><td><code>G41</code></td><td>Monolith-mediated route is exercised where applicable</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">substitute</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-route-coverage.json"><td><code>G41</code></td><td>Monolith-mediated route is exercised where applicable</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">substitute</td><td class="mono-s">known</td></tr>
 <tr title="evidence: TWIN_SPEC/expected-failures.yaml:EF-002,EF-003"><td><code>G42</code></td><td>Event-driven route is exercised or preserved as a source-backed expected failure (expected-failure)</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
-<tr title="evidence: reports/implementation/m4-route-coverage.json"><td><code>G43</code></td><td>Status remapping is validated by account type and channel</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
-<tr title="evidence: reports/implementation/m4-route-coverage.json"><td><code>G44</code></td><td>Webhook state, payload, tenant, and delivery evidence are correct</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-route-coverage.json"><td><code>G43</code></td><td>Status remapping is validated by account type and channel</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-route-coverage.json"><td><code>G44</code></td><td>Webhook state, payload, tenant, and delivery evidence are correct</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G45"><td><code>G45</code></td><td>Webhook retry or duplicate behaviour is understood</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 </tbody></table></div>
-<div class="grp"><div class="grp-h">BOUNDARIES_INVARIANTS <span class="grp-c">8/10 pass, 2 pending</span></div>
+<div class="grp"><div class="grp-h">BOUNDARIES_INVARIANTS <span class="grp-c">10/10 pass</span></div>
 <table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
 <tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G46"><td><code>G46</code></td><td>Merchant A cannot read or change Merchant B&#x27;s Direct resources</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G47"><td><code>G47</code></td><td>Request-body merchant ID cannot override authenticated identity</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
@@ -184,32 +184,32 @@ table.gt tr:hover td{background:#fafbfc}
 <tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G50"><td><code>G50</code></td><td>Broker denial and gateway/service denial are distinguished</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G51</code></td><td>Direct accounting conservation invariant passes</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">unknown</td></tr>
 <tr title="evidence: reports/implementation/m4-boundary-results.json:gates.G52"><td><code>G52</code></td><td>Concurrent idempotent payout creation converges to one logical payout</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
-<tr title="evidence: reports/implementation/m4-invariant-results.json"><td><code>G53</code></td><td>Reservation cannot be released twice</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-invariant-results.json"><td><code>G53</code></td><td>Reservation cannot be released twice</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-xas-ledger.json:checks"><td><code>G54</code></td><td>Ledger success cannot be posted twice</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
-<tr title="evidence: reports/implementation/m4-invariant-results.json"><td><code>G55</code></td><td>Cross-namespace webhook and event isolation passes</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-invariant-results.json"><td><code>G55</code></td><td>Cross-namespace webhook and event isolation passes</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 </tbody></table></div>
-<div class="grp"><div class="grp-h">AUTONOMOUS_RUNTIME <span class="grp-c">6/9 pass, 3 pending</span></div>
+<div class="grp"><div class="grp-h">AUTONOMOUS_RUNTIME <span class="grp-c">9/9 pass</span></div>
 <table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
 <tr title="evidence: reports/implementation/m4-hypothesis-lifecycle.json:gate"><td><code>G56</code></td><td>Every high-priority hypothesis reaches a terminal status</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-lifecycle-validation.json:arms_executed"><td><code>G57</code></td><td>At least one bounded experiment exists for each exercised hypothesis</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-hypothesis-lifecycle.json:rollup,blockers"><td><code>G58</code></td><td>Blocked and falsified states are not conflated</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
-<tr title="evidence: RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json:duplicates_suppressed"><td><code>G59</code></td><td>Duplicate-hypothesis suppression works</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
-<tr title="evidence: RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json:leases_reassigned"><td><code>G60</code></td><td>Task lease expiry and reassignment work</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
-<tr title="evidence: RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json:checkpoints"><td><code>G61</code></td><td>Checkpoint/resume works after worker interruption</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-harness-selftest.json:G59_duplicate_suppression"><td><code>G59</code></td><td>Duplicate-hypothesis suppression works</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-harness-selftest.json:G60_lease_expiry_reassign"><td><code>G60</code></td><td>Task lease expiry and reassignment work</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-recovery-matrix.json:explorer_process_kill"><td><code>G61</code></td><td>Checkpoint/resume works after worker interruption</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-hypothesis-lifecycle.json:replans"><td><code>G62</code></td><td>Stagnation produces a reasoned replan before stopping</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-assurance-run.json:contexts_summary.policies"><td><code>G63</code></td><td>Four isolated assurance contexts run successfully</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
-<tr title="evidence: RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json"><td><code>G64</code></td><td>An unattended soak completes with useful work and durable state</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: RED_LOOP/runs/camp-20260906T200337Z-7511c5/m4-direct-e2e-soak.json"><td><code>G64</code></td><td>An unattended soak completes with useful work and durable state</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 </tbody></table></div>
-<div class="grp"><div class="grp-h">REPLAY_EVIDENCE <span class="grp-c">3/10 pass, 7 pending</span></div>
+<div class="grp"><div class="grp-h">REPLAY_EVIDENCE <span class="grp-c">7/10 pass, 3 pending</span></div>
 <table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
-<tr title="evidence: reports/implementation/m4-lifecycle-validation.json:independent_replay"><td><code>G65</code></td><td>Credible candidates are independently replayed from clean state</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
-<tr title="evidence: RED_LOOP/surface/m4_replay.py"><td><code>G66</code></td><td>Replay uses fresh merchant and resource IDs</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-e2e-replay.json:candidates"><td><code>G65</code></td><td>Credible candidates are independently replayed from clean state</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-e2e-replay.json:safety.fresh_ids_per_run"><td><code>G66</code></td><td>Replay uses fresh merchant and resource IDs</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-lifecycle-validation.json:independent_replay.certificate"><td><code>G67</code></td><td>Negative controls remove or prevent the observed effect</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
-<tr title="evidence: reports/implementation/m4-direct-e2e-evidence-manifest.json"><td><code>G68</code></td><td>All acceptance evidence hashes recompute</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
-<tr title="evidence: reports/implementation/m4-direct-e2e-evidence-manifest.json"><td><code>G69</code></td><td>No expected evidence file is missing</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
-<tr title="evidence: reports/implementation/m4-assurance-run.json:egress_note"><td><code>G70</code></td><td>Outside-network traffic is zero</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-e2e-evidence-manifest.json"><td><code>G68</code></td><td>All acceptance evidence hashes recompute</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-e2e-evidence-manifest.json"><td><code>G69</code></td><td>No expected evidence file is missing</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-finalize-boots.json:boots[].egress"><td><code>G70</code></td><td>Outside-network traffic is zero</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: (git status --porcelain)"><td><code>G71</code></td><td>Final working tree is clean</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
-<tr title="evidence: reports/implementation/m4-audit-report.md"><td><code>G72</code></td><td>Independent auditor approves the final acceptance artifact</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
+<tr title="evidence: reports/implementation/m4-audit-report.md:## VERDICT"><td><code>G72</code></td><td>Independent auditor approves the final acceptance artifact</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: (git cat-file -t red-loop-m4)"><td><code>G73</code></td><td>Annotated final tag resolves to the evidence commit</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
 <tr title="evidence: reports/implementation/m4-known-limits.md"><td><code>G74</code></td><td>Final review clearly lists substitutions, approximations, unknowns, and non-claims</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">n/a</td></tr>
 </tbody></table></div>
@@ -351,7 +351,7 @@ table.gt tr:hover td{background:#fafbfc}
 </ul>
 </div></details>
 <details class="sec" open>
-<summary><span class="sec-title">Autonomous runtime (lifecycle + soak)</span><span class="sec-sub">soak: cycle_cap_reached</span></summary>
+<summary><span class="sec-title">Autonomous runtime (lifecycle + soak)</span><span class="sec-sub">soak: stagnation</span></summary>
 <div class="sec-body">
 <p class="hint">Hypotheses by lifecycle state:</p>
 <div class="chips">
@@ -368,7 +368,7 @@ table.gt tr:hover td{background:#fafbfc}
 <span class="chip chip-off">rejected: <strong>0</strong></span>
 <span class="chip chip-off">accepted: <strong>0</strong></span>
 <span class="chip chip-off">closed: <strong>0</strong></span>
-<span class="chip chip-off">deprioritized: <strong>0</strong></span>
+<span class="chip chip-on">deprioritized: <strong>6</strong></span>
 </div>
 <div class="stat-row">
 <div class="stat"><span>Primary model</span><strong>kimi-k3</strong></div>
@@ -378,14 +378,14 @@ table.gt tr:hover td{background:#fafbfc}
 </div>
 <p class="hint">Latest soak run:</p>
 <div class="stat-row">
-<div class="stat"><span>Cycles</span><strong>2</strong></div>
-<div class="stat"><span>Turns</span><strong>8</strong></div>
-<div class="stat"><span>Elapsed (s)</span><strong>62</strong></div>
-<div class="stat"><span>Checkpoints</span><strong>2</strong></div>
+<div class="stat"><span>Cycles</span><strong>41</strong></div>
+<div class="stat"><span>Turns</span><strong>155</strong></div>
+<div class="stat"><span>Elapsed (s)</span><strong>5000</strong></div>
+<div class="stat"><span>Checkpoints</span><strong>41</strong></div>
 <div class="stat"><span>Duplicates suppressed</span><strong>0</strong></div>
-<div class="stat"><span>Experiments</span><strong>8</strong></div>
+<div class="stat"><span>Experiments</span><strong>155</strong></div>
 <div class="stat"><span>Leases (exp/reassign/active)</span><strong>0/0/0</strong></div>
-<div class="stat"><span>Stop reason</span><strong>cycle_cap_reached</strong></div>
+<div class="stat"><span>Stop reason</span><strong>stagnation</strong></div>
 </div>
 <p class="fine">Contexts: broad_coverage, deep_direct_accounting, identity_tenant_boundary, concurrency_event_order</p>
 </div></details>
@@ -412,7 +412,7 @@ table.gt tr:hover td{background:#fafbfc}
 <tr><td class="mono-s">fts-web (FTS v1-candidate)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
 <tr><td class="mono-s">ledger-api (Ledger v1-candidate)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">unknown</td><td class="mono-s">C-010;DEV-001;DEV-002</td></tr>
 <tr><td class="mono-s">xbalances-server (x-balances v1-candidate)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">known</td><td class="mono-s">DEV-024</td></tr>
-<tr><td class="mono-s">cfa-server (v1-candidate)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
+<tr><td class="mono-s">cfa-server (v1-candidate)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real;fund_account_resolution_substitute_grade</span></td><td class="mono-s">known</td><td class="mono-s">T23-flag</td></tr>
 <tr><td class="mono-s">kong-lite (hardened edge)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
 <tr><td class="mono-s">PS worker rbl_banking_account_statement (statement ingest)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>real-worker/substitute-bank</span></td><td class="mono-s">known</td><td class="mono-s">L-007</td></tr>
 <tr><td class="mono-s">mozart-sim (RBL v2 account_statement bank boundary)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>substitute</span></td><td class="mono-s">unknown</td><td class="mono-s">L-003</td></tr>
@@ -432,7 +432,7 @@ table.gt tr:hover td{background:#fafbfc}
 <tr><td class="mono-s">Route C FTS-&gt;bank (Mozart)</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">unknown</td><td class="mono-s">L-003</td></tr>
 <tr><td class="mono-s">Route D FTS-&gt;PS direct status webhook</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
 <tr><td class="mono-s">Route E FTS-&gt;monolith-&gt;PS status</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s">L-013</td></tr>
-<tr><td class="mono-s">Route F FTS-&gt;Kafka-&gt;PS status</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>independently_reproduced</span></td><td class="mono-s">unknown</td><td class="mono-s">EF-002;EF-003;U-05</td></tr>
+<tr><td class="mono-s">Route F FTS-&gt;Kafka-&gt;PS status (Direct FAILED/REVERSED drop)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>source_inferred</span></td><td class="mono-s">unknown</td><td class="mono-s">EF-002;EF-003;U-05</td></tr>
 <tr><td class="mono-s">Route G Admin return (verify/safe_update)</td><td class="mono-s">real_service</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>executed</span></td><td class="mono-s">known</td><td class="mono-s"></td></tr>
 <tr><td class="mono-s">Route H FTS health/on-hold notify</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>unresolved</span></td><td class="mono-s">unknown</td><td class="mono-s">EF-008;L-010</td></tr>
 <tr><td class="mono-s">Route I PS-&gt;XAS source event</td><td class="mono-s">substitute</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>implemented</span></td><td class="mono-s">unknown</td><td class="mono-s">L-005;U-06</td></tr>
@@ -453,12 +453,12 @@ table.gt tr:hover td{background:#fafbfc}
 </tbody></table>
 </div></details>
 <details class="sec" open>
-<summary><span class="sec-title">Known limits &amp; contradictions</span><span class="sec-sub">18 limits; contradictions 9/15 resolved</span></summary>
+<summary><span class="sec-title">Known limits &amp; contradictions</span><span class="sec-sub">18 limits; contradictions 13/19 resolved</span></summary>
 <div class="sec-body">
 <div class="stat-row">
-<div class="stat"><span>Contradictions resolved</span><strong>9</strong></div>
+<div class="stat"><span>Contradictions resolved</span><strong>13</strong></div>
 <div class="stat"><span>Contradictions open</span><strong>6</strong></div>
-<div class="stat"><span>Total</span><strong>15</strong></div>
+<div class="stat"><span>Total</span><strong>19</strong></div>
 </div>
 <table class="gt"><thead><tr><th>ID</th><th>Limit</th><th>Class</th></tr></thead><tbody>
 <tr><td><code>L-001</code></td><td>Only one arena at a time on this host (11.65 GiB Docker memory).</td><td class="mono-s">environment</td></tr>
@@ -485,7 +485,7 @@ table.gt tr:hover td{background:#fafbfc}
 <summary><span class="sec-title">Evidence links &amp; sources</span><span class="sec-sub">relative links; open the JSON/MD artifacts</span></summary>
 <div class="sec-body">
 <table class="gt"><thead><tr><th>Source</th><th>Status</th><th>Path</th></tr></thead><tbody>
-<tr><td>acceptance</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>dry-run</span></td><td class="mono-s"><a href="m4-direct-e2e-acceptance.json">m4-direct-e2e-acceptance.json</a> <span class="fine">(committed acceptance JSON (dry_run=true))</span></td></tr>
+<tr><td>acceptance</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>dry-run</span></td><td class="mono-s"><a href="../../RED_LOOP/surface/m4_acceptance.py">../../RED_LOOP/surface/m4_acceptance.py</a> <span class="fine">(self-generated via m4_acceptance.py --dry-run)</span></td></tr>
 <tr><td>direct-journeys</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-journeys.json">m4-direct-journeys.json</a></td></tr>
 <tr><td>coverage</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-e2e-coverage.md">m4-direct-e2e-coverage.md</a></td></tr>
 <tr><td>route-coverage</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-route-coverage.json">m4-route-coverage.json</a></td></tr>
@@ -495,7 +495,7 @@ table.gt tr:hover td{background:#fafbfc}
 <tr><td>direct-provision</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-provision.json">m4-direct-provision.json</a></td></tr>
 <tr><td>hypothesis-lifecycle</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-hypothesis-lifecycle.json">m4-hypothesis-lifecycle.json</a></td></tr>
 <tr><td>assurance-run</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-assurance-run.json">m4-assurance-run.json</a></td></tr>
-<tr><td>soak</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="../../RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json">../../RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json</a></td></tr>
+<tr><td>soak</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="../../RED_LOOP/runs/camp-20260906T200337Z-7511c5/m4-direct-e2e-soak.json">../../RED_LOOP/runs/camp-20260906T200337Z-7511c5/m4-direct-e2e-soak.json</a></td></tr>
 <tr><td>replay</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-e2e-replay.json">m4-direct-e2e-replay.json</a></td></tr>
 <tr><td>findings</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-findings.md">m4-findings.md</a></td></tr>
 <tr><td>fidelity-matrix</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-fidelity-matrix.csv">m4-fidelity-matrix.csv</a></td></tr>
@@ -504,7 +504,7 @@ table.gt tr:hover td{background:#fafbfc}
 </tbody></table>
 </div></details>
 <footer class="ftr">
-<p>Generated 2026-09-06T20:45:31Z by <code>RED_LOOP/surface/m4_dashboard.py</code>. Every number is parsed from a committed artifact — none are hardcoded. Gate status is <strong>DRY-RUN</strong> and may be DRY-RUN until finalize.</p>
+<p>Generated 2026-09-06T22:41:05Z by <code>RED_LOOP/surface/m4_dashboard.py</code>. Every number is parsed from a committed artifact — none are hardcoded. Gate status is <strong>DRY-RUN</strong> and may be DRY-RUN until finalize.</p>
 <p class="fine">Self-contained: inline CSS/JS only, no external network assets. Regenerate with <code>python3 RED_LOOP/surface/m4_dashboard.py</code>.</p>
 </footer>
 <script>

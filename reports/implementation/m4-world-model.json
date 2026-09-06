@@ -1,6 +1,6 @@
 {
  "version": "m4-world-model.v1",
- "generated_at": "2026-09-06T20:50:14Z",
+ "generated_at": "2026-09-07T00:00:00Z",
  "generated_from": [
   {
    "key": "acceptance_invariants",
@@ -23,7 +23,7 @@
   {
    "key": "fidelity_matrix",
    "path": "reports/implementation/m4-fidelity-matrix.csv",
-   "sha256": "d63a8ea54a367d25ab204a106ddd342f8613af669f7cd4e9e9d1c578bb27fe3e",
+   "sha256": "8c1a0cf95dbe25e0c99ca40a3f6a64ab11040ddcf1438325cc452d27c4c4a881",
    "exists": true
   },
   {
@@ -467,8 +467,8 @@
    "type": "component",
    "label": "cfa-server (v1-candidate)",
    "attrs": {
-    "coverage": "real",
-    "production_reachability": "known"
+    "production_reachability": "known",
+    "deviation_ids": "T23-flag"
    },
    "fidelity": "real",
    "evidence": "reports/implementation/m4-baseline-report.md"
