@@ -100,7 +100,7 @@ def build(campaign_id):
     gates.append(gate("historical_integrity",
                       git(["rev-parse", "twin-v1.0^{commit}"]) == "78def24eb57112c0dc39a6ae9062b1f0d1c711fb"
                       and git(["rev-parse", "milestone-2-red-loop"]) == "a107612ed11344a8096e74dbf68616679855465e"
-                      and branch == "milestone-3-1-clean-parity",
+                      and branch in ("milestone-3-1-clean-parity", "milestone-3-1-calibration"),
                       branch=branch, head=head))
 
     # B. evidence durability
@@ -149,18 +149,30 @@ def build(campaign_id):
                       create_500_fixed=(fm or {}).get("summary", {}).get("create_500_fixed"),
                       note="requires an end-to-end successful fresh payout (terminal processed)"))
 
-    # G. fresh-ID calibration + negative control
+    # G. Separate evidence gates; missing evidence remains explicitly pending.
     cal = load(IMPL / "m31-calibration-freshid.json")
-    cal_ok = (bool(cal) and cal.get("classification") in ("CALIBRATION_PASS", "CALIBRATION_REDISCOVERY")
-              and cal.get("fresh_ids") is True and cal.get("effect_absent_in_fixed_control") is True
-              and cal.get("reproduced_by_different_provider") is True)
-    gates.append(gate("freshid_calibration_with_control", cal_ok, artifact="m31-calibration-freshid.json"))
+    cal_base = (bool(cal) and cal.get("classification") in
+                ("CALIBRATION_PASS", "CALIBRATION_REDISCOVERY") and cal.get("fresh_ids") is True)
+    for name in ("fresh_id_calibration_fixture", "fresh_id_deterministic_replay",
+                 "fresh_id_cross_provider_replay", "fresh_id_negative_control"):
+        evidence = (cal or {}).get("checks", {}).get(name)
+        passed = cal_base and isinstance(evidence, dict) and evidence.get("passed") is True
+        if name == "fresh_id_negative_control":
+            passed = passed and cal.get("effect_absent_in_fixed_control") is True
+        if name == "fresh_id_cross_provider_replay":
+            passed = passed and cal.get("reproduced_by_different_provider") is True
+        gates.append(gate(name, passed, status=("pending" if evidence is None else
+                                               "pass" if passed else "fail"),
+                          artifact="m31-calibration-freshid.json"))
 
     # H. second open campaign (not ended on normal ceiling)
     store_manifest = load(RUNS / (campaign_id or "") / "manifest.json") if campaign_id else None
     comp = (store_manifest or {}).get("completion", {})
-    gates.append(gate("second_campaign_normal_completion",
+    gates.append(gate("second_open_campaign",
                       bool(comp) and comp.get("ended_on_emergency_ceiling") is False and comp.get("normal_completion") is True,
+                      status=("pending" if not comp else "pass" if
+                              comp.get("ended_on_emergency_ceiling") is False and
+                              comp.get("normal_completion") is True else "fail"),
                       campaign_id=campaign_id, stop_reason=comp.get("stop_reason"),
                       turns=comp.get("turns_completed")))
 

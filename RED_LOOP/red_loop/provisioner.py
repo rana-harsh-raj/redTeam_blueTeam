@@ -32,6 +32,7 @@ import urllib.request
 import uuid
 
 from . import allocator, config
+from .pricing_ids import reserve_plan_id, validate_pricing_id
 
 KONG = config.KONG_LITE_URL
 C_PAYOUTS = "env2_compose-mysql-payouts-1"
@@ -204,6 +205,8 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
     Never mutates the M1/M2/M3 fixtures (uses a high, hashed id range)."""
     ids = _ids_for(campaign_id, role)
     mid = ids["merchant_id"]
+    # Reserve and validate before the first database insertion or seed mutation.
+    plan_id = reserve_plan_id(config.ENV2 / "seeds" / "generated", campaign_id, mid)
     secret = "S" + hashlib.sha256((campaign_id + role + "sec").encode()).hexdigest()[:40]
     key_id = "rzp_live_" + mid
     ts = int(time.time())
@@ -338,8 +341,8 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
     # monolith merchants.json seed) is the create-500 root cause. Register the
     # merchant + a pricing plan + a free-payout counter (all reloaded by the
     # single monolith restart in step 7 below).
-    # pricing_rule_id is char(14); keep plan_id <=14 chars (M1 uses ARENAPLAN00001).
-    plan_id = ("ARENAPLAN" + hashlib.sha256(mid.encode()).hexdigest()[:5].upper())[:14]
+    # Fidelity: the substitute returns this plan ID as pricing_rule_id;
+    # no separate rule-level ID is seeded. It was reserved before step 1.
     mono_m_err = _register_monolith_merchant(mid, ids, plan_id)
     step("monolith.merchant_config", 0 if not mono_m_err else 1, mono_m_err)
     price_err = _register_pricing(mid, plan_id, ids["balance_id"])
@@ -364,6 +367,7 @@ def _register_monolith_merchant(merchant_id, ids, plan_id, restart=False):
     """Register the fresh merchant in monolith-stub's merchant-config seed so
     payout create's GET /v1/internal/merchants/{id} returns 200 (not 404).
     Modelled field-for-field on the working M1 fixture. Idempotent."""
+    validate_pricing_id(plan_id)
     path = config.ENV2 / "seeds" / "generated" / "monolith" / "merchants.json"
     try:
         doc = json.loads(path.read_text())
@@ -401,6 +405,7 @@ def _register_pricing(merchant_id, plan_id, balance_id):
     """Add a fresh pricing plan (keyed by merchant_id, so monolith-stub's
     PRICING.get(mid) resolves) plus a free-payout counter keyed by balance_id.
     Rules mirror the M1 synthetic tariff. Idempotent."""
+    validate_pricing_id(plan_id)
     path = config.ENV2 / "seeds" / "generated" / "pricing.json"
     try:
         doc = json.loads(path.read_text())
