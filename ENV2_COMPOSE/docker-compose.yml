@@ -73,7 +73,7 @@ x-proxy-env: &proxy-env
   APP_ENV: arena
   HTTP_PROXY: "http://127.0.0.1:9"
   HTTPS_PROXY: "http://127.0.0.1:9"
-  NO_PROXY: "localhost,127.0.0.1,ledger-gate,payouts-api,payouts-worker-webhook-event,payouts-worker-queued-payout,payouts-worker-schedule-payout,payouts-worker-on-hold-payout,payouts-worker-fts-async-processing,payouts-worker-fts-async-hv-processing,payouts-worker-payout-create-failure-handling,payouts-worker-payout-update-failure-handling,payouts-worker-transaction-create,payouts-worker-generic-processing,payouts-worker-async-dual-write,payouts-worker-x-balances-balance-refresh,payouts-worker-payout-source-updater,payouts-worker-partner-bank-hold-payouts,payouts-kafka-fts-status-updates-consumer,payouts-kafka-fts-status-updates-retry-consumer,ledger-api,ledger-worker,ledger-scheduler,fts-web,fts-worker-default,fts-worker-initiate-transfer,fts-worker-check-transfer-status,fts-worker-fire-transfer-status-webhook,fts-worker-retry-transfer,fts-worker-retry-transfer-preprocessor,fts-worker-retry-transfer-source-update,fts-worker-rbl-initiate-transfer,fts-worker-rbl-check-transfer-status,fts-worker-rbl-imps-initiate-transfer,fts-worker-rbl-imps-check-transfer-status,fts-worker-rbl-direct-imps-initiate-transfer,fts-worker-rbl-direct-imps-check-transfer-status,cfa-server,cfa-worker-contact,cfa-worker-fa,xbalances-server,xbalances-worker,kong-lite,monolith-stub,dcs-stub,splitz-stub,shield-stub,pricing-stub,asv-stub,bankingaccounts-stub,stork-capture,merchant-webhook-sink,xas-sink,mozart-mock,mozart-sim,mysql-payouts,mysql-fts,mysql-xbalances,mysql-apidb-stub,postgres-ledger,mongo-cfa,redis,localstack,kafka"
+  NO_PROXY: "localhost,127.0.0.1,ledger-gate,payouts-api,payouts-worker-webhook-event,payouts-worker-queued-payout,payouts-worker-schedule-payout,payouts-worker-on-hold-payout,payouts-worker-fts-async-processing,payouts-worker-fts-async-hv-processing,payouts-worker-payout-create-failure-handling,payouts-worker-payout-update-failure-handling,payouts-worker-transaction-create,payouts-worker-generic-processing,payouts-worker-async-dual-write,payouts-worker-x-balances-balance-refresh,payouts-worker-payout-source-updater,payouts-worker-partner-bank-hold-payouts,payouts-kafka-fts-status-updates-consumer,payouts-kafka-fts-status-updates-retry-consumer,ledger-api,ledger-worker,ledger-scheduler,fts-web,fts-worker-default,fts-worker-initiate-transfer,fts-worker-check-transfer-status,fts-worker-fire-transfer-status-webhook,fts-worker-retry-transfer,fts-worker-retry-transfer-preprocessor,fts-worker-retry-transfer-source-update,fts-worker-rbl-initiate-transfer,fts-worker-rbl-check-transfer-status,fts-worker-rbl-imps-initiate-transfer,fts-worker-rbl-imps-check-transfer-status,fts-worker-rbl-direct-imps-initiate-transfer,fts-worker-rbl-direct-imps-check-transfer-status,cfa-server,cfa-worker-contact,cfa-worker-fa,xbalances-server,xbalances-worker,kong-lite,monolith-stub,dcs-stub,splitz-stub,shield-stub,pricing-stub,asv-stub,bankingaccounts-stub,stork-capture,merchant-webhook-sink,xas-sim,mozart-mock,mozart-sim,mysql-payouts,mysql-fts,mysql-xbalances,mysql-apidb-stub,postgres-ledger,mongo-cfa,redis,localstack,kafka"
 
 networks:
   rzp-arena:
@@ -1862,19 +1862,34 @@ services:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
       <<: *healthcheck-defaults
 
-  xas-sink:
+  # xas-sim -- x-account-statements substitute (M4). Replaces the M1 health-only
+  # xas-sink. Consumes the REAL payouts x_account_statement_source_event SQS
+  # queue, matches statements (utr->grn->cms + balance/account + amount), POSTs
+  # the 9-field payout_update to monolith-stub, and serves
+  # fetch_multiple_by_reference_numbers for the REAL PS VerifyPayoutFailedTransaction
+  # and FTS retry-preprocessor gates. See substitutes/xas-sim/CONTRACT.md.
+  xas-sim:
     build:
       context: ./substitutes
       dockerfile: Dockerfile
       args:
-        STUB_DIR: xas-sink
-        STUB_NAME: xas-sink
+        STUB_DIR: xas-sim
+        STUB_NAME: xas-sim
         STUB_PORT: "8080"
-    image: rzp-arena/xas-sink:${ARENA_TAG:-local}
+    image: rzp-arena/xas-sim:${ARENA_TAG:-local}
     profiles: ["substitutes"]
-    networks: [rzp-arena]
+    networks:
+      rzp-arena:
+        aliases: [xas-sim]
+    volumes:
+      - secrets-monolith:/run/secrets:ro
     environment:
       STUB_PORT: "8080"
+      STUB_NAME: xas-sim
+      XAS_SQS_ENDPOINT: http://localstack:4566
+      XAS_SOURCE_EVENT_QUEUE: x_account_statement_source_event
+      XAS_API_BASE_URL: http://monolith-stub:8080
+      XAS_API_AUTH_FILE: /run/secrets/monolith_basic_auth
     <<: *runtime-security
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]

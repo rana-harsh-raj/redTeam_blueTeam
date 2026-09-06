@@ -108,7 +108,7 @@ if [ "${ARENA_SKIP_BUILD:-0}" != "1" ]; then
 fi
 compose --profile datastores --profile substitutes up -d
 ./scripts/healthcheck.sh kong-lite monolith-stub dcs-stub splitz-stub shield-stub \
-  pricing-stub asv-stub stork-capture merchant-webhook-sink xas-sink --timeout 120
+  pricing-stub asv-stub stork-capture merchant-webhook-sink xas-sim --timeout 120
 
 MOZART_IMPL="${ARENA_MOZART_IMPL:-mozart-mock}"
 if [ "$MOZART_IMPL" = "mozart-mock" ]; then
