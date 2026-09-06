@@ -360,7 +360,17 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
     step("kong.register", 0 if not reg_err else 1, reg_err)
 
     result["contact_id"] = contact
+    # 9 self-verify: confirm the merchant can actually create a payout through kong,
+    # so callers (provision_campaign) can rely on result["verified"] instead of
+    # silently falling back to a fixture attacker. A create failure here means the
+    # merchant is not fully operational and must not be presented as a fresh one.
+    if not step_failed(result):
+        verify_merchant(result)
     return result
+
+
+def step_failed(result):
+    return any(not s.get("ok") for s in result.get("steps", []))
 
 
 def _register_monolith_merchant(merchant_id, ids, plan_id, restart=False):
