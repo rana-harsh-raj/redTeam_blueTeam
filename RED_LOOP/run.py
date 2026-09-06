@@ -117,8 +117,18 @@ def run_campaign_cmd(args):
     # namespace (Workstream B). fund_fresh_attacker=False -> fixture attacker with
     # a fresh idempotency namespace (the fresh-funded-merchant path is available
     # via provisioner.provision_funded_merchant but needs full seed parity).
-    prov = provisioner.provision_campaign(cid, fund_fresh_attacker=bool(getattr(args, "fresh_attacker", False)))
+    want_fresh = bool(getattr(args, "fresh_attacker", False))
+    prov = provisioner.provision_campaign(cid, fund_fresh_attacker=want_fresh)
     attacker = prov["attacker"]
+    # Fail-closed (Section 8): a requested fresh attacker that did not self-verify
+    # through a real payout must ABORT startup, never silently fall back to the M1
+    # fixture. A campaign on a static funded merchant is not a fresh-merchant campaign.
+    if want_fresh and not prov["manifest"].get("attacker_is_fresh_funded"):
+        fm = prov["manifest"].get("fresh_merchant_detail") or {}
+        raise SystemExit(
+            "ABORT: fresh-attacker provisioning did not self-verify "
+            "(merchant_id=%s verify_status=%s). Refusing to fall back to the M1 fixture."
+            % (fm.get("merchant_id"), fm.get("verify_status")))
     alloc = {"attacker": attacker, "victims": prov["victims"],
              "actor_merchants": prov["actor_merchants"]}
 
