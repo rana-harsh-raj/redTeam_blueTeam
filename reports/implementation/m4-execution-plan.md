@@ -23,12 +23,24 @@ either linked to a source symbol / artifact / commit or marked `[TODO]`.
 | 0 | Baseline preservation & reverification (hash recompute, clean boot, baseline report) | DONE (BASELINE_HOLDS, m4-base-a 26/0/0) |
 | 1 | Source-grounded Direct map (payouts/api/fts/x-balances/ledger/XAS/BAS) | DONE (T02-T07,T12; source-map+TWIN_SPEC v2) |
 | 2 | Fresh Direct merchant provisioner + self-check | DONE (T09: 2 merchants, 29/29 self-check, 15/15 proofs) |
-| 3 | Direct payout + statement + reconciliation + Ledger path (A-G journeys) | in progress (T10 ingestion, T11 xas/DA) |
-| 4 | Status-return route matrix | pending |
-| 5 | Invariants and boundary tests | in progress (T14) |
-| 6 | Hypothesis-lifecycle hardening in RED_LOOP | code DONE (T13, 83 tests); wiring in progress (T15) |
-| 7 | Multi-context + soak | in progress (T15) |
-| 8 | Evidence, replay, acceptance, tag | pending |
+| 3 | Direct payout + statement + reconciliation + Ledger path (A-G journeys) | DONE (T10 BAS 7/7, T11 xas/DA 36/36, T17 journeys 7/7) |
+| 4 | Status-return route matrix | DONE (T05 map, T17 R1/R2/R-remap native + R3 EF) |
+| 5 | Invariants and boundary tests | DONE (T14 boundary 10/1xfail, T17 invariants 6/6) |
+| 6 | Hypothesis-lifecycle hardening in RED_LOOP | DONE (T13 83 tests, T15 4-context run + calibration accept, G59-61 self-test) |
+| 7 | Multi-context + soak | 4-context DONE; 2h soak RUNNING (camp-...7511c5) |
+| 8 | Evidence, replay, acceptance, tag | acceptance evaluator DONE (68 pass/5 pending/G68 finalize); replay DONE (F-M4-001 verified); FINALIZE pending: soak-summary, 2-boot, egress, audit, tag |
 
 ## Workstreams (subagent IDs in m4-task-ledger.jsonl)
 See ledger. Handoffs land in `reports/implementation/m4-subagent-handoffs/<task-id>.md`.
+
+
+## Verified finding (assurance harness result)
+- **F-M4-001** cross-tenant free-payout IDOR in accepted payouts `GetFreePayoutAttributes` (no merchant scoping).
+  VERIFIED in twin (unauthorized effect + negative control + independent fresh-ID reproduction);
+  production reachability UNKNOWN; twin source left unpatched. See reports/implementation/m4-findings.md.
+
+## Finalize sequence (requires stopping the live arena; runs AFTER the soak)
+1. Soak completes → commit m4-direct-e2e-soak.json (G64).
+2. Independent auditor: fresh context, reboot from empty state, rerun mandatory acceptance, recompute hashes (G72).
+3. Two empty-volume boots: provision fresh Direct merchant + subset journey on each (G17); consistency (G04); egress 0 (G70).
+4. Rebuild evidence manifest (G68/G69); acceptance --tested-commit; separate evidence commit; tag payouts-twin-m4-direct-e2e (G73); acceptance --evidence-commit.
