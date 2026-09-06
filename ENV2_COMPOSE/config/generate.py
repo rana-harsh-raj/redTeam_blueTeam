@@ -233,6 +233,12 @@ def build_token_map(arena, secrets):
     # to activate workflow-sim. scripts/up.sh sources .env.arena before this runs.
     tokens["WORKFLOW_HOST"] = os.environ.get("ARENA_WORKFLOW_HOST", "http://127.0.0.1:1")
 
+    # M4 (T10): merchant whitelist for payouts [configs.account_statement_source_event] (the REAL
+    # x_account_statement_source_event producer gate). Empty = every Direct merchant (source semantics:
+    # enabled + empty whitelist => all), so a provisioner only needs to set this when it wants to RESTRICT
+    # the producer to specific merchants. Comma-separated 14-char merchant ids.
+    tokens["XAS_SOURCE_EVENT_WHITELIST"] = os.environ.get("ARENA_XAS_SOURCE_EVENT_WHITELIST", "")
+
     tokens["ARENA.NAME"] = arena.get("arena_name", "env2")
 
     return tokens

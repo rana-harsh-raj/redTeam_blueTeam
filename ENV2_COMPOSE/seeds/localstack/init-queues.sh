@@ -38,3 +38,7 @@ awslocal sns create-topic --name payout-updates-test-dev >/dev/null && echo "top
 awslocal sns create-topic --name journal-created >/dev/null && echo "topic journal-created"
 awslocal sqs create-queue --queue-name payout-source-updater >/dev/null && echo "queue payout-source-updater"
 awslocal sqs create-queue --queue-name payouts-async-dual-write >/dev/null && echo "queue payouts-async-dual-write"
+# M4 (T10): REAL payouts worker rbl_banking_account_statement (payouts [job].rbl_banking_account_statement) and the REAL
+# PS x_account_statement_source_event producer -> xas-sim consumer (payouts [job].x_account_statement_source_event).
+awslocal sqs create-queue --queue-name rbl_banking_account_statement >/dev/null && echo "queue rbl_banking_account_statement"
+awslocal sqs create-queue --queue-name x_account_statement_source_event >/dev/null && echo "queue x_account_statement_source_event"

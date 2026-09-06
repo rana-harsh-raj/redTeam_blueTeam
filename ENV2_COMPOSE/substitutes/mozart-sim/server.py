@@ -283,6 +283,160 @@ def _create_otp(body):
     return 200, _envelope({"otp_reference": "SIM_OTP_REF"})
 
 
+# ---------------------------------------------------------------------------
+# M4 (T10): razorpayx/rbl/v2/account_statement -- bank current-account statement
+# fetch, consumed by the REAL payouts worker rbl_banking_account_statement
+# (payouts internal/app/bankingAccountStatement/processor/rbl_gateway.go). The
+# response is the Mozart envelope with data = {"FetchAccStmtRes": {"Header":
+# {...}, "AccStmtData": {"File_Data": base64(CSV)}}} exactly as Mozart's
+# razorpayx/rbl/v2/account_statement.json ResponseMapper emits it; the CSV
+# header line and 9-column row shape are what rbl_gateway.go
+# ExtractTxnsFromBankResonse/ParseBankTransaction require. Statement content is
+# driven per account_number through the control plane POST/GET /_arena/statement.
+# ---------------------------------------------------------------------------
+import base64
+import datetime
+
+STATEMENTS = {}        # account_number -> {"queue": [row], "options": {...}, "served": [...], "requests": [...]}
+STATEMENT_LOCK = threading.RLock()
+STATEMENT_OPTIONS = {"no_records", "failure", "http_error", "next_key", "page_size", "duplicate", "sticky"}
+IST = datetime.timezone(datetime.timedelta(hours=5, minutes=30))
+RBL_CSV_HEADER = "TRAN_ID,PTSN_NUM,TRAN_DATE,PSTD_DATE,TRAN_TYPE,C/D,TRAN_PARTICULAR,TRAN_AMT,TRAN_BALANCE"
+
+
+def _rupees(paise):
+    paise = int(paise)
+    sign = "-" if paise < 0 else ""
+    paise = abs(paise)
+    return "%s%d.%02d" % (sign, paise // 100, paise % 100)
+
+
+def _normalize_statement_row(row, idx):
+    """Accept a loose row dict and return the exact 9 CSV cells rbl_gateway.go parses.
+    Amounts are given in paise (amount_paise/balance_paise) and rendered in rupees
+    (utils.ConvertRupeesToPaise reverses it); dates default to 'now IST' with the
+    posted date 120 s in the past so the RblTxnTsOffset (60 s) guard admits the row."""
+    now = datetime.datetime.now(IST)
+    posted_default = (now - datetime.timedelta(seconds=120)).strftime("%d-%m-%Y %H:%M:%S")
+    cells = [
+        str(row.get("tran_id") or ("S%010d" % (int(time.time()) % 10**10 + idx))),
+        str(row.get("ptsn") or row.get("bank_serial_number") or idx + 1),
+        str(row.get("tran_date") or now.strftime("%d-%m-%Y")),
+        str(row.get("posted_date") or posted_default),
+        str(row.get("tran_type") or "TCI"),
+        str(row.get("cd") or ("C" if str(row.get("type", "debit")).lower() == "credit" else "D")),
+        str(row.get("particulars") or row.get("description") or ""),
+        _rupees(row.get("amount_paise", 0)) if "amount_paise" in row else str(row.get("amount", "0.00")),
+        _rupees(row.get("balance_paise", 0)) if "balance_paise" in row else str(row.get("balance", "0.00")),
+    ]
+    for c in cells:
+        if "," in c or "\n" in c:
+            raise ValueError("statement cell must not contain ',' or newline: %r" % c)
+    if not cells[6]:
+        raise ValueError("particulars required (TRAN_PARTICULAR is validated as required by the parser)")
+    return cells
+
+
+def _statement_control(body):
+    acct = str(body.get("account_number") or "")
+    if not acct or len(acct) > 48:
+        return 400, {"error": "account_number required"}
+    with STATEMENT_LOCK:
+        st = STATEMENTS.setdefault(acct, {"queue": [], "options": {}, "served": [], "requests": []})
+        if body.get("clear"):
+            STATEMENTS[acct] = {"queue": [], "options": {}, "served": [], "requests": []}
+            return 200, {"cleared": acct}
+        opts = body.get("options")
+        if opts is not None:
+            if not isinstance(opts, dict) or any(k not in STATEMENT_OPTIONS for k in opts):
+                return 400, {"error": "invalid options", "allowed": sorted(STATEMENT_OPTIONS)}
+            if body.get("replace_options", True):
+                st["options"] = dict(opts)
+            else:
+                st["options"].update(opts)
+        rows = body.get("rows")
+        if rows is not None:
+            if not isinstance(rows, list) or len(rows) > 5000:
+                return 400, {"error": "rows must be a list (<=5000)"}
+            try:
+                cells = [_normalize_statement_row(r, len(st["queue"]) + i) for i, r in enumerate(rows)]
+            except (ValueError, TypeError) as exc:
+                return 400, {"error": str(exc)}
+            if body.get("mode", "append") == "replace":
+                st["queue"] = cells
+            else:
+                st["queue"].extend(cells)
+        return 200, {"account_number": acct, "queued": len(st["queue"]), "options": st["options"]}
+
+
+def _statement_inspect(query):
+    acct = (query.get("account_number") or [""])[0]
+    with STATEMENT_LOCK:
+        if acct:
+            st = STATEMENTS.get(acct)
+            return (200, {"account_number": acct, **st}) if st else (404, {"error": "unknown account"})
+        return 200, {k: {"queued": len(v["queue"]), "options": v["options"], "served": len(v["served"]),
+                         "requests": len(v["requests"])} for k, v in STATEMENTS.items()}
+
+
+def _account_statement(body):
+    attempt = _dig(body, "entities", "attempt", default={}) or {}
+    source = _dig(body, "entities", "source_account", default={}) or {}
+    acct = str(source.get("account_number") or "")
+    creds = source.get("credentials") or {}
+    header = {"Code": 0, "Corp_ID": str(creds.get("corp_id") or ""), "Status": "Success", "Status_Desc": "",
+              "TranID": str(attempt.get("id") or ""), "account_no": acct,
+              "from_date": str(attempt.get("from_date") or ""), "to_date": str(attempt.get("to_date") or ""),
+              "next_key": ""}
+    with STATEMENT_LOCK:
+        st = STATEMENTS.setdefault(acct, {"queue": [], "options": {}, "served": [], "requests": []})
+        opts = st["options"]
+        req_rec = {"at": time.time(), "attempt": attempt, "credentials_present": bool(creds.get("auth_username")),
+                   "queued_before": len(st["queue"]), "outcome": None}
+        st["requests"].append(req_rec)
+        del st["requests"][:-200]
+        if opts.get("http_error"):
+            req_rec["outcome"] = "http_error"
+            return int(opts["http_error"]), {}
+        if opts.get("failure"):
+            # Bank-side technical failure: Status=Failure with a non-"No Records" description. The PS parser
+            # (UnmarshalBankResponse) does not treat this as no-records, Validate() then fails on the missing
+            # File_Data and the worker logs BankingAccountStatementFetchRetriesExhausted (retry limit 0).
+            req_rec["outcome"] = "failure"
+            header.update({"Status": "Failure", "Status_Desc": "Technical Failure", "Code": 500})
+            return 200, _envelope({"FetchAccStmtRes": {"Header": header, "AccStmtData": {"File_Data": ""}}},
+                                  success=False, error={"description": "synthetic bank statement failure",
+                                                        "gateway_error_code": "TECHNICAL_FAILURE",
+                                                        "gateway_status_code": 500,
+                                                        "internal_error_code": "GATEWAY_ERROR"})
+        if opts.get("no_records") or not st["queue"]:
+            # Real RBL semantics (Mozart success criterion accepts Status=Failure && Status_Desc=='No Records Found';
+            # PS maps it to RblAccountStatementNoRecords). NEVER answer Success with zero rows: rbl_gateway.go
+            # ParseBankResponse indexes records[len(records)-1] unconditionally when no row was skipped.
+            req_rec["outcome"] = "no_records"
+            header.update({"Status": "Failure", "Status_Desc": "No Records Found"})
+            return 200, _envelope({"FetchAccStmtRes": {"Header": header, "AccStmtData": {"File_Data": ""}}})
+        page = int(opts.get("page_size") or 0)
+        rows = st["queue"][:page] if page > 0 else list(st["queue"])
+        if not opts.get("sticky"):
+            del st["queue"][:len(rows)]
+        if opts.get("duplicate"):
+            rows = rows + rows   # same bank row twice in one file -> exercises DeDuplicateTransactionsLocal
+        remaining = len(st["queue"]) if not opts.get("sticky") else 0
+        if opts.get("next_key"):
+            header["next_key"] = str(opts["next_key"])
+        elif page > 0 and remaining > 0:
+            header["next_key"] = "MORE%d" % remaining
+        st["served"].append({"at": time.time(), "attempt_id": header["TranID"], "rows": len(rows),
+                             "next_key": header["next_key"], "request_next_key": attempt.get("next_key") or ""})
+        del st["served"][:-200]
+        req_rec["outcome"] = "rows:%d" % len(rows)
+    # No trailing newline: the parser splits on "\n" and a trailing empty line is an invalid 9-column row.
+    csv = "\n".join([RBL_CSV_HEADER] + [",".join(r) for r in rows])
+    file_data = base64.b64encode(csv.encode("utf-8")).decode("ascii")
+    return 200, _envelope({"FetchAccStmtRes": {"Header": header, "AccStmtData": {"File_Data": file_data}}})
+
+
 ACTION_HANDLERS = {
     "transfer_init": _transfer_init,
     "transfer_status": _transfer_status,
@@ -292,6 +446,7 @@ ACTION_HANDLERS = {
     "beneficiary_register": _beneficiary_register,
     "account_balance": _account_balance,
     "create_otp": _create_otp,
+    "account_statement": _account_statement,
 }
 
 
@@ -305,6 +460,13 @@ class MozartSimHandler(StubHandler):
             return
         if self.path == "/health":
             self._send_json(200, {"status": "ok", "service": "mozart-sim"})
+            return
+        if self.path.startswith("/_arena/statement"):
+            if not self._authorized():
+                self._send_json(401, {"error":"unauthorized"}); return
+            from urllib.parse import parse_qs, urlparse
+            status, payload = _statement_inspect(parse_qs(urlparse(self.path).query))
+            self._send_json(status, payload)
             return
         self._send_json(404, {"error": "unrecognized_path", "path": self.path})
 
@@ -325,6 +487,10 @@ class MozartSimHandler(StubHandler):
 
         if self.path == "/_arena/scenario":
             status, payload = _scenario_control(body)
+            self._send_json(status, payload)
+            return
+        if self.path == "/_arena/statement":
+            status, payload = _statement_control(body)
             self._send_json(status, payload)
             return
         parts = [p for p in self.path.split("/") if p]

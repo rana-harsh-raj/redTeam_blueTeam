@@ -814,6 +814,40 @@ services:
       redis: {condition: service_healthy}
       localstack: {condition: service_healthy}
 
+  payouts-worker-rbl-banking-account-statement:
+    # M4 (T10): the REAL PS bank-statement ingestion worker (payouts internal/job/rbl_banking_account_statement.go,
+    # handler bankingAccountStatement/core.go FetchAccountStatement -> processor/rbl_gateway.go). Same accepted binary as
+    # every other payouts worker; polls the SQS queue named by [job].rbl_banking_account_statement. Fed by
+    # POST /v1/cron/banking_account_statement/fetch/initiate (cron-driver job bas_fetch_initiate), fetches bank
+    # credentials from bankingaccounts-stub and the statement CSV from mozart-sim razorpayx/rbl/v2/account_statement.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "rbl_banking_account_statement"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
   payouts-worker-payout-source-updater:
     image: rzp-arena/payouts:${ARENA_TAG:-local}
     profiles: ["core"]

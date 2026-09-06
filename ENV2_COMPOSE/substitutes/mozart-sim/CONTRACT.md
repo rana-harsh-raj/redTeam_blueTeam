@@ -110,3 +110,47 @@ with UTR; init 100500 -> duplicate-txn failure; status ARENAUTR0000006
 poll1 success / poll2 returned with `return_utr`) — every response body
 byte-matches `seeds/mozart_scenarios.json`'s `init_response`/
 `status_response`/`poll_sequence` fixtures.
+
+## M4 (T10): `POST /{namespace}/{gateway}/{version}/account_statement` -- RBL current-account statement fetch
+
+Consumed by the REAL payouts worker `rbl_banking_account_statement` (payouts
+`internal/app/bankingAccountStatement/processor/rbl_gateway.go`, request struct
+`processor/rbl_request.go`, response struct `processor/rbl_statement.go`). The request body is
+`{"entities": {"attempt": {"id", "transaction_type": "B", "from_date", "to_date" | "next_key"},
+"source_account": {"account_number", "credentials": {auth_username, auth_password, client_id,
+client_secret, corp_id}}}}` (dates `DD-MM-YYYY`). Credentials are accepted and ignored.
+
+Response (Mozart envelope, `data` = Mozart `razorpayx/rbl/v2/account_statement.json` ResponseMapper shape):
+
+```json
+{"success": true, "error": null, "data": {"FetchAccStmtRes": {
+   "Header": {"Code": 0, "Corp_ID": "<corp_id>", "Status": "Success"|"Failure", "Status_Desc": "",
+              "TranID": "<attempt.id>", "account_no": "<acct>", "from_date": "..", "to_date": "..", "next_key": ""},
+   "AccStmtData": {"File_Data": "<base64 CSV>"}}}}
+```
+
+CSV = `TRAN_ID,PTSN_NUM,TRAN_DATE,PSTD_DATE,TRAN_TYPE,C/D,TRAN_PARTICULAR,TRAN_AMT,TRAN_BALANCE` (exact
+header the parser requires) + one 9-cell row per statement line, `\n`-joined, **no trailing newline**
+(a trailing empty line is an invalid row for the parser). Amounts in rupees with 2 decimals (the worker
+converts to paise); `PSTD_DATE` `DD-MM-YYYY HH:MM:SS` IST and must be older than request time - 60 s or
+the worker skips the row; `TRAN_TYPE` in the worker's category map (`TCI` -> customer_initiated ...).
+
+Statement content is driven per `account_number` (control plane, no auth beyond the stub's default):
+
+| call | effect |
+|---|---|
+| `POST /_arena/statement {"account_number", "rows": [...], "mode": "append"\|"replace", "options": {...}}` | queue rows; each row `{tran_id?, ptsn?, tran_date?, posted_date?, tran_type?, type: "debit"\|"credit" (or cd: "D"\|"C"), particulars, amount_paise, balance_paise}` -- defaults: fresh `tran_id`, `tran_date` today IST, `posted_date` now-120 s |
+| `options.no_records` | always answer `Status=Failure, Status_Desc="No Records Found"` (the RBL no-data semantics; the worker maps it to `RblAccountStatementNoRecords`) |
+| `options.failure` | `Status=Failure, Status_Desc="Technical Failure"`, `success=false`, no `File_Data` -> worker `RblAccountStatementInvalid` -> `BANKING_ACCOUNT_STATEMENT_FETCH_RETRIES_EXHAUSTED` |
+| `options.http_error: <code>` | raw HTTP error, empty body |
+| `options.page_size: N` | serve N rows per call and set `Header.next_key = "MORE<remaining>"`; the worker persists `"<posted_ts>_MORE.."` as `pagination_key` and sends `attempt.next_key` next time |
+| `options.next_key: "<k>"` | force that `next_key` in every success header |
+| `options.duplicate` | emit every served row twice in the same file (exercises the worker's local dedupe) |
+| `options.sticky` | do not consume served rows (every fetch returns the same file) |
+| `POST /_arena/statement {"account_number", "clear": true}` | drop queue, options and history |
+| `GET /_arena/statement[?account_number=..]` | queue, options, `served` history and the request log (`attempt`, `credentials_present`, `outcome`) |
+
+An empty queue answers "No Records Found". The substitute NEVER returns `Status=Success` with zero rows:
+`rbl_gateway.go ParseBankResponse` indexes `records[len(records)-1]` unconditionally when no row was skipped,
+so an empty successful file would panic the real worker. Served rows are consumed (popped) by default: to
+replay a file, enqueue the identical rows again (the worker's DB dedupe then drops them).

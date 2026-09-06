@@ -420,6 +420,11 @@
     x_balances_balance_refresh      = "stage-x-balances-balance-refresh-live"
     fund_management_payout_check    = "fmp-check"
     fund_management_payout_initiate = "fmp-initiate"
+    # M4 (T10): REAL PS statement-ingestion worker + REAL XAS source-event producer. Queue names match
+    # seeds/localstack/init-queues.sh; prod names are prod-payouts-rbl-banking-account-statement-live and
+    # prod-x-account-statement-source-event (payouts/config/prod.toml:177,188). xas-sim (T11) consumes the second.
+    rbl_banking_account_statement    = "rbl_banking_account_statement"
+    x_account_statement_source_event = "x_account_statement_source_event"
 
 [queue]
     driver = "sqs"   # payouts vendors its own pkg/worker/queue: "sqs" honours [queue.sqs].endpoint (devstack.toml:131-135 uses the same LocalStack pattern)
@@ -643,9 +648,16 @@
         blacklist_env = "env|PAYOUTS_CONFIGS_FUND_ACCOUNT_OPTIMISATION_BLACKLIST_ENV"
 
     [configs.account_statement_source_event]
-        enabled_env = "env|PAYOUTS_CONFIGS_ACCOUNT_STATEMENT_SOURCE_EVENT_ENABLED_ENV"
-        whitelist_env = "env|PAYOUTS_CONFIGS_ACCOUNT_STATEMENT_SOURCE_EVENT_WHITELIST_ENV"
-        blacklist_env = "env|PAYOUTS_CONFIGS_ACCOUNT_STATEMENT_SOURCE_EVENT_BLACKLIST_ENV"
+        # M4 (T10): config-based gate for the REAL x_account_statement_source_event producer
+        # (payouts/core.go isXasSourceEventExperimentEnabled: enabled + empty whitelist => every merchant;
+        # the producer itself only fires for account_type=direct payouts in a terminal state). The whitelist is
+        # rendered from host env ARENA_XAS_SOURCE_EVENT_WHITELIST (comma-separated merchant ids; default "" = all
+        # Direct merchants, so a freshly provisioned merchant needs no config change). Literal values are used
+        # rather than the "env|PAYOUTS_CONFIGS_*" placeholders because no env| resolver exists in the accepted
+        # payouts tree and the arena sets no such process env (config/generate.py build_env_overrides).
+        enabled_env = "true"
+        whitelist_env = "{{XAS_SOURCE_EVENT_WHITELIST}}"
+        blacklist_env = ""
 
     [configs.fts_async_hv_processing_merchants]
         whitelist_env = "env|PAYOUTS_CONFIGS_FTS_ASYNC_HV_PROCESSING_MERCHANTS_WHITELIST_ENV"
@@ -680,7 +692,10 @@
     mode = "IMPS"
 
 [xas]
-    host = "{{SVC.xas_sink.url}}"
+    # M4 (T10): XAS substitute (xas-sim, T11) so VerifyPayoutFailedTransaction and GET fetch_multiple_by_reference_numbers
+    # execute against a contract-faithful substitute instead of the health-only xas-sink. Until the xas-sim service is
+    # wired into docker-compose.yml the host is unresolvable and calls fail exactly as they did against xas-sink.
+    host = "http://xas-sim:8080"
 
     timeout = "30s"
     keepAliveTimeout = "30s"

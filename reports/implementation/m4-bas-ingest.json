@@ -1,0 +1,1487 @@
+{
+  "schema_version": 1,
+  "task": "T10",
+  "started_at": "2026-09-06T19:49:47Z",
+  "finished_at": "2026-09-06T19:51:51Z",
+  "git_head": "7b55acabc1fa2fa755d678b44f3e560ed377ccd6",
+  "arena": {
+    "boot_id": "06330f7e-3099-4299-ab0c-9b9d50c43899",
+    "compose_project": "env2_compose",
+    "route_profile": "monolith",
+    "config_digest": "839a4da8c312d11fb6753b99318f7c22d2cc349b46a01b838eeb5e4b1aacf092",
+    "git_head": "39fe41e54d7ee7063ebdbac546334023b1aea5d5"
+  },
+  "merchant": {
+    "campaign_id": "m4bas-t10-1",
+    "role": "direct",
+    "archetype": "direct",
+    "channel": "rbl",
+    "merchant_id": "ARENAD81988839",
+    "key_id": "rzp_live_ARENAD81988839",
+    "balance_id": "ARENADB1988839",
+    "banking_account_id": "ARENADA1988839",
+    "account_number": "2323000081988839",
+    "fund_account_id": "fa_ARENADX1988839",
+    "contact_id": "ARENADO1988839",
+    "fts_fund_account_id": "998839",
+    "fts_source_account_id": "998839",
+    "pricing_plan_id": "ARENAPLAN24811",
+    "opening_balance": 10000000,
+    "compose_project": "env2_compose",
+    "arena_network": "rzp-arena",
+    "restarts": [
+      "monolith-stub",
+      "bankingaccounts-stub",
+      "dcs-stub",
+      "splitz-stub",
+      "kong-lite"
+    ],
+    "created_at": 1788722452,
+    "failed_steps": [],
+    "existed_steps": [],
+    "self_check": {
+      "ready": true,
+      "passed": 29,
+      "total": 29,
+      "failed": []
+    },
+    "_source": "descriptor:RED_LOOP/runs/m4-bas-ingest-20260906T192052Z/merchant-descriptor.json"
+  },
+  "run_dir": "RED_LOOP/runs/m4-bas-ingest-20260906T194947Z",
+  "fidelity_legend": {
+    "real": "accepted service binary + real route",
+    "real-worker/substitute-bank": "REAL payouts worker fed by mozart-sim substitute + bankingaccounts-stub credentials",
+    "substitute": "twin substitute only"
+  },
+  "steps": [
+    {
+      "step": "a",
+      "title": "Direct payout through kong -> processed; UTR from PS + FTS",
+      "fidelity": "real",
+      "pass": true,
+      "at": "2026-09-06T19:49:52Z",
+      "request": {
+        "mozart_scenario": [
+          200,
+          "{\"key\": \"ARENAD81988839\", \"scenario\": \"success\", \"polls\": 2}\n"
+        ],
+        "create": {
+          "fund_account_id": "fa_ARENADX1988839",
+          "account_number": "2323000081988839",
+          "amount": 5000,
+          "currency": "INR",
+          "mode": "IMPS",
+          "purpose": "payout",
+          "queue_if_low_balance": true,
+          "merchant_id": "ARENAD81988839",
+          "narration": "m4 bas ingest step-a",
+          "notes": {
+            "m4": "step-a"
+          }
+        },
+        "idempotency": "m4bas-06abdea1a0"
+      },
+      "observed": {
+        "create_status": 200,
+        "payout_id": "TYs9dPJtyRBWWG",
+        "payout_row": {
+          "status": "processed",
+          "balance_id": "ARENADB1988839",
+          "merchant_id": "ARENAD81988839",
+          "fts_transfer_id": "269",
+          "transaction_id": null,
+          "queued_reason": "",
+          "utr": "ARENA0000000269",
+          "fees": "200",
+          "tax": "36",
+          "amount": "5000"
+        },
+        "fts_transfer": {
+          "id": "269",
+          "status": "PROCESSED",
+          "utr": "ARENA0000000269",
+          "attempt_id": "269"
+        },
+        "ledger_journals_for_merchant": "0",
+        "started_at": "2026-09-06T19:49:47Z",
+        "xas_source_event_producer_messages": [
+          "X_ACCOUNT_STATEMENT_SOURCE_EVENT_PAYLOAD",
+          "X_ACCOUNT_STATEMENT_SOURCE_EVENT_QUEUE_PUSH_SUCCESS"
+        ]
+      },
+      "note": "xas_source_event_producer_messages shows the REAL x_account_statement_source_event push (config gate + queue from T10); consumer is xas-sim (T11)"
+    },
+    {
+      "step": "b",
+      "title": "matching debit statement row -> REAL cron route -> REAL worker -> one BAS row; BASD advanced",
+      "fidelity": "real-worker/substitute-bank",
+      "pass": true,
+      "at": "2026-09-06T19:49:55Z",
+      "request": {
+        "basd_ensure": {
+          "basd_id": "ARENADS1988839",
+          "existed": true,
+          "additive": false
+        },
+        "statement_row": {
+          "tran_id": "M4B557E86FE",
+          "ptsn": "1",
+          "tran_date": "07-09-2026",
+          "posted_date": "07-09-2026 01:17:52",
+          "tran_type": "TCI",
+          "type": "debit",
+          "particulars": "ARENA0000000269-IMPS/M4 BAS INGEST",
+          "amount_paise": 5000,
+          "balance_paise": 9935615
+        },
+        "enqueue": {
+          "status": 200,
+          "body": {
+            "account_number": "2323000081988839",
+            "queued": 1,
+            "options": {}
+          }
+        },
+        "trigger": {
+          "via": "http",
+          "request": {
+            "channel": "rbl",
+            "account_rate_limit": 50,
+            "inactive_duration_limit": 315360000,
+            "account_type": "direct"
+          },
+          "status": 200,
+          "body": {
+            "dispatched_accounts": [
+              "2323000081988839",
+              "2323000084708817",
+              "2323000080422548",
+              "2323000083156710",
+              "2323000084125766",
+              "2323000084959177",
+              "2323000085474858",
+              "2323000086290740",
+              "2323000086957107",
+              "2323000086517499",
+              "2323000088300565"
+            ]
+          },
+          "at": "2026-09-06T19:49:53Z"
+        }
+      },
+      "observed": {
+        "bas_rows": [
+          {
+            "id": "TYs9jgd22DMOfn",
+            "entity_id": null,
+            "entity_type": null,
+            "channel": "rbl",
+            "merchant_id": "ARENAD81988839",
+            "account_number": "2323000081988839",
+            "bank_transaction_id": "M4B557E86FE",
+            "type": "debit",
+            "utr": "ARENA0000000269",
+            "amount": 5000,
+            "currency": "INR",
+            "description": "ARENA0000000269-IMPS/M4 BAS INGEST",
+            "category": "customer_initiated",
+            "bank_serial_number": "1",
+            "balance": 9935615,
+            "balance_currency": "INR",
+            "transaction_date": 1788719400,
+            "posted_date": 1788724072,
+            "created_at": 1788724193,
+            "updated_at": 1788724193,
+            "gateway_ref_number": ""
+          }
+        ],
+        "field_mismatches": {},
+        "basd_before": {
+          "id": "ARENADS1988839",
+          "merchant_id": "ARENAD81988839",
+          "balance_id": "ARENADB1988839",
+          "account_number": "2323000081988839",
+          "channel": "rbl",
+          "status": "active",
+          "statement_closing_balance": "9940615",
+          "gateway_balance": "9928270",
+          "statement_closing_balance_change_at": "1788723651",
+          "gateway_balance_change_at": "1788724192",
+          "last_statement_attempt_at": "1788723660",
+          "balance_last_fetched_at": "1788722452",
+          "pagination_key": "1788723531_",
+          "account_type": "direct",
+          "created_at": "1788722452",
+          "updated_at": "1788724192",
+          "metadata": "{\"statement_fetched_till_date\": \"06-09-2026\"}",
+          "metadata_json": {
+            "statement_fetched_till_date": "06-09-2026"
+          }
+        },
+        "basd_after": {
+          "id": "ARENADS1988839",
+          "merchant_id": "ARENAD81988839",
+          "balance_id": "ARENADB1988839",
+          "account_number": "2323000081988839",
+          "channel": "rbl",
+          "status": "active",
+          "statement_closing_balance": "9935615",
+          "gateway_balance": "9928270",
+          "statement_closing_balance_change_at": "1788724193",
+          "gateway_balance_change_at": "1788724192",
+          "last_statement_attempt_at": "1788724193",
+          "balance_last_fetched_at": "1788722452",
+          "pagination_key": "1788724072_",
+          "account_type": "direct",
+          "created_at": "1788722452",
+          "updated_at": "1788724193",
+          "metadata": "{\"statement_fetched_till_date\": \"06-09-2026\"}",
+          "metadata_json": {
+            "statement_fetched_till_date": "06-09-2026"
+          }
+        },
+        "worker_messages": [
+          "BANKING_ACCOUNT_SERVICE_REQUEST",
+          "BANKING_ACCOUNT_SERVICE_RESPONSE",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_MOZART_REQUEST",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_MOZART_RESPONSE",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_BANK_API_FETCH",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_DEDUPE_CHECK_LOCAL",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_DEDUPE_CHECK",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_DEDUPE_CHECK_NO_DUPLICATES",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_BAS_CREATE",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_BASD_UPDATE",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_SAVE_TRANSACTIONS"
+        ],
+        "worker_tail": [
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.667Z\",\"caller\":\"bankingAccountService/client.go:130\",\"message\":\"BANKING_ACCOUNT_SERVICE_REQUEST\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"method\":\"GET\",\"uri\":\"/merchant/ARENAD81988839/banking_account_by_account_number/2323000081988839/credentials\"}}",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.671Z\",\"caller\":\"bankingAccountService/client.go:155\",\"message\":\"BANKING_ACCOUNT_SERVICE_RESPONSE\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"status_code\":\"200\",\"uri\":\"/merchant/ARENAD81988839/banking_account_by_account_number/2323000081988839/credentials\"}}",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.672Z\",\"caller\":\"processor/rbl_gateway.go:177\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_MOZART_REQUEST\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes7o80j1as73cdp590\",\"task_id\":\"daes7o80j1as73cdp59g\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"attempt\":0,\"basd_id\":\"ARENADS1988839\",\"channel\":\"rbl\",\"is_retry\":false,\"merchant_id\":\"ARENAD81988839\",\"request_header\":{\"from_date\":\"06-09-2026\",\"id\":\"1788724193\",\"to_date\":\"07-09-2026\",\"transaction_type\":\"B\"}}}",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.675Z\",\"caller\":\"processor/rbl_gateway.go:196\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_MOZART_RESPONSE\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes7o80j1as73cdp590\",\"task_id\":\"daes7o80j1as73cdp59g\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"attempt\":0,\"basd_id\":\"ARENADS1988839\",\"channel\":\"rbl\",\"is_retry\":false,\"merchant_id\":\"ARENAD81988839\",\"time_taken_in_ms\":3}}",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.676Z\",\"caller\":\"processor/rbl_gateway.go:57\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_BANK_API_FETCH\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes7o80j1as73cdp590\",\"task_id\":\"daes7o80j1as73cdp59g\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"basd_id\":\"ARENADS1988839\",\"channel\":\"rbl\",\"merchant_id\":\"ARENAD81988839\",\"time_taken_in_ms\":9,\"total_records\":1}}",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.676Z\",\"caller\":\"processor/rbl_gateway.go:652\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_DEDUPE_CHECK_LOCAL\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes7o80j1as73cdp590\",\"task_id\":\"daes7o80j1as73cdp59g\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"channel\":\"rbl\",\"merchant_id\":\"ARENAD81988839\",\"time_taken_in_ms\":0,\"total_records\":1,\"unique_records\":1}}",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.677Z\",\"caller\":\"processor/rbl_gateway.go:607\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_DEDUPE_CHECK\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes7o80j1as73cdp590\",\"task_id\":\"daes7o80j1as73cdp59g\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"account_number\":\"SCRUBBED_PII(10)\",\"channel\":\"rbl\",\"merchant_id\":\"ARENAD81988839\",\"time_taken_in_ms\":1,\"total_records\":1}}",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.677Z\",\"caller\":\"processor/rbl_gateway.go:625\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_DEDUPE_CHECK_NO_DUPLICATES\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes7o80j1as73cdp590\",\"task_id\":\"daes7o80j1as73cdp59g\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"account_number\":\"SCRUBBED_PII(10)\",\"channel\":\"rbl\",\"merchant_id\":\"ARENAD81988839\"}}",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.683Z\",\"caller\":\"processor/base.go:64\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_BAS_CREATE\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes7o80j1as73cdp590\",\"task_id\":\"daes7o80j1as73cdp59g\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"basd_id\":\"ARENADS1988839\",\"channel\":\"rbl\",\"merchant_id\":\"ARENAD81988839\",\"time_taken_in_ms\":5,\"total_records\":1}}",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.684Z\",\"caller\":\"processor/base.go:86\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_BASD_UPDATE\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes7o80j1as73cdp590\",\"task_id\":\"daes7o80j1as73cdp59g\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"basd_id\":\"ARENADS1988839\",\"channel\":\"rbl\",\"merchant_id\":\"ARENAD81988839\",\"time_taken_in_ms\":1}}",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:49:53.686Z\",\"caller\":\"processor/rbl_gateway.go:86\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_SAVE_TRANSACTIONS\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes7o80j1as73cdp590\",\"task_id\":\"daes7o80j1as73cdp59g\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"basd_id\":\"ARENADS1988839\",\"channel\":\"rbl\",\"merchant_id\":\"ARENAD81988839\",\"time_taken_in_ms\":9,\"total_records\":1}}"
+        ]
+      }
+    },
+    {
+      "step": "c",
+      "title": "replay the same CSV row -> NO new BAS row (worker DB dedupe tuple)",
+      "fidelity": "real-worker/substitute-bank",
+      "pass": true,
+      "at": "2026-09-06T19:49:59Z",
+      "request": {
+        "enqueue_replay": {
+          "status": 200,
+          "body": {
+            "account_number": "2323000081988839",
+            "queued": 1,
+            "options": {}
+          }
+        },
+        "trigger": {
+          "via": "http",
+          "request": {
+            "channel": "rbl",
+            "account_rate_limit": 50,
+            "inactive_duration_limit": 315360000,
+            "account_type": "direct"
+          },
+          "status": 200,
+          "body": {
+            "dispatched_accounts": [
+              "2323000081988839",
+              "2323000084708817",
+              "2323000080422548",
+              "2323000083156710",
+              "2323000084125766",
+              "2323000084959177",
+              "2323000085474858",
+              "2323000086290740",
+              "2323000086517499",
+              "2323000086957107",
+              "2323000088300565"
+            ]
+          },
+          "at": "2026-09-06T19:49:55Z"
+        }
+      },
+      "observed": {
+        "rows_before": 16,
+        "rows_after": 16,
+        "rows_for_utr": 1,
+        "dedup_key_fields": [
+          "account_number",
+          "posted_date",
+          "type",
+          "bank_serial_number",
+          "amount",
+          "bank_transaction_id",
+          "channel"
+        ],
+        "dedup_key": {
+          "account_number": "2323000081988839",
+          "posted_date": 1788724072,
+          "type": "debit",
+          "bank_serial_number": "1",
+          "amount": 5000,
+          "bank_transaction_id": "M4B557E86FE",
+          "channel": "rbl"
+        },
+        "duplicates_found_log": [
+          "{\"level\":\"ERROR\",\"time\":\"2026-09-06T19:49:55.758Z\",\"caller\":\"processor/rbl_gateway.go:617\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_DEDUPE_CHECK_DUPLICATES_FOUND\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes7oo0j1as73cdp5k0\",\"task_id\":\"daes7oo0j1as73cdp5kg\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"channel\":\"rbl\",\"merchant_id\":\"ARENAD81988839\",\"skipped_record_count\":1},\"stacktrace\":\"github.com/razorpay/payouts/internal/app/bankingAccountStatement/processor.RblBankingAccountStatementProcessor.DeDuplicateTransactionsDb\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/processor/rbl_gateway.go:617\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement/processor.RblBankingAccountStatementProcessor.FetchAccountStatementDetails\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/processor/rbl_gateway.go:69\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.Core.FetchAccountStatement\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/core.go:284\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.(*Service).FetchAccountStatement\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/service.go:42\\ngithub.com/razorpay/payouts/internal/job.(*RblBankingAccountStatement).Handle\\n\\tgithub.com/razorpay/payouts/internal/job/rbl_banking_account_statement.go:78\\ngithub.com/razorpay/payouts/pkg/worker.(*Manager).handle\\n\\tgithub.co"
+        ],
+        "worker_messages": [
+          "BANKING_ACCOUNT_SERVICE_REQUEST",
+          "BANKING_ACCOUNT_SERVICE_RESPONSE",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_MOZART_REQUEST",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_MOZART_RESPONSE",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_BANK_API_FETCH",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_DEDUPE_CHECK_LOCAL",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_DEDUPE_CHECK",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_DEDUPE_CHECK_DUPLICATES_FOUND",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_BAS_CREATE",
+          "BANKING_ACCOUNT_STATEMENT_FETCH_SAVE_TRANSACTIONS"
+        ],
+        "mozart_served": [
+          {
+            "at": 1788722518.7051976,
+            "attempt_id": "1788722518",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788722519.6293225,
+            "attempt_id": "1788722519",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788722529.7516913,
+            "attempt_id": "1788722529",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788722541.8799462,
+            "attempt_id": "1788722541",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788722952.4725342,
+            "attempt_id": "1788722952",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788722954.5160303,
+            "attempt_id": "1788722954",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788722970.6114283,
+            "attempt_id": "1788722970",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788722982.7242036,
+            "attempt_id": "1788722982",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723198.026713,
+            "attempt_id": "1788723198",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723200.0666487,
+            "attempt_id": "1788723200",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723210.172054,
+            "attempt_id": "1788723210",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723222.2489316,
+            "attempt_id": "1788723222",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723369.1667352,
+            "attempt_id": "1788723369",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723372.2267218,
+            "attempt_id": "1788723372",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723382.3141122,
+            "attempt_id": "1788723382",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723394.4060202,
+            "attempt_id": "1788723394",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723624.5675645,
+            "attempt_id": "1788723624",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723627.736539,
+            "attempt_id": "1788723627",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723637.8713188,
+            "attempt_id": "1788723637",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788723651.9630823,
+            "attempt_id": "1788723651",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788724193.674393,
+            "attempt_id": "1788724193",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          },
+          {
+            "at": 1788724195.7579281,
+            "attempt_id": "1788724195",
+            "rows": 1,
+            "next_key": "",
+            "request_next_key": ""
+          }
+        ]
+      },
+      "note": "rbl_gateway.go DeDuplicateTransactionsDb: FetchByTxnIds(bank_transaction_id IN, account_number, created_at>=min txn date) then struct-equality on the 7-field tuple"
+    },
+    {
+      "step": "d",
+      "title": "ART Reconciled (REAL route) -> BAS linked, payout_update relay at monolith-stub, payouts.transaction_id == bas id, no PS ledger journal",
+      "fidelity": "real",
+      "pass": true,
+      "at": "2026-09-06T19:50:02Z",
+      "request": {
+        "art": {
+          "request_decoded": [
+            {
+              "banking_account_statement_id": "TYs9jgd22DMOfn",
+              "recon_status": "Reconciled",
+              "entity_id": "art,payout,TYs9dPJtyRBWWG",
+              "entity_type": "payout"
+            }
+          ],
+          "request": [
+            {
+              "data": "eyJiYW5raW5nX2FjY291bnRfc3RhdGVtZW50X2lkIjogIlRZczlqZ2QyMkRNT2ZuIiwgInJlY29uX3N0YXR1cyI6ICJSZWNvbmNpbGVkIiwgImVudGl0eV9pZCI6ICJhcnQscGF5b3V0LFRZczlkUEp0eVJCV1dHIiwgImVudGl0eV90eXBlIjogInBheW91dCJ9",
+              "idempotent_id": "m4-art-ed022e859773"
+            }
+          ],
+          "status": 200,
+          "body": {
+            "InputCount": 1,
+            "ProcessedBASCount": 1
+          },
+          "at": "2026-09-06T19:49:59Z"
+        },
+        "bridge": null
+      },
+      "observed": {
+        "link": {
+          "bas": {
+            "id": "TYs9jgd22DMOfn",
+            "entity_id": "TYs9dPJtyRBWWG",
+            "entity_type": "payout",
+            "channel": "rbl",
+            "merchant_id": "ARENAD81988839",
+            "account_number": "2323000081988839",
+            "bank_transaction_id": "M4B557E86FE",
+            "type": "debit",
+            "utr": "ARENA0000000269",
+            "amount": "5000",
+            "currency": "INR",
+            "description": "ARENA0000000269-IMPS/M4 BAS INGEST",
+            "category": "customer_initiated",
+            "bank_serial_number": "1",
+            "balance": "9935615",
+            "balance_currency": "INR",
+            "transaction_date": "1788719400",
+            "posted_date": "1788724072",
+            "created_at": "1788724193",
+            "updated_at": "1788724199",
+            "gateway_ref_number": ""
+          },
+          "payout": {
+            "id": "TYs9dPJtyRBWWG",
+            "status": "processed",
+            "merchant_id": "ARENAD81988839",
+            "balance_id": "ARENADB1988839",
+            "amount": "5000",
+            "utr": "ARENA0000000269",
+            "transaction_id": "TYs9jgd22DMOfn",
+            "fts_transfer_id": "269",
+            "gateway_ref_no": null,
+            "mode": "IMPS",
+            "channel": "rbl",
+            "failure_reason": null,
+            "created_at": "1788724187",
+            "updated_at": "1788724199"
+          },
+          "linked": true
+        },
+        "ps_to_monolith_payout_update": {
+          "request_logged": {
+            "Body": {
+              "bas_id": "TYs9jgd22DMOfn",
+              "converted_from_external": false,
+              "entity_id": "TYs9dPJtyRBWWG",
+              "entity_type": "payout",
+              "merchant_id": "ARENAD81988839",
+              "transaction_date": 1788719400
+            },
+            "RequestConfig": {
+              "Header": null,
+              "Method": "POST",
+              "Uri": "/banking_account_statement/payout_update",
+              "Url": "http://monolith-stub:8080/v1/banking_account_statement/payout_update"
+            }
+          },
+          "outcome": "success",
+          "error": null
+        },
+        "monolith_relay_log": [
+          {
+            "kind": "banking_statement_payout_update",
+            "at": 1788724199.287474,
+            "payload": {
+              "request": {
+                "bas_id": "TYs9jgd22DMOfn",
+                "entity_id": "TYs9dPJtyRBWWG",
+                "entity_type": "payout",
+                "merchant_id": "ARENAD81988839",
+                "transaction_date": 1788719400,
+                "converted_from_external": false
+              },
+              "status": 200,
+              "response": {
+                "status": "success"
+              }
+            }
+          }
+        ],
+        "relay_source": "real PS request",
+        "payouts_api_messages": [
+          "BANKING_ACCOUNT_STATEMENT_LINKING_STATUS_INFO",
+          "BANKING_ACCOUNT_STATEMENT_DUAL_WRITE_REQUEST",
+          "BAS_DUAL_WRITE_DISPATCH_TO_QUEUE_SUCCESS",
+          "BAS_UPDATE_PAYOUT_REQUEST_INIT",
+          "BAS_UPDATE_PAYOUT_REQUEST",
+          "UPDATE_PAYOUT_AFTER_BAS_RECON_REQUEST",
+          "MAIL_AND_SMS_VIA_API_REQUEST",
+          "BAS_UPDATE_PAYOUT_REQUEST_SUCCESS",
+          "BANKING_ACCOUNT_STATEMENT_LINK_SUCCESS"
+        ],
+        "ledger_journal_count_merchant": "0",
+        "ledger_publish_attempts_for_bas": [],
+        "assertions": {
+          "art_200_and_bas_linked": true,
+          "ps_to_monolith_hop_real": true,
+          "monolith_to_ps_hop_and_transaction_id": true,
+          "relay_observed_at_monolith_stub": true,
+          "no_ps_ledger_journal": true
+        }
+      }
+    },
+    {
+      "step": "e",
+      "title": "ART Unreconciled on an unmatched debit -> BAS external; PS da_ext_debit journal attempt observed",
+      "fidelity": "real",
+      "pass": true,
+      "at": "2026-09-06T19:50:10Z",
+      "request": {
+        "statement_row": {
+          "tran_id": "M4E09163E36",
+          "ptsn": "2",
+          "tran_date": "07-09-2026",
+          "posted_date": "07-09-2026 01:18:02",
+          "tran_type": "TCI",
+          "type": "debit",
+          "particulars": "M4EXT1B59C78A7-IMPS/M4 BAS INGEST",
+          "amount_paise": 777,
+          "balance_paise": 9934838
+        },
+        "enqueue": {
+          "status": 200,
+          "body": {
+            "account_number": "2323000081988839",
+            "queued": 1,
+            "options": {}
+          }
+        },
+        "trigger": {
+          "via": "http",
+          "request": {
+            "channel": "rbl",
+            "account_rate_limit": 50,
+            "inactive_duration_limit": 315360000,
+            "account_type": "direct"
+          },
+          "status": 200,
+          "body": {
+            "dispatched_accounts": [
+              "2323000081988839",
+              "2323000084708817",
+              "2323000080422548",
+              "2323000083156710",
+              "2323000084125766",
+              "2323000084959177",
+              "2323000085474858",
+              "2323000086290740",
+              "2323000086517499",
+              "2323000086957107",
+              "2323000088300565"
+            ]
+          },
+          "at": "2026-09-06T19:50:02Z"
+        },
+        "art": {
+          "request_decoded": [
+            {
+              "banking_account_statement_id": "TYs9tgyJj7J0HS",
+              "recon_status": "Unreconciled",
+              "entity_id": "",
+              "entity_type": ""
+            }
+          ],
+          "request": [
+            {
+              "data": "eyJiYW5raW5nX2FjY291bnRfc3RhdGVtZW50X2lkIjogIlRZczl0Z3lKajdKMEhTIiwgInJlY29uX3N0YXR1cyI6ICJVbnJlY29uY2lsZWQiLCAiZW50aXR5X2lkIjogIiIsICJlbnRpdHlfdHlwZSI6ICIifQ==",
+              "idempotent_id": "m4-art-7b1c180cc11a"
+            }
+          ],
+          "status": 200,
+          "body": {
+            "InputCount": 1,
+            "ProcessedBASCount": 1
+          },
+          "at": "2026-09-06T19:50:06Z"
+        }
+      },
+      "observed": {
+        "bas": {
+          "id": "TYs9tgyJj7J0HS",
+          "entity_id": null,
+          "entity_type": "external",
+          "channel": "rbl",
+          "merchant_id": "ARENAD81988839",
+          "account_number": "2323000081988839",
+          "bank_transaction_id": "M4E09163E36",
+          "type": "debit",
+          "utr": "M4EXT1B59C78A7",
+          "amount": "777",
+          "currency": "INR",
+          "description": "M4EXT1B59C78A7-IMPS/M4 BAS INGEST",
+          "category": "customer_initiated",
+          "bank_serial_number": "2",
+          "balance": "9934838",
+          "balance_currency": "INR",
+          "transaction_date": "1788719400",
+          "posted_date": "1788724082",
+          "created_at": "1788724202",
+          "updated_at": "1788724204",
+          "gateway_ref_number": ""
+        },
+        "payouts_api_messages": [
+          "BANKING_ACCOUNT_STATEMENT_LINKING_STATUS_INFO",
+          "BANKING_ACCOUNT_STATEMENT_DUAL_WRITE_REQUEST",
+          "BAS_DUAL_WRITE_DISPATCH_TO_QUEUE_SUCCESS",
+          "CREATE_LEDGER_JOURNAL_ASYNC_REQUEST",
+          "CREATE_LEDGER_JOURNAL_ASYNC_FAILED",
+          "BANKING_ACCOUNT_STATEMENT_LEDGER_CREATE_FAILURE",
+          "BANKING_ACCOUNT_STATEMENT_LINK_SUCCESS"
+        ],
+        "journal_publish_outcome": "publish_failed",
+        "journal_payload_from_log": {
+          "additional_params": [],
+          "amount": "777",
+          "base_amount": "777",
+          "commission": "",
+          "currency": "INR",
+          "idempotency_key": "3a72a536-598f-4516-911a-0c457dfb5388",
+          "identifiers": {
+            "banking_account_stmt_detail_id": "basd_ARENADS1988839"
+          },
+          "merchant_id": "ARENAD81988839",
+          "mode": "live",
+          "notes": {
+            "balance_id": "ARENADB1988839",
+            "transaction_id": "bas_TYs9tgyJj7J0HS"
+          },
+          "tax": "",
+          "tenant": "X",
+          "transaction_date": 1788724082,
+          "transactor_event": "da_ext_debit",
+          "transactor_id": "bas_TYs9tgyJj7J0HS"
+        },
+        "ledger_related_log_lines": [
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T19:50:04.957Z\",\"caller\":\"provider/logger_v1.go:66\",\"message\":\"CREATE_LEDGER_JOURNAL_ASYNC_REQUEST\",\"context\":{\"bas_id\":{\"bas_id\":\"TYs9tgyJj7J0HS\"},\"commit_id\":\"\",\"env\":\"arena\",\"message\":{\"message\":{\"additional_params\":[],\"amount\":\"777\",\"base_amount\":\"777\",\"commission\":\"\",\"currency\":\"INR\",\"idempotency_key\":\"3a72a536-598f-4516-911a-0c457dfb5388\",\"identifiers\":{\"banking_account_stmt_detail_id\":\"basd_ARENADS1988839\"},\"merchant_id\":\"ARENAD81988839\",\"mode\":\"live\",\"notes\":{\"balance_id\":\"ARENADB1988839\",\"transaction_id\":\"bas_TYs9tgyJj7J0HS\"},\"tax\":\"\",\"tenant\":\"X\",\"transaction_date\":1788724082,\"transactor_event\":\"da_ext_debit\",\"transactor_id\":\"bas_TYs9tgyJj7J0HS\"}}}}",
+          "{\"level\":\"ERROR\",\"time\":\"2026-09-06T19:50:06.225Z\",\"caller\":\"provider/logger_v1.go:79\",\"message\":\"CREATE_LEDGER_JOURNAL_ASYNC_FAILED\",\"context\":{\"bas_id\":{\"bas_id\":\"TYs9tgyJj7J0HS\"},\"commit_id\":\"\",\"env\":\"arena\",\"error\":\"operation error SNS: Publish, exceeded maximum number of attempts, 3, https response error StatusCode: 0, RequestID: , request send failed, Post \\\"https://sns.ap-south-1.amazonaws.com/\\\": proxyconnect tcp: dial tcp 127.0.0.1:9: connect: connection refused\"},\"stacktrace\":\"github.com/razorpay/payouts/internal/provider.(*LogWrapper).Error\\n\\tgithub.com/razorpay/payouts/internal/provider/logger_v1.go:79\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.Core.createLedgerJournal\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/core.go:787\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.Core.NotifyLedgerOnLinking\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/core.go:651\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.Core.ProcessPostRecon.func1.1\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/core.go:397\\ngithub.com/razorpay/payouts/internal/app/base/repo.ExecuteHooks\\n\\tgithub.com/razorpay/payouts/internal/app/base/repo/repo.go:127\\ngithub.com/razorpay/payouts/internal/app/base/repo.Repo.TransactionWithHooks\\n\\tgithub.com/razorpay/payouts/internal/app/base/repo/repo.go:106\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.Core.ProcessPost",
+          "{\"level\":\"ERROR\",\"time\":\"2026-09-06T19:50:06.225Z\",\"caller\":\"provider/logger_v1.go:79\",\"message\":\"BANKING_ACCOUNT_STATEMENT_LEDGER_CREATE_FAILURE\",\"context\":{\"bas_id\":{\"bas_id\":\"TYs9tgyJj7J0HS\"},\"commit_id\":\"\",\"env\":\"arena\",\"error\":\"sns_publish_failed: operation error SNS: Publish, exceeded maximum number of attempts, 3, https response error StatusCode: 0, RequestID: , request send failed, Post \\\"https://sns.ap-south-1.amazonaws.com/\\\": proxyconnect tcp: dial tcp 127.0.0.1:9: connect: connection refused\"},\"stacktrace\":\"github.com/razorpay/payouts/internal/provider.(*LogWrapper).Error\\n\\tgithub.com/razorpay/payouts/internal/provider/logger_v1.go:79\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.Core.NotifyLedgerOnLinking\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/core.go:656\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.Core.ProcessPostRecon.func1.1\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/core.go:397\\ngithub.com/razorpay/payouts/internal/app/base/repo.ExecuteHooks\\n\\tgithub.com/razorpay/payouts/internal/app/base/repo/repo.go:127\\ngithub.com/razorpay/payouts/internal/app/base/repo.Repo.TransactionWithHooks\\n\\tgithub.com/razorpay/payouts/internal/app/base/repo/repo.go:106\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.Core.ProcessPostRecon\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/core.go:340\\ngithub.com/razorpay/payouts/internal/app/bankingAcc"
+        ],
+        "ledger_worker_journal_create_lines": [],
+        "ledger_journal_count": "0"
+      },
+      "note": "PS publishes the da_ext_debit LedgerJournalCreateRequest to SNS topic api-ledger-journal-create-live (pkg/sns getTopicArn with [sns].aws_account_id, no LocalStack endpoint) -- outcome recorded as observed; DA accounts are not seeded so a delivered journal would fail account discovery in the real ledger worker"
+    },
+    {
+      "step": "f",
+      "title": "statement-first: link BEFORE terminal status, then bank fails -> REAL VerifyPayoutFailedTransaction refuses the failed transition",
+      "fidelity": "real",
+      "pass": true,
+      "at": "2026-09-06T19:51:38Z",
+      "request": {
+        "mozart_hold": [
+          200,
+          "{\"key\": \"ARENAD81988839\", \"scenario\": \"hold\", \"polls\": 2}\n"
+        ],
+        "create": {
+          "fund_account_id": "fa_ARENADX1988839",
+          "account_number": "2323000081988839",
+          "amount": 6100,
+          "currency": "INR",
+          "mode": "IMPS",
+          "purpose": "payout",
+          "queue_if_low_balance": true,
+          "merchant_id": "ARENAD81988839",
+          "narration": "m4 bas ingest step-f",
+          "notes": {
+            "m4": "step-f"
+          }
+        },
+        "statement_row": {
+          "tran_id": "M4F82456D37",
+          "ptsn": "3",
+          "tran_date": "07-09-2026",
+          "posted_date": "07-09-2026 01:18:13",
+          "tran_type": "TCI",
+          "type": "debit",
+          "particulars": "M4HOLDE197CB26-IMPS/M4 BAS INGEST",
+          "amount_paise": 6100,
+          "balance_paise": 9928738
+        },
+        "enqueue": {
+          "status": 200,
+          "body": {
+            "account_number": "2323000081988839",
+            "queued": 1,
+            "options": {}
+          }
+        },
+        "trigger": {
+          "via": "http",
+          "request": {
+            "channel": "rbl",
+            "account_rate_limit": 50,
+            "inactive_duration_limit": 315360000,
+            "account_type": "direct"
+          },
+          "status": 200,
+          "body": {
+            "dispatched_accounts": [
+              "2323000081988839",
+              "2323000084708817",
+              "2323000080422548",
+              "2323000083156710",
+              "2323000084125766",
+              "2323000084959177",
+              "2323000085474858",
+              "2323000086290740",
+              "2323000086517499",
+              "2323000086957107",
+              "2323000088300565"
+            ]
+          },
+          "at": "2026-09-06T19:50:14Z"
+        },
+        "art": {
+          "request_decoded": [
+            {
+              "banking_account_statement_id": "TYsA6w9NST6lOh",
+              "recon_status": "Reconciled",
+              "entity_id": "art,payout,TYsA2iGr3xG5tu",
+              "entity_type": "payout"
+            }
+          ],
+          "request": [
+            {
+              "data": "eyJiYW5raW5nX2FjY291bnRfc3RhdGVtZW50X2lkIjogIlRZc0E2dzlOU1Q2bE9oIiwgInJlY29uX3N0YXR1cyI6ICJSZWNvbmNpbGVkIiwgImVudGl0eV9pZCI6ICJhcnQscGF5b3V0LFRZc0EyaUdyM3hHNXR1IiwgImVudGl0eV90eXBlIjogInBheW91dCJ9",
+              "idempotent_id": "m4-art-3daa4147043a"
+            }
+          ],
+          "status": 200,
+          "body": {
+            "InputCount": 1,
+            "ProcessedBASCount": 1
+          },
+          "at": "2026-09-06T19:50:16Z"
+        },
+        "bridge": null,
+        "relay_hold": {
+          "status": 200,
+          "body": {
+            "payout_id": "TYsA2iGr3xG5tu",
+            "action": "hold"
+          }
+        },
+        "mozart_failure_on_attempt": [
+          200,
+          "{\"key\": \"270\", \"scenario\": \"failure\", \"polls\": 2}\n"
+        ],
+        "fts_check": [
+          200,
+          "null\n"
+        ],
+        "fts_direct_webhook": {
+          "route": "/v1/payouts/transfer_status_webhook",
+          "auth": "payouts [auth.fts]",
+          "request": {
+            "fund_transfer_id": 270,
+            "status": "failed",
+            "source_type": "payout",
+            "source_id": "TYsA2iGr3xG5tu",
+            "bank_status_code": "INVALID_ACCOUNT_NUMBER",
+            "failure_reason": "synthetic failure",
+            "channel": "RBL",
+            "mode": "IMPS",
+            "source_account_id": 998839,
+            "bank_account_type": "CURRENT",
+            "utr": "",
+            "gateway_ref_no": "",
+            "extra_info": {}
+          },
+          "status": 500,
+          "body": {
+            "error": {
+              "code": "server_error",
+              "description": "The server encountered an error. The incident has been reported to admins.",
+              "step": "",
+              "reason": "",
+              "field": "",
+              "source": "",
+              "metadata": {}
+            }
+          }
+        },
+        "relay_release": {
+          "status": 200,
+          "body": {
+            "results": [
+              [
+                200,
+                {
+                  "relayed": true,
+                  "mode": "relay",
+                  "relay_status_code": 200
+                }
+              ]
+            ]
+          }
+        }
+      },
+      "observed": {
+        "payout_id": "TYsA2iGr3xG5tu",
+        "payout_pending": {
+          "status": "initiated",
+          "balance_id": "ARENADB1988839",
+          "merchant_id": "ARENAD81988839",
+          "fts_transfer_id": "270",
+          "transaction_id": null,
+          "queued_reason": "",
+          "utr": null,
+          "fees": "200",
+          "tax": "36",
+          "amount": "6100"
+        },
+        "fts_pending": {
+          "id": "270",
+          "status": "INITIATED",
+          "preferred_source_account_id": "998839",
+          "source_account_id": "998839",
+          "source_account_primary_id": "998839",
+          "fund_account_id": "998839",
+          "channel": "RBL",
+          "mode": "IMPS",
+          "utr": null,
+          "sa_account_type": "direct",
+          "sa_bank_account_type": "CURRENT",
+          "attempt_id": "270"
+        },
+        "link_before_terminal": {
+          "bas": {
+            "id": "TYsA6w9NST6lOh",
+            "entity_id": "TYsA2iGr3xG5tu",
+            "entity_type": "payout",
+            "channel": "rbl",
+            "merchant_id": "ARENAD81988839",
+            "account_number": "2323000081988839",
+            "bank_transaction_id": "M4F82456D37",
+            "type": "debit",
+            "utr": "M4HOLDE197CB26",
+            "amount": "6100",
+            "currency": "INR",
+            "description": "M4HOLDE197CB26-IMPS/M4 BAS INGEST",
+            "category": "customer_initiated",
+            "bank_serial_number": "3",
+            "balance": "9928738",
+            "balance_currency": "INR",
+            "transaction_date": "1788719400",
+            "posted_date": "1788724093",
+            "created_at": "1788724214",
+            "updated_at": "1788724216",
+            "gateway_ref_number": ""
+          },
+          "payout": {
+            "id": "TYsA2iGr3xG5tu",
+            "status": "initiated",
+            "merchant_id": "ARENAD81988839",
+            "balance_id": "ARENADB1988839",
+            "amount": "6100",
+            "utr": null,
+            "transaction_id": "TYsA6w9NST6lOh",
+            "fts_transfer_id": "270",
+            "gateway_ref_no": null,
+            "mode": "IMPS",
+            "channel": "rbl",
+            "failure_reason": null,
+            "created_at": "1788724211",
+            "updated_at": "1788724216"
+          },
+          "linked": true
+        },
+        "payout_while_relay_held_after_bank_failed": {
+          "id": "TYsA2iGr3xG5tu",
+          "status": "initiated",
+          "merchant_id": "ARENAD81988839",
+          "balance_id": "ARENADB1988839",
+          "amount": "6100",
+          "utr": null,
+          "transaction_id": "TYsA6w9NST6lOh",
+          "fts_transfer_id": "270",
+          "gateway_ref_no": null,
+          "mode": "IMPS",
+          "channel": "rbl",
+          "failure_reason": null,
+          "created_at": "1788724211",
+          "updated_at": "1788724216"
+        },
+        "payout_after_direct_webhook": {
+          "id": "TYsA2iGr3xG5tu",
+          "status": "initiated",
+          "merchant_id": "ARENAD81988839",
+          "balance_id": "ARENADB1988839",
+          "amount": "6100",
+          "utr": null,
+          "transaction_id": "TYsA6w9NST6lOh",
+          "fts_transfer_id": "270",
+          "gateway_ref_no": null,
+          "mode": "IMPS",
+          "channel": "rbl",
+          "failure_reason": "synthetic failure",
+          "created_at": "1788724211",
+          "updated_at": "1788724288"
+        },
+        "payout_after_relay_release": {
+          "id": "TYsA2iGr3xG5tu",
+          "status": "failed",
+          "merchant_id": "ARENAD81988839",
+          "balance_id": "ARENADB1988839",
+          "amount": "6100",
+          "utr": null,
+          "transaction_id": "TYsA6w9NST6lOh",
+          "fts_transfer_id": "270",
+          "gateway_ref_no": null,
+          "mode": "IMPS",
+          "channel": "rbl",
+          "failure_reason": "",
+          "created_at": "1788724211",
+          "updated_at": "1788724292"
+        },
+        "legacy_relay_messages_after_release": [
+          "TRANSFER_STATUS_WEBHOOK_FOR_PAYOUT_REQUEST",
+          "TRYING_TO_ACQUIRE_MUTEX_RESOURCE",
+          "TRANSFER_STATUS_WEBHOOK_TRANSFER_ATTEMPT_ENTITY",
+          "PAYOUT_DETAILS_UPDATE_VIA_FUND_TRANSFER_SERVICE",
+          "PAYOUT_DUAL_WRITE_DISPATCH_TO_QUEUE_SUCCESS",
+          "FORWARD_DUAL_WRITE_NOT_ENABLED",
+          "STATUS_DETAILS_UPDATED_FROM_TRANSFER_STATUS_WEBHOOK",
+          "ATTEMPT_TO_MOVE_PAYOUT_TO_TERMINAL_STATE_HAVING_TRANSACTION",
+          "STATUS_UPDATE_FROM_TRANSFER_STATUS_WEBHOOK_FAILED",
+          "fund account payout details update webhook request",
+          "PAYOUT_DETAILS_UPDATE_VIA_FTS",
+          "FIRE_WEBHOOK_EVENT_CHECK_FOR_PAYOUT",
+          "PAYOUT_DETAILS_UPDATED_VIA_FTS",
+          "FIRE_WEBHOOK_AFTER_DB_UPDATE_SUCCESS",
+          "RESPONSE",
+          "PAYOUTS_RESPONSE_ADDITIONAL_FIELDS_SKIPPED",
+          "fund account payout status update webhook request",
+          "PAYOUT_STATUS_UPDATE_VIA_FTS",
+          "PAYOUT_EVENT_REQUEST",
+          "PAYOUT_STATUS_UPDATING_TO_FAILED",
+          "PAYOUT_STATUS_CHANGED_TO_FAILED",
+          "PAYOUT_EVENT_RESPONSE",
+          "PAYOUT_DB_UPDATE_SUCCESSFUL",
+          "TERMINAL_PAYOUT_SYNC_ES_INIT",
+          "PAYOUT_META_PERMANENT_FETCHED",
+          "TERMINAL_PAYOUT_SYNC_ES_SUCCESS",
+          "ELASTICSEARCH_MOCK_PUSH_DOCUMENT",
+          "PAYOUT_XAS_SOURCE_EVENT_FAILED",
+          "PAYOUT_STATUS_UPDATED_VIA_FTS"
+        ],
+        "guard_refused_on_fts_direct_route": true,
+        "legacy_relay_route_bypasses_guard": true,
+        "ps_to_monolith_payout_update": {
+          "request_logged": {
+            "Body": {
+              "bas_id": "TYsA6w9NST6lOh",
+              "converted_from_external": false,
+              "entity_id": "TYsA2iGr3xG5tu",
+              "entity_type": "payout",
+              "merchant_id": "ARENAD81988839",
+              "transaction_date": 1788719400
+            },
+            "RequestConfig": {
+              "Header": null,
+              "Method": "POST",
+              "Uri": "/banking_account_statement/payout_update",
+              "Url": "http://monolith-stub:8080/v1/banking_account_statement/payout_update"
+            }
+          },
+          "outcome": "success",
+          "error": null
+        },
+        "link_source": "real PS request",
+        "payout_after_link": {
+          "id": "TYsA2iGr3xG5tu",
+          "status": "initiated",
+          "merchant_id": "ARENAD81988839",
+          "balance_id": "ARENADB1988839",
+          "amount": "6100",
+          "utr": null,
+          "transaction_id": "TYsA6w9NST6lOh",
+          "fts_transfer_id": "270",
+          "gateway_ref_no": null,
+          "mode": "IMPS",
+          "channel": "rbl",
+          "failure_reason": null,
+          "created_at": "1788724211",
+          "updated_at": "1788724216"
+        },
+        "fts_final": {
+          "id": "270",
+          "status": "FAILED",
+          "utr": null,
+          "attempt_id": "270"
+        },
+        "payout_after_bank_failed": {
+          "id": "TYsA2iGr3xG5tu",
+          "status": "initiated",
+          "merchant_id": "ARENAD81988839",
+          "balance_id": "ARENADB1988839",
+          "amount": "6100",
+          "utr": null,
+          "transaction_id": "TYsA6w9NST6lOh",
+          "fts_transfer_id": "270",
+          "gateway_ref_no": null,
+          "mode": "IMPS",
+          "channel": "rbl",
+          "failure_reason": "synthetic failure",
+          "created_at": "1788724211",
+          "updated_at": "1788724288"
+        },
+        "guard_log_lines": [
+          "{\"level\":\"ERROR\",\"time\":\"2026-09-06T19:51:28.821Z\",\"caller\":\"provider/logger_v1.go:79\",\"message\":\"ATTEMPT_TO_MOVE_PAYOUT_TO_TERMINAL_STATE_HAVING_TRANSACTION\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"merchant_id\":{\"merchant_id\":\"ARENAD81988839\"},\"payout_id\":{\"payout_id\":\"TYsA2iGr3xG5tu\"},\"request\":{\"request\":{\"client_ip\":\"172.28.16.70\",\"external_request_id\":null,\"method\":\"POST\",\"request_id\":\"daes8g0tgdmc7385npng\",\"task_id\":\"daes8g0tgdmc7385npng\",\"url\":\"/v1/payouts/transfer_status_webhook\"}},\"transaction_id\":{\"transaction_id\":\"TYsA6w9NST6lOh\"}},\"stacktrace\":\"github.com/razorpay/payouts/internal/provider.(*LogWrapper).Error\\n\\tgithub.com/razorpay/payouts/internal/provider/logger_v1.go:79\\ngithub.com/razorpay/payouts/internal/app/payouts.Core.VerifyPayoutFailedTransaction\\n\\tgithub.com/razorpay/payouts/internal/app/payouts/fts_transfer_status_webhook.go:663\\ngithub.com/razorpay/payouts/internal/app/payouts.Core.UpdateFailedStatusWithTransferStatusWebhook\\n\\tgithub.com/razorpay/payouts/internal/app/payouts/fts_transfer_status_webhook.go:612\\ngithub.com/razorpay/payouts/internal/app/payouts.Core.UpdateStatusWithTransferStatusWebhook\\n\\tgithub.com/razorpay/payouts/internal/app/payouts/fts_transfer_status_webhook.go:408\\ngithub.com/razorpay/payouts/internal/app/payouts.Core.HandleTransferStatusWebhookForPayout\\n\\tgithub.com/razorpay/payouts/internal/app/payouts/fts_transfer_status_webhook.go:158\\ngithub.com/razorpay/payouts/internal/app/payouts.(*Service).HandleTransferStatusWebhook"
+        ],
+        "payouts_api_messages": [
+          "TRANSFER_STATUS_WEBHOOK_FOR_PAYOUT_REQUEST",
+          "TRYING_TO_ACQUIRE_MUTEX_RESOURCE",
+          "TRANSFER_STATUS_WEBHOOK_TRANSFER_ATTEMPT_ENTITY",
+          "PAYOUT_DETAILS_UPDATE_VIA_FUND_TRANSFER_SERVICE",
+          "PAYOUT_DUAL_WRITE_DISPATCH_TO_QUEUE_SUCCESS",
+          "FORWARD_DUAL_WRITE_NOT_ENABLED",
+          "STATUS_DETAILS_UPDATED_FROM_TRANSFER_STATUS_WEBHOOK",
+          "ATTEMPT_TO_MOVE_PAYOUT_TO_TERMINAL_STATE_HAVING_TRANSACTION",
+          "STATUS_UPDATE_FROM_TRANSFER_STATUS_WEBHOOK_FAILED"
+        ],
+        "monolith_relay_log": [
+          {
+            "kind": "update_fts_fund_transfer_inbound",
+            "payload": {
+              "bank_account_type": "CURRENT",
+              "bank_processed_time": "",
+              "bank_status_code": "INVALID_ACCOUNT_NUMBER",
+              "channel": "RBL",
+              "extra_info": {
+                "bank_status_codes": {
+                  "transfer_init": "INITIATED",
+                  "transfer_status": "INVALID_ACCOUNT_NUMBER"
+                },
+                "beneficiary_acc_no": "",
+                "beneficiary_acc_type": "",
+                "beneficiary_bank": "",
+                "beneficiary_name": "",
+                "beneficiary_validation_mode": "",
+                "cms_ref_no": "",
+                "deemed_success": {
+                  "creation_time": 0,
+                  "gateway_error_code": ""
+                },
+                "internal_error": false,
+                "is_pending": false,
+                "payee_ifsc": "",
+                "ponum": ""
+              },
+              "failure_reason": "",
+              "fund_transfer_id": 270,
+              "gateway_error_code": "INVALID_ACCOUNT_NUMBER",
+              "gateway_ref_no": "TYsA3bxGPSbs",
+              "mode": "IMPS",
+              "narration": "",
+              "remarks": "synthetic failure",
+              "return_utr": "",
+              "source_account_id": 998839,
+              "source_id": "TYsA2iGr3xG5tu",
+              "source_type": "payout",
+              "status": "FAILED",
+              "status_details": null,
+              "utr": ""
+            }
+          },
+          {
+            "kind": "payout_merchant_resolved",
+            "payload": {
+              "payout_id": "TYsA2iGr3xG5tu",
+              "merchant_id": "ARENAD81988839",
+              "origin": "payouts.payouts"
+            }
+          },
+          {
+            "kind": "update_payouts_details_with_fts",
+            "payload": {
+              "status": 200,
+              "body": {
+                "source_id": "TYsA2iGr3xG5tu",
+                "fund_transfer_id": 270,
+                "mode": "IMPS",
+                "channel": "RBL",
+                "bank_status_code": "INVALID_ACCOUNT_NUMBER",
+                "remarks": "synthetic failure",
+                "gateway_ref_no": "TYsA3bxGPSbs",
+                "fta_status": "failed"
+              }
+            }
+          },
+          {
+            "kind": "source_update",
+            "payload": {
+              "payout_id": "TYsA2iGr3xG5tu",
+              "source_details": [
+                {}
+              ],
+              "previous_status": "initiated",
+              "expected_current_status": "failed"
+            }
+          },
+          {
+            "kind": "payout_status_relay",
+            "payload": {
+              "body": {
+                "source_id": "TYsA2iGr3xG5tu",
+                "status": "failed",
+                "failure_reason": "",
+                "bank_status_code": "INVALID_ACCOUNT_NUMBER",
+                "fts_fund_account_id": "998839",
+                "fts_account_type": "current",
+                "fts_status": "failed"
+              },
+              "status": 200
+            }
+          },
+          {
+            "kind": "relay_released",
+            "payload": {
+              "payout_id": "TYsA2iGr3xG5tu",
+              "reverse": false,
+              "results": [
+                [
+                  200,
+                  {
+                    "relayed": true,
+                    "mode": "relay",
+                    "relay_status_code": 200
+                  }
+                ]
+              ]
+            }
+          }
+        ]
+      },
+      "note": "guard is the REAL VerifyPayoutFailedTransaction (fts_transfer_status_webhook.go:654-663) on the FTS-direct route /v1/payouts/transfer_status_webhook, driven here by a synthetic caller with the FTS body because the arena's monolith route profile reports status through monolith-stub's legacy relay, which never calls the guard; "
+    },
+    {
+      "step": "g",
+      "title": "mozart-sim no_records and failure -> worker logs the outcome, no rows, worker stays healthy",
+      "fidelity": "real-worker/substitute-bank",
+      "pass": true,
+      "at": "2026-09-06T19:51:51Z",
+      "request": {
+        "no_records": {
+          "options": {
+            "status": 200,
+            "body": {
+              "account_number": "2323000081988839",
+              "queued": 0,
+              "options": {
+                "no_records": true
+              }
+            }
+          },
+          "trigger": {
+            "via": "http",
+            "request": {
+              "channel": "rbl",
+              "account_rate_limit": 50,
+              "inactive_duration_limit": 315360000,
+              "account_type": "direct"
+            },
+            "status": 200,
+            "body": {
+              "dispatched_accounts": [
+                "2323000081988839",
+                "2323000084708817",
+                "2323000080422548",
+                "2323000083156710",
+                "2323000084125766",
+                "2323000084959177",
+                "2323000085474858",
+                "2323000086290740",
+                "2323000086517499",
+                "2323000086957107",
+                "2323000088300565"
+              ]
+            },
+            "at": "2026-09-06T19:51:39Z"
+          }
+        },
+        "failure": {
+          "options": {
+            "status": 200,
+            "body": {
+              "account_number": "2323000081988839",
+              "queued": 0,
+              "options": {
+                "failure": true
+              }
+            }
+          },
+          "trigger": {
+            "via": "http",
+            "request": {
+              "channel": "rbl",
+              "account_rate_limit": 50,
+              "inactive_duration_limit": 315360000,
+              "account_type": "direct"
+            },
+            "status": 200,
+            "body": {
+              "dispatched_accounts": [
+                "2323000081988839",
+                "2323000084708817",
+                "2323000080422548",
+                "2323000083156710",
+                "2323000084125766",
+                "2323000084959177",
+                "2323000085474858",
+                "2323000086290740",
+                "2323000086517499",
+                "2323000086957107",
+                "2323000088300565"
+              ]
+            },
+            "at": "2026-09-06T19:51:45Z"
+          }
+        }
+      },
+      "observed": {
+        "scenarios": {
+          "no_records": {
+            "options": {
+              "status": 200,
+              "body": {
+                "account_number": "2323000081988839",
+                "queued": 0,
+                "options": {
+                  "no_records": true
+                }
+              }
+            },
+            "trigger": {
+              "via": "http",
+              "request": {
+                "channel": "rbl",
+                "account_rate_limit": 50,
+                "inactive_duration_limit": 315360000,
+                "account_type": "direct"
+              },
+              "status": 200,
+              "body": {
+                "dispatched_accounts": [
+                  "2323000081988839",
+                  "2323000084708817",
+                  "2323000080422548",
+                  "2323000083156710",
+                  "2323000084125766",
+                  "2323000084959177",
+                  "2323000085474858",
+                  "2323000086290740",
+                  "2323000086517499",
+                  "2323000086957107",
+                  "2323000088300565"
+                ]
+              },
+              "at": "2026-09-06T19:51:39Z"
+            },
+            "expected_message": "BANKING_ACCOUNT_STATEMENT_FETCH_NO_RECORDS",
+            "hit": true,
+            "hit_line": [
+              "{\"level\":\"WARN\",\"time\":\"2026-09-06T19:51:40.628Z\",\"caller\":\"provider/logger_v1.go:111\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_NO_RECORDS\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"request\":{\"request\":{\"request_id\":\"daes8j00j1as73cdp75g\",\"task_id\":\"daes8j00j1as73cdp760\",\"worker_name\":\"rbl_banking_account_statement\"}}}}"
+            ],
+            "mozart_outcomes_for_account": [
+              "no_records"
+            ],
+            "worker_messages": [
+              "BANKING_ACCOUNT_SERVICE_REQUEST",
+              "BANKING_ACCOUNT_SERVICE_RESPONSE",
+              "BANKING_ACCOUNT_STATEMENT_FETCH_MOZART_REQUEST",
+              "BANKING_ACCOUNT_STATEMENT_FETCH_MOZART_RESPONSE",
+              "BANKING_ACCOUNT_STATEMENT_FETCH_BANK_API_FETCH"
+            ],
+            "job_processed": true,
+            "rows_after": 18
+          },
+          "failure": {
+            "options": {
+              "status": 200,
+              "body": {
+                "account_number": "2323000081988839",
+                "queued": 0,
+                "options": {
+                  "failure": true
+                }
+              }
+            },
+            "trigger": {
+              "via": "http",
+              "request": {
+                "channel": "rbl",
+                "account_rate_limit": 50,
+                "inactive_duration_limit": 315360000,
+                "account_type": "direct"
+              },
+              "status": 200,
+              "body": {
+                "dispatched_accounts": [
+                  "2323000081988839",
+                  "2323000084708817",
+                  "2323000080422548",
+                  "2323000083156710",
+                  "2323000084125766",
+                  "2323000084959177",
+                  "2323000085474858",
+                  "2323000086290740",
+                  "2323000086517499",
+                  "2323000086957107",
+                  "2323000088300565"
+                ]
+              },
+              "at": "2026-09-06T19:51:45Z"
+            },
+            "expected_message": "BANKING_ACCOUNT_STATEMENT_FETCH_RETRIES_EXHAUSTED",
+            "hit": true,
+            "hit_line": [
+              "{\"level\":\"ERROR\",\"time\":\"2026-09-06T19:51:46.757Z\",\"caller\":\"processor/rbl_gateway.go:122\",\"message\":\"BANKING_ACCOUNT_STATEMENT_FETCH_RETRIES_EXHAUSTED\",\"context\":{\"commit_id\":\"\",\"env\":\"arena\",\"error\":\"mozart_service_gateway_error: internal_server_error\",\"request\":{\"request\":{\"request_id\":\"daes8kg0j1as73cdp7gg\",\"task_id\":\"daes8kg0j1as73cdp7h0\",\"worker_name\":\"rbl_banking_account_statement\"}}},\"Ledger_SDK\":{\"basd_id\":\"ARENADS1988839\",\"channel\":\"rbl\",\"merchant_id\":\"ARENAD81988839\"},\"stacktrace\":\"github.com/razorpay/payouts/internal/app/bankingAccountStatement/processor.RblBankingAccountStatementProcessor.SendRequestAndGetResponse\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/processor/rbl_gateway.go:122\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement/processor.RblBankingAccountStatementProcessor.FetchAccountStatementDetails\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/processor/rbl_gateway.go:55\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.Core.FetchAccountStatement\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/core.go:284\\ngithub.com/razorpay/payouts/internal/app/bankingAccountStatement.(*Service).FetchAccountStatement\\n\\tgithub.com/razorpay/payouts/internal/app/bankingAccountStatement/service.go:42\\ngithub.com/razorpay/payouts/internal/job.(*RblBankingAccountStatement).Handle\\n\\tgithub.com/razorpay/payouts/internal/job/rbl_banking_account_statement.go:78\\ngithub.com/razorp"
+            ],
+            "mozart_outcomes_for_account": [
+              "failure"
+            ],
+            "worker_messages": [
+              "BANKING_ACCOUNT_SERVICE_REQUEST",
+              "BANKING_ACCOUNT_SERVICE_RESPONSE",
+              "BANKING_ACCOUNT_STATEMENT_FETCH_MOZART_REQUEST",
+              "BANKING_ACCOUNT_STATEMENT_FETCH_MOZART_RESPONSE",
+              "BANKING_ACCOUNT_STATEMENT_FETCH_RETRIES_EXHAUSTED",
+              "BANKING_ACCOUNT_STATEMENT_FETCH_BANK_API_FETCH"
+            ],
+            "job_processed": true,
+            "rows_after": 18
+          }
+        },
+        "rows_before": 18,
+        "worker_container": "running healthy"
+      }
+    }
+  ],
+  "passed": 7,
+  "total": 7,
+  "all_pass": true
+}
