@@ -1,0 +1,1576 @@
+{
+  "generated_at": "2026-09-06T19:26:04Z",
+  "run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z",
+  "junit_present": true,
+  "totals": {
+    "passed": 10,
+    "failed": 0,
+    "xfailed": 1,
+    "xpassed": 0,
+    "skipped": 0,
+    "error": 0,
+    "unknown": 0
+  },
+  "gates": {
+    "G34": {
+      "passed": 1,
+      "failed": 0,
+      "xfailed": 0,
+      "xpassed": 0,
+      "skipped": 0,
+      "error": 0,
+      "unknown": 0
+    },
+    "G45": {
+      "passed": 1,
+      "failed": 0,
+      "xfailed": 0,
+      "xpassed": 0,
+      "skipped": 0,
+      "error": 0,
+      "unknown": 0
+    },
+    "G46": {
+      "passed": 2,
+      "failed": 0,
+      "xfailed": 0,
+      "xpassed": 0,
+      "skipped": 0,
+      "error": 0,
+      "unknown": 0
+    },
+    "G47": {
+      "passed": 2,
+      "failed": 0,
+      "xfailed": 0,
+      "xpassed": 0,
+      "skipped": 0,
+      "error": 0,
+      "unknown": 0
+    },
+    "G48": {
+      "passed": 1,
+      "failed": 0,
+      "xfailed": 0,
+      "xpassed": 0,
+      "skipped": 0,
+      "error": 0,
+      "unknown": 0
+    },
+    "G49": {
+      "passed": 1,
+      "failed": 0,
+      "xfailed": 0,
+      "xpassed": 0,
+      "skipped": 0,
+      "error": 0,
+      "unknown": 0
+    },
+    "G50": {
+      "passed": 1,
+      "failed": 0,
+      "xfailed": 0,
+      "xpassed": 0,
+      "skipped": 0,
+      "error": 0,
+      "unknown": 0
+    },
+    "G52": {
+      "passed": 2,
+      "failed": 0,
+      "xfailed": 0,
+      "xpassed": 0,
+      "skipped": 0,
+      "error": 0,
+      "unknown": 0
+    },
+    "H-D3": {
+      "passed": 0,
+      "failed": 0,
+      "xfailed": 1,
+      "xpassed": 0,
+      "skipped": 0,
+      "error": 0,
+      "unknown": 0
+    }
+  },
+  "tests": [
+    {
+      "node": "test_duplicate_terminal_webhook_is_idempotent",
+      "function": "test_duplicate_terminal_webhook_is_idempotent",
+      "spec_ids": [
+        "G34",
+        "G45"
+      ],
+      "outcome": "passed",
+      "duration": 4.645,
+      "denial_layers_observed": {
+        "terminal_webhook_replay_0": "allowed_2xx",
+        "terminal_webhook_replay_1": "allowed_2xx"
+      },
+      "observations": [
+        {
+          "label": "terminal_webhook_replay_0",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "terminal_webhook_replay_1",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 200
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_duplicate_terminal_webhook_is_idempotent.jsonl"
+    },
+    {
+      "node": "test_cross_merchant_read_and_change_denied[m1_attacks_m2]",
+      "function": "test_cross_merchant_read_and_change_denied",
+      "spec_ids": [
+        "G46"
+      ],
+      "outcome": "passed",
+      "duration": 1.248,
+      "denial_layers_observed": {
+        "own_fetch_control": "allowed_2xx",
+        "cross_fetch": "service_tenant_scope_40x",
+        "cross_cancel": "service_tenant_scope_40x",
+        "list_scoped": "allowed_2xx",
+        "create_with_victim_account_number": "service_validation_400",
+        "create_with_victim_fund_account": "allowed_2xx",
+        "cross_inflight_reservations": "gateway_no_route_404",
+        "inflight_reservations_service_control": "allowed_2xx",
+        "cross_balance_read": "gateway_upstream_unreachable_502",
+        "own_balance_read_control": "gateway_upstream_unreachable_502",
+        "cross_free_payout_recorded_only": "allowed_2xx"
+      },
+      "observations": [
+        {
+          "label": "own_fetch_control",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "cross_fetch",
+          "observed_layer": "service_tenant_scope_40x",
+          "expected_layer": "service_tenant_scope_40x",
+          "matches_expected": true,
+          "status": 400
+        },
+        {
+          "label": "cross_cancel",
+          "observed_layer": "service_tenant_scope_40x",
+          "expected_layer": "service_tenant_scope_40x",
+          "matches_expected": true,
+          "status": 400
+        },
+        {
+          "label": "list_scoped",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "create_with_victim_account_number",
+          "observed_layer": "service_validation_400",
+          "expected_layer": "service_validation_400",
+          "matches_expected": true,
+          "status": 400
+        },
+        {
+          "label": "create_with_victim_fund_account",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "cross_inflight_reservations",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "inflight_reservations_service_control",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "cross_balance_read",
+          "observed_layer": "gateway_upstream_unreachable_502",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 502
+        },
+        {
+          "label": "own_balance_read_control",
+          "observed_layer": "gateway_upstream_unreachable_502",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 502
+        },
+        {
+          "label": "cross_free_payout_recorded_only",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 200
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_cross_merchant_read_and_change_denied_m1_attacks_m2_.jsonl"
+    },
+    {
+      "node": "test_cross_merchant_read_and_change_denied[m2_attacks_m1]",
+      "function": "test_cross_merchant_read_and_change_denied",
+      "spec_ids": [
+        "G46"
+      ],
+      "outcome": "passed",
+      "duration": 1.537,
+      "denial_layers_observed": {
+        "own_fetch_control": "allowed_2xx",
+        "cross_fetch": "service_tenant_scope_40x",
+        "cross_cancel": "service_tenant_scope_40x",
+        "list_scoped": "allowed_2xx",
+        "create_with_victim_account_number": "service_validation_400",
+        "create_with_victim_fund_account": "allowed_2xx",
+        "cross_inflight_reservations": "gateway_no_route_404",
+        "inflight_reservations_service_control": "allowed_2xx",
+        "cross_balance_read": "gateway_upstream_unreachable_502",
+        "own_balance_read_control": "gateway_upstream_unreachable_502",
+        "cross_free_payout_recorded_only": "allowed_2xx"
+      },
+      "observations": [
+        {
+          "label": "own_fetch_control",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "cross_fetch",
+          "observed_layer": "service_tenant_scope_40x",
+          "expected_layer": "service_tenant_scope_40x",
+          "matches_expected": true,
+          "status": 400
+        },
+        {
+          "label": "cross_cancel",
+          "observed_layer": "service_tenant_scope_40x",
+          "expected_layer": "service_tenant_scope_40x",
+          "matches_expected": true,
+          "status": 400
+        },
+        {
+          "label": "list_scoped",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "create_with_victim_account_number",
+          "observed_layer": "service_validation_400",
+          "expected_layer": "service_validation_400",
+          "matches_expected": true,
+          "status": 400
+        },
+        {
+          "label": "create_with_victim_fund_account",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "cross_inflight_reservations",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "inflight_reservations_service_control",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "cross_balance_read",
+          "observed_layer": "gateway_upstream_unreachable_502",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 502
+        },
+        {
+          "label": "own_balance_read_control",
+          "observed_layer": "gateway_upstream_unreachable_502",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 502
+        },
+        {
+          "label": "cross_free_payout_recorded_only",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 200
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_cross_merchant_read_and_change_denied_m2_attacks_m1_.jsonl"
+    },
+    {
+      "node": "test_body_merchant_id_and_account_number_cannot_override_identity[m1_as_m2]",
+      "function": "test_body_merchant_id_and_account_number_cannot_override_identity",
+      "spec_ids": [
+        "G47"
+      ],
+      "outcome": "passed",
+      "duration": 0.253,
+      "denial_layers_observed": {
+        "control_own_merchant_id": "allowed_2xx",
+        "body_merchant_id_is_victim": "allowed_2xx",
+        "body_merchant_and_account_are_victim": "service_validation_400",
+        "body_merchant_id_malformed": "service_validation_400"
+      },
+      "observations": [
+        {
+          "label": "control_own_merchant_id",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "body_merchant_id_is_victim",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "body_merchant_and_account_are_victim",
+          "observed_layer": "service_validation_400",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 400
+        },
+        {
+          "label": "body_merchant_id_malformed",
+          "observed_layer": "service_validation_400",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 400
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_body_merchant_id_and_account_number_cannot_override_identity_m1_as_m2_.jsonl"
+    },
+    {
+      "node": "test_body_merchant_id_and_account_number_cannot_override_identity[m2_as_m1]",
+      "function": "test_body_merchant_id_and_account_number_cannot_override_identity",
+      "spec_ids": [
+        "G47"
+      ],
+      "outcome": "passed",
+      "duration": 0.186,
+      "denial_layers_observed": {
+        "control_own_merchant_id": "allowed_2xx",
+        "body_merchant_id_is_victim": "allowed_2xx",
+        "body_merchant_and_account_are_victim": "service_validation_400",
+        "body_merchant_id_malformed": "service_validation_400"
+      },
+      "observations": [
+        {
+          "label": "control_own_merchant_id",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "body_merchant_id_is_victim",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "body_merchant_and_account_are_victim",
+          "observed_layer": "service_validation_400",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 400
+        },
+        {
+          "label": "body_merchant_id_malformed",
+          "observed_layer": "service_validation_400",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 400
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_body_merchant_id_and_account_number_cannot_override_identity_m2_as_m1_.jsonl"
+    },
+    {
+      "node": "test_client_supplied_service_headers_and_creds_do_not_escalate",
+      "function": "test_client_supplied_service_headers_and_creds_do_not_escalate",
+      "spec_ids": [
+        "G48"
+      ],
+      "outcome": "passed",
+      "duration": 0.55,
+      "denial_layers_observed": {
+        "edge_forged_headers_alg_none": "allowed_2xx",
+        "edge_forged_headers_hs256_shared_secret": "allowed_2xx",
+        "edge_forged_headers_rs256_wrong_kid": "allowed_2xx",
+        "edge_forged_headers_rs256_expired_unsigned": "allowed_2xx",
+        "direct_service_no_passport": "service_passport_rejected",
+        "direct_forged_passport_alg_none": "service_passport_rejected",
+        "direct_forged_passport_hs256_shared_secret": "service_passport_rejected",
+        "direct_forged_passport_rs256_wrong_kid": "service_passport_rejected",
+        "direct_forged_passport_rs256_expired_unsigned": "service_passport_rejected",
+        "edge_service_cred_public_api": "edge_merchant_auth_401",
+        "edge_service_cred_internal_api": "gateway_no_route_404",
+        "edge_service_cred_public_fts": "edge_merchant_auth_401",
+        "edge_service_cred_internal_fts": "gateway_no_route_404",
+        "edge_service_cred_public_rzp_live": "edge_merchant_auth_401",
+        "edge_service_cred_internal_rzp_live": "gateway_no_route_404",
+        "edge_service_cred_public_x_balances": "edge_merchant_auth_401",
+        "edge_service_cred_internal_x_balances": "gateway_no_route_404",
+        "edge_service_cred_public_fast_cron": "edge_merchant_auth_401",
+        "edge_service_cred_internal_fast_cron": "gateway_no_route_404",
+        "edge_service_cred_public_merchant_configuration": "edge_merchant_auth_401",
+        "edge_service_cred_internal_merchant_configuration": "gateway_no_route_404"
+      },
+      "observations": [
+        {
+          "label": "edge_forged_headers_alg_none",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "edge_forged_headers_hs256_shared_secret",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "edge_forged_headers_rs256_wrong_kid",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "edge_forged_headers_rs256_expired_unsigned",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "direct_service_no_passport",
+          "observed_layer": "service_passport_rejected",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 401
+        },
+        {
+          "label": "direct_forged_passport_alg_none",
+          "observed_layer": "service_passport_rejected",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 500
+        },
+        {
+          "label": "direct_forged_passport_hs256_shared_secret",
+          "observed_layer": "service_passport_rejected",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 500
+        },
+        {
+          "label": "direct_forged_passport_rs256_wrong_kid",
+          "observed_layer": "service_passport_rejected",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 500
+        },
+        {
+          "label": "direct_forged_passport_rs256_expired_unsigned",
+          "observed_layer": "service_passport_rejected",
+          "expected_layer": null,
+          "matches_expected": true,
+          "status": 500
+        },
+        {
+          "label": "edge_service_cred_public_api",
+          "observed_layer": "edge_merchant_auth_401",
+          "expected_layer": "edge_merchant_auth_401",
+          "matches_expected": true,
+          "status": 401
+        },
+        {
+          "label": "edge_service_cred_internal_api",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "edge_service_cred_public_api",
+          "observed_layer": "edge_merchant_auth_401",
+          "expected_layer": "edge_merchant_auth_401",
+          "matches_expected": true,
+          "status": 401
+        },
+        {
+          "label": "edge_service_cred_internal_api",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "edge_service_cred_public_fts",
+          "observed_layer": "edge_merchant_auth_401",
+          "expected_layer": "edge_merchant_auth_401",
+          "matches_expected": true,
+          "status": 401
+        },
+        {
+          "label": "edge_service_cred_internal_fts",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "edge_service_cred_public_rzp_live",
+          "observed_layer": "edge_merchant_auth_401",
+          "expected_layer": "edge_merchant_auth_401",
+          "matches_expected": true,
+          "status": 401
+        },
+        {
+          "label": "edge_service_cred_internal_rzp_live",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "edge_service_cred_public_x_balances",
+          "observed_layer": "edge_merchant_auth_401",
+          "expected_layer": "edge_merchant_auth_401",
+          "matches_expected": true,
+          "status": 401
+        },
+        {
+          "label": "edge_service_cred_internal_x_balances",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "edge_service_cred_public_fast_cron",
+          "observed_layer": "edge_merchant_auth_401",
+          "expected_layer": "edge_merchant_auth_401",
+          "matches_expected": true,
+          "status": 401
+        },
+        {
+          "label": "edge_service_cred_internal_fast_cron",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "edge_service_cred_public_merchant_configuration",
+          "observed_layer": "edge_merchant_auth_401",
+          "expected_layer": "edge_merchant_auth_401",
+          "matches_expected": true,
+          "status": 401
+        },
+        {
+          "label": "edge_service_cred_internal_merchant_configuration",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_client_supplied_service_headers_and_creds_do_not_escalate.jsonl"
+    },
+    {
+      "node": "test_internal_routes_unreachable_from_merchant_edge",
+      "function": "test_internal_routes_unreachable_from_merchant_edge",
+      "spec_ids": [
+        "G49"
+      ],
+      "outcome": "passed",
+      "duration": 0.228,
+      "denial_layers_observed": {
+        "internal_probe": "gateway_no_route_404",
+        "internal_route_exists_behind_edge": "allowed_2xx"
+      },
+      "observations": [
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_probe",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "internal_route_exists_behind_edge",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_internal_routes_unreachable_from_merchant_edge.jsonl"
+    },
+    {
+      "node": "test_four_denial_layers_are_distinguishable",
+      "function": "test_four_denial_layers_are_distinguishable",
+      "spec_ids": [
+        "G50"
+      ],
+      "outcome": "passed",
+      "duration": 0.121,
+      "denial_layers_observed": {
+        "layer_broker": "broker_boundary_violation",
+        "layer_gateway": "gateway_no_route_404",
+        "layer_service_auth": "edge_merchant_auth_401",
+        "layer_service_tenant": "service_tenant_scope_40x"
+      },
+      "observations": [
+        {
+          "label": "layer_broker",
+          "observed_layer": "broker_boundary_violation",
+          "expected_layer": "broker_boundary_violation",
+          "matches_expected": true,
+          "status": null
+        },
+        {
+          "label": "layer_gateway",
+          "observed_layer": "gateway_no_route_404",
+          "expected_layer": "gateway_no_route_404",
+          "matches_expected": true,
+          "status": 404
+        },
+        {
+          "label": "layer_service_auth",
+          "observed_layer": "edge_merchant_auth_401",
+          "expected_layer": "edge_merchant_auth_401",
+          "matches_expected": true,
+          "status": 401
+        },
+        {
+          "label": "layer_service_tenant",
+          "observed_layer": "service_tenant_scope_40x",
+          "expected_layer": "service_tenant_scope_40x",
+          "matches_expected": true,
+          "status": 400
+        },
+        {
+          "label": "g50_layers",
+          "layers": {
+            "broker": "broker_boundary_violation",
+            "gateway": "gateway_no_route_404",
+            "service_auth": "edge_merchant_auth_401",
+            "service_tenant": "service_tenant_scope_40x"
+          }
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_four_denial_layers_are_distinguishable.jsonl"
+    },
+    {
+      "node": "test_concurrent_same_key_same_body_single_payout[M2]",
+      "function": "test_concurrent_same_key_same_body_single_payout",
+      "spec_ids": [
+        "G52"
+      ],
+      "outcome": "passed",
+      "duration": 5.786,
+      "denial_layers_observed": {
+        "same_key_different_body": "service_validation_400"
+      },
+      "observations": [
+        {
+          "label": "same_key_different_body",
+          "observed_layer": "service_validation_400",
+          "expected_layer": "service_validation_400",
+          "matches_expected": true,
+          "status": 400
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_concurrent_same_key_same_body_single_payout_M2_.jsonl"
+    },
+    {
+      "node": "test_concurrent_same_key_same_body_single_payout[M1]",
+      "function": "test_concurrent_same_key_same_body_single_payout",
+      "spec_ids": [
+        "G52"
+      ],
+      "outcome": "passed",
+      "duration": 5.332,
+      "denial_layers_observed": {
+        "same_key_different_body": "service_validation_400"
+      },
+      "observations": [
+        {
+          "label": "same_key_different_body",
+          "observed_layer": "service_validation_400",
+          "expected_layer": "service_validation_400",
+          "matches_expected": true,
+          "status": 400
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_concurrent_same_key_same_body_single_payout_M1_.jsonl"
+    },
+    {
+      "node": "test_free_payout_cross_tenant_ownership",
+      "function": "test_free_payout_cross_tenant_ownership",
+      "spec_ids": [
+        "H-D3"
+      ],
+      "outcome": "xfailed",
+      "duration": 0.108,
+      "denial_layers_observed": {
+        "hd3_own_control": "allowed_2xx",
+        "hd3_malformed_control": "service_validation_400"
+      },
+      "observations": [
+        {
+          "label": "hd3_own_control",
+          "observed_layer": "allowed_2xx",
+          "expected_layer": "allowed_2xx",
+          "matches_expected": true,
+          "status": 200
+        },
+        {
+          "label": "hd3_malformed_control",
+          "observed_layer": "service_validation_400",
+          "expected_layer": "service_validation_400",
+          "matches_expected": true,
+          "status": 400
+        }
+      ],
+      "evidence_file": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-boundary-20260906T192543Z/test_free_payout_cross_tenant_ownership.jsonl",
+      "hd3": {
+        "attacker": "ARENAM00000001",
+        "victim_balance_id": "ARENABAL000002",
+        "request": {
+          "method": "GET",
+          "path": "/v1/payouts/free_payout/ARENABAL000002",
+          "auth_as": "rzp_live_ARENAM00000001"
+        },
+        "response": {
+          "status": 200,
+          "body": "{\"free_payouts_consumed\":0,\"free_payouts_supported_modes\":[\"IMPS\",\"NEFT\",\"RTGS\",\"UPI\",\"IFT\"],\"free_payouts_count\":0}",
+          "observed_layer": "allowed_2xx"
+        },
+        "own_control_status": 200,
+        "malformed_control_status": 400,
+        "candidate": "H-D3",
+        "disposition": "route to autonomous replay if 200 with foreign balance config"
+      }
+    }
+  ]
+}
