@@ -265,11 +265,24 @@ def _login(handler, body):
     return 200, {"access_token": "arena-dcs-static-access-token"}
 
 
-def _resolve_value_bytes(entity_id, key):
+def _resolve_value_bytes(entity_id, key, fieldmask_names=None):
     """Returns base64(protobuf bytes) for (entity_id, key), OFF/empty object
     if unseeded. object_name here means the KV-layer object_name field
     (e.g. 'Workflows'), while FIELD_SCHEMAS/STORE key on the FULL
-    'domain/object_name' path (e.g. 'rzp/x/merchant/payouts/Workflows')."""
+    'domain/object_name' path (e.g. 'rzp/x/merchant/payouts/Workflows').
+
+    fieldmask projection (production-faithful): real DCS applies the query's
+    per-slot Fieldmasks as a redaction AFTER the read -- the returned object
+    carries ONLY the fields the query listed (dcs/internal/kv/helper.go
+    redaction.apply -> registry RedactFn; service.go redactionForQuery). An
+    empty/absent fieldmask means no redaction (the whole object is returned).
+    We reproduce that here: when fieldmask_names is a non-empty set we drop
+    every stored field not named in it before encoding, so a caller that asks
+    only for bool feature flags on an object that ALSO holds a non-bool field
+    (e.g. FundTransfer.queue_payout_bal_buffer int64) never receives that
+    non-bool field. Without this projection the stub over-returns and payouts'
+    EnabledFeaturesForKeyFromResponse (which Ranges every populated field and
+    calls .Bool()) panics 'cannot convert int64 to bool'. See CONTRACT.md."""
     domain = key.get("domain", "")
     obj = key.get("object_name") or key.get("objectName") or ""
     full_name = obj
@@ -281,8 +294,22 @@ def _resolve_value_bytes(entity_id, key):
         full_name = "rzp/x/merchant/%s/%s" % (domain, obj)
     schema = FIELD_SCHEMAS.get(full_name, [])
     values = STORE.get(entity_id, {}).get(full_name, {})
+    if fieldmask_names:
+        wanted = set(fieldmask_names)
+        values = {k: v for k, v in values.items() if k in wanted}
     raw = encode_message(values, schema)
     return base64.b64encode(raw).decode("ascii"), full_name
+
+
+def _fieldmask_names(q):
+    """Extract the fieldmask field names from a Get/Evaluate query. Field
+    entries are {"name": ...} (rpc.Field); an empty list means 'return all'."""
+    names = []
+    for fm in q.get("fieldmasks", []) or []:
+        name = fm.get("name") if isinstance(fm, dict) else None
+        if name:
+            names.append(name)
+    return names
 
 
 def _get_or_evaluate(handler, body):
@@ -294,7 +321,7 @@ def _get_or_evaluate(handler, body):
     for q in req.get("queries", []):
         key = q.get("key", {})
         entity_id = key.get("entity_id") or key.get("entityId") or ""
-        value_b64, _ = _resolve_value_bytes(entity_id, key)
+        value_b64, _ = _resolve_value_bytes(entity_id, key, _fieldmask_names(q))
         kvs.append({"key": key, "value": value_b64})
     return 200, {"kvs": kvs}
 

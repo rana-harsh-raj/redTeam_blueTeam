@@ -129,3 +129,47 @@ x-balances' own DCS client wrapper code, so it is unknown (not confirmed
 either way) whether x-balances' wrapper has the same `WithModes([Live])`
 single-mode shape that triggers the identical blocker above, or whether it
 differs. Flagged as an open TODO, not assumed either way.
+
+## Fieldmask projection on Get/Evaluate (T16, M4 — panic fix)
+
+**Deviation corrected, 2026-09-07.** Real DCS applies a query's per-slot
+`Fieldmasks` as a *redaction after the read*: the returned config object
+carries **only** the fields the query listed (empty/absent fieldmask =
+whole object, no redaction). Ground truth in the pinned DCS clone:
+`dcs/internal/kv/helper.go` `redaction.apply()` -> registry `RedactFn`, and
+`dcs/internal/kv/service.go:436 redactionForQuery` (test
+`helper_test.go:219 TestEvaluateFeatureValue_FieldmaskExcludesUnlistedFields`
+asserts unlisted fields are dropped).
+
+Before this fix, `_get_or_evaluate` / `_resolve_value_bytes` **ignored
+fieldmasks** and always encoded the whole stored object. That over-return
+crashed the pristine `payouts-api`: on `GET /v1/payouts/_meta/summary` the
+merchant-config path (`payouts internal/app/merchant/core.go:524`
+`fetchFeaturesFromDcsSimple` -> `fetchAllFeaturesConcurrently`) calls
+`pkg/dcs/service.go:26 GetEnabledFeatures` -> goutils `EnabledFeatures`,
+which groups the requested **bool** feature flags by their DCS object
+(`rzp/x/merchant/payouts/FundTransfer`) into one Get with a bool-only
+fieldmask, then hands the response to
+`payouts pkg/dcs/features/features.go:241 EnabledFeaturesForKeyFromResponse`.
+That function `Range()`s **every populated field** of the returned object and
+calls `.Bool()` on each. Because the stub also returned the object's
+`queue_payout_bal_buffer` (**field 6, int64**, seeded = 50000 for every Direct
+merchant and for fixture ARENAM00000002/3), `.Bool()` panicked
+`type mismatch: cannot convert int64 to bool` and the process exited.
+
+Production never hits this: its fieldmask redaction drops
+`queue_payout_bal_buffer` from the response because it is not in the
+bool-only fieldmask the EnabledFeatures path sends (payouts'
+`MerchantFeatures()` does not list the int64 flag). This is therefore a
+**substitute bug** (stub over-returned), not payouts source fragility that
+the stub should preserve.
+
+**Fix (production-faithful):** `_get_or_evaluate` now passes each query's
+fieldmask names to `_resolve_value_bytes`, which — when the fieldmask is
+non-empty — encodes only the stored fields named in it. Empty/absent
+fieldmask still returns the whole object (matching `redaction.apply`'s
+`len(fields)==0 -> value unchanged`). No other key, route, or the
+stdlib-only proto encoder/decoder changed. Reads that ask only for bool
+flags now receive only bool flags; a caller that explicitly masks
+`queue_payout_bal_buffer` still gets it (verified: full object, bool-only
+mask, and int64-only mask all round-trip correctly).

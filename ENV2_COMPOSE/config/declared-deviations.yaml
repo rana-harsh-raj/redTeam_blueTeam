@@ -1125,3 +1125,19 @@ deviations:
     could_conceal: 'The REAL ledger-side handling of da_ext_* journals for Direct accounts (account discovery by banking_account_stmt_detail_id) is never exercised from the PS ART path; the publish attempt and payload are only observable in payouts-api logs.'
     status: 'declared'
     fix_ref: ''
+
+  - id: DEV-172
+    title: dcs-stub projects query fieldmask (production-faithful redaction)
+    kind: representative_substitute
+    detail: >-
+      dcs-stub now honours the per-query Fieldmask when building a Get/Evaluate
+      response, returning only the named fields (empty mask => whole object),
+      matching production DCS redaction (dcs/internal/kv/helper.go redaction.apply,
+      service.go:436). Before this fix the stub returned the whole
+      rzp/x/merchant/payouts/FundTransfer object including the int64
+      queue_payout_bal_buffer, which payouts' EnabledFeaturesForKeyFromResponse
+      (features.go:241/251) Range()s calling .Bool() on every field -> panic
+      "cannot convert int64 to bool" on /v1/payouts/_meta/summary. Classified a
+      substitute bug (not payouts source fragility); production never returns the
+      int64 on this bool-only fieldmask path. See reports/implementation/m4-subagent-handoffs/T16.md.
+    status: fixed_in_m4
