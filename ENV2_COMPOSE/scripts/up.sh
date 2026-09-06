@@ -155,6 +155,23 @@ for ident in shared_account_x direct_account_x; do
     http://ledger-api:8080/twirp/rzp.ledger.ledger_config.v1.LedgerConfigAPI/CreateInBulk
 done
 
+echo "  -- (post-core) ledger Direct-account (DA) parent accounts: AccountAPI/CreateInBulk{direct_account_x} (7 parents, ledger internal/account/seed_data/direct_account_x.go), then Activate (CreateInBulk leaves them IN_REVIEW; Shared parents in the SQL seed are ACTIVATED). Idempotent: a re-run answers non-2xx on the UNIQUE account_name and is tolerated. Merchant DA sub-accounts are created per Direct merchant by RED_LOOP/red_loop/ledger_da.py onboard_da_merchant (CreateOnEvent direct_merchant_onboarding)."
+DA_HTTP="$(docker run --rm --pull never --network "rzp-arena${ARENA_SUFFIX:-}" curlimages/curl:latest -sS -o /dev/null -w "%{http_code}" \
+    -X POST -H "Authorization: Basic $LEDGER_AUTH_B64" -H "Ledger-Tenant: X" -H "Content-Type: application/json" \
+    -d '{"account_data_identifier":"direct_account_x"}' \
+    http://ledger-api:8080/twirp/rzp.ledger.account.v1.AccountAPI/CreateInBulk || echo 000)"
+echo "     direct_account_x parent accounts -> HTTP $DA_HTTP $([ "$DA_HTTP" = "200" ] && echo '(created)' || echo '(non-2xx: already present or ledger unavailable -- verified below)')"
+LEDGER_PW_DA="$(cat secrets/postgres_ledger_password.txt)"
+for acc_id in $(compose exec -T -e PGPASSWORD="$LEDGER_PW_DA" postgres-ledger psql -U ledger -d ledger -tA -c \
+    "SELECT a.id FROM accounts a JOIN account_details d ON d.account_id=a.id WHERE d.tenant='X' AND d.deleted_at IS NULL AND (d.parent_account_id IS NULL OR d.parent_account_id='') AND d.account_name LIKE 'Direct %' AND a.status<>'ACTIVATED'"); do
+  docker run --rm --pull never --network "rzp-arena${ARENA_SUFFIX:-}" curlimages/curl:latest -sS -o /dev/null -w "     activate $acc_id -> HTTP %{http_code}\n" \
+    -X POST -H "Authorization: Basic $LEDGER_AUTH_B64" -H "Ledger-Tenant: X" -H "Content-Type: application/json" \
+    -d "{\"id\":\"$acc_id\"}" http://ledger-api:8080/twirp/rzp.ledger.account.v1.AccountAPI/Activate || true
+done
+DA_PARENTS="$(compose exec -T -e PGPASSWORD="$LEDGER_PW_DA" postgres-ledger psql -U ledger -d ledger -tA -c \
+    "SELECT count(*) FROM accounts a JOIN account_details d ON d.account_id=a.id WHERE d.tenant='X' AND d.deleted_at IS NULL AND (d.parent_account_id IS NULL OR d.parent_account_id='') AND d.account_name LIKE 'Direct %' AND a.status='ACTIVATED'")"
+echo "     direct_account_x ACTIVATED parent accounts in ledger: ${DA_PARENTS:-?} (expected 7)"
+
 echo "  -- (post-core) initial reservation reconciliation and trusted-store readiness"
 # cron-driver starts before the API and may miss its first tick. The source gate
 # intentionally queues until a healthy pass writes its heartbeat. Run the real

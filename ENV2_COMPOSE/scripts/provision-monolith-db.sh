@@ -17,6 +17,7 @@ provision() {
   } | compose exec -T "$service" sh -c 'export MYSQL_PWD="$(cat "$1")"; exec mysql -uroot' sh "$root_file"
 }
 provision mysql-payouts monolith_reader auth_monolith_payouts_db \
-  "GRANT SELECT ON payouts.payouts TO 'monolith_reader'@'%';" /run/secrets/mysql_payouts_root_password
+  "GRANT SELECT ON payouts.payouts TO 'monolith_reader'@'%'; GRANT SELECT ON payouts.banking_account_statement_details TO 'monolith_reader'@'%'; GRANT SELECT ON payouts.reversals TO 'monolith_reader'@'%';" /run/secrets/mysql_payouts_root_password
 provision mysql-apidb-stub monolith_balance auth_monolith_balance_db \
   "GRANT SELECT, UPDATE (balance, updated_at) ON api_local.balance TO 'monolith_balance'@'%';" /run/secrets/mysql_apidb_root_password
+# M4 (T11): monolith_reader also reads banking_account_statement_details (the monolith's own BASD table lives in the PS DB in the twin; Transaction/Processor/Ledger/Payout.php getDefaultPayloadForDirectPayout) and reversals (DA_PAYOUT_REVERSED payload) for the DA ledger emitter in substitutes/monolith-stub.

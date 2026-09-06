@@ -19,6 +19,7 @@ import threading
 import urllib.error
 import urllib.request
 import base64
+import uuid
 
 sys.path.insert(0, "/app")
 from _common.base_stub import serve, _log  # noqa: E402
@@ -740,7 +741,292 @@ def _auxiliary_sink(handler,body):
     return 200,{}  # ASSUMED response shape; no monolith transaction is fabricated.
 
 
+# ---------------------------------------------------------------------------
+# Direct-account (DA) ledger emitter -- substitute for the monolith's
+# BankingAccountStatement/Core.php:5175-5228 sendToLedgerPostSourceEntityProcessing ->
+# :5243-5278 processLedgerPayoutForDirect -> Transaction/Processor/Ledger/Payout.php:235-425
+# pushTransactionToLedgerForDirect -> Ledger/Base.php:180 pushToLedgerSns.
+#
+# Trigger point (declared deviation): the real monolith emits from its OWN statement-fetch
+# linking path (saveAccountStatementV2 :3081-3091); the XAS-triggered route payoutUpdateByBASRecon
+# has its ledger call commented out (Payout/Core.php:10327,10359). The twin has no monolith
+# statement fetcher, so this substitute emits when the XAS-shaped payout_update reaches it and
+# the relay to the REAL PS UpdatePayoutAfterBASRecon succeeded (2xx) -- i.e. the same moment a
+# Direct payout becomes linked to a debit/credit statement.
+#
+# Transport: SNS topic api-ledger-journal-create-live (payouts appConstants/constants.go:381,
+# Ledger/Base.php LEDGER_TRANSACTION_CREATE) -> SQS journal_create consumed by the REAL
+# ledger-worker-journal-create (SNS envelope unwrapped by ledger job_sqs/base.go extractRawContent).
+# ---------------------------------------------------------------------------
+LEDGER_ENABLED = os.environ.get("LEDGER_ENABLED", "true").lower() != "false"   # applications.ledger.enabled
+DA_LEDGER_TOPIC = os.environ.get("DA_LEDGER_SNS_TOPIC", "api-ledger-journal-create-live")
+DA_LEDGER_QUEUE = os.environ.get("DA_LEDGER_SQS_QUEUE", "journal_create")
+DA_LEDGER_IKEY_MODE = os.environ.get("DA_LEDGER_IKEY_MODE", "uuid")   # uuid (monolith: Uuid::uuid1 per publish) | deterministic
+SQS_ENDPOINT = os.environ.get("ARENA_SQS_ENDPOINT", "http://localstack:4566")
+AWS_REGION, AWS_ACCOUNT = "ap-south-1", "000000000000"
+LEDGER_EMITS = []
+FEATURE_OVERRIDES = {}   # merchant_id -> {feature: bool}; runtime, lost on restart (merchants.json is the boot source)
+_TOPIC_ARN = [None]
+_TOPIC_LOCK = threading.Lock()
+DA_EVENTS = {"processed": ("da_payout_processed", "da_payout_processed_recon"),
+             "reversed": ("da_payout_reversed", "da_payout_reversed_recon"),
+             "fee_processed": ("da_fee_payout_processed",), "fee_reversed": ("da_fee_payout_reversed",)}
+
+
+def _aws_headers(service):
+    now = time.strftime("%Y%m%dT%H%M%SZ", time.gmtime())
+    return {"Authorization": "AWS4-HMAC-SHA256 Credential=arena/%s/%s/%s/aws4_request, SignedHeaders=host;x-amz-date, Signature=0"
+                             % (now[:8], AWS_REGION, service), "X-Amz-Date": now}
+
+
+def _aws_post(data, headers, timeout=20):
+    req = urllib.request.Request(SQS_ENDPOINT.rstrip("/") + "/", data=data, headers=headers, method="POST")
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as resp:
+            return resp.status, resp.read().decode("utf-8", "replace")
+    except urllib.error.HTTPError as exc:
+        return exc.code, (exc.read() or b"").decode("utf-8", "replace")
+
+
+def _sqs(action, body):
+    h = {"Content-Type": "application/x-amz-json-1.0", "X-Amz-Target": "AmazonSQS.%s" % action}
+    h.update(_aws_headers("sqs"))
+    st, text = _aws_post(json.dumps(body).encode(), h)
+    if st != 200:
+        raise RuntimeError("sqs %s %s: %s" % (action, st, text[:200]))
+    return json.loads(text or "{}")
+
+
+def _sns(action, params):
+    import urllib.parse
+    form = dict(params, Action=action, Version="2010-03-31")
+    h = {"Content-Type": "application/x-www-form-urlencoded; charset=utf-8"}
+    h.update(_aws_headers("sns"))
+    st, text = _aws_post(urllib.parse.urlencode(form).encode(), h)
+    if st != 200:
+        raise RuntimeError("sns %s %s: %s" % (action, st, text[:200]))
+    return text
+
+
+def _xml(text, tag):
+    m = re.search(r"<%s>(.*?)</%s>" % (tag, tag), text, re.S)
+    return m.group(1).strip() if m else None
+
+
+def _ensure_ledger_topic():
+    """Idempotent: CreateTopic returns the existing ARN; Subscribe of the same endpoint returns the
+    existing subscription. RawMessageDelivery=false keeps the production SNS envelope."""
+    with _TOPIC_LOCK:
+        if _TOPIC_ARN[0]:
+            return _TOPIC_ARN[0]
+        arn = _xml(_sns("CreateTopic", {"Name": DA_LEDGER_TOPIC}), "TopicArn")
+        _sqs("GetQueueUrl", {"QueueName": DA_LEDGER_QUEUE})   # queue must pre-exist (seeds/localstack/init-queues.sh)
+        _sns("Subscribe", {"TopicArn": arn, "Protocol": "sqs",
+                           "Endpoint": "arn:aws:sqs:%s:%s:%s" % (AWS_REGION, AWS_ACCOUNT, DA_LEDGER_QUEUE),
+                           "Attributes.entry.1.key": "RawMessageDelivery", "Attributes.entry.1.value": "false"})
+        _TOPIC_ARN[0] = arn
+        _log("ledger SNS topic %s -> SQS %s wired" % (arn, DA_LEDGER_QUEUE))
+        return arn
+
+
+def _publish_journal(payload):
+    """pushToLedgerSns: SNS publish (retried in the monolith, 3 sync retries). Falls back to a direct
+    SQS SendMessage of the raw JSON (recorded as a transport deviation) if SNS is unavailable."""
+    message = json.dumps(payload)
+    last = None
+    for _ in range(3):
+        try:
+            arn = _ensure_ledger_topic()
+            mid = _xml(_sns("Publish", {"TopicArn": arn, "Message": message}), "MessageId")
+            return {"transport": "sns:%s->sqs:%s" % (DA_LEDGER_TOPIC, DA_LEDGER_QUEUE), "message_id": mid}
+        except Exception as exc:  # noqa: BLE001
+            last = str(exc)[:200]
+    try:
+        out = _sqs("SendMessage", {"QueueUrl": "%s/%s/%s" % (SQS_ENDPOINT.rstrip("/"), AWS_ACCOUNT, DA_LEDGER_QUEUE), "MessageBody": message})
+        return {"transport": "sqs_direct_fallback:%s" % DA_LEDGER_QUEUE, "message_id": out.get("MessageId"), "sns_error": last}
+    except Exception as exc:  # noqa: BLE001
+        return {"transport": "failed", "error": str(exc)[:200], "sns_error": last}
+
+
+def _merchant_features(merchant_id):
+    rec = MERCHANTS.get(merchant_id, {})
+    feats = {f: True for f in (rec.get("merchant", {}).get("feature") or [])}
+    feats.update(FEATURE_OVERRIDES.get(merchant_id, {}))
+    return feats
+
+
+def _feature_on(merchant_id, name):
+    return bool(_merchant_features(merchant_id).get(name))
+
+
+def _basd_for_balance(balance_id, channel):
+    """Payout.php getDefaultPayloadForDirectPayout: banking_account_statement_details by
+    (account_number, channel). The twin's BASD rows live in the PS DB (the monolith inserts them
+    there, Details/Core.php:219-237); the balance_id lookup is equivalent (PS GetBasDetailsID)."""
+    with _db("payouts") as db, db.cursor() as cursor:
+        cursor.execute("SELECT id, account_number, channel FROM banking_account_statement_details "
+                       "WHERE balance_id=%s AND status='active' ORDER BY created_at LIMIT 2", (balance_id,))
+        rows = cursor.fetchall()
+    rows = [r for r in rows if not channel or str(r.get("channel") or "").lower() == channel.lower()] or rows
+    return rows[0] if rows else None
+
+
+def _ps_reversal(payout_id):
+    with _db("payouts") as db, db.cursor() as cursor:
+        cursor.execute("SELECT * FROM reversals WHERE payout_id=%s ORDER BY created_at DESC LIMIT 1", (payout_id,))
+        return cursor.fetchone()
+
+
+def _ikey(transactor_id, transactor_event, bas_id):
+    if DA_LEDGER_IKEY_MODE == "deterministic":
+        import hashlib
+        return str(uuid.UUID(hashlib.sha256(("%s|%s|%s" % (transactor_id, transactor_event, bas_id)).encode()).hexdigest()[:32]))
+    return str(uuid.uuid1())   # Payout.php: Uuid::uuid1()->toString() per publish
+
+
+def _da_journal_payload(payout, basd, transactor_event, transactor_id, transaction_id, transaction_date, api_transaction_id):
+    notes_raw = payout.get("notes")
+    try:
+        pnotes = json.loads(notes_raw) if isinstance(notes_raw, str) and notes_raw else (notes_raw or {})
+    except ValueError:
+        pnotes = {}
+    identifiers = {"banking_account_stmt_detail_id": "basd_" + basd["id"]}
+    if isinstance(pnotes, dict) and pnotes.get("product_id"):
+        identifiers["product_id"] = pnotes["product_id"]
+    additional = {}
+    if isinstance(pnotes, dict) and pnotes.get("account_type"):
+        additional["account_type"] = pnotes["account_type"]
+    if not transactor_event.endswith("_recon") and str(payout.get("fee_type") or "") == "reward_fee":
+        additional["fee_accounting"] = "reward"   # updatePayloadForFeeCredits
+    payload = {
+        "tenant": "X", "mode": "live",
+        "idempotency_key": _ikey(transactor_id, transactor_event, transaction_id),
+        "merchant_id": payout["merchant_id"], "currency": payout.get("currency") or "INR",
+        "amount": str(int(payout.get("amount") or 0)), "base_amount": str(int(payout.get("amount") or 0)),
+        "commission": str(int(payout.get("fees") or 0)), "tax": str(int(payout.get("tax") or 0)),
+        "identifiers": json.dumps(identifiers), "additional_params": json.dumps(additional),
+        # Payout.php:365-368 notes = {balance_id: bal_<id>, transaction_id: <signed txn>}. The monolith signs
+        # its own `transactions` row (txn_); the twin has no monolith transaction entity, so the PS mirror
+        # form bas_<bas_id> (payouts/core.go:7758) is used. Declared deviation.
+        "notes": json.dumps({"balance_id": "bal_" + str(payout.get("balance_id") or ""), "transaction_id": "bas_" + str(transaction_id or "")}),
+        "transactor_id": transactor_id, "transactor_event": transactor_event,
+        "transaction_date": int(transaction_date or 0),
+    }
+    if api_transaction_id:
+        payload["api_transaction_id"] = api_transaction_id
+    return payload
+
+
+def _emit(event, payload, extra):
+    rec = {"at": time.time(), "transactor_event": event, "transactor_id": payload.get("transactor_id"),
+           "merchant_id": payload.get("merchant_id"), "payload": payload}
+    rec.update(extra)
+    rec.update(_publish_journal(payload))
+    with STATE_LOCK:
+        LEDGER_EMITS.append(rec)
+        del LEDGER_EMITS[:-2000]
+    _log("da_ledger_emit %s %s via %s" % (event, payload.get("transactor_id"), rec.get("transport")))
+    return rec
+
+
+def _skip(reason, req, **extra):
+    rec = {"at": time.time(), "skipped": reason, "merchant_id": req.get("merchant_id"), "entity_id": req.get("entity_id"),
+           "entity_type": req.get("entity_type"), "bas_id": req.get("bas_id")}
+    rec.update(extra)
+    with STATE_LOCK:
+        LEDGER_EMITS.append(rec)
+    _log("da_ledger_skipped %s %s" % (reason, json.dumps(extra, default=str)[:300]))
+    return rec
+
+
+def send_to_ledger_post_source_entity_processing(req, relay_status):
+    """Reproduces Core.php:3081-3091 gate + :5175-5228 + :5243-5278 + Payout.php:235-425."""
+    mid, entity_type, bas_id = req.get("merchant_id"), req.get("entity_type"), req.get("bas_id")
+    if not (relay_status and 200 <= relay_status < 300):
+        return _skip("relay_not_2xx", req, relay_status=relay_status)
+    if not LEDGER_ENABLED:
+        return _skip("ledger_disabled", req)
+    if entity_type not in ("payout", "payout_reversal"):
+        return _skip("entity_type_not_payout", req)
+    try:
+        payout = _ps_get_payout(str(req.get("entity_id") or ""))
+    except Exception as exc:  # noqa: BLE001
+        return _skip("payout_lookup_failed", req, error_type=type(exc).__name__)
+    if not payout:
+        return _skip("payout_not_found", req)
+    merchant_rec = MERCHANTS.get(mid, {})
+    if str(merchant_rec.get("account_type", "shared")).lower() != "direct":
+        return _skip("shared_or_primary_balance", req)                      # Core.php:5256-5259
+    feats = _merchant_features(mid)
+    if feats.get("high_tps_composite_payout"):
+        return _skip("high_tps_composite_payout", req)                      # :5262-5265
+    # Core.php:3081-3091: PS-owned payout + debit statement + Splitz payout_service_txn_recon ON ->
+    # the monolith defers to PS ("which already does this") -- but PS has it commented out (core.go:7284).
+    # Preserved production gap: nothing posts. Modelled as the per-merchant feature payout_service_txn_recon.
+    if feats.get("payout_service_txn_recon") and entity_type == "payout":
+        return _skip("da_ledger_skipped_ps_recon", req, features=feats,
+                     note="production gap preserved: monolith defers to PS UpdatePayoutAfterBASRecon whose ledger call is commented out")
+    if not feats.get("da_ledger_journal_writes"):
+        return _skip("da_ledger_journal_writes_off", req, features=feats)   # :5268-5271
+    purpose = str(payout.get("purpose") or "")
+    if purpose == "rzp_charge_collections":
+        return _skip("charge_collections_not_modelled", req)
+    try:
+        basd = _basd_for_balance(payout.get("balance_id"), payout.get("channel") or "")
+    except Exception as exc:  # noqa: BLE001
+        return _skip("basd_lookup_failed", req, error_type=type(exc).__name__)
+    if not basd:
+        return _skip("basd_not_found", req, balance_id=payout.get("balance_id"))
+    emitted = []
+    converted = bool(req.get("converted_from_external"))
+    if entity_type == "payout":
+        events = DA_EVENTS["fee_processed"] if purpose == "rzp_fees" else DA_EVENTS["processed"]
+        if converted:
+            # Payout/Core.php:10003-10016 sendExtToPayoutEventToLedger: an external row re-identified as a payout
+            # posts the single re-class event DA_EXT_PAYOUT_PROCESSED (no _recon, no api_transaction_id).
+            events = ("da_ext_fee_payout_processed",) if purpose == "rzp_fees" else ("da_ext_payout_processed",)
+        for ev in events:
+            if ev.startswith("da_ext_"):
+                payload = _da_journal_payload(payout, basd, ev, "pout_" + payout["id"], payout.get("transaction_id") or bas_id,
+                                              payout.get("updated_at"), None)
+            elif ev.endswith("_recon"):
+                # DA_PAYOUT_PROCESSED_RECON: transactor_id pout_, transaction_id = payout txn, date = bas.transaction_date
+                payload = _da_journal_payload(payout, basd, ev, "pout_" + payout["id"], payout.get("transaction_id") or bas_id,
+                                              req.get("transaction_date"), None)
+            else:
+                # DA_PAYOUT_PROCESSED: api_transaction_id = payout txn id; date = payout.processed_at (PS has no such
+                # column: updated_at used, as the PS mirror does, payouts/core.go:7703) -- declared deviation
+                payload = _da_journal_payload(payout, basd, ev, "pout_" + payout["id"], payout.get("transaction_id") or bas_id,
+                                              payout.get("updated_at"), payout.get("transaction_id") or bas_id)
+            emitted.append(_emit(ev, payload, {"bas_id": bas_id, "entity_id": payout["id"], "basd_id": basd["id"]}))
+    else:
+        try:
+            reversal = _ps_reversal(payout["id"])
+        except Exception as exc:  # noqa: BLE001
+            return _skip("reversal_lookup_failed", req, error_type=type(exc).__name__)
+        if not reversal:
+            return _skip("reversal_not_found", req)
+        events = DA_EVENTS["fee_reversed"] if purpose == "rzp_fees" else DA_EVENTS["reversed"]
+        if converted:
+            events = ("da_ext_fee_payout_reversed",) if purpose == "rzp_fees" else ("da_ext_payout_reversed",)
+        for ev in events:
+            rid = "rvrsl_" + reversal["id"]
+            if ev.startswith("da_ext_"):
+                payload = _da_journal_payload(payout, basd, ev, rid, reversal.get("transaction_id") or bas_id, reversal.get("created_at"), None)
+            elif ev.endswith("_recon"):
+                payload = _da_journal_payload(payout, basd, ev, rid, reversal.get("transaction_id") or bas_id, req.get("transaction_date"), None)
+            else:
+                payload = _da_journal_payload(payout, basd, ev, rid, reversal.get("transaction_id") or bas_id, reversal.get("created_at"),
+                                              reversal.get("transaction_id") or bas_id)
+            emitted.append(_emit(ev, payload, {"bas_id": bas_id, "entity_id": payout["id"], "reversal_id": reversal["id"], "basd_id": basd["id"]}))
+    return {"emitted": [e["transactor_event"] for e in emitted]}
+
+
 def _banking_statement_payout_update(handler,body):
+    """POST /v1/banking_account_statement/payout_update -- api Payout/Core.php:10305-10318 payoutUpdateByBASRecon:
+    forwards the XAS EnrichmentUpdateRequest (9 fields: bas_id, entity_id, entity_type, merchant_id, transaction_date,
+    converted_from_external, utr, grn, cms_ref_no) VERBATIM to PS /v1/payouts/banking_account_statement/payout_update
+    (payouts dtos.PayoutUpdateBASEntityRequest reads the same 9 names). Then the DA ledger emitter (above)."""
     try:
         req=json.loads(body or b"{}")
         if any(k not in req for k in ("bas_id","entity_id","entity_type","merchant_id","transaction_date")):
@@ -749,18 +1035,55 @@ def _banking_statement_payout_update(handler,body):
         with open(PS_RELAY_AUTH_PASS_FILE) as f:
             auth=base64.b64encode((PS_RELAY_AUTH_USER+":"+f.read().strip()).encode()).decode()
         status,response=_http("POST",PS_RELAY_URL.split("/v1/")[0]+"/v1/payouts/banking_account_statement/payout_update",req,{"Authorization":"Basic "+auth})
-        _log_sink("banking_statement_payout_update",{"request":req,"status":status})
+        _log_sink("banking_statement_payout_update",{"request":req,"status":status,"response":response})
+        ledger = send_to_ledger_post_source_entity_processing(req, status)
+        _log_sink("da_ledger_emitter",{"entity_id":req.get("entity_id"),"bas_id":req.get("bas_id"),"result":ledger})
         return status,response
     except (ValueError,TypeError):
         return 400,{"error":{"code":"BAD_REQUEST_ERROR","description":"invalid statement update"}}
     except Exception:
         return 502,{"error":{"code":"SERVER_ERROR","description":"statement update relay failed"}}
 
+
+def _arena_ledger_emits(handler, body):
+    import urllib.parse
+    q = urllib.parse.parse_qs(urllib.parse.urlsplit(handler.path).query)
+    mid = (q.get("merchant_id") or [None])[0]
+    with STATE_LOCK:
+        rows = [e for e in LEDGER_EMITS if not mid or e.get("merchant_id") == mid]
+    return 200, {"emits": rows, "topic": DA_LEDGER_TOPIC, "queue": DA_LEDGER_QUEUE, "ikey_mode": DA_LEDGER_IKEY_MODE,
+                 "ledger_enabled": LEDGER_ENABLED}
+
+
+def _arena_merchant_features(handler, body):
+    """POST {merchant_id, features:{name:bool}} sets runtime overrides on top of merchants.json `merchant.feature`
+    (loaded at boot only). GET ?merchant_id= returns the effective set."""
+    import urllib.parse
+    if handler.command == "GET":
+        q = urllib.parse.parse_qs(urllib.parse.urlsplit(handler.path).query)
+        mid = (q.get("merchant_id") or [""])[0]
+        return 200, {"merchant_id": mid, "features": _merchant_features(mid), "overrides": FEATURE_OVERRIDES.get(mid, {})}
+    try:
+        req = json.loads(body or b"{}")
+        mid = req["merchant_id"]
+        feats = req["features"]
+        if not re.fullmatch(r"[A-Za-z0-9]{14}", mid) or not isinstance(feats, dict) or \
+                any(not isinstance(v, bool) or not re.fullmatch(r"[a-z0-9_]{1,64}", k) for k, v in feats.items()):
+            raise ValueError("invalid")
+    except (KeyError, ValueError, TypeError):
+        return 400, {"error": {"code": "BAD_REQUEST_ERROR", "description": "merchant_id (14 chars) and features {name: bool} required"}}
+    with STATE_LOCK:
+        FEATURE_OVERRIDES.setdefault(mid, {}).update(feats)
+    _log_sink("merchant_features_override", {"merchant_id": mid, "features": feats})
+    return 200, {"merchant_id": mid, "features": _merchant_features(mid), "overrides": FEATURE_OVERRIDES[mid]}
+
 ROUTES = {
     ("POST", "/payouts_service/create_ledger"): _auxiliary_sink,
     ("POST", "/payouts_service/free_payout_rollback"): _auxiliary_sink,
     ("POST", "/payouts_service/create"): _auxiliary_sink,
     ("POST", "/v1/payouts/banking_account_statement/payout_update"): _banking_statement_payout_update,
+    # api Route.php:4837 `banking_account_statement/payout_update` (payouts_service group): XAS gateway posts /v1/banking_account_statement/payout_update
+    ("POST", "/banking_account_statement/payout_update"): _banking_statement_payout_update,
     ("POST", "/payouts/banking_account_statement/payout_update"): _banking_statement_payout_update,
     ("GET", "/internal/merchants/"): _get_merchant,
     ("POST", "/payouts_service/fetch_pricing_info"): _fetch_pricing_info,
@@ -783,6 +1106,9 @@ ROUTES = {
     ("POST", "/_arena/relay/release"): _arena_relay_release,
     ("POST", "/_arena/relay"): _arena_relay_control,
     ("GET", "/_arena/log"): _arena_log,
+    ("GET", "/_arena/ledger_emits"): _arena_ledger_emits,
+    ("GET", "/_arena/merchant_features"): _arena_merchant_features,
+    ("POST", "/_arena/merchant_features"): _arena_merchant_features,
 }
 
 if __name__ == "__main__":

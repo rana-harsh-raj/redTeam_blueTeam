@@ -95,3 +95,60 @@ fund-account fetch for the `fa_` + suffix-stripped id incl. the
 9999-suffix/inactive account, `on_hold_slas`, `actor_info`, `users_internal`,
 `dual_write`/`mail_and_sms` sinks, `_arena/log` showing all sink calls) and
 both `PS_RELAY_MODE` values against a throwaway mock `payouts-api`.
+
+## M4 (T11): `banking_account_statement/payout_update` relay + Direct-account (DA) ledger emitter
+
+Routes: `POST /v1/banking_account_statement/payout_update` (api `Route.php:4837`
+`bas_recon_payout_update`, `payouts_service` group — the path XAS's gateway posts to,
+`x-account-statements/internal/gateway/api/service/service.go:34`) and the earlier
+`/v1/payouts/banking_account_statement/payout_update` alias. Handler = `Payout/Core.php:10305-10318`
+`payoutUpdateByBASRecon`: the 9-field XAS `EnrichmentUpdateRequest` `{bas_id, entity_id, entity_type,
+merchant_id, transaction_date, converted_from_external, utr, grn, cms_ref_no}` is forwarded **verbatim** to the
+REAL PS `POST /v1/payouts/banking_account_statement/payout_update` (Basic `api` credential; payouts
+`dtos.PayoutUpdateBASEntityRequest` reads the same 9 names) and PS's status/body is returned. Validation kept
+from the earlier pass: the 5 mandatory fields and `entity_type ∈ {payout, payout_reversal}`.
+
+**DA ledger emitter (substitute)** — `send_to_ledger_post_source_entity_processing`, reproducing
+`BankingAccountStatement/Core.php:3081-3091` (gate), `:5175-5228` (`sendToLedgerPostSourceEntityProcessing`),
+`:5243-5278` (`processLedgerPayoutForDirect`) and `Transaction/Processor/Ledger/Payout.php:235-425,717-756`
+(`pushTransactionToLedgerForDirect`, `getDefaultPayloadForDirectPayout`) + `Ledger/Base.php:180`
+(`pushToLedgerSns`). Runs after a 2xx relay, i.e. at the moment a Direct payout becomes linked.
+
+Gates, in order (each skip is recorded in `GET /_arena/ledger_emits` with `skipped=<reason>`):
+`relay_not_2xx` · `ledger_disabled` (`LEDGER_ENABLED=false` = `applications.ledger.enabled`) ·
+`entity_type_not_payout` · `payout_not_found` (PS row) · `shared_or_primary_balance` (merchants.json
+`account_type != direct`) · `high_tps_composite_payout` · **`da_ledger_skipped_ps_recon`** (feature
+`payout_service_txn_recon` on AND `entity_type == payout`: the monolith defers to PS "which already does this",
+but PS has that call commented out — `payouts/core.go:7284`; the preserved production gap) ·
+`da_ledger_journal_writes_off` · `charge_collections_not_modelled` · `basd_not_found` ·
+`reversal_not_found` (payout_reversal without a PS `reversals` row).
+
+Journals published: `payout` → `da_payout_processed` then `da_payout_processed_recon` (`rzp_fees` purpose →
+`da_fee_payout_processed`); `payout_reversal` → `da_payout_reversed` + `da_payout_reversed_recon`
+(transactor `rvrsl_<reversal id>`); `converted_from_external=true` → single `da_ext_payout_processed` /
+`da_ext_payout_reversed` (`Payout/Core.php:10003-10016`). Payload = the ledger `Journal` struct
+(`ledger/internal/job/job_sqs/journal_create.go:56-75`): `tenant X, mode live, idempotency_key (uuid1 per
+publish, as Uuid::uuid1 — env DA_LEDGER_IKEY_MODE=deterministic switches to a sha-derived key), merchant_id,
+currency, amount/base_amount (payout.amount), commission (fees), tax, identifiers {"banking_account_stmt_detail_id":
+"basd_<id>"[, product_id]}, additional_params {[fee_accounting: reward][, account_type]}, notes {"balance_id":
+"bal_<id>", "transaction_id": "bas_<bas id>"}, transactor_id pout_/rvrsl_, transactor_event, transaction_date,
+api_transaction_id (processed/reversed only)`. The BASD id comes from the PS
+`banking_account_statement_details` row for the payout's balance (`monolith_reader` now has SELECT on that
+table and on `reversals`, `scripts/provision-monolith-db.sh`).
+
+Transport: SNS topic `api-ledger-journal-create-live` (payouts `appConstants/constants.go:381`; the monolith's
+`LEDGER_TRANSACTION_CREATE`) created idempotently on LocalStack at first use and subscribed to SQS
+`journal_create` with `RawMessageDelivery=false`, so the REAL `ledger-worker-journal-create` receives the
+production SNS envelope and unwraps `Message` (`job_sqs/base.go extractRawContent`). If SNS fails three
+times, a direct `SendMessage` of the raw JSON is used and recorded as `transport=sqs_direct_fallback`.
+
+Feature source: merchants.json `merchant.feature` (boot) + runtime overrides `POST /_arena/merchant_features
+{merchant_id, features:{name: bool}}` / `GET /_arena/merchant_features?merchant_id=` (lost on restart).
+Evidence: `GET /_arena/ledger_emits[?merchant_id=]` (payload, transport, SNS message id, skips) and the
+`da_ledger_emitter` entries in `GET /_arena/log`.
+
+Declared deviations (`config/declared-deviations.yaml` DEV-163..166): trigger point relocated from the
+monolith's own statement-fetch linking to the XAS `payout_update` arrival; `notes.transaction_id` is
+`bas_<id>` (PS mirror form) instead of the monolith's `txn_<api transaction>`; `transaction_date` for
+`da_payout_processed` is PS `payouts.updated_at` (no `processed_at` column in PS); `payout_service_txn_recon`
+is a per-merchant stub feature, not a Splitz evaluation.

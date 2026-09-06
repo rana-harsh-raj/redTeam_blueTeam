@@ -1,0 +1,58 @@
+{
+  "campaign_id": "camp-20260906T193919Z-8d485d",
+  "source": "legacy_projection",
+  "generated_at": "2026-09-06T19:45:34Z",
+  "rollup": {
+    "proposed": 0,
+    "claimed": 0,
+    "experiment_defined": 0,
+    "executing": 0,
+    "evidence_gathered": 0,
+    "falsified": 0,
+    "blocked": 0,
+    "supported": 0,
+    "replay_requested": 0,
+    "reproduced": 0,
+    "rejected": 0,
+    "accepted": 0,
+    "closed": 0,
+    "deprioritized": 0
+  },
+  "blockers": {
+    "route_not_exposed": 0,
+    "required_actor_unavailable": 0,
+    "service_not_modeled": 0,
+    "fidelity_insufficient": 0,
+    "missing_event_consumer": 0,
+    "missing_tool_capability": 0,
+    "environment_failure": 0,
+    "time_budget_exhausted": 0
+  },
+  "hypotheses": [],
+  "leases": [],
+  "handoffs": [],
+  "replans": [],
+  "gate": {
+    "passed": true,
+    "reasons": [],
+    "rollup": {
+      "proposed": 0,
+      "claimed": 0,
+      "experiment_defined": 0,
+      "executing": 0,
+      "evidence_gathered": 0,
+      "falsified": 0,
+      "blocked": 0,
+      "supported": 0,
+      "replay_requested": 0,
+      "reproduced": 0,
+      "rejected": 0,
+      "accepted": 0,
+      "closed": 0,
+      "deprioritized": 0
+    },
+    "total_hypotheses": 0,
+    "highest_priority_open": null,
+    "highest_priority_open_status": null
+  }
+}

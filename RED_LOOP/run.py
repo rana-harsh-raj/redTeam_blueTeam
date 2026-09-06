@@ -370,6 +370,41 @@ def recovery_matrix_cmd(args):
     return mrm.main(["--out", args.out] if args.out else [])
 
 
+def _load_assurance():
+    """Load the gateway-backed M4 assurance surface (contexts/soak adapter)."""
+    import importlib.util
+    spec = importlib.util.spec_from_file_location(
+        "m4_assurance_run", str(Path(__file__).resolve().parent / "surface" / "m4_assurance_run.py"))
+    m = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(m)
+    return m
+
+
+def contexts_cmd(args):
+    """M4 multi-context run: 4 fresh Direct merchants, 4 exploration contexts,
+    closing lifecycle gate + export. Gateway-backed (source RED_LOOP/llm.env)."""
+    m = _load_assurance()
+    r = m.run_contexts(primary_model=args.primary_model, turns=args.turns,
+                       request_budget=args.request_budget, wall=args.wall,
+                       restart=not args.no_restart, out=args.out)
+    print(json.dumps({k: v for k, v in r.items() if k != "_creds_cache"},
+                     indent=2, default=str))
+    return 0 if r["gate_verdict"]["passed"] else 1
+
+
+def soak_cmd(args):
+    """M4 unattended soak: bounded, checkpointed, scenario-rotating, resumable.
+    DO NOT launch a long soak casually; the coordinator schedules 2-8 h runs."""
+    m = _load_assurance()
+    r = m.run_soak(primary_model=args.primary_model, wall_seconds=args.wall_seconds,
+                   max_cycles=args.max_cycles, checkpoint_every=args.checkpoint_every,
+                   lease_ttl=args.lease_ttl, resume_cid=args.resume,
+                   restart=not args.no_restart)
+    print(json.dumps({k: v for k, v in r.items() if k != "_creds_cache"},
+                     indent=2, default=str))
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser()
     sub = ap.add_subparsers(dest="cmd", required=True)
@@ -395,7 +430,27 @@ def main():
     rp.add_argument("campaign_id")
     rp.add_argument("--emergency-turns", dest="emergency_turns", type=int, default=2000)
     rp.add_argument("--wall", type=int, default=None)
+    cx = sub.add_parser("contexts", help="M4 multi-context run (4 fresh Direct merchants)")
+    cx.add_argument("--primary-model", dest="primary_model", default=None)
+    cx.add_argument("--turns", type=int, default=14, help="per-context emergency turn ceiling")
+    cx.add_argument("--request-budget", dest="request_budget", type=int, default=60)
+    cx.add_argument("--wall", type=int, default=240, help="per-context wall-clock backstop seconds")
+    cx.add_argument("--no-restart", dest="no_restart", action="store_true",
+                    help="skip container restarts during provisioning (advanced)")
+    cx.add_argument("--out", default=None)
+    sk = sub.add_parser("soak", help="M4 bounded, checkpointed, resumable soak")
+    sk.add_argument("--primary-model", dest="primary_model", default=None)
+    sk.add_argument("--wall-seconds", dest="wall_seconds", type=int, default=7200,
+                    help="wall-clock budget seconds (default 2 h; cap 8 h)")
+    sk.add_argument("--max-cycles", dest="max_cycles", type=int, default=None)
+    sk.add_argument("--checkpoint-every", dest="checkpoint_every", type=int, default=1)
+    sk.add_argument("--lease-ttl", dest="lease_ttl", type=int, default=300)
+    sk.add_argument("--resume", default=None, help="resume an existing soak campaign id")
+    sk.add_argument("--no-restart", dest="no_restart", action="store_true")
     args = ap.parse_args()
+    # clamp the soak wall budget to the sanctioned 8 h ceiling
+    if getattr(args, "wall_seconds", None) is not None:
+        args.wall_seconds = max(1, min(int(args.wall_seconds), 28800))
 
     if args.cmd == "preflight":
         print(json.dumps(preflight(), indent=2))
@@ -413,6 +468,10 @@ def main():
         lifecycle_export_cmd(args)
     elif args.cmd == "recovery-matrix":
         raise SystemExit(recovery_matrix_cmd(args))
+    elif args.cmd == "contexts":
+        raise SystemExit(contexts_cmd(args))
+    elif args.cmd == "soak":
+        raise SystemExit(soak_cmd(args))
 
 
 if __name__ == "__main__":
