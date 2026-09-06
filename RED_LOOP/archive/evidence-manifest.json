@@ -1,10 +1,10 @@
 {
   "schema_version": "1.0",
   "manifest_kind": "redgrid-evidence-archive",
-  "generated_at": "2026-09-06T12:32:49Z",
+  "generated_at": "2026-09-06T13:43:36Z",
   "git": {
     "branch": "milestone-3-1-clean-parity",
-    "commit": "d33944450ce7f3febc96264e542e6d25f0bf3702",
+    "commit": "39fe41e54d7ee7063ebdbac546334023b1aea5d5",
     "twin_v1_tag_commit": "78def24eb57112c0dc39a6ae9062b1f0d1c711fb",
     "runtime_freeze_commit": "219ca48bbb5e51db9347b335ac0a50241656045b",
     "m2_head": "a107612ed11344a8096e74dbf68616679855465e",
@@ -16780,5 +16780,5 @@
       "redaction": "committed_no_secrets"
     }
   ],
-  "self_sha256": "f66b8bb334dcde97fc991c16544e9233f6dad072d6cd7718ef6a9ca6e5c68150"
+  "self_sha256": "4c0e6453b161974205593621734eca598ca7d7f5e31f7907ed1a4da00707fd5d"
 }

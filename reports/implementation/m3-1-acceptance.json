@@ -1,9 +1,9 @@
 {
   "milestone": "M3.1 \u2014 Clean Acceptance and Fresh Merchant Payout Parity",
-  "generated_at": "2026-09-06T12:33:21Z",
+  "generated_at": "2026-09-06T13:43:36Z",
   "git": {
     "branch": "milestone-3-1-clean-parity",
-    "head": "d33944450ce7f3febc96264e542e6d25f0bf3702",
+    "head": "39fe41e54d7ee7063ebdbac546334023b1aea5d5",
     "twin_v1_commit": "78def24eb57112c0dc39a6ae9062b1f0d1c711fb",
     "runtime_freeze_commit": "219ca48bbb5e51db9347b335ac0a50241656045b",
     "m2_head": "a107612ed11344a8096e74dbf68616679855465e",
@@ -14,12 +14,12 @@
       "gate": "historical_integrity",
       "passed": true,
       "branch": "milestone-3-1-clean-parity",
-      "head": "d33944450ce7f3febc96264e542e6d25f0bf3702"
+      "head": "39fe41e54d7ee7063ebdbac546334023b1aea5d5"
     },
     {
       "gate": "evidence_archive_manifest",
       "passed": true,
-      "manifest_sha256": "aa5f037111e3d12a3ba555366f28396e0d40282ee44b178f7b802e8a3ae073f4",
+      "manifest_sha256": "f3783023345bad3f7f4a75623d7a87ca7c31b746050e1ed5f816d67c37b79522",
       "artifacts": 1858
     },
     {
@@ -92,7 +92,7 @@
     },
     {
       "gate": "fresh_merchant_full_success",
-      "passed": false,
+      "passed": true,
       "create_500_fixed": true,
       "note": "requires an end-to-end successful fresh payout (terminal processed)"
     },
@@ -115,7 +115,7 @@
     }
   ],
   "evidence_sha256": {
-    "m31-fresh-merchant.json": "72f770795f410d03431a3adfe257ebde97be27e48478a6f5ee91ab666165dba0",
+    "m31-fresh-merchant.json": "c722e83d93b1155600e31aeb38acf0fd613e2dd123a44b51a52f2f1e2c2429a8",
     "m31-hardening-retention.json": "5ae609e1926904ff4e23739e09b45d10136493d2f563795aa6e431b031392d1f",
     "m31-v17.json": "898ae8d1ac663b178ab1ff120bed7a7245ec5254814a2d5da4a61718aebbc54a",
     "m31-calibration-freshid.json": null,
@@ -123,7 +123,6 @@
   },
   "accepted": false,
   "unmet_or_pending_gates": [
-    "fresh_merchant_full_success",
     "freshid_calibration_with_control",
     "second_campaign_normal_completion"
   ]

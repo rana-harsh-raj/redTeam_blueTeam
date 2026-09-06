@@ -1,6 +1,6 @@
 {
   "milestone": "M3.1-E fresh-funded-merchant parity + lifecycle",
-  "generated_at": "2026-09-06T11:59:24Z",
+  "generated_at": "2026-09-06T13:41:07Z",
   "gateway_profile": "hardened (KONG_ENFORCE_ROUTE_POLICY=1)",
   "tests": [
     {
@@ -8,7 +8,7 @@
       "passed": true,
       "failed_steps": [],
       "steps": 18,
-      "merchant_id": "ARENAM92010296"
+      "merchant_id": "ARENAM90999788"
     },
     {
       "name": "ledger_account_details_parity",
@@ -20,35 +20,35 @@
       "name": "create_returns_200_with_pricing",
       "passed": true,
       "status": 200,
-      "payout_id": "pout_TYk9GePRWnxUlT",
+      "payout_id": "pout_TYlsi2ZvSJ8Eu0",
       "fees": 200,
       "tax": 36,
       "note": "create-500 root cause (monolith merchant-config 404) is FIXED"
     },
     {
       "name": "successful_payout_reaches_processed",
-      "passed": false,
-      "db_terminal_status": "create_request_submitted",
-      "ceiling": "pre-ledger repo.Update no_row_affected: fresh-merchant payouts stall at create_request_submitted; documented characterised ceiling"
+      "passed": true,
+      "db_terminal_status": "processed",
+      "detail": "resolved: pricing_rule_id char(14) overflow fixed in provisioner"
     },
     {
       "name": "bank_failure_reverses_cleanly",
-      "passed": false,
-      "db_terminal_status": "create_request_submitted",
-      "blocked_by_ceiling": true
+      "passed": true,
+      "db_terminal_status": "reversed",
+      "blocked_by_ceiling": false
     },
     {
       "name": "insufficient_balance_rejected",
-      "passed": false,
-      "status": 200,
-      "body": "{\"id\":\"pout_TYkBNM5tmz3Sht\",\"entity\":\"payout\",\"fund_account_id\":\"fa_ARENAFAX916938\",\"merchant_id\":\"ARENAM96916938\",\"amount\":5000000,\"currency\":\"INR\",\"notes\":{},",
-      "note": "Shared-account balance is enforced in the ledger debit (balance+amt>=0) which is gated by the same pre-ledger ceiling"
+      "passed": true,
+      "status": 400,
+      "body": "{\"error\":{\"code\":\"BAD_REQUEST_ERROR\",\"description\":\"Your account does not have enough balance to carry out the payout operation.\",\"step\":\"\",\"reason\":\"\",\"field\":",
+      "note": "Shared-account balance is enforced in the ledger debit (balance+amt>=0)"
     },
     {
       "name": "idempotency_same_key_same_id",
       "passed": true,
-      "id1": "pout_TYkBt0x5tVauzt",
-      "id2": "pout_TYkBt0x5tVauzt"
+      "id1": "pout_TYluLmBtCeTsM9",
+      "id2": "pout_TYluLmBtCeTsM9"
     },
     {
       "name": "idempotency_diff_body_rejected",
@@ -67,9 +67,9 @@
   },
   "summary": {
     "total": 8,
-    "passed": 5,
+    "passed": 8,
     "create_500_fixed": true,
-    "terminal_processing_ceiling": true,
-    "full_success_payout_demonstrated": false
+    "terminal_processing_ceiling": false,
+    "full_success_payout_demonstrated": true
   }
 }
