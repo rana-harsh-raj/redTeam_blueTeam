@@ -1,0 +1,108 @@
+{
+  "policy_version": 1,
+  "milestone": "M3 — Merchant Gateway Fidelity",
+  "description": "Source-derived classification of the payouts merchant edge. Distinguishes PUBLIC merchant routes from INTERNAL/ADMIN/WORKFLOW routes that share the /v1/payouts prefix, so kong-lite can expose only the public merchant slice (as a real Kong public edge does) and inject the upstream service credential (cred.API) only for the routes that need it. Derived by reading payouts/internal/routing/router/*.go in the approved corpus; see source_ref on each rule.",
+  "derivation": {
+    "corpus_root": ".local/twin-repos/accepted/payouts/internal/routing/router/",
+    "method": "Every inbound route is registered as Route{group, middleware, endpoints}; class is taken from the group's middleware chain. Service BasicAuth(cred.API,...) is present on every group; a route is PUBLIC_MERCHANT only when the group ALSO layers PassportAuthentication that accepts a merchant (private/proxy/privilege) passport. Groups with service BasicAuth and NO passport (or admin-only passport) are INTERNAL_SERVICE / ADMIN_OPS and are NOT exposed on the merchant edge.",
+    "identity_resolution": "auth/authHelper.go:13-25 GetMerchantIdFromContext: passport merchant id wins; the x-merchant-id / X-Entity-Id header is only a fallback used when the passport has no merchant consumer. kong-lite mints a passport with consumer.type=merchant, so for merchant callers the header cannot override identity. kong-lite additionally strips inbound x-merchant-id / X-Entity-Id so a merchant cannot supply identity headers at all.",
+    "notes": [
+      "The false cross-tenant 'evidence' seen in Milestone 2 (fund_account_id fa_slitfa12345678, merchant_id 10000000000000, utr 528226169544) is NOT from monolith-stub. It is the payouts-api in-tree TiDB mock cannedTidbPayoutEntity() (payouts/internal/app/tidb/mock.go:59-85), enabled by [wda] mock=true (ENV2_COMPOSE/config/templates/base/payouts/arena.toml:824; declared-deviations.yaml wda.mock). It is reachable ONLY through GET /v1/payouts/fetch_multiple, an INTERNAL_SERVICE route. Removing fetch_multiple from the merchant edge makes that canned path unreachable by a merchant. The mock remains a declared low-fidelity deviation but is no longer merchant-reachable.",
+      "contacts / fund_accounts CRUD / balances-inbound / transactions / payout_links / payouts_batch are NOT_IMPLEMENTED as inbound routes in the payouts service (only /v1/fund_accounts/validations exists). kong-lite historically routed /v1/contacts and /v1/fund_accounts to payouts-api, where they 404. They are excluded from the public allowlist."
+    ]
+  },
+  "edge_behavior": {
+    "default": "deny (fail closed): a path that matches no PUBLIC rule returns 404 no_route, exactly as a real public edge that never registered the route.",
+    "match_order": "rules are evaluated top-to-bottom, first match wins; DENY literals are ordered before the generic public /:id param rule so e.g. GET /v1/payouts/fetch_multiple is denied before the GET /v1/payouts/{id} public catch.",
+    "service_credential": "cred.API service BasicAuth is injected ONLY for public routes whose upstream is payouts-api. It is never injected for the /v1/balances (xbalances) route, and is never applied to a denied path (denied paths are not proxied at all).",
+    "stripped_client_headers": ["authorization (merchant key, kong-lite's own concern)", "x-passport-jwt-v1 (identity is minted by kong from the key)", "x-merchant-id", "x-entity-id"],
+    "preserved_client_headers": ["x-razorpay-account (legitimate sub-account header; forwarded so genuine authorization behaviour remains testable)"],
+    "activation": "env KONG_ENFORCE_ROUTE_POLICY=1 activates this classifier. Default off = the frozen Twin v1.0 kong-lite behaviour (whole-prefix proxy), so the frozen verifier suite is behaviour-neutral unless activated."
+  },
+  "public_merchant_allowlist": [
+    {"method": "POST", "path": "/v1/payouts", "match": "^/v1/payouts$", "handler": "PostFundAccountPayout", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "forwarded_identity": "X-Passport-JWT-V1 (consumer.type=merchant)", "tenant_source": "passport consumer.id", "expected_not_found": "n/a (create)", "source_ref": "payout_routes.go:17-103 (group /v1/payouts, BasicAuth(cred.API,cred.Workflow)+Passport[private,proxy,privilege])", "fidelity": "high"},
+    {"method": "GET", "path": "/v1/payouts", "match": "^/v1/payouts$", "handler": "GetPayouts", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "passport consumer.id (merchant-scoped list)", "expected_not_found": "200 empty items", "source_ref": "payout_routes.go:17-103", "fidelity": "high"},
+    {"method": "GET", "path": "/v1/payouts/{id}", "match": "^/v1/payouts/pout_[A-Za-z0-9]+$", "handler": "GetPayout", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "passport consumer.id (payout must belong to caller)", "expected_not_found": "404 / authorization failure for a non-owned or missing payout", "source_ref": "payout_routes.go:17-103", "fidelity": "high", "note": "id restricted to the pout_ shape so internal literal subpaths (fetch_multiple, analytics, ...) do not fall through this param rule"},
+    {"method": "POST", "path": "/v1/payouts/cancel_payout/{payout_id}", "match": "^/v1/payouts/cancel_payout/[A-Za-z0-9_]+$", "handler": "CancelPayout", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "passport consumer.id", "expected_not_found": "404 for a non-owned payout", "source_ref": "payout_routes.go:17-103", "fidelity": "high"},
+    {"method": "GET", "path": "/v1/payouts/free_payout/{balance_id}", "match": "^/v1/payouts/free_payout/[A-Za-z0-9_]+$", "handler": "GetFreePayoutAttributes", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "passport consumer.id + balance ownership", "expected_not_found": "404", "source_ref": "payout_routes.go:17-103", "fidelity": "high"},
+    {"method": "GET", "path": "/v1/payouts/payouts_status_reason_map", "match": "^/v1/payouts/payouts_status_reason_map$", "handler": "GetPayoutStatusReasonMapping", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "static reference map", "expected_not_found": "n/a", "source_ref": "payout_routes.go:17-103", "fidelity": "high"},
+    {"method": "GET", "path": "/v1/payouts/_meta/summary", "match": "^/v1/payouts/_meta/summary$", "handler": "GetDashboardSummary", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "passport consumer.id", "expected_not_found": "200 empty", "source_ref": "payout_routes.go:17-103", "fidelity": "high"},
+    {"method": "GET", "path": "/v1/payouts/schedule/timeslots", "match": "^/v1/payouts/schedule/timeslots$", "handler": "GetTimeSlotsForScheduledPayouts", "class": "PUBLIC_MERCHANT_SPECIFIC_AUTH", "upstream": "payouts-api:9400", "service_basicauth": "cred.API (optional; ServiceBasicAuthOrPassport)", "tenant_source": "edge-minted passport", "expected_not_found": "n/a", "source_ref": "payout_routes.go:115-133 (payoutDashboardGetRoutes, ServiceBasicAuthOrPassport)", "fidelity": "high"},
+    {"method": "PATCH", "path": "/v1/payouts/{payout_id}/attachments", "match": "^/v1/payouts/pout_[A-Za-z0-9]+/attachments$", "handler": "UpdateAttachmentsForPayout", "class": "PUBLIC_MERCHANT_SPECIFIC_AUTH", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "passport consumer.id (proxy auth)", "expected_not_found": "404 for non-owned payout", "source_ref": "payout_proxy_routes.go:14-32 (BasicAuth(cred.API)+Passport[proxy])", "fidelity": "medium", "note": "distinct from the bulk PATCH /v1/payouts/attachments which is INTERNAL_SERVICE"},
+    {"method": "POST", "path": "/v2/payouts", "match": "^/v2/payouts$", "handler": "FundAccountPayout", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "passport consumer.id", "expected_not_found": "n/a (create)", "source_ref": "payout_routes_v2.go:14-47 (BasicAuth(cred.API)+Passport[private,proxy,privilege])", "fidelity": "high"},
+    {"method": "GET", "path": "/v2/payouts/{id}", "match": "^/v2/payouts/pout_[A-Za-z0-9]+$", "handler": "GetPayout(v2)", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "passport consumer.id", "expected_not_found": "404", "source_ref": "payout_routes_v2.go:14-47", "fidelity": "medium"},
+    {"method": "POST", "path": "/v1/fund_accounts/validations", "match": "^/v1/fund_accounts/validations$", "handler": "PostFundAccountValidation", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "passport consumer.id (private auth)", "expected_not_found": "n/a", "source_ref": "fund_account_validation_routes.go:14-35 (BasicAuth(cred.API,cred.Workflow)+Passport[private])", "fidelity": "high"},
+    {"method": "GET", "path": "/v1/fund_accounts/validations/{id}", "match": "^/v1/fund_accounts/validations/[A-Za-z0-9_]+$", "handler": "GetFav", "class": "PUBLIC_MERCHANT", "upstream": "payouts-api:9400", "service_basicauth": "cred.API", "tenant_source": "passport consumer.id", "expected_not_found": "404", "source_ref": "fund_account_validation_routes.go:14-35", "fidelity": "high"},
+    {"method": "GET", "path": "/v1/balances", "match": "^/v1/balances(/.*)?$", "handler": "x-balances read", "class": "PUBLIC_MERCHANT", "upstream": "xbalances-server:8080", "service_basicauth": "none (xbalances has its own auth; cred.API NOT injected)", "tenant_source": "passport consumer.id", "expected_not_found": "404/empty per xbalances", "source_ref": "kong-lite/CONTRACT.md (x-balances is a real merchant read surface)", "fidelity": "medium"}
+  ],
+  "internal_denied": [
+    {"class": "INTERNAL_SERVICE", "reason": "service-cred-only group (BasicAuth 7-cred, no passport); not a merchant edge route", "source_ref": "payout_internal_routes.go:12-190", "matches": [
+      "^/v1/payouts/manual_action$",
+      "^/v1/payouts/update_payouts_with_fts$",
+      "^/v1/payouts/update_payouts_details_with_fts$",
+      "^/v1/payouts/update_credit_transfer_payout$",
+      "^/v1/payouts/scheduled/process$",
+      "^/v1/payouts/balance_update_event$",
+      "^/v1/payouts/retry$",
+      "^/v1/payouts/retry/source_update$",
+      "^/v1/payouts/payouts_internal/[^/]+/approve$",
+      "^/v1/payouts/payouts_internal/[^/]+/reject$",
+      "^/v1/payouts/payouts_internal/[^/]+$",
+      "^/v1/payouts/payout_internal$",
+      "^/v1/payouts/analytics$",
+      "^/v1/payouts/bene_bank_status_update$",
+      "^/v1/payouts/on_hold/process$",
+      "^/v1/payouts/free_payout_migration$",
+      "^/v1/payouts/consistency_checker$",
+      "^/v1/payouts/batch/process$",
+      "^/v1/payouts/shield/evaluate$",
+      "^/v1/payouts/duplicate_payout_evaluate$",
+      "^/v1/payouts/banking_account_statement/payout_update$",
+      "^/v1/payouts/rzp_fees_payout$",
+      "^/v1/payouts/set_pricing_rule_info$",
+      "^/v1/payouts/mapped_vpa/[^/]+$",
+      "^/v1/payouts/transfer_status_webhook$",
+      "^/v1/payouts/fetch_multiple$",
+      "^/v1/payouts/elasticsearch/backfill_index$",
+      "^/v1/payouts/status_details/[^/]+$",
+      "^/v1/payouts/internal_contact_payout$"
+    ]},
+    {"class": "INTERNAL_SERVICE", "reason": "bulk / attachments internal group (svc cred + empty-passport)", "source_ref": "payout_internal_routes_with_passport.go:13-35", "matches": [
+      "^/v1/payouts/bulk$",
+      "^/v1/payouts/attachments$"
+    ]},
+    {"class": "PUBLIC_MERCHANT_SPECIFIC_AUTH_internal_variant", "reason": "bulk validate (proxy auth) — internal-app bulk surface, conservatively denied on the ordinary merchant edge (fail closed)", "source_ref": "payout_bulk_routes.go:13-29", "matches": ["^/v1/payouts/bulk/validate$"]},
+    {"class": "INTERNAL_APP_CREATE_VARIANT", "reason": "internal-app create entrypoint (privilege). Source places it in a passport group, but its semantics are internal-app; fail closed on the ordinary merchant edge (only POST /v1/payouts is the merchant create).", "source_ref": "payout_routes.go:17-103 / payout_routes_v2.go", "matches": [
+      "^/v1/payouts/payouts_internal$",
+      "^/v2/payouts/payouts_internal$",
+      "^/v2/payouts/internal_contact_payout$"
+    ]},
+    {"class": "INTERNAL_SERVICE", "reason": "in-flight reservations inspector (svc cred)", "source_ref": "payout_internal_routes.go:197-211", "matches": ["^/v1/inflight_reservations$"]}
+  ],
+  "admin_denied": [
+    {"class": "ADMIN_OPS", "reason": "admin passport group; never a merchant edge route", "source_ref": "payout_admin_routes.go:13-52, internal_action_routes.go:12-27", "matches": ["^/v1/admin(/.*)?$"]},
+    {"class": "CONTROL_PLANE_ONLY", "reason": "dedicated cred.MerchantConfiguration service cred", "source_ref": "merchant_configuration_routes.go:10-28", "matches": ["^/v1/admin/merchant-configuration$"]}
+  ],
+  "workflow_denied": [
+    {"class": "WORKFLOW_CALLBACK", "reason": "cred.Workflow/cred.API callback surface for the workflow engine, not a merchant route", "source_ref": "workflow_routes.go:12-32", "matches": ["^/v1/workflow(/.*)?$"]}
+  ],
+  "other_internal_denied": [
+    {"class": "INTERNAL_SERVICE", "reason": "x-balances internal (cred.XBalances)", "source_ref": "xbalances_internal_routes.go:13-44", "matches": ["^/v1/internal(/.*)?$"]},
+    {"class": "INTERNAL_SERVICE", "reason": "cron (cred.FastCron)", "source_ref": "cron_routes.go", "matches": ["^/v1/cron(/.*)?$"]},
+    {"class": "INTERNAL_SERVICE", "reason": "notify health/downtime (cred.FTS)", "source_ref": "internal_routes.go:11-31", "matches": ["^/v1/notify(/.*)?$"]},
+    {"class": "INTERNAL_SERVICE", "reason": "banking account statement (cred.API/cred.FTS)", "source_ref": "bas_internal_routes.go", "matches": ["^/v1/banking_account_statement(/.*)?$"]},
+    {"class": "INTERNAL_SERVICE", "reason": "elasticsearch internal (cred.API)", "source_ref": "elasticsearch_internal_routes.go", "matches": ["^/v1/elasticsearch(/.*)?$"]},
+    {"class": "INTERNAL_SERVICE", "reason": "fund-management-payout admin (cred.API/cred.FastCron)", "source_ref": "fund_management_payout_admin_routes.go", "matches": ["^/v1/fund-management-payout(/.*)?$"]},
+    {"class": "INTERNAL_SERVICE", "reason": "merchant internal (cred.API)", "source_ref": "merchant_routes.go:12-32", "matches": ["^/v1/merchant/.*$"]},
+    {"class": "INTERNAL_SERVICE", "reason": "payload crypt (cred.API)", "source_ref": "internal_routes.go:33-52", "matches": ["^/v1/payloadcrypt(/.*)?$"]},
+    {"class": "INTERNAL_SERVICE", "reason": "idempotency-keys exclusions (cred.API)", "source_ref": "ikey_excusions_routes.go", "matches": ["^/v1/idempotency-keys(/.*)?$"]},
+    {"class": "INTERNAL_SERVICE", "reason": "fund account validation internal updates", "source_ref": "fund_account_validation_internal_routes.go:12-32", "matches": ["^/v1/fund_accounts/validations/update/.*$"]}
+  ],
+  "not_implemented_as_inbound": [
+    {"prefix": "/v1/contacts", "note": "no inbound contacts route in the payouts service (monolith-only). Denied on the edge.", "source_ref": "agent route audit: no group registers /v1/contacts"},
+    {"prefix": "/v1/fund_accounts", "note": "no fund_accounts CRUD in payouts (only /v1/fund_accounts/validations). Denied except the validations routes above.", "source_ref": "fund_account_validation_routes.go only"},
+    {"prefix": "/v1/transactions", "note": "not implemented inbound", "source_ref": "no group"},
+    {"prefix": "/v1/payout_links", "note": "not implemented inbound (internal-app identity only)", "source_ref": "auth/headers.go:14"},
+    {"prefix": "/v1/payouts_batch", "note": "not implemented; bulk is /v1/payouts/bulk*", "source_ref": "no group"}
+  ]
+}

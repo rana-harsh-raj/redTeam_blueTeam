@@ -11,7 +11,7 @@ ARG STUB_PORT=8080
 RUN adduser -D -u 10001 stub
 WORKDIR /app
 COPY _common/ /app/_common/
-COPY ${STUB_DIR}/server.py /app/server.py
+COPY ${STUB_DIR}/*.py /app/
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app \

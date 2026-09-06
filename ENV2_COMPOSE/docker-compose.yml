@@ -1588,6 +1588,10 @@ services:
       PASSPORT_ISS: "https://identity.arena.invalid"
       PS_API_AUTH_USER: "api"
       PS_API_AUTH_PASS_FILE: /run/secrets/auth_api_payouts
+      # M3: source-derived merchant-edge route policy. Default 0 = frozen Twin
+      # v1.0 behaviour (whole-prefix proxy). Set 1 to expose only public merchant
+      # routes and scope cred.API injection (RED_LOOP/registry/merchant-gateway-routes.json).
+      KONG_ENFORCE_ROUTE_POLICY: "${KONG_ENFORCE_ROUTE_POLICY:-0}"
     <<: *runtime-security
     healthcheck:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/_arena/health"]

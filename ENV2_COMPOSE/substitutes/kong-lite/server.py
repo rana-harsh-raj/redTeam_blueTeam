@@ -78,6 +78,24 @@ def _load_routes():
 
 ROUTES = _load_routes()
 
+# --- M3 merchant-edge route policy (source-derived) ------------------------
+# Source of truth: RED_LOOP/registry/merchant-gateway-routes.json. Compiled
+# here so kong-lite stays self-contained (stdlib-only, no extra mount).
+#
+# Default OFF: when KONG_ENFORCE_ROUTE_POLICY != "1", kong-lite behaves exactly
+# as frozen Twin v1.0 (whole-prefix proxy + uniform cred.API injection), so the
+# frozen verifier suite is behaviour-neutral. When ON, only PUBLIC merchant
+# routes are proxied; internal/admin/workflow routes that share the /v1/payouts
+# prefix return 404 as a real public edge (that never registered them) would;
+# cred.API is injected ONLY for payouts-api-bound public routes (never for the
+# xbalances /v1/balances read surface); and client-supplied identity headers
+# (x-merchant-id / x-entity-id) are stripped so a merchant cannot assert an
+# identity the edge is responsible for minting. See payout_routes.go et al.
+from route_policy import classify_request, STRIP_IDENTITY_HEADERS as _STRIP_IDENTITY_HEADERS
+
+ENFORCE_ROUTE_POLICY = os.environ.get("KONG_ENFORCE_ROUTE_POLICY", "0") == "1"
+
+
 # key_id ("rzp_test_..."/"rzp_live_...") -> {merchant_id, mode, secret, roles}
 KEY_TABLE = {}
 
@@ -216,11 +234,21 @@ class ProxyHandler(BaseHTTPRequestHandler):
         if self.path == "/_arena/mint" and self.command == "POST":
             return self._mint_endpoint()
 
-        upstream = _match_upstream(self.path)
-        if upstream is None:
-            self._json(404, {"error": "no_route", "detail": "no upstream configured for path prefix",
-                              "path": self.path})
-            return
+        inject_api_cred = True
+        if ENFORCE_ROUTE_POLICY:
+            decision, upstream, inject_api_cred = classify_request(self.command, self.path)
+            if decision == "deny" or upstream is None:
+                # A real public edge never registered this route: 404 no_route,
+                # indistinguishable from not-found, before any auth leak.
+                self._json(404, {"error": "no_route", "detail": "no merchant route for path",
+                                  "path": self.path})
+                return
+        else:
+            upstream = _match_upstream(self.path)
+            if upstream is None:
+                self._json(404, {"error": "no_route", "detail": "no upstream configured for path prefix",
+                                  "path": self.path})
+                return
 
         auth = _authenticate(self)
         if auth is None:
@@ -241,8 +269,12 @@ class ProxyHandler(BaseHTTPRequestHandler):
         # credential is Kong-lite's own concern, never forwarded upstream)
         # and every other hop-by-hop header; add the passport + service
         # Basic-Auth headers a real Kong/edge would add.
-        headers = {k: v for k, v in self.headers.items()
-                   if k.lower() not in ("host", "content-length", "authorization")}
+        _drop = {"host", "content-length", "authorization"}
+        if ENFORCE_ROUTE_POLICY:
+            # The edge mints identity; a client cannot supply it. cred.API used to
+            # be injected across the whole prefix — now only for routes that need it.
+            _drop |= _STRIP_IDENTITY_HEADERS
+        headers = {k: v for k, v in self.headers.items() if k.lower() not in _drop}
 
         jwt = _mint_passport_jwt(merchant_id, mode, roles)
         if jwt is None:
@@ -250,7 +282,7 @@ class ProxyHandler(BaseHTTPRequestHandler):
             return
         headers["X-Passport-JWT-V1"] = jwt
 
-        if PS_API_AUTH_USER and _PS_API_PASSWORD:
+        if inject_api_cred and PS_API_AUTH_USER and _PS_API_PASSWORD:
             token = base64.b64encode(("%s:%s" % (PS_API_AUTH_USER, _PS_API_PASSWORD)).encode()).decode()
             headers["Authorization"] = "Basic %s" % token
 
