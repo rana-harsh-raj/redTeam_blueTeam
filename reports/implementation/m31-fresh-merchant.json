@@ -1,0 +1,75 @@
+{
+  "milestone": "M3.1-E fresh-funded-merchant parity + lifecycle",
+  "generated_at": "2026-09-06T11:59:24Z",
+  "gateway_profile": "hardened (KONG_ENFORCE_ROUTE_POLICY=1)",
+  "tests": [
+    {
+      "name": "provision_no_step_failures",
+      "passed": true,
+      "failed_steps": [],
+      "steps": 18,
+      "merchant_id": "ARENAM92010296"
+    },
+    {
+      "name": "ledger_account_details_parity",
+      "passed": true,
+      "rows": "4",
+      "roles": "[\"merchant_va\"],[\"merchant_va_vendor\"],[\"merchant_va\"],[\"va_gst\"]"
+    },
+    {
+      "name": "create_returns_200_with_pricing",
+      "passed": true,
+      "status": 200,
+      "payout_id": "pout_TYk9GePRWnxUlT",
+      "fees": 200,
+      "tax": 36,
+      "note": "create-500 root cause (monolith merchant-config 404) is FIXED"
+    },
+    {
+      "name": "successful_payout_reaches_processed",
+      "passed": false,
+      "db_terminal_status": "create_request_submitted",
+      "ceiling": "pre-ledger repo.Update no_row_affected: fresh-merchant payouts stall at create_request_submitted; documented characterised ceiling"
+    },
+    {
+      "name": "bank_failure_reverses_cleanly",
+      "passed": false,
+      "db_terminal_status": "create_request_submitted",
+      "blocked_by_ceiling": true
+    },
+    {
+      "name": "insufficient_balance_rejected",
+      "passed": false,
+      "status": 200,
+      "body": "{\"id\":\"pout_TYkBNM5tmz3Sht\",\"entity\":\"payout\",\"fund_account_id\":\"fa_ARENAFAX916938\",\"merchant_id\":\"ARENAM96916938\",\"amount\":5000000,\"currency\":\"INR\",\"notes\":{},",
+      "note": "Shared-account balance is enforced in the ledger debit (balance+amt>=0) which is gated by the same pre-ledger ceiling"
+    },
+    {
+      "name": "idempotency_same_key_same_id",
+      "passed": true,
+      "id1": "pout_TYkBt0x5tVauzt",
+      "id2": "pout_TYkBt0x5tVauzt"
+    },
+    {
+      "name": "idempotency_diff_body_rejected",
+      "passed": true,
+      "status": 400,
+      "body": "{\"error\":{\"code\":\"bad_request_error\",\"description\":\"Different request body sent for the same Idempotency Header\",\"step\":"
+    }
+  ],
+  "parity_matrix": {
+    "monolith_merchant_config": "registered (was absent -> 404 -> create-500)",
+    "pricing_plan": "registered per-merchant (+ free_payout_counter)",
+    "ledger_account_details_rows": "4",
+    "ledger_roles": "[\"merchant_va\"],[\"merchant_va_vendor\"],[\"merchant_va\"],[\"va_gst\"]",
+    "banking_accounts": "structural match to M1 (verified)",
+    "static_state_reused": false
+  },
+  "summary": {
+    "total": 8,
+    "passed": 5,
+    "create_500_fixed": true,
+    "terminal_processing_ceiling": true,
+    "full_success_payout_demonstrated": false
+  }
+}

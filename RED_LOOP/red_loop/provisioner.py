@@ -269,12 +269,27 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
         "INSERT INTO accounts (id,merchant_id,status,balance,min_balance,negative_balance,created_at,"
         "updated_at,deleted_at) VALUES %s ON CONFLICT (id) DO NOTHING;" % ",".join(rows))
     step("ledger.accounts", rc, e)
+    # All four sub-account roles, matching the working M1 fixture (merchant_va,
+    # merchant_va_vendor, commission/cash, va_gst). Every detail row carries the
+    # banking_account_id entity key the way M1 does; without the vendor/commission/
+    # gst rows any flow resolving those sub-accounts would fail.
+    bacc = "bacc_" + ids["banking_account"]
+    roles = [
+        (1, "liability", "payable", "merchant_va", "Merchant Balance"),
+        (2, "liability", "payable", "merchant_va_vendor", "Vendor Payable"),
+        (3, "revenue", "cash", "merchant_va", "Commission Income"),
+        (4, "liability", "payable", "va_gst", "Output GST"),
+    ]
+    det_rows = []
+    for i, cat, atype, ftype, label in roles:
+        ent = ('{"account_type":["%s"],"fund_account_type":["%s"],"banking_account_id":["%s"]}'
+               % (atype, ftype, bacc))
+        det_rows.append(
+            "('%sDT%02d','%sAC%04d','%s - %s','%s','ARENAPRACC%04d','INR','%s','real','%s',NULL,%d,%d,NULL,'X',0)"
+            % (acc, i, acc, i, label, mid, mid, i, cat, ent, ts, ts))
     det = ("INSERT INTO account_details (id,account_id,account_name,merchant_id,parent_account_id,currency,"
            "account_category,business_category,entities,description,created_at,updated_at,deleted_at,tenant,"
-           "use_split_accounts) VALUES "
-           "('%sDT01','%sAC0001','Merchant Balance - %s','%s','ARENAPRACC0001','INR','liability','real',"
-           "'{\"account_type\":[\"payable\"],\"fund_account_type\":[\"merchant_va\"]}',NULL,%d,%d,NULL,'X',0) "
-           "ON CONFLICT (id) DO NOTHING;" % (acc, acc, mid, mid, ts, ts))
+           "use_split_accounts) VALUES %s ON CONFLICT (id) DO NOTHING;" % ",".join(det_rows))
     rc, _, e = _psql(pw_led, det)
     step("ledger.account_details", rc, e)
 
@@ -318,8 +333,21 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
                          capture_output=True, text=True, timeout=30)
     step("cfa", out.returncode, (out.stderr or out.stdout)[:400])
 
+    # 6b monolith merchant-config: payout create fetches merchant config via
+    # GET /v1/internal/merchants/{id}; a 404 here (fresh id absent from the
+    # monolith merchants.json seed) is the create-500 root cause. Register the
+    # merchant + a pricing plan + a free-payout counter (all reloaded by the
+    # single monolith restart in step 7 below).
+    plan_id = "ARENAPLAN" + mid[-6:]
+    mono_m_err = _register_monolith_merchant(mid, ids, plan_id)
+    step("monolith.merchant_config", 0 if not mono_m_err else 1, mono_m_err)
+    price_err = _register_pricing(mid, plan_id, ids["balance_id"])
+    step("pricing.plan", 0 if not price_err else 1, price_err)
+    result["pricing_plan_id"] = plan_id
+
     # 7 monolith-stub fund_accounts seed (payout create resolves the fund account
-    # via monolith /fund_accounts_internal, which reads this file at boot)
+    # via monolith /fund_accounts_internal, which reads this file at boot). This
+    # step's restart reloads merchant-config, pricing and fund_accounts together.
     mono_err = _register_monolith_fund_account(mid, ids, contact)
     step("monolith.fund_accounts", 0 if not mono_err else 1, mono_err)
 
@@ -329,6 +357,66 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
 
     result["contact_id"] = contact
     return result
+
+
+def _register_monolith_merchant(merchant_id, ids, plan_id, restart=False):
+    """Register the fresh merchant in monolith-stub's merchant-config seed so
+    payout create's GET /v1/internal/merchants/{id} returns 200 (not 404).
+    Modelled field-for-field on the working M1 fixture. Idempotent."""
+    path = config.ENV2 / "seeds" / "generated" / "monolith" / "merchants.json"
+    try:
+        doc = json.loads(path.read_text())
+    except Exception as e:  # noqa: BLE001
+        return "monolith merchants.json unreadable: %s" % e
+    doc.setdefault("merchants", {})[merchant_id] = {
+        "account_type": "shared", "balance_id": ids["balance_id"], "channel": "",
+        "fts_fund_account_id": 900001, "fts_source_account_id": 900001,
+        "merchant": {
+            "activated": True, "billing_label": "Arena Fresh " + merchant_id,
+            "business_banking": True, "category": "other", "category2": "other",
+            "country_code": "IN", "created_at": int(time.time()),
+            "email": "fresh@arena.test",
+            "feature": ["payout_service_enabled", "banking"], "hold_funds": False,
+            "id": merchant_id, "live": True, "name": "Arena Fresh Merchant",
+            "org_id": "ARENAORG000001", "pricing_plan_id": plan_id,
+            "purpose_code": "P0806"},
+        "merchant_detail": {
+            "business_name": "Arena Fresh", "business_registered_address": "1 Arena Street",
+            "business_registered_address_l2": "", "business_registered_city": "Bengaluru",
+            "business_registered_country": "IN", "business_registered_pin": "560001",
+            "business_registered_state": "Karnataka", "business_type": "individual",
+            "iec_code": ""}}
+    path.write_text(json.dumps(doc, indent=2))
+    if restart:
+        rs = subprocess.run(["docker", "restart", "env2_compose-monolith-stub-1"],
+                            capture_output=True, text=True, timeout=40)
+        if rs.returncode != 0:
+            return "monolith restart failed: %s" % rs.stderr[:200]
+        time.sleep(3)
+    return None
+
+
+def _register_pricing(merchant_id, plan_id, balance_id):
+    """Add a fresh pricing plan (keyed by merchant_id, so monolith-stub's
+    PRICING.get(mid) resolves) plus a free-payout counter keyed by balance_id.
+    Rules mirror the M1 synthetic tariff. Idempotent."""
+    path = config.ENV2 / "seeds" / "generated" / "pricing.json"
+    try:
+        doc = json.loads(path.read_text())
+    except Exception as e:  # noqa: BLE001
+        return "pricing.json unreadable: %s" % e
+    tariff = {"IMPS": (200, 36), "NEFT": (100, 18), "RTGS": (500, 90), "UPI": (50, 9)}
+    rules = {}
+    for mode, (fees, tax) in tariff.items():
+        rules[mode] = {"_classification": "ASSUMED synthetic tariff (fresh merchant, mirrors M1)",
+                       "channel": "*", "fee_type": "*", "fees": fees, "method": "fund_transfer",
+                       "min_amount": 1, "tax": tax}
+    doc.setdefault("plans", {})[merchant_id] = {"plan_id": plan_id, "rules": rules}
+    doc.setdefault("free_payout_counters", {})[merchant_id] = {
+        "balance_id": balance_id, "free_payouts_consumed": 0,
+        "free_payouts_consumed_last_reset_at": int(time.time())}
+    path.write_text(json.dumps(doc, indent=2))
+    return None
 
 
 def _register_monolith_fund_account(merchant_id, ids, contact_id, restart=True):

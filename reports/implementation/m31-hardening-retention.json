@@ -1,0 +1,25 @@
+{
+  "milestone": "M3.1-G retain Milestone-3 hardening",
+  "generated_note": "component presence verified in tree; route policy proven live by m3-gateway-acceptance.json; token reduction recomputed from raw model_calls.jsonl",
+  "components_retained": {
+    "source_derived_route_policy": "ENV2_COMPOSE/substitutes/kong-lite/route_policy.py::classify_request",
+    "identity_header_stripping": "route_policy.py::STRIP_IDENTITY_HEADERS",
+    "judge_canary_oracle": "RED_LOOP/red_loop/judge.py::scan_canaries",
+    "deterministic_admission_gate": "RED_LOOP/red_loop/judge.py::admit",
+    "context_compiler": "RED_LOOP/red_loop/context.py::compile_state_message",
+    "progress_stagnation_lifecycle": "RED_LOOP/red_loop/campaign.py::StopReason",
+    "model_failure_recovery": "RED_LOOP/red_loop/llm.py::pick_fallback",
+    "durable_resume": "RED_LOOP/red_loop/state.py::resume_snapshot"
+  },
+  "context_token_recompute": {
+    "source": "RED_LOOP/runs/camp-20260906T100435Z-c02234/model_calls.jsonl",
+    "model_calls": 203,
+    "avg_prompt_tokens_per_call": 21017,
+    "total_prompt_tokens": 4266460,
+    "m2_baseline_avg_prompt_per_turn": 110000,
+    "reduction_fraction": 0.809,
+    "full_transcript_resent_any": false,
+    "context_metrics_rows": 200,
+    "note": "Recomputed from raw logs (not the previously reported 80.6%); 80.9%."
+  }
+}
