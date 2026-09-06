@@ -92,15 +92,14 @@ table.gt tr:hover td{background:#fafbfc}
 <h1>M4 — Direct Current-Account, Reconciliation, and Autonomous Architecture Assurance Expansion</h1>
 <div class="hdr-meta">
 <span class="accepted"><span class="badge bad"><span class="ic" aria-hidden="true">✗</span>NOT ACCEPTED</span></span>
-<span class="commit">gate status: <strong>DRY-RUN</strong></span>
-<span class="commit">tested&nbsp;commit: <code>37075da32b2d</code></span>
+<span class="commit">gate status: <strong>LIVE</strong></span>
+<span class="commit">tested&nbsp;commit: <code>5bde798168ea</code></span>
 <span class="commit">evidence&nbsp;commit: <code>pending</code></span>
 <span class="commit">baseline: <code>red-loop-m3.1</code></span>
 </div>
-<div class="notice">Gate status is <strong>DRY-RUN</strong> (evaluated without a live arena). The coordinator re-runs this dashboard at finalize once the acceptance JSON and soak summary are final.</div>
 </header>
 <section class="kpis" aria-label="Key metrics">
-<div class="kpi ok"><div class="kpi-val">71/74</div><div class="kpi-lbl">Gates pass</div><div class="kpi-sub">3 pending, 0 fail</div></div>
+<div class="kpi ok"><div class="kpi-val">73/74</div><div class="kpi-lbl">Gates pass</div><div class="kpi-sub">1 pending, 0 fail</div></div>
 <div class="kpi ok"><div class="kpi-val">7/7</div><div class="kpi-lbl">Journeys pass</div><div class="kpi-sub">Direct A–G</div></div>
 <div class="kpi ok"><div class="kpi-val">6/6</div><div class="kpi-lbl">Invariants pass</div><div class="kpi-sub">+ negative controls</div></div>
 <div class="kpi ok"><div class="kpi-val">3+1ef</div><div class="kpi-lbl">Routes covered</div><div class="kpi-sub">4 total (R1–R3, remap)</div></div>
@@ -110,7 +109,7 @@ table.gt tr:hover td{background:#fafbfc}
 <div class="kpi ok"><div class="kpi-val">2</div><div class="kpi-lbl">Merchants provisioned</div><div class="kpi-sub">fresh Direct A/B</div></div>
 </section>
 <details class="sec" open>
-<summary><span class="sec-title">Gate matrix</span><span class="sec-sub">71/74 pass (DRY-RUN)</span></summary>
+<summary><span class="sec-title">Gate matrix</span><span class="sec-sub">73/74 pass (LIVE)</span></summary>
 <div class="sec-body">
 <div class="grp"><div class="grp-h">BASELINE <span class="grp-c">5/5 pass</span></div>
 <table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
@@ -200,15 +199,15 @@ table.gt tr:hover td{background:#fafbfc}
 <tr title="evidence: reports/implementation/m4-assurance-run.json:contexts_summary.policies"><td><code>G63</code></td><td>Four isolated assurance contexts run successfully</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: RED_LOOP/runs/camp-20260906T200337Z-7511c5/m4-direct-e2e-soak.json"><td><code>G64</code></td><td>An unattended soak completes with useful work and durable state</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 </tbody></table></div>
-<div class="grp"><div class="grp-h">REPLAY_EVIDENCE <span class="grp-c">7/10 pass, 3 pending</span></div>
+<div class="grp"><div class="grp-h">REPLAY_EVIDENCE <span class="grp-c">9/10 pass, 1 pending</span></div>
 <table class="gt"><thead><tr><th>Gate</th><th>Title</th><th>Status</th><th>Fidelity</th><th>Prod. reach</th></tr></thead><tbody>
 <tr title="evidence: reports/implementation/m4-direct-e2e-replay.json:candidates"><td><code>G65</code></td><td>Credible candidates are independently replayed from clean state</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-direct-e2e-replay.json:safety.fresh_ids_per_run"><td><code>G66</code></td><td>Replay uses fresh merchant and resource IDs</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: reports/implementation/m4-lifecycle-validation.json:independent_replay.certificate"><td><code>G67</code></td><td>Negative controls remove or prevent the observed effect</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">known</td></tr>
-<tr title="evidence: reports/implementation/m4-direct-e2e-evidence-manifest.json"><td><code>G68</code></td><td>All acceptance evidence hashes recompute</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: reports/implementation/m4-direct-e2e-evidence-manifest.json"><td><code>G68</code></td><td>All acceptance evidence hashes recompute</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
 <tr title="evidence: reports/implementation/m4-direct-e2e-evidence-manifest.json"><td><code>G69</code></td><td>No expected evidence file is missing</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
 <tr title="evidence: reports/implementation/m4-finalize-boots.json:boots[].egress"><td><code>G70</code></td><td>Outside-network traffic is zero</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
-<tr title="evidence: (git status --porcelain)"><td><code>G71</code></td><td>Final working tree is clean</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
+<tr title="evidence: (git status --porcelain)"><td><code>G71</code></td><td>Final working tree is clean</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
 <tr title="evidence: reports/implementation/m4-audit-report.md:## VERDICT"><td><code>G72</code></td><td>Independent auditor approves the final acceptance artifact</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">executed</td><td class="mono-s">known</td></tr>
 <tr title="evidence: (git cat-file -t red-loop-m4)"><td><code>G73</code></td><td>Annotated final tag resolves to the evidence commit</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>pending</span></td><td class="mono-s">independently_reproduced</td><td class="mono-s">n/a</td></tr>
 <tr title="evidence: reports/implementation/m4-known-limits.md"><td><code>G74</code></td><td>Final review clearly lists substitutions, approximations, unknowns, and non-claims</td><td><span class="badge ok"><span class="ic" aria-hidden="true">✓</span>pass</span></td><td class="mono-s">source_inferred</td><td class="mono-s">n/a</td></tr>
@@ -485,7 +484,7 @@ table.gt tr:hover td{background:#fafbfc}
 <summary><span class="sec-title">Evidence links &amp; sources</span><span class="sec-sub">relative links; open the JSON/MD artifacts</span></summary>
 <div class="sec-body">
 <table class="gt"><thead><tr><th>Source</th><th>Status</th><th>Path</th></tr></thead><tbody>
-<tr><td>acceptance</td><td><span class="badge warn"><span class="ic" aria-hidden="true">⋯</span>dry-run</span></td><td class="mono-s"><a href="../../RED_LOOP/surface/m4_acceptance.py">../../RED_LOOP/surface/m4_acceptance.py</a> <span class="fine">(self-generated via m4_acceptance.py --dry-run)</span></td></tr>
+<tr><td>acceptance</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-e2e-acceptance.json">m4-direct-e2e-acceptance.json</a> <span class="fine">(committed acceptance JSON)</span></td></tr>
 <tr><td>direct-journeys</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-journeys.json">m4-direct-journeys.json</a></td></tr>
 <tr><td>coverage</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-direct-e2e-coverage.md">m4-direct-e2e-coverage.md</a></td></tr>
 <tr><td>route-coverage</td><td><span class="badge neutral"><span class="ic" aria-hidden="true">•</span>present</span></td><td class="mono-s"><a href="m4-route-coverage.json">m4-route-coverage.json</a></td></tr>
@@ -504,7 +503,7 @@ table.gt tr:hover td{background:#fafbfc}
 </tbody></table>
 </div></details>
 <footer class="ftr">
-<p>Generated 2026-09-06T22:41:05Z by <code>RED_LOOP/surface/m4_dashboard.py</code>. Every number is parsed from a committed artifact — none are hardcoded. Gate status is <strong>DRY-RUN</strong> and may be DRY-RUN until finalize.</p>
+<p>Generated 2026-09-06T22:41:41Z by <code>RED_LOOP/surface/m4_dashboard.py</code>. Every number is parsed from a committed artifact — none are hardcoded. Gate status is <strong>LIVE</strong> and may be DRY-RUN until finalize.</p>
 <p class="fine">Self-contained: inline CSS/JS only, no external network assets. Regenerate with <code>python3 RED_LOOP/surface/m4_dashboard.py</code>.</p>
 </footer>
 <script>
