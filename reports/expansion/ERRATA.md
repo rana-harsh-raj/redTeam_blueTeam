@@ -1,0 +1,13 @@
+# Errata for the 2026-09-07 expansion reports (found by the 2026-09-08 investigation)
+
+| # | Location | Claim | Correction | Evidence |
+|---|---|---|---|---|
+| E1 | `REPLICATION_WORKFLOW_S2P.md` §0 line 6 and §2 step 2; `DOMAIN_CARDS.md` Card 1 "Expected difficulty"; `EXPANSION_REPORT.md` §4 | "its payout leg lands on monolith routes the arena's monolith substitute already implements (`payouts_internal`, `internalContactPayout`, contacts/fund-accounts internal)" | **False.** `ENV2_COMPOSE/substitutes/monolith-stub/server.py` `ROUTES` (lines 1080-1112, 32 routes) implements only `GET /fund_accounts_internal/` (`server.py:264`). `payouts_internal`, `internalContactPayout`, `contacts_internal`, `banking_accounts_internal`, `tax-payment-id` are absent and must be added (3 routes for J-TDS-min). | `investigation/agent-reports/06_s2p_readiness.md` §5 |
+| E2 | `REPLICATION_WORKFLOW_S2P.md` §2 step 1 | "module already vendors stubs — confirm" | Generated Twirp/gRPC stubs are git-ignored in all three repos; `go build ./...` fails until offline codegen (`buf` + `protoc-gen-twirp v8.1.2`) is run. After codegen all binaries build. | `06_s2p_readiness.md` §2 |
+| E3 | `ACCESS_MANIFEST.md` Tier 3 row 19; `EXPANSION_REPORT.md` §5 | "`razorpay/rpc` clone failed on SSL" | Stale: `rpc` exists in the clone root at `27388ee6` (2026-09-04 batch, intact), but it contains no S2P stubs; regeneration from `proto/` is still the right path. | `06_s2p_readiness.md` §1 |
+| E4 | `DOMAIN_CARDS.md` Card 1 "Available source"; `REPLICATION_WORKFLOW_S2P.md` §1 | Pinned clones of vendor-payments / vendor-experience / accounting-integrations are "in clone root" | The working trees and `.git` object stores of every 2026-09-03-batch clone have decayed under `/private/tmp` (vendor-payments 85 files, no resolvable HEAD). Full trees are recoverable from the intact depth-1 packfiles; commits match the report (`20c4f4d5`, `df90df21`, `fc13a0b2`). Re-clone to a durable path before use. | `investigation/INVESTIGATION_2026-09-08.md` F0.1 |
+| E5 | Memory note "M4.1 done + M5 blocked" and `reports/implementation/m5-source-map.md:3` (not an expansion file, recorded here for completeness) | "real workflow engine not cloned / repository unavailable" | `razorpay/workflows` was cloned 2026-09-04 17:33 (`080d71a`) before the M5 reconstruction (2026-09-07). The blocker is the Cadence server runtime dependency, not repository access. | `INVESTIGATION_2026-09-08.md` §5 |
+
+The Source-to-Pay recommendation stands on its remaining grounds (connection strength, source
+recoverability, contract availability, independence from the workflow leg), with the corrected cost of
+three new monolith-stub routes and a one-time codegen step.

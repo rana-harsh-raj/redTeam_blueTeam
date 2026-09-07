@@ -1,0 +1,113 @@
+{
+  "milestone": "M6 \u2014 complete Payouts functional domain",
+  "passed": 7,
+  "total": 15,
+  "accepted": false,
+  "gates": [
+    {
+      "id": "M6-01",
+      "desc": "every reachable repository inventoried (repos-root \u2229 inventory)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "inventory=107 reachable=60 missing=[]"
+    },
+    {
+      "id": "M6-01b",
+      "desc": "deployment artifacts (kube-manifests) inventoried",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "M6-02",
+      "desc": ">=90% of identified critical components represented",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "100.0% of 329"
+    },
+    {
+      "id": "M6-03",
+      "desc": "no known major Payouts business family unmapped",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "families=42 missing=[]"
+    },
+    {
+      "id": "M6-04",
+      "desc": "every P0 family has >=1 PASSing end-to-end journey",
+      "validation_mode": "direct_artifact",
+      "passed": false,
+      "detail": "p0=24 without_pass=['family:accounting', 'family:approval-workflow', 'family:async-workers', 'family:balance-refresh-reservations', 'family:bank-channel-routing', 'family:beneficiary-fund-accounts', 'family:bulk-payouts', 'family:direct-payouts', 'family:failure-reversal-cancellation', 'family:fetch-list', 'family:fts-status-propagation', 'family:fund-transfer-execution', 'family:idempotency-retri"
+    },
+    {
+      "id": "M6-05",
+      "desc": "every P0 path covers success + failure + idempotency + async-state",
+      "validation_mode": "direct_artifact",
+      "passed": false,
+      "detail": "{\"family:accounting\": [\"async_state\", \"failure\", \"idempotency\", \"success\"], \"family:approval-workflow\": [\"async_state\", \"failure\", \"idempotency\", \"success\"], \"family:async-workers\": [\"async_state\", \"failure\", \"idempotency\", \"success\"], \"family:balance-refresh-reservations\": [\"async_state\", \"failure\""
+    },
+    {
+      "id": "M6-06",
+      "desc": "P0 workers/crons executable or explicitly blocked with missing dependency",
+      "validation_mode": "direct_artifact",
+      "passed": false,
+      "detail": "p0_workers=70 unresolved=['cron:x-balances/balance_fetch_per_channel', 'worker:fts/hv::fire_transfer_status_webhook', 'worker:fts/hv::initiate_transfer', 'worker:fts/rbl::direct::check_transfer_status', 'worker:fts/rbl::direct::imps::hv::initiate_transfer', 'worker:fts/rbl::direct::initiate_transfer', 'worker:fts/rbl::direct::slow_lane::initiate_transfer', 'worker:fts/rbl::direct::upi::check_trans"
+    },
+    {
+      "id": "M6-07",
+      "desc": "clean boot from empty state provisioned fresh merchants and ran the P0 suite",
+      "validation_mode": "direct_artifact",
+      "passed": false,
+      "detail": "empty=None merchants=None passed=None"
+    },
+    {
+      "id": "M6-07b",
+      "desc": "clean boot result does not depend on developer-local state",
+      "validation_mode": "direct_artifact",
+      "passed": false,
+      "detail": ""
+    },
+    {
+      "id": "M6-08a",
+      "desc": "domain snapshot manifest (SHAs, config hashes, schema versions, digests, graph version)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "keys=['compose', 'config_digest', 'config_hashes', 'contracts', 'fidelity_counts', 'flags', 'generated_at', 'graph_counts']"
+    },
+    {
+      "id": "M6-08b",
+      "desc": "a repository/contract change produced a diff and reran only affected paths",
+      "validation_mode": "direct_artifact",
+      "passed": false,
+      "detail": "changed=None affected=None"
+    },
+    {
+      "id": "M6-09",
+      "desc": "every graph node carries a fidelity class",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "rows=1995 unlabelled=0"
+    },
+    {
+      "id": "M6-10",
+      "desc": "remaining-access manifest lists every blocked item",
+      "validation_mode": "direct_artifact",
+      "passed": false,
+      "detail": "blocked=2"
+    },
+    {
+      "id": "M6-11",
+      "desc": "on milestone-6 branch or at the twin-m6 tag",
+      "validation_mode": "direct_git",
+      "passed": true,
+      "detail": "milestone-6-complete-payouts-domain"
+    },
+    {
+      "id": "M6-12",
+      "desc": "graph + evidence tracked in git",
+      "validation_mode": "direct_git",
+      "passed": false,
+      "detail": ""
+    }
+  ]
+}

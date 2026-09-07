@@ -1,0 +1,9 @@
+twin refresh status @ 2026-09-07T20:26:19Z
+  snapshots      : 5 (latest reports/domain/snapshots/20260907T174026Z.json, captured 2026-09-07T17:40:25Z)
+  recipes        : 100 in reports/domain/recipes
+  manifest       : reports/domain/SNAPSHOT_MANIFEST.json (generated 2026-09-07T17:19:50Z, 100 recipes)
+  functional graph: present 92f12bdd39c5
+  journey runner : RED_LOOP/m6/journeys/run.py (present)
+  docker         : available
+  build evidence : .local/twin-repos/build-evidence-20260905T160213Z
+  refresh plans  : 4 (reports/domain/refresh/20260907T171846Z-weekly.json, reports/domain/refresh/20260907T171958Z-daily.json, reports/domain/refresh/20260907T171958Z-diff.json)
