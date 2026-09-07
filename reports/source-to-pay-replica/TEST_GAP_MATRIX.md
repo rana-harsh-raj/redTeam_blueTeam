@@ -26,3 +26,7 @@ Focused upstream tests passed after repository-native mock generation in isolate
 - Mock generator warnings remain build-system gaps even though they did not prevent the focused packages from compiling and passing.
 
 Machine-readable commands, exit codes, classifications, and log paths are in `DOMAIN_REPLICAS/source_to_pay/artifacts/upstream-tests.json`.
+
+## Pre-fix clean-checkout infrastructure failure
+
+The first fresh-checkout attempt at commit `3f8bddc` compiled all three repositories, then failed before runtime boot because Docker Hub timed out resolving the optional `docker/dockerfile:1.7` frontend. Classification: `MISSING_EXTERNAL_DEPENDENCY`. This was a build infrastructure failure, not a passing journey. The unused frontend directive was removed because the runtime image uses only standard Dockerfile instructions. The final three-run proof evaluates that revised implementation. The failed attempt is retained under `artifacts/pre-fix/fresh-checkout-tls-timeout/`; it is not relabeled or overwritten.

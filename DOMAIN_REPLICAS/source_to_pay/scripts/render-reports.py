@@ -54,6 +54,8 @@ This percentage measures representation of detected observations, **not detector
 
 ## Clean runs and controls
 
+A prior revision compiled the repositories but failed before boot when Docker Hub timed out resolving an optional Dockerfile frontend. That dependency was removed. The failed attempt is retained under `artifacts/pre-fix/fresh-checkout-tls-timeout/` and classified in the test gap matrix. The three runs below evaluate the revised implementation.
+
 {text}
 
 The independent verifier ignores the harness `accepted` flag and recomputes consumed records, persistence, duplicate/negative controls, tag-back ordering, callback status, correlation and idempotency from raw observations. [CLEAN_RUN_RESULTS.md](CLEAN_RUN_RESULTS.md) explains reset and normalized replay semantics. [TEST_GAP_MATRIX.md](TEST_GAP_MATRIX.md) records focused upstream passes and classified generation/setup failures. Broad unrelated suites were not run.

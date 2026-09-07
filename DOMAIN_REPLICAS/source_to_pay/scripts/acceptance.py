@@ -12,7 +12,7 @@ def module(name,p):
 verify_journey=module('verify_evidence',D/'tests/integration/verify_evidence.py').verify
 
 def main():
- ap=argparse.ArgumentParser();ap.add_argument('--runs',nargs='+',default=['run-1','run-2','run-3']);args=ap.parse_args()
+ ap=argparse.ArgumentParser();ap.add_argument('--runs',nargs='+',default=['final-1','final-2','final-3']);args=ap.parse_args()
  gates=[]; details={};lock=load(D/'source-lock.json'); source=pathlib.Path(os.getenv('S2P_SOURCE_ROOT',lock['source_root'])); head=cmd('git','-C',str(ROOT),'rev-parse','HEAD')
  def gate(n,name,value,evidence):gates.append({'id':f'{n:02d}_{name}','passed':bool(value),'evidence':evidence})
  isolated=subprocess.run(['git','-C',str(ROOT),'merge-base','--is-ancestor',BASE,'HEAD']).returncode==0
