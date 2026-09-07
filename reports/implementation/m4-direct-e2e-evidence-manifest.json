@@ -2,17 +2,17 @@
   "schema_version": "1.0",
   "manifest_kind": "m4-direct-e2e-evidence",
   "milestone": "M4 \u2014 Direct Current-Account, Reconciliation, and Autonomous Architecture Assurance Expansion",
-  "generated_at": "2026-09-06T22:42:26Z",
+  "generated_at": "2026-09-07T11:00:06Z",
   "git": {
-    "branch": "milestone-4-direct-reconciliation",
-    "commit": "63a6d7f91d8bfac6c329e1a1120af0fd7202b405",
+    "branch": "milestone-5-autonomous-discovery-workflows",
+    "commit": "0cb90eb5a5b152698086de06e7fc44d4f94aef9a",
     "worktree_clean": false
   },
   "counts": {
-    "artifacts": 21,
-    "committed": 18,
-    "external": 3,
-    "total_bytes": 482005
+    "artifacts": 19,
+    "committed": 19,
+    "external": 0,
+    "total_bytes": 479325
   },
   "missing_expected": [],
   "policy": {
@@ -159,37 +159,21 @@
       "committed_expected": true
     },
     {
+      "path": "reports/implementation/m4-direct-e2e-soak.json",
+      "sha256": "00205fcdfb408013e4fa5bc7c3f05d473146855fbe4b148cdd9a9f4fc7dcf53e",
+      "bytes": 11395,
+      "kind": "soak_run",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
       "path": "RED_LOOP/m4/gate-catalog.json",
       "sha256": "e8fdc655cdee4391024307cbd8506f3447cd488c12ad58c67578182c5655b3b2",
       "bytes": 9594,
       "kind": "gate_catalog",
       "committed": true,
       "committed_expected": true
-    },
-    {
-      "path": "RED_LOOP/runs/camp-20260906T194534Z-359f06/m4-direct-e2e-soak.json",
-      "sha256": "b8956eb3e96d4740f4b9ac5431b2676f3d7ed3fdaa99104e6454dcbb0b5d6e09",
-      "bytes": 1341,
-      "kind": "soak_run",
-      "committed": false,
-      "committed_expected": false
-    },
-    {
-      "path": "RED_LOOP/runs/camp-20260906T195546Z-990c7f/m4-direct-e2e-soak.json",
-      "sha256": "ea6f1a0d6d17e5f239a3666717b65471e0968522605ff6a83e58a3ec7bb71b1b",
-      "bytes": 1339,
-      "kind": "soak_run",
-      "committed": false,
-      "committed_expected": false
-    },
-    {
-      "path": "RED_LOOP/runs/camp-20260906T200337Z-7511c5/m4-direct-e2e-soak.json",
-      "sha256": "00205fcdfb408013e4fa5bc7c3f05d473146855fbe4b148cdd9a9f4fc7dcf53e",
-      "bytes": 11395,
-      "kind": "soak_run",
-      "committed": false,
-      "committed_expected": false
     }
   ],
-  "self_sha256": "8ccc772c1609bede3a5f1c112a19c3a0e1560a689dbfe25778d695ff024df7f1"
+  "self_sha256": "8410229d6d8e0e9f7525f6d92bafb89fd7851f9f63dfcd20243301fa81b28197"
 }

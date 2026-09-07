@@ -1,0 +1,5 @@
+{"id": "T-M41-01", "task": "git-state-resolve", "status": "done", "note": "HEAD 0cb90eb descends red-loop-m4 3ae1773; no remote"}
+{"id": "T-M41-02", "task": "clean-checkout-defect-repro", "status": "done", "note": "71 pass/2 pending/1 fail reproduced at 3ae1773"}
+{"id": "T-M41-03", "task": "soak-canonical-repair", "status": "done", "note": "latest_soak prefers tracked; manifest tracks soak"}
+{"id": "T-M41-04", "task": "canonical-path-validator", "status": "done", "note": "m41_canonical_paths.py OK=19 paths"}
+{"id": "T-M41-05", "task": "clean-worktree-reproduction", "status": "in_progress", "note": "fresh worktree must score 74/74"}

@@ -134,7 +134,18 @@ def path_of(name):
 
 
 def latest_soak():
-    """Newest m4-direct-e2e-soak.json under RED_LOOP/runs (max campaign id)."""
+    """Resolve the canonical soak evidence.
+
+    M4.1 repair: prefer the TRACKED canonical copy
+    reports/implementation/m4-direct-e2e-soak.json so a clean checkout
+    (which does not contain the git-ignored RED_LOOP/runs/) reproduces
+    acceptance deterministically. The tracked copy is byte-identical
+    (sha256 00205fcd...) to the accepted live soak. Fall back to the
+    newest RED_LOOP/runs/<campaign>/ artifact only when the canonical
+    tracked copy is absent (e.g. a dev tree mid-run before promotion)."""
+    canonical = IMPL / "m4-direct-e2e-soak.json"
+    if canonical.exists():
+        return canonical
     if not RUNS.exists():
         return None
     cands = sorted(RUNS.glob("*/m4-direct-e2e-soak.json"), key=lambda p: p.parent.name)

@@ -52,12 +52,14 @@ COMMITTED_EVIDENCE = [
     "reports/implementation/m4-known-limits.md",
     "reports/implementation/m4-contradictions.md",
     "reports/implementation/m4-fidelity-matrix.csv",
+    # M4.1 repair: the soak run is now a TRACKED canonical artifact
+    # (byte-identical sha256 00205fcd... to the accepted live run) so a clean
+    # checkout hash-binds it without depending on git-ignored RED_LOOP/runs/.
+    "reports/implementation/m4-direct-e2e-soak.json",
     "RED_LOOP/m4/gate-catalog.json",
 ]
-# External (git-ignored) run evidence hash-bound here but never committed.
-EXTERNAL_GLOBS = [
-    "RED_LOOP/runs/*/m4-direct-e2e-soak.json",
-]
+# M4.1 repair: no mandatory evidence is sourced from git-ignored paths anymore.
+EXTERNAL_GLOBS = []
 
 
 def sha256_file(p):
