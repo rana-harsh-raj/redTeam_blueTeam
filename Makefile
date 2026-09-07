@@ -16,7 +16,8 @@ SHELL := /bin/bash
 M4 := scripts/m4.sh
 
 .PHONY: help m4 m4-boot m4-self-check m4-test m4-assurance-run m4-replay \
-        m4-acceptance m4-evidence-verify m4-clean
+        m4-acceptance m4-evidence-verify m4-clean \
+        m41-canonical-paths m41-clean-acceptance m41-evidence-verify
 
 help m4:            ## show the M4 entry points
 	@bash $(M4) help
@@ -44,3 +45,14 @@ m4-evidence-verify: ## build + verify the M4 evidence manifest (G68/G69)
 
 m4-clean:           ## safe teardown of a DISPOSABLE instance (ARGS=<instance-id>; never the live arena)
 	@bash $(M4) clean $(ARGS)
+
+# ---- M4.1 reproducible-evidence entry points -------------------------------
+m41-canonical-paths: ## guard: every mandatory evidence path is tracked, not git-ignored
+	@python3 RED_LOOP/surface/m41_canonical_paths.py
+
+m41-evidence-verify: ## rebuild + verify the evidence manifest from TRACKED evidence (no ignored globs)
+	@python3 RED_LOOP/surface/m4_evidence_manifest.py build
+	@python3 RED_LOOP/surface/m4_evidence_manifest.py verify
+
+m41-clean-acceptance: m41-canonical-paths m41-evidence-verify ## full M4.1 clean-checkout acceptance chain (expect 74/74)
+	@python3 RED_LOOP/surface/m4_acceptance.py --dry-run
