@@ -69,11 +69,11 @@ cd /Users/rana.singh/rzp-source-to-pay-replica
 python3 DOMAIN_REPLICAS/source_to_pay/scripts/clean-run.py --run-id final-1
 python3 DOMAIN_REPLICAS/source_to_pay/scripts/clean-run.py --run-id final-2
 
-git worktree add --detach /Users/rana.singh/rzp-s2p-final-verification-2 HEAD
-cd /Users/rana.singh/rzp-s2p-final-verification-2
-COMPOSE_PROJECT_NAME=s2p_final_verification python3 DOMAIN_REPLICAS/source_to_pay/scripts/clean-run.py --run-id final-3
+git worktree add --detach /Users/rana.singh/rzp-s2p-final-verification-3 HEAD
+cd /Users/rana.singh/rzp-s2p-final-verification-3
+COMPOSE_PROJECT_NAME=s2p_final_verification python3 DOMAIN_REPLICAS/source_to_pay/scripts/clean-run.py --run-id final-4
 
-cp -R DOMAIN_REPLICAS/source_to_pay/artifacts/clean-runs/final-3 /Users/rana.singh/rzp-source-to-pay-replica/DOMAIN_REPLICAS/source_to_pay/artifacts/clean-runs/
+cp -R DOMAIN_REPLICAS/source_to_pay/artifacts/clean-runs/final-4 /Users/rana.singh/rzp-source-to-pay-replica/DOMAIN_REPLICAS/source_to_pay/artifacts/clean-runs/
 cd /Users/rana.singh/rzp-source-to-pay-replica
 python3 DOMAIN_REPLICAS/source_to_pay/scripts/scan-deliverables.py
 ./DOMAIN_REPLICAS/source_to_pay/scripts/acceptance.sh
@@ -85,7 +85,7 @@ Acceptance exit code is nonzero if any hard gate fails, including independently 
 python3 DOMAIN_REPLICAS/source_to_pay/scripts/artifact_integrity.py --verify
 ```
 
-The final proof uses `final-1`, `final-2`, and `final-3`. Earlier development and pre-fix attempts remain separate evidence. Use `acceptance.sh --runs <first> <second> <fresh-final>` for a later proof. The designated last run must be from a different registered worktree at the evaluated final commit, with clean current Git status. Do not remove that verification worktree before acceptance.
+The final proof uses `final-1`, `final-2`, and `final-4`. Earlier development and pre-fix attempts remain separate evidence. Use `acceptance.sh --runs <first> <second> <fresh-final>` for a later proof. The designated last run must be from a different registered worktree at the evaluated final commit, with clean current Git status. Do not remove that verification worktree before acceptance.
 
 ## Regenerating the architecture artifacts
 

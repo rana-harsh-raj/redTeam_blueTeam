@@ -54,7 +54,7 @@ This percentage measures representation of detected observations, **not detector
 
 ## Clean runs and controls
 
-A prior revision compiled the repositories but failed before boot when Docker Hub timed out resolving an optional Dockerfile frontend. That dependency was removed. The failed attempt is retained under `artifacts/pre-fix/fresh-checkout-tls-timeout/` and classified in the test gap matrix. The three runs below evaluate the revised implementation.
+A prior revision compiled the repositories but failed before boot when Docker Hub timed out resolving an optional Dockerfile frontend. A later acceptance wiring error referenced an obsolete verifier check name; the mapping was corrected and a regression test added. That dependency was removed. The failed attempt is retained under `artifacts/pre-fix/fresh-checkout-tls-timeout/` and classified in the test gap matrix. The three runs below evaluate the revised implementation.
 
 {text}
 

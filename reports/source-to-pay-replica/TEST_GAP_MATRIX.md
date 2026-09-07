@@ -30,3 +30,7 @@ Machine-readable commands, exit codes, classifications, and log paths are in `DO
 ## Pre-fix clean-checkout infrastructure failure
 
 The first fresh-checkout attempt at commit `3f8bddc` compiled all three repositories, then failed before runtime boot because Docker Hub timed out resolving the optional `docker/dockerfile:1.7` frontend. Classification: `MISSING_EXTERNAL_DEPENDENCY`. This was a build infrastructure failure, not a passing journey. The unused frontend directive was removed because the runtime image uses only standard Dockerfile instructions. The final three-run proof evaluates that revised implementation. The failed attempt is retained under `artifacts/pre-fix/fresh-checkout-tls-timeout/`; it is not relabeled or overwritten.
+
+## Acceptance wiring regression
+
+All three business runs passed at `f913b5c`, but the final fidelity gate referenced the old `source_pubsub` check name instead of the verifier's stronger `source_pubsub_states` result. Classification: `PRODUCT_OR_REPLICA_DEFECT` in acceptance wiring. The gate failed closed. The mapping now uses the identity-checked state proof, and `test_fidelity_requirements.py` checks every fidelity requirement against actual verifier outputs. The earlier failed acceptance artifact is retained at `artifacts/pre-fix/acceptance-obsolete-proof-name.json`. A new fresh-checkout run is required for the corrected final commit; prior source runs remain valid because runtime inputs are unchanged.
