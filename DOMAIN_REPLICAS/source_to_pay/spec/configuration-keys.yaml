@@ -1,0 +1,10 @@
+schema_version: 1
+source: ../inventory/architecture-inventory.json
+production_state_policy: Values checked into prod.toml are source-observed configuration, not proof of currently deployed state.
+critical_keys:
+  - key: InitiateTdsConfig.Topic
+    source_observed_value: add-tds-entry
+    evidence: vendor-payments/config/prod.toml:336
+  - key: VendorPaymentSourceUpdaterConfig.AIQueueName
+    source_observed_value: prod.x.vendor-payments.accounting-payouts.status-update
+    evidence: vendor-payments/config/prod.toml:273

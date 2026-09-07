@@ -1,0 +1,527 @@
+{
+  "actual_source_symbols": [
+    {
+      "id": "vp.process-message",
+      "line_end": 56,
+      "line_start": 28,
+      "path": "internal/tasks/initiatetds.go",
+      "phase": "ingest",
+      "range_sha256": "2034d2ceb92dcacf8a2d238385887e98b7736a7b635a103c2cf08a3bd31bc792",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "ProcessMessage",
+      "trace_requirements": [
+        "kafka_ingest"
+      ]
+    },
+    {
+      "id": "vp.handle-initiate-tds",
+      "line_end": 37,
+      "line_start": 26,
+      "path": "internal/initiatetds/core.go",
+      "phase": "ingest",
+      "range_sha256": "0021b3a968b36ee630825191ba641bc2a26aaf5b808ccdf5d04fef2dbea2d6ed",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "HandleInitiateTdsJob",
+      "trace_requirements": [
+        "kafka_ingest"
+      ]
+    },
+    {
+      "id": "vp.initiate-tds",
+      "line_end": 3945,
+      "line_start": 3864,
+      "path": "internal/taxpayments/core.go",
+      "phase": "ingest",
+      "range_sha256": "7d55e13cfe06240ecb0271919207bc303f6aaaca1877b19802168de993b3494d",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "InitiateTds",
+      "trace_requirements": [
+        "tds_persisted"
+      ]
+    },
+    {
+      "id": "vp.add-tax-entry",
+      "line_end": 2654,
+      "line_start": 2609,
+      "path": "internal/taxpayments/core.go",
+      "phase": "ingest",
+      "range_sha256": "e04a9f391106a2483b4edfc647e3bcfa466ea5193ee3aad48325314b0d837d0e",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "AddTaxPaymentEntry",
+      "trace_requirements": [
+        "tds_persisted"
+      ]
+    },
+    {
+      "id": "vp.pay",
+      "line_end": 1927,
+      "line_start": 1871,
+      "path": "internal/taxpayments/core.go",
+      "phase": "remittance",
+      "range_sha256": "1c2321c62a81764e53ba6c2152fdff28400997e4188fb11d022815df6c400062",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "Pay",
+      "trace_requirements": [
+        "pay_requested"
+      ]
+    },
+    {
+      "id": "vp.tax-fund-account",
+      "line_end": 53,
+      "line_start": 37,
+      "path": "internal/taxpayments/internal_tax_contact.go",
+      "phase": "remittance",
+      "range_sha256": "a48a9f19bc48e013e5a51b5f66c1b64d95a4b1df5696ee5deb060e79ef929b02",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "FundAccount",
+      "trace_requirements": [
+        "remittance_boundary"
+      ]
+    },
+    {
+      "id": "vp.verify-otp",
+      "line_end": 3981,
+      "line_start": 3971,
+      "path": "internal/taxpayments/core.go",
+      "phase": "remittance",
+      "range_sha256": "67c5431b0dbc9a8f4dbf81bff877969172c6d3a1281a759e901fc0dac0078bdb",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "validateOTPForPayoutCreation",
+      "trace_requirements": [
+        "remittance_boundary"
+      ]
+    },
+    {
+      "id": "vp.lock-create-payout",
+      "line_end": 2003,
+      "line_start": 1929,
+      "path": "internal/taxpayments/core.go",
+      "phase": "remittance",
+      "range_sha256": "16a6462d8e1c80f1298b83de3bb23d0ea2ad417196398e96181a105319677bf1",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "lockTaxPaymentAndCreatePayout",
+      "trace_requirements": [
+        "remittance_created"
+      ]
+    },
+    {
+      "id": "vp.set-money-loading-initiated",
+      "line_end": 2118,
+      "line_start": 2074,
+      "path": "internal/taxpayments/core.go",
+      "phase": "remittance",
+      "range_sha256": "bda905d38e1790b9e825d4b5bdd2f946542d9fb751d751b8975187bdc8a92437",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "updateCurrentStatusAndCreatePayoutAssociationEntry",
+      "trace_requirements": [
+        "money_loading_initiated"
+      ]
+    },
+    {
+      "id": "vp.create-payout",
+      "line_end": 2809,
+      "line_start": 2760,
+      "path": "internal/taxpayments/core.go",
+      "phase": "remittance",
+      "range_sha256": "c4d94775777bc41f5c34b4e0a199039fc7ccb61a181da6a7301ee91776de89de",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "createPayout",
+      "trace_requirements": [
+        "remittance_created"
+      ]
+    },
+    {
+      "id": "vp.internal-contact-payout",
+      "line_end": 155,
+      "line_start": 138,
+      "path": "internal/payout/core.go",
+      "phase": "remittance",
+      "range_sha256": "b06d07bc9fc19d6b67205775b467020c7b22cc37ae27282021f67068928298f8",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "CreatePayoutOnInternalContact",
+      "trace_requirements": [
+        "remittance_created"
+      ]
+    },
+    {
+      "id": "vp.payout-status-change",
+      "line_end": 1242,
+      "line_start": 1179,
+      "path": "internal/apiservice/VpServer.go",
+      "phase": "callback",
+      "range_sha256": "f91a9ecdef1c4887f5baf6a71cde2da7e1bf0b88e37726b8d15792cc3fe77376",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "PayoutStatusChange",
+      "trace_requirements": [
+        "callback_received"
+      ]
+    },
+    {
+      "id": "vp.payout-status-updated",
+      "line_end": 1869,
+      "line_start": 1744,
+      "path": "internal/taxpayments/core.go",
+      "phase": "callback",
+      "range_sha256": "669b3dc2dd6931f86dca97172f819bb083188b5aaeffbee912ae323c38364b90",
+      "repository": "vendor-payments",
+      "status": "ACTUAL_SOURCE_RUNNING",
+      "symbol": "PayoutStatusUpdated",
+      "trace_requirements": [
+        "money_loading_success"
+      ]
+    }
+  ],
+  "compile_verification": "inventory/runtime-compile-proof.json",
+  "generated_graph": "integration/unified-graph-patch.json",
+  "generated_inventory": "inventory/architecture-inventory.json",
+  "policy": {
+    "execution_claim": "Function-level path participation inferred from trace-backed entry, boundary calls, and persisted state; source compilation verifies the full code. This is not line coverage and does not claim every line in each range executed.",
+    "mandatory_selection": "Only nodes explicitly listed here after exact source-range and raw trace/state validation. Keyword candidates are never promoted.",
+    "raw_denominator_unchanged": true
+  },
+  "raw_inventory": "inventory/architecture-inventory.raw.json",
+  "replacement_nodes": [
+    {
+      "deviation_ids": [
+        "D-KAFKA-LOOP"
+      ],
+      "id": "adapter.kafka-consume",
+      "line_end": 102,
+      "line_start": 66,
+      "path": "runtime/source-driver/main.go",
+      "phase": "adapter",
+      "range_sha256": "57fce5c1d920e0db2fa0750a2aed511066a20c7dec2eb4d018608fe38c436ff8",
+      "repository": "replica",
+      "status": "CONTRACT_FAITHFUL_REPLACEMENT",
+      "symbol": "consume",
+      "trace_requirements": [
+        "kafka_ingest"
+      ]
+    },
+    {
+      "deviation_ids": [
+        "D-STARTUP"
+      ],
+      "id": "adapter.http-handler",
+      "line_end": 203,
+      "line_start": 116,
+      "path": "runtime/source-driver/main.go",
+      "phase": "adapter",
+      "range_sha256": "dc3b582803afde15cbae8bbb8aef39f2a5189c3a72a2d0ec0b8d470018b7160b",
+      "repository": "replica",
+      "status": "CONTRACT_FAITHFUL_REPLACEMENT",
+      "symbol": "handler",
+      "trace_requirements": [
+        "pay_requested"
+      ]
+    },
+    {
+      "deviation_ids": [
+        "D-MONOLITH-PAYOUTS"
+      ],
+      "id": "adapter.boundary-get",
+      "line_end": 63,
+      "line_start": 41,
+      "path": "runtime/boundary/server.py",
+      "phase": "adapter",
+      "range_sha256": "81a08a767727e86e7d3645b0867c8d674a70263d3c7bb380420eb45ba9f3bbfd",
+      "repository": "replica",
+      "status": "CONTRACT_FAITHFUL_REPLACEMENT",
+      "symbol": "do_GET",
+      "trace_requirements": [
+        "remittance_boundary"
+      ]
+    },
+    {
+      "deviation_ids": [
+        "D-MONOLITH-PAYOUTS"
+      ],
+      "id": "adapter.boundary-post",
+      "line_end": 101,
+      "line_start": 65,
+      "path": "runtime/boundary/server.py",
+      "phase": "adapter",
+      "range_sha256": "95a95f32e9c1ab19220d31fa2de8844c163c08893ef7018a776ca8117bd28fdf",
+      "repository": "replica",
+      "status": "CONTRACT_FAITHFUL_REPLACEMENT",
+      "symbol": "do_POST",
+      "trace_requirements": [
+        "remittance_boundary"
+      ]
+    },
+    {
+      "deviation_ids": [
+        "D-MONOLITH-PAYOUTS"
+      ],
+      "id": "adapter.boundary-patch",
+      "line_end": 119,
+      "line_start": 103,
+      "path": "runtime/boundary/server.py",
+      "phase": "adapter",
+      "range_sha256": "93f5075744a8d880d985e0288de58ead7a633c83f8fdeeae38eba54d852e429a",
+      "repository": "replica",
+      "status": "CONTRACT_FAITHFUL_REPLACEMENT",
+      "symbol": "do_PATCH",
+      "trace_requirements": [
+        "tds_persisted"
+      ]
+    }
+  ],
+  "required_assertions": [
+    "source_consumer_trace",
+    "source_mysql_entry_persisted",
+    "tagback_persisted",
+    "internal_contact_remittance_created",
+    "payout_callback_reached_actual_source",
+    "terminal_scope_money_loading_success",
+    "idempotency_key_cross_boundary",
+    "correlation_id_cross_boundary"
+  ],
+  "schema_version": 1,
+  "semantic_edges": [
+    {
+      "id": "journey:adapter.kafka-consume->vp.process-message",
+      "source": "adapter.kafka-consume",
+      "source_evidence": [
+        "adapter.kafka-consume",
+        "vp.process-message"
+      ],
+      "target": "vp.process-message",
+      "trace_requirements": [
+        "kafka_ingest"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.process-message->vp.handle-initiate-tds",
+      "source": "vp.process-message",
+      "source_evidence": [
+        "vp.process-message",
+        "vp.handle-initiate-tds"
+      ],
+      "target": "vp.handle-initiate-tds",
+      "trace_requirements": [
+        "kafka_ingest"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.handle-initiate-tds->vp.initiate-tds",
+      "source": "vp.handle-initiate-tds",
+      "source_evidence": [
+        "vp.handle-initiate-tds",
+        "vp.initiate-tds"
+      ],
+      "target": "vp.initiate-tds",
+      "trace_requirements": [
+        "kafka_ingest",
+        "tds_persisted"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.initiate-tds->vp.add-tax-entry",
+      "source": "vp.initiate-tds",
+      "source_evidence": [
+        "vp.initiate-tds",
+        "vp.add-tax-entry"
+      ],
+      "target": "vp.add-tax-entry",
+      "trace_requirements": [
+        "tds_persisted"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.add-tax-entry->adapter.boundary-patch",
+      "source": "vp.add-tax-entry",
+      "source_evidence": [
+        "vp.add-tax-entry",
+        "adapter.boundary-patch"
+      ],
+      "target": "adapter.boundary-patch",
+      "trace_requirements": [
+        "tds_persisted"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:adapter.boundary-patch->adapter.http-handler",
+      "source": "adapter.boundary-patch",
+      "source_evidence": [
+        "adapter.boundary-patch",
+        "adapter.http-handler"
+      ],
+      "target": "adapter.http-handler",
+      "trace_requirements": [
+        "pay_requested",
+        "tds_persisted"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:adapter.http-handler->vp.pay",
+      "source": "adapter.http-handler",
+      "source_evidence": [
+        "adapter.http-handler",
+        "vp.pay"
+      ],
+      "target": "vp.pay",
+      "trace_requirements": [
+        "pay_requested"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.pay->vp.tax-fund-account",
+      "source": "vp.pay",
+      "source_evidence": [
+        "vp.pay",
+        "vp.tax-fund-account"
+      ],
+      "target": "vp.tax-fund-account",
+      "trace_requirements": [
+        "pay_requested",
+        "remittance_boundary"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.tax-fund-account->adapter.boundary-get",
+      "source": "vp.tax-fund-account",
+      "source_evidence": [
+        "vp.tax-fund-account",
+        "adapter.boundary-get"
+      ],
+      "target": "adapter.boundary-get",
+      "trace_requirements": [
+        "remittance_boundary"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:adapter.boundary-get->vp.verify-otp",
+      "source": "adapter.boundary-get",
+      "source_evidence": [
+        "adapter.boundary-get",
+        "vp.verify-otp"
+      ],
+      "target": "vp.verify-otp",
+      "trace_requirements": [
+        "remittance_boundary"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.verify-otp->vp.lock-create-payout",
+      "source": "vp.verify-otp",
+      "source_evidence": [
+        "vp.verify-otp",
+        "vp.lock-create-payout"
+      ],
+      "target": "vp.lock-create-payout",
+      "trace_requirements": [
+        "remittance_boundary",
+        "remittance_created"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.lock-create-payout->vp.set-money-loading-initiated",
+      "source": "vp.lock-create-payout",
+      "source_evidence": [
+        "vp.lock-create-payout",
+        "vp.set-money-loading-initiated"
+      ],
+      "target": "vp.set-money-loading-initiated",
+      "trace_requirements": [
+        "money_loading_initiated",
+        "remittance_created"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.set-money-loading-initiated->vp.create-payout",
+      "source": "vp.set-money-loading-initiated",
+      "source_evidence": [
+        "vp.set-money-loading-initiated",
+        "vp.create-payout"
+      ],
+      "target": "vp.create-payout",
+      "trace_requirements": [
+        "money_loading_initiated",
+        "remittance_created"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.create-payout->vp.internal-contact-payout",
+      "source": "vp.create-payout",
+      "source_evidence": [
+        "vp.create-payout",
+        "vp.internal-contact-payout"
+      ],
+      "target": "vp.internal-contact-payout",
+      "trace_requirements": [
+        "remittance_created"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.internal-contact-payout->adapter.boundary-post",
+      "source": "vp.internal-contact-payout",
+      "source_evidence": [
+        "vp.internal-contact-payout",
+        "adapter.boundary-post"
+      ],
+      "target": "adapter.boundary-post",
+      "trace_requirements": [
+        "remittance_boundary",
+        "remittance_created"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:adapter.boundary-post->vp.payout-status-change",
+      "source": "adapter.boundary-post",
+      "source_evidence": [
+        "adapter.boundary-post",
+        "vp.payout-status-change"
+      ],
+      "target": "vp.payout-status-change",
+      "trace_requirements": [
+        "callback_received",
+        "remittance_boundary"
+      ],
+      "type": "selected_journey_next"
+    },
+    {
+      "id": "journey:vp.payout-status-change->vp.payout-status-updated",
+      "source": "vp.payout-status-change",
+      "source_evidence": [
+        "vp.payout-status-change",
+        "vp.payout-status-updated"
+      ],
+      "target": "vp.payout-status-updated",
+      "trace_requirements": [
+        "callback_received",
+        "money_loading_success"
+      ],
+      "type": "selected_journey_next"
+    }
+  ],
+  "source_sha": "20c4f4d59970471067388afea8b1d65ac39ee126",
+  "trace_artifact": "inventory/runtime-proof.json"
+}

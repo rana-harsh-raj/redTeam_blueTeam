@@ -1,0 +1,11 @@
+.build/
+.local/
+.runtime/
+__pycache__/
+*.pyc
+# Post-commit observations are generated locally. This avoids self-referential
+# commit/artifact hashes and leaves the evaluated tracked tree clean.
+artifacts/*
+!artifacts/isolation-before.json
+!artifacts/build-source-recovery.json
+!artifacts/build-limitations.json

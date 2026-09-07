@@ -1,0 +1,7 @@
+[extend]
+useDefault = true
+
+[[allowlists]]
+description = "Versioned extractor IDs: config_member_access followed by its deterministic 16-character SHA-256 suffix. This allowlist does not cover source values or credential fields."
+regexTarget = "match"
+regexes = ['''config_member_access:[0-9a-f]{16}"''']

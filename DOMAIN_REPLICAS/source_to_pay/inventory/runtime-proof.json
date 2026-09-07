@@ -1,0 +1,877 @@
+{
+  "accepted": true,
+  "assertions": [
+    {
+      "id": "source_consumer_trace",
+      "passed": true
+    },
+    {
+      "id": "source_mysql_entry_persisted",
+      "passed": true
+    },
+    {
+      "id": "tagback_persisted",
+      "passed": true
+    },
+    {
+      "id": "duplicate_zero_delta",
+      "passed": true
+    },
+    {
+      "id": "invalid_payload_no_state_change",
+      "passed": true
+    },
+    {
+      "id": "missing_contact_rejected_by_actual_pay",
+      "passed": true
+    },
+    {
+      "id": "current_month_rejected",
+      "passed": true
+    },
+    {
+      "id": "internal_contact_remittance_created",
+      "passed": true
+    },
+    {
+      "id": "payout_callback_reached_actual_source",
+      "passed": true
+    },
+    {
+      "id": "terminal_scope_money_loading_success",
+      "passed": true
+    },
+    {
+      "id": "repeated_pay_no_duplicate",
+      "passed": true
+    },
+    {
+      "id": "idempotency_key_cross_boundary",
+      "passed": true
+    },
+    {
+      "id": "correlation_id_cross_boundary",
+      "passed": true
+    }
+  ],
+  "boundary": {
+    "audit": [
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817295,
+        "id": 1,
+        "merchant_id": "S2PMerchant001",
+        "method": "PATCH",
+        "path": "/v1/payouts_internal/pout_00000000000001/tax-payment-id",
+        "request": "{\"body\": {\"tax_payment_id\": \"txpy_TZIaqLNICumrDr\"}, \"headers\": {\"X-Dashboard-User-Id\": \"\", \"X-Payout-Idempotency\": \"\", \"X-Razorpay-Account\": \"S2PMerchant001\", \"X-Razorpay-TaskId\": \"s2p-golden-20260820-001\", \"X-Request-ID\": \"s2p-golden-20260820-001\"}}",
+        "response": "{\"status\": \"SUCCESS\"}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817296,
+        "id": 2,
+        "merchant_id": "S2PMerchant001",
+        "method": "GET",
+        "path": "/v1/contacts_internal/",
+        "request": "{}",
+        "response": "{\"count\": 0, \"entity\": \"collection\", \"items\": []}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817297,
+        "id": 3,
+        "merchant_id": "S2PMerchant001",
+        "method": "GET",
+        "path": "/v1/contacts_internal/",
+        "request": "{}",
+        "response": "{\"count\": 1, \"entity\": \"collection\", \"items\": [{\"fund_accounts\": [{\"account_type\": \"bank_account\", \"active\": true, \"bank_account\": {\"account_number\": \"000000000000001\", \"bank_name\": \"Synthetic Bank\", \"ifsc\": \"TEST0000001\", \"name\": \"RZPX PRIVATE LIMITED\"}, \"contact_id\": \"cont_tax_internal_1\", \"created_at\": 1788817297, \"entity\": \"fund_account\", \"id\": \"fa_tax_internal_1\"}], \"id\": \"cont_tax_internal_1\", \"name\": \"Razorpay Tax Payment\", \"type\": \"rzp_tax_pay\"}]}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817297,
+        "id": 4,
+        "merchant_id": "S2PMerchant001",
+        "method": "POST",
+        "path": "/v1/vendor-payments/verify-otp",
+        "request": "{\"account_number\": \"7878780011\", \"action\": \"create_payout\", \"amount\": 12500, \"fund_account_id\": \"fa_tax_internal_1\", \"otp\": \"754081\", \"token\": \"synthetic-token\", \"total_payout_amount\": 0, \"user_id\": \"S2PUser0000001\"}",
+        "response": "{\"Success\": true}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817297,
+        "id": 5,
+        "merchant_id": "S2PMerchant001",
+        "method": "GET",
+        "path": "/v1/banking_accounts_internal",
+        "request": "{}",
+        "response": "{\"count\": 1, \"items\": [{\"account_number\": \"7878780011\", \"account_type\": \"direct\", \"balance\": {\"balance\": 10000000}, \"channel\": \"rbl\", \"id\": \"ba_s2p_001\"}]}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817297,
+        "id": 6,
+        "merchant_id": "S2PMerchant001",
+        "method": "GET",
+        "path": "/v1/contacts_internal/",
+        "request": "{}",
+        "response": "{\"count\": 1, \"entity\": \"collection\", \"items\": [{\"fund_accounts\": [{\"account_type\": \"bank_account\", \"active\": true, \"bank_account\": {\"account_number\": \"000000000000001\", \"bank_name\": \"Synthetic Bank\", \"ifsc\": \"TEST0000001\", \"name\": \"RZPX PRIVATE LIMITED\"}, \"contact_id\": \"cont_tax_internal_1\", \"created_at\": 1788817297, \"entity\": \"fund_account\", \"id\": \"fa_tax_internal_1\"}], \"id\": \"cont_tax_internal_1\", \"name\": \"Razorpay Tax Payment\", \"type\": \"rzp_tax_pay\"}]}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817297,
+        "id": 7,
+        "merchant_id": "S2PMerchant001",
+        "method": "POST",
+        "path": "/v1/vendor-payments/verify-otp",
+        "request": "{\"account_number\": \"7878780011\", \"action\": \"create_payout\", \"amount\": 12500, \"fund_account_id\": \"fa_tax_internal_1\", \"otp\": \"754081\", \"token\": \"synthetic-token\", \"total_payout_amount\": 0, \"user_id\": \"S2PUser0000001\"}",
+        "response": "{\"Success\": true}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817297,
+        "id": 8,
+        "merchant_id": "S2PMerchant001",
+        "method": "GET",
+        "path": "/v1/banking_accounts_internal",
+        "request": "{}",
+        "response": "{\"count\": 1, \"items\": [{\"account_number\": \"7878780011\", \"account_type\": \"direct\", \"balance\": {\"balance\": 10000000}, \"channel\": \"rbl\", \"id\": \"ba_s2p_001\"}]}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817297,
+        "id": 9,
+        "merchant_id": "S2PMerchant001",
+        "method": "POST",
+        "path": "/v1/internalContactPayout/",
+        "request": "{\"body\": {\"account_number\": \"7878780011\", \"amount\": 12500, \"currency\": \"INR\", \"fund_account_id\": \"fa_tax_internal_1\", \"mode\": \"IMPS\", \"narration\": \"Synthetic TDS remittance\", \"notes\": {\"journey\": \"synthetic\"}, \"origin\": \"dashboard\", \"purpose\": \"tax_payment\", \"queue_if_low_balance\": false, \"reference_id\": \"\", \"source_details\": [{\"priority\": 1, \"source_id\": \"txpy_TZIaqLNICumrDr\", \"source_type\": \"tax_payments\"}]}, \"headers\": {\"X-Dashboard-User-Id\": \"S2PUser0000001\", \"X-Payout-Idempotency\": \"TZIasR3AshzVsn\", \"X-Razorpay-Account\": \"S2PMerchant001\", \"X-Razorpay-TaskId\": \"s2p-golden-20260820-001\", \"X-Request-ID\": \"s2p-golden-20260820-001\"}}",
+        "response": "{\"amount\": 12500, \"created_at\": 1788817297, \"currency\": \"INR\", \"entity\": \"payout\", \"fund_account_id\": \"fa_tax_internal_1\", \"id\": \"pout_a4804a002fe143\", \"mode\": \"IMPS\", \"narration\": \"Synthetic TDS remittance\", \"notes\": {\"journey\": \"synthetic\"}, \"purpose\": \"tax_payment\", \"queue_if_low_balance\": false, \"reference_id\": \"\", \"source_details\": [{\"priority\": 1, \"source_id\": \"txpy_TZIaqLNICumrDr\", \"source_type\": \"tax_payments\"}], \"status\": \"created\"}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817297,
+        "id": 10,
+        "merchant_id": "S2PMerchant001",
+        "method": "GET",
+        "path": "/v1/contacts_internal/",
+        "request": "{}",
+        "response": "{\"count\": 1, \"entity\": \"collection\", \"items\": [{\"fund_accounts\": [{\"account_type\": \"bank_account\", \"active\": true, \"bank_account\": {\"account_number\": \"000000000000001\", \"bank_name\": \"Synthetic Bank\", \"ifsc\": \"TEST0000001\", \"name\": \"RZPX PRIVATE LIMITED\"}, \"contact_id\": \"cont_tax_internal_1\", \"created_at\": 1788817297, \"entity\": \"fund_account\", \"id\": \"fa_tax_internal_1\"}], \"id\": \"cont_tax_internal_1\", \"name\": \"Razorpay Tax Payment\", \"type\": \"rzp_tax_pay\"}]}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817297,
+        "id": 11,
+        "merchant_id": "S2PMerchant001",
+        "method": "POST",
+        "path": "/v1/vendor-payments/verify-otp",
+        "request": "{\"account_number\": \"7878780011\", \"action\": \"create_payout\", \"amount\": 12500, \"fund_account_id\": \"fa_tax_internal_1\", \"otp\": \"754081\", \"token\": \"synthetic-token\", \"total_payout_amount\": 0, \"user_id\": \"S2PUser0000001\"}",
+        "response": "{\"Success\": true}",
+        "response_code": 200
+      },
+      {
+        "app": "vendor_payments",
+        "created_at": 1788817297,
+        "id": 12,
+        "merchant_id": "S2PMerchant001",
+        "method": "GET",
+        "path": "/v1/banking_accounts_internal",
+        "request": "{}",
+        "response": "{\"count\": 1, \"items\": [{\"account_number\": \"7878780011\", \"account_type\": \"direct\", \"balance\": {\"balance\": 10000000}, \"channel\": \"rbl\", \"id\": \"ba_s2p_001\"}]}",
+        "response_code": 200
+      }
+    ],
+    "payouts": [
+      {
+        "id": "pout_00000000000001",
+        "idempotency_key": "source:pout_00000000000001",
+        "merchant_id": "S2PMerchant001",
+        "request": "{}",
+        "response": "{}",
+        "status": "processed",
+        "tax_payment_id": "txpy_TZIaqLNICumrDr"
+      },
+      {
+        "id": "pout_a4804a002fe143",
+        "idempotency_key": "TZIasR3AshzVsn",
+        "merchant_id": "S2PMerchant001",
+        "request": "{\"account_number\": \"7878780011\", \"amount\": 12500, \"currency\": \"INR\", \"fund_account_id\": \"fa_tax_internal_1\", \"mode\": \"IMPS\", \"narration\": \"Synthetic TDS remittance\", \"notes\": {\"journey\": \"synthetic\"}, \"origin\": \"dashboard\", \"purpose\": \"tax_payment\", \"queue_if_low_balance\": false, \"reference_id\": \"\", \"source_details\": [{\"priority\": 1, \"source_id\": \"txpy_TZIaqLNICumrDr\", \"source_type\": \"tax_payments\"}]}",
+        "response": "{\"amount\": 12500, \"created_at\": 1788817297, \"currency\": \"INR\", \"entity\": \"payout\", \"fund_account_id\": \"fa_tax_internal_1\", \"id\": \"pout_a4804a002fe143\", \"mode\": \"IMPS\", \"narration\": \"Synthetic TDS remittance\", \"notes\": {\"journey\": \"synthetic\"}, \"purpose\": \"tax_payment\", \"queue_if_low_balance\": false, \"reference_id\": \"\", \"source_details\": [{\"priority\": 1, \"source_id\": \"txpy_TZIaqLNICumrDr\", \"source_type\": \"tax_payments\"}], \"status\": \"created\"}",
+        "status": "created",
+        "tax_payment_id": null
+      }
+    ]
+  },
+  "callback": {
+    "body": {
+      "success": true
+    },
+    "code": 200
+  },
+  "database": {
+    "records": [
+      {
+        "added_to_tax_payment_id": "txpy_TZIaqLNICumrDr",
+        "adjusted_against_record_id": "0",
+        "amount": "12500",
+        "created_at": "1787207400",
+        "entity_id": "pout_00000000000001",
+        "entity_tax_id": "",
+        "entity_type": "payout",
+        "id": "1",
+        "idempotency_key": "NULL",
+        "line_item_id": "",
+        "metadata": "null",
+        "record_type": "credit"
+      }
+    ],
+    "replica_trace": [
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817290",
+        "id": "1",
+        "kind": "source_booted",
+        "payload": "{\"clock\": \"2026-08-20T06:30:00Z\", \"source_sha\": \"20c4f4d59970471067388afea8b1d65ac39ee126\"}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817295",
+        "id": "2",
+        "kind": "kafka_received",
+        "payload": "{\"key\": \"s2p-golden-20260820-001\", \"topic\": \"add-tds-entry\", \"value\": \"{\\\"request_id\\\":\\\"s2p-golden-20260820-001\\\",\\\"data\\\":{\\\"merchant_id\\\":\\\"S2PMerchant001\\\",\\\"entity_id\\\":\\\"pout_00000000000001\\\",\\\"entity_type\\\":\\\"payout\\\",\\\"entity_status\\\":\\\"processed\\\",\\\"tds_amount\\\":12500,\\\"tds_category_id\\\":1}}\", \"offset\": 0, \"partition\": 0}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817295",
+        "id": "3",
+        "kind": "source_pubsub",
+        "payload": "{\"data\": {\"Id\": \"\", \"Cin\": \"\", \"Crn\": \"\", \"Status\": \"unpaid\", \"ChallanFileId\": \"\", \"FailureReason\": \"\"}, \"topic\": \"tax_payment_updated\"}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817295",
+        "id": "4",
+        "kind": "source_handler_returned",
+        "payload": "{\"key\": \"s2p-golden-20260820-001\", \"topic\": \"add-tds-entry\", \"value\": \"{\\\"request_id\\\":\\\"s2p-golden-20260820-001\\\",\\\"data\\\":{\\\"merchant_id\\\":\\\"S2PMerchant001\\\",\\\"entity_id\\\":\\\"pout_00000000000001\\\",\\\"entity_type\\\":\\\"payout\\\",\\\"entity_status\\\":\\\"processed\\\",\\\"tds_amount\\\":12500,\\\"tds_category_id\\\":1}}\", \"offset\": 0, \"partition\": 0}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817295",
+        "id": "5",
+        "kind": "kafka_committed",
+        "payload": "{\"key\": \"s2p-golden-20260820-001\", \"topic\": \"add-tds-entry\", \"value\": \"{\\\"request_id\\\":\\\"s2p-golden-20260820-001\\\",\\\"data\\\":{\\\"merchant_id\\\":\\\"S2PMerchant001\\\",\\\"entity_id\\\":\\\"pout_00000000000001\\\",\\\"entity_type\\\":\\\"payout\\\",\\\"entity_status\\\":\\\"processed\\\",\\\"tds_amount\\\":12500,\\\"tds_category_id\\\":1}}\", \"offset\": 0, \"partition\": 0}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817295",
+        "id": "6",
+        "kind": "kafka_received",
+        "payload": "{\"key\": \"s2p-golden-20260820-001\", \"topic\": \"add-tds-entry\", \"value\": \"{\\\"request_id\\\":\\\"s2p-golden-20260820-001\\\",\\\"data\\\":{\\\"merchant_id\\\":\\\"S2PMerchant001\\\",\\\"entity_id\\\":\\\"pout_00000000000001\\\",\\\"entity_type\\\":\\\"payout\\\",\\\"entity_status\\\":\\\"processed\\\",\\\"tds_amount\\\":12500,\\\"tds_category_id\\\":1}}\", \"offset\": 1, \"partition\": 0}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817295",
+        "id": "7",
+        "kind": "source_handler_returned",
+        "payload": "{\"key\": \"s2p-golden-20260820-001\", \"topic\": \"add-tds-entry\", \"value\": \"{\\\"request_id\\\":\\\"s2p-golden-20260820-001\\\",\\\"data\\\":{\\\"merchant_id\\\":\\\"S2PMerchant001\\\",\\\"entity_id\\\":\\\"pout_00000000000001\\\",\\\"entity_type\\\":\\\"payout\\\",\\\"entity_status\\\":\\\"processed\\\",\\\"tds_amount\\\":12500,\\\"tds_category_id\\\":1}}\", \"offset\": 1, \"partition\": 0}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817295",
+        "id": "8",
+        "kind": "kafka_committed",
+        "payload": "{\"key\": \"s2p-golden-20260820-001\", \"topic\": \"add-tds-entry\", \"value\": \"{\\\"request_id\\\":\\\"s2p-golden-20260820-001\\\",\\\"data\\\":{\\\"merchant_id\\\":\\\"S2PMerchant001\\\",\\\"entity_id\\\":\\\"pout_00000000000001\\\",\\\"entity_type\\\":\\\"payout\\\",\\\"entity_status\\\":\\\"processed\\\",\\\"tds_amount\\\":12500,\\\"tds_category_id\\\":1}}\", \"offset\": 1, \"partition\": 0}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817296",
+        "id": "9",
+        "kind": "kafka_received",
+        "payload": "{\"key\": \"s2p-golden-20260820-001\", \"topic\": \"add-tds-entry\", \"value\": \"{\\\"request_id\\\":\\\"s2p-golden-20260820-001\\\",\\\"data\\\":{\\\"merchant_id\\\":\\\"S2PMerchant001\\\",\\\"entity_id\\\":\\\"pout_00000000000001\\\",\\\"entity_type\\\":\\\"invalid_entity\\\",\\\"entity_status\\\":\\\"processed\\\",\\\"tds_amount\\\":12500,\\\"tds_category_id\\\":1}}\", \"offset\": 2, \"partition\": 0}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817296",
+        "id": "10",
+        "kind": "source_handler_returned",
+        "payload": "{\"key\": \"s2p-golden-20260820-001\", \"topic\": \"add-tds-entry\", \"value\": \"{\\\"request_id\\\":\\\"s2p-golden-20260820-001\\\",\\\"data\\\":{\\\"merchant_id\\\":\\\"S2PMerchant001\\\",\\\"entity_id\\\":\\\"pout_00000000000001\\\",\\\"entity_type\\\":\\\"invalid_entity\\\",\\\"entity_status\\\":\\\"processed\\\",\\\"tds_amount\\\":12500,\\\"tds_category_id\\\":1}}\", \"offset\": 2, \"partition\": 0}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817296",
+        "id": "11",
+        "kind": "kafka_committed",
+        "payload": "{\"key\": \"s2p-golden-20260820-001\", \"topic\": \"add-tds-entry\", \"value\": \"{\\\"request_id\\\":\\\"s2p-golden-20260820-001\\\",\\\"data\\\":{\\\"merchant_id\\\":\\\"S2PMerchant001\\\",\\\"entity_id\\\":\\\"pout_00000000000001\\\",\\\"entity_type\\\":\\\"invalid_entity\\\",\\\"entity_status\\\":\\\"processed\\\",\\\"tds_amount\\\":12500,\\\"tds_category_id\\\":1}}\", \"offset\": 2, \"partition\": 0}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817296",
+        "id": "12",
+        "kind": "pay_requested",
+        "payload": "{\"otp\": \"754081\", \"mode\": \"IMPS\", \"notes\": {\"journey\": \"synthetic\"}, \"token\": \"synthetic-token\", \"amount\": 12500, \"purpose\": \"tax_payment\", \"user_id\": \"S2PUser0000001\", \"narration\": \"Synthetic TDS remittance\", \"merchant_id\": \"S2PMerchant001\", \"account_number\": \"7878780011\", \"tax_payment_id\": \"txpy_TZIaqLNICumrDr\"}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817297",
+        "id": "13",
+        "kind": "pay_requested",
+        "payload": "{\"otp\": \"754081\", \"mode\": \"IMPS\", \"notes\": {\"journey\": \"synthetic\"}, \"token\": \"synthetic-token\", \"amount\": 12500, \"purpose\": \"tax_payment\", \"user_id\": \"S2PUser0000001\", \"narration\": \"Synthetic TDS remittance\", \"merchant_id\": \"S2PMerchant001\", \"account_number\": \"7878780011\", \"tax_payment_id\": \"txpy_TZIaqLNICumrDr\"}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817297",
+        "id": "14",
+        "kind": "clock_advanced",
+        "payload": "{\"unix\": 1788220800}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817297",
+        "id": "15",
+        "kind": "pay_requested",
+        "payload": "{\"otp\": \"754081\", \"mode\": \"IMPS\", \"notes\": {\"journey\": \"synthetic\"}, \"token\": \"synthetic-token\", \"amount\": 12500, \"purpose\": \"tax_payment\", \"user_id\": \"S2PUser0000001\", \"narration\": \"Synthetic TDS remittance\", \"merchant_id\": \"S2PMerchant001\", \"account_number\": \"7878780011\", \"tax_payment_id\": \"txpy_TZIaqLNICumrDr\"}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817297",
+        "id": "16",
+        "kind": "source_pubsub",
+        "payload": "{\"data\": {\"Id\": \"txpy_TZIaqLNICumrDr\", \"Cin\": \"\", \"Crn\": \"\", \"Status\": \"money_loading_initiated\", \"ChallanFileId\": \"\", \"FailureReason\": \"\"}, \"topic\": \"tax_payment_updated\"}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817297",
+        "id": "17",
+        "kind": "callback_received",
+        "payload": "{\"payout_id\": \"pout_a4804a002fe143\", \"source_id\": \"txpy_TZIaqLNICumrDr\", \"merchant_id\": \"S2PMerchant001\", \"source_type\": \"tax_payments\", \"payout_status\": \"processed\"}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817297",
+        "id": "18",
+        "kind": "source_pubsub",
+        "payload": "{\"data\": {\"Id\": \"txpy_TZIaqLNICumrDr\", \"Cin\": \"\", \"Crn\": \"\", \"Status\": \"money_loading_success\", \"ChallanFileId\": \"\", \"FailureReason\": \"\"}, \"topic\": \"tax_payment_updated\"}"
+      },
+      {
+        "correlation_id": "s2p-golden-20260820-001",
+        "created_at": "1788817297",
+        "id": "19",
+        "kind": "pay_requested",
+        "payload": "{\"otp\": \"754081\", \"mode\": \"IMPS\", \"notes\": {\"journey\": \"synthetic\"}, \"token\": \"synthetic-token\", \"amount\": 12500, \"purpose\": \"tax_payment\", \"user_id\": \"S2PUser0000001\", \"narration\": \"Synthetic TDS remittance\", \"merchant_id\": \"S2PMerchant001\", \"account_number\": \"7878780011\", \"tax_payment_id\": \"txpy_TZIaqLNICumrDr\"}"
+      }
+    ],
+    "tax_payments": [
+      {
+        "assessment_year": "2027-28",
+        "cancelled_at": "0",
+        "cancelled_by": "",
+        "cancelled_comment": "",
+        "created_at": "1787207400",
+        "created_by": "",
+        "deduction_month": "1785522600",
+        "due_date": "1788805800",
+        "failed_at": "NULL",
+        "failure_reason": "",
+        "id": "txpy_TZIaqLNICumrDr",
+        "internal_status": "money_loading_success",
+        "is_user_created": "0",
+        "manually_paid_at": "0",
+        "manually_paid_metadata": "null",
+        "manually_paid_user_id": "",
+        "marked_as_paid": "0",
+        "merchant_id": "S2PMerchant001",
+        "processed_at": "0",
+        "status": "processing",
+        "tax_type": "tds",
+        "tax_type_id": "tds_TZIaqLNLAOLSPd",
+        "updated_at": "1788220800"
+      }
+    ],
+    "tds": [
+      {
+        "challan_file_id": "",
+        "challan_number": "281",
+        "cin": "",
+        "created_at": "1787207400",
+        "crn": "",
+        "education_cess": "0",
+        "fees": "0",
+        "id": "tds_TZIaqLNLAOLSPd",
+        "interest": "0",
+        "major_head": "non_company_deductee",
+        "minor_head": "payable_by_tax_payer",
+        "others": "0",
+        "pan_detail": "",
+        "penalty": "0",
+        "penalty_code": "",
+        "surcharge": "0",
+        "tax_amount": "0",
+        "tax_payment_id": "txpy_TZIaqLNICumrDr",
+        "tds_category_id": "1",
+        "updated_at": "1788220800"
+      }
+    ],
+    "vendorpayment_payout": [
+      {
+        "account_number": "7878780011",
+        "amount": "12500",
+        "auto_cancelled_at": "0",
+        "created_at": "1788220800",
+        "enable_workflow_for_internal_contact": "0",
+        "fund_account_id": "fa_tax_internal_1",
+        "id": "1",
+        "idempotency_key": "TZIasR3AshzVsn",
+        "is_icici2fa_request": "0",
+        "merchant_id": "S2PMerchant001",
+        "narration": "Synthetic TDS remittance",
+        "notes": "{\"journey\":\"synthetic\"}",
+        "payment_method": "",
+        "payout_id": "pout_a4804a002fe143",
+        "payout_mode": "IMPS",
+        "payout_status": "processed",
+        "purpose": "tax_payment",
+        "queue_if_low_balance": "0",
+        "request_status": "success",
+        "scheduled_at": "0",
+        "source_details": "[{\"source_id\":\"txpy_TZIaqLNICumrDr\",\"source_type\":\"tax_payments\",\"priority\":1}]",
+        "tax_payment_id": "txpy_TZIaqLNICumrDr",
+        "updated_at": "1788220800",
+        "user_id": "S2PUser0000001",
+        "vendor_advance_id": "",
+        "vendor_payments_id": "",
+        "vendor_settlement_id": ""
+      }
+    ]
+  },
+  "duration_monotonic_seconds": 3.605899,
+  "environment": {
+    "compose_sha256": "02b511674626fdf9981cc98b6e8e2d114f7af6befe7cf0a612aa2b440d0e388d",
+    "image_lock": {
+      "actual_source": {
+        "env_key": "S2P_SOURCE_IMAGE",
+        "generated_by": "scripts/build-runtime.sh",
+        "immutable_build_record": "artifacts/build-runtime.json"
+      },
+      "images": {
+        "boundary_base": "python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea",
+        "kafka": "redpandadata/redpanda:v24.2.18@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+        "mysql": "mysql:8.4@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+        "redis": "redis:7-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+      },
+      "schema_version": "s2p-image-lock/v1"
+    }
+  },
+  "ids": {
+    "merchant_id": "S2PMerchant001",
+    "remittance_payout_id": "pout_a4804a002fe143",
+    "source_payout_id": "pout_00000000000001",
+    "tax_payment_id": "txpy_TZIaqLNICumrDr"
+  },
+  "input": {
+    "data": {
+      "entity_id": "pout_00000000000001",
+      "entity_status": "processed",
+      "entity_type": "payout",
+      "merchant_id": "S2PMerchant001",
+      "tds_amount": 12500,
+      "tds_category_id": 1
+    },
+    "request_id": "s2p-golden-20260820-001"
+  },
+  "kafka_messages": [
+    {
+      "key": "s2p-golden-20260820-001",
+      "offset": 0,
+      "partition": 0,
+      "timestamp": 1788817295033,
+      "topic": "add-tds-entry",
+      "value": "{\"request_id\":\"s2p-golden-20260820-001\",\"data\":{\"merchant_id\":\"S2PMerchant001\",\"entity_id\":\"pout_00000000000001\",\"entity_type\":\"payout\",\"entity_status\":\"processed\",\"tds_amount\":12500,\"tds_category_id\":1}}"
+    },
+    {
+      "key": "s2p-golden-20260820-001",
+      "offset": 1,
+      "partition": 0,
+      "timestamp": 1788817295863,
+      "topic": "add-tds-entry",
+      "value": "{\"request_id\":\"s2p-golden-20260820-001\",\"data\":{\"merchant_id\":\"S2PMerchant001\",\"entity_id\":\"pout_00000000000001\",\"entity_type\":\"payout\",\"entity_status\":\"processed\",\"tds_amount\":12500,\"tds_category_id\":1}}"
+    },
+    {
+      "key": "s2p-golden-20260820-001",
+      "offset": 2,
+      "partition": 0,
+      "timestamp": 1788817296180,
+      "topic": "add-tds-entry",
+      "value": "{\"request_id\":\"s2p-golden-20260820-001\",\"data\":{\"merchant_id\":\"S2PMerchant001\",\"entity_id\":\"pout_00000000000001\",\"entity_type\":\"invalid_entity\",\"entity_status\":\"processed\",\"tds_amount\":12500,\"tds_category_id\":1}}"
+    }
+  ],
+  "negative": {
+    "body": {
+      "error": "tax contact get: merchant_id S2PMerchant001: no such contact"
+    },
+    "code": 422
+  },
+  "schema_version": "s2p-golden-evidence/v1",
+  "snapshots": {
+    "after_duplicate": {
+      "records": [
+        {
+          "added_to_tax_payment_id": "txpy_TZIaqLNICumrDr",
+          "adjusted_against_record_id": "0",
+          "amount": "12500",
+          "created_at": "1787207400",
+          "entity_id": "pout_00000000000001",
+          "entity_tax_id": "",
+          "entity_type": "payout",
+          "id": "1",
+          "idempotency_key": "NULL",
+          "line_item_id": "",
+          "metadata": "null",
+          "record_type": "credit"
+        }
+      ],
+      "tax_payments": [
+        {
+          "assessment_year": "2027-28",
+          "cancelled_at": "0",
+          "cancelled_by": "",
+          "cancelled_comment": "",
+          "created_at": "1787207400",
+          "created_by": "",
+          "deduction_month": "1785522600",
+          "due_date": "1788805800",
+          "failed_at": "NULL",
+          "failure_reason": "",
+          "id": "txpy_TZIaqLNICumrDr",
+          "internal_status": "unpaid",
+          "is_user_created": "0",
+          "manually_paid_at": "0",
+          "manually_paid_metadata": "null",
+          "manually_paid_user_id": "",
+          "marked_as_paid": "0",
+          "merchant_id": "S2PMerchant001",
+          "processed_at": "0",
+          "status": "unpaid",
+          "tax_type": "tds",
+          "tax_type_id": "tds_TZIaqLNLAOLSPd",
+          "updated_at": "1787207400"
+        }
+      ]
+    },
+    "after_negative": {
+      "boundary": {
+        "audit": [
+          {
+            "app": "vendor_payments",
+            "created_at": 1788817295,
+            "id": 1,
+            "merchant_id": "S2PMerchant001",
+            "method": "PATCH",
+            "path": "/v1/payouts_internal/pout_00000000000001/tax-payment-id",
+            "request": "{\"body\": {\"tax_payment_id\": \"txpy_TZIaqLNICumrDr\"}, \"headers\": {\"X-Dashboard-User-Id\": \"\", \"X-Payout-Idempotency\": \"\", \"X-Razorpay-Account\": \"S2PMerchant001\", \"X-Razorpay-TaskId\": \"s2p-golden-20260820-001\", \"X-Request-ID\": \"s2p-golden-20260820-001\"}}",
+            "response": "{\"status\": \"SUCCESS\"}",
+            "response_code": 200
+          },
+          {
+            "app": "vendor_payments",
+            "created_at": 1788817296,
+            "id": 2,
+            "merchant_id": "S2PMerchant001",
+            "method": "GET",
+            "path": "/v1/contacts_internal/",
+            "request": "{}",
+            "response": "{\"count\": 0, \"entity\": \"collection\", \"items\": []}",
+            "response_code": 200
+          }
+        ],
+        "payouts": [
+          {
+            "id": "pout_00000000000001",
+            "idempotency_key": "source:pout_00000000000001",
+            "merchant_id": "S2PMerchant001",
+            "request": "{}",
+            "response": "{}",
+            "status": "processed",
+            "tax_payment_id": "txpy_TZIaqLNICumrDr"
+          }
+        ]
+      },
+      "vendorpayment_payout": []
+    },
+    "before_duplicate": {
+      "records": [
+        {
+          "added_to_tax_payment_id": "txpy_TZIaqLNICumrDr",
+          "adjusted_against_record_id": "0",
+          "amount": "12500",
+          "created_at": "1787207400",
+          "entity_id": "pout_00000000000001",
+          "entity_tax_id": "",
+          "entity_type": "payout",
+          "id": "1",
+          "idempotency_key": "NULL",
+          "line_item_id": "",
+          "metadata": "null",
+          "record_type": "credit"
+        }
+      ],
+      "tax_payments": [
+        {
+          "assessment_year": "2027-28",
+          "cancelled_at": "0",
+          "cancelled_by": "",
+          "cancelled_comment": "",
+          "created_at": "1787207400",
+          "created_by": "",
+          "deduction_month": "1785522600",
+          "due_date": "1788805800",
+          "failed_at": "NULL",
+          "failure_reason": "",
+          "id": "txpy_TZIaqLNICumrDr",
+          "internal_status": "unpaid",
+          "is_user_created": "0",
+          "manually_paid_at": "0",
+          "manually_paid_metadata": "null",
+          "manually_paid_user_id": "",
+          "marked_as_paid": "0",
+          "merchant_id": "S2PMerchant001",
+          "processed_at": "0",
+          "status": "unpaid",
+          "tax_type": "tds",
+          "tax_type_id": "tds_TZIaqLNLAOLSPd",
+          "updated_at": "1787207400"
+        }
+      ]
+    },
+    "before_negative": {
+      "boundary": {
+        "audit": [
+          {
+            "app": "vendor_payments",
+            "created_at": 1788817295,
+            "id": 1,
+            "merchant_id": "S2PMerchant001",
+            "method": "PATCH",
+            "path": "/v1/payouts_internal/pout_00000000000001/tax-payment-id",
+            "request": "{\"body\": {\"tax_payment_id\": \"txpy_TZIaqLNICumrDr\"}, \"headers\": {\"X-Dashboard-User-Id\": \"\", \"X-Payout-Idempotency\": \"\", \"X-Razorpay-Account\": \"S2PMerchant001\", \"X-Razorpay-TaskId\": \"s2p-golden-20260820-001\", \"X-Request-ID\": \"s2p-golden-20260820-001\"}}",
+            "response": "{\"status\": \"SUCCESS\"}",
+            "response_code": 200
+          }
+        ],
+        "payouts": [
+          {
+            "id": "pout_00000000000001",
+            "idempotency_key": "source:pout_00000000000001",
+            "merchant_id": "S2PMerchant001",
+            "request": "{}",
+            "response": "{}",
+            "status": "processed",
+            "tax_payment_id": "txpy_TZIaqLNICumrDr"
+          }
+        ]
+      },
+      "vendorpayment_payout": []
+    }
+  },
+  "source_response": {
+    "current_month_pay": {
+      "body": {
+        "error": "tax_payment_id: txpy_TZIaqLNICumrDr cannot be paid before Tue, 01 Sep 2026"
+      },
+      "code": 422
+    },
+    "pay": {
+      "body": {
+        "associated_entity_count": {
+          "payout": 1
+        },
+        "id": "txpy_TZIaqLNICumrDr",
+        "last_record_added_at": 1787207400,
+        "manually_paid_by": null,
+        "payouts": null,
+        "penalties": null,
+        "tax_payment": {
+          "assessment_year": "2027-28",
+          "cancellation_comment": "",
+          "cancelled_at": 0,
+          "cancelled_by": null,
+          "created_at": 1787207400,
+          "created_by": null,
+          "deduction_month": 1785522600,
+          "due_date": 1788805800,
+          "failed_at": null,
+          "failure_reason": "",
+          "gst": {
+            "cess_amount": 0,
+            "cgst_amount": 0,
+            "cin": "",
+            "cpin": "",
+            "created_at": 0,
+            "expiry_date": 0,
+            "gib_transaction_id": "",
+            "gstin": "",
+            "id": "",
+            "igst_amount": 0,
+            "sgst_amount": 0,
+            "tax_payment_id": "",
+            "total_amount": 0,
+            "updated_at": 0
+          },
+          "id": "txpy_TZIaqLNICumrDr",
+          "internal_status": "money_loading_initiated",
+          "is_user_created": false,
+          "manually_paid_at": 0,
+          "manually_paid_metadata": null,
+          "manually_paid_user_id": "",
+          "marked_as_paid": 0,
+          "merchant_id": "S2PMerchant001",
+          "processed_at": 0,
+          "status": "processing",
+          "tax_type": "tds",
+          "tax_type_id": "tds_TZIaqLNLAOLSPd",
+          "tds": {
+            "challan_file_id": "",
+            "challan_number": "281",
+            "cin": "",
+            "created_at": 1787207400,
+            "crn": "",
+            "education_cess": 0,
+            "fees": 0,
+            "id": "tds_TZIaqLNLAOLSPd",
+            "interest": 0,
+            "major_head": "non_company_deductee",
+            "major_head_code": "0021",
+            "minor_head": "payable_by_tax_payer",
+            "minor_head_code": "200",
+            "others": 0,
+            "pan_detail": "",
+            "penalty": 0,
+            "penalty_code": "",
+            "surcharge": 0,
+            "tax_amount": 0,
+            "tax_payment_id": "txpy_TZIaqLNICumrDr",
+            "tax_type": "tds",
+            "tds_category": null,
+            "tds_category_id": 1
+          },
+          "updated_at": 1788220800
+        },
+        "total_amount": 12500,
+        "total_invoice_count": 0,
+        "total_tax_amount": 12500,
+        "total_tax_penalty_amount": 0
+      },
+      "code": 200
+    },
+    "repeated_pay": {
+      "body": {
+        "error": "cannot verify existing payment statuses for tax payment txpy_TZIaqLNICumrDr"
+      },
+      "code": 422
+    },
+    "tax_payment": {
+      "body": {
+        "associated_entity_count": {
+          "payout": 1
+        },
+        "id": "txpy_TZIaqLNICumrDr",
+        "last_record_added_at": 1787207400,
+        "manually_paid_by": null,
+        "payouts": null,
+        "penalties": null,
+        "tax_payment": {
+          "assessment_year": "2027-28",
+          "cancellation_comment": "",
+          "cancelled_at": 0,
+          "cancelled_by": null,
+          "created_at": 1787207400,
+          "created_by": null,
+          "deduction_month": 1785522600,
+          "due_date": 1788805800,
+          "failed_at": null,
+          "failure_reason": "",
+          "gst": {
+            "cess_amount": 0,
+            "cgst_amount": 0,
+            "cin": "",
+            "cpin": "",
+            "created_at": 0,
+            "expiry_date": 0,
+            "gib_transaction_id": "",
+            "gstin": "",
+            "id": "",
+            "igst_amount": 0,
+            "sgst_amount": 0,
+            "tax_payment_id": "",
+            "total_amount": 0,
+            "updated_at": 0
+          },
+          "id": "txpy_TZIaqLNICumrDr",
+          "internal_status": "money_loading_success",
+          "is_user_created": false,
+          "manually_paid_at": 0,
+          "manually_paid_metadata": null,
+          "manually_paid_user_id": "",
+          "marked_as_paid": 0,
+          "merchant_id": "S2PMerchant001",
+          "processed_at": 0,
+          "status": "processing",
+          "tax_type": "tds",
+          "tax_type_id": "tds_TZIaqLNLAOLSPd",
+          "tds": {
+            "challan_file_id": "",
+            "challan_number": "281",
+            "cin": "",
+            "created_at": 1787207400,
+            "crn": "",
+            "education_cess": 0,
+            "fees": 0,
+            "id": "tds_TZIaqLNLAOLSPd",
+            "interest": 0,
+            "major_head": "non_company_deductee",
+            "major_head_code": "0021",
+            "minor_head": "payable_by_tax_payer",
+            "minor_head_code": "200",
+            "others": 0,
+            "pan_detail": "",
+            "penalty": 0,
+            "penalty_code": "",
+            "surcharge": 0,
+            "tax_amount": 0,
+            "tax_payment_id": "txpy_TZIaqLNICumrDr",
+            "tax_type": "tds",
+            "tds_category": null,
+            "tds_category_id": 1
+          },
+          "updated_at": 1788220800
+        },
+        "total_amount": 12500,
+        "total_invoice_count": 0,
+        "total_tax_amount": 12500,
+        "total_tax_penalty_amount": 0
+      },
+      "code": 200
+    }
+  },
+  "source_sha": "20c4f4d59970471067388afea8b1d65ac39ee126",
+  "topics": {
+    "input": "add-tds-entry",
+    "observed_partitions": [
+      {
+        "EPOCH": "1",
+        "HIGH-WATERMARK": "3",
+        "LEADER": "0",
+        "LOG-START-OFFSET": "0",
+        "PARTITION": "0",
+        "REPLICAS": "[0]"
+      }
+    ]
+  }
+}

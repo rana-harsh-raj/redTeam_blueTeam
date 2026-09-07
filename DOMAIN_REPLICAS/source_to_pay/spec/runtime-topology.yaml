@@ -1,0 +1,57 @@
+schema_version: 2
+status: MIXED_RUNTIME_FIDELITY
+scope: selected_tds_accrual_and_remittance_slice
+fidelity_authority: ../inventory/runtime-fidelity-overlay.json
+runtime:
+  compose_project: s2p_architecture_replica
+  network: {name: project_scoped_s2p_internal, internal: true, production_connectivity: false}
+  processes:
+    - id: s2p.runtime.vp-source-driver
+      status: CONTRACT_FAITHFUL_REPLACEMENT
+      implementation: runtime/source-driver/main.go
+      role: additive startup, Kafka transport, local command/callback adapter, and evidence capture
+      limitation: This adapter is not an upstream vendor-payments binary or public API.
+    - id: s2p.runtime.vendor-payments-selected-functions
+      status: ACTUAL_SOURCE_RUNNING
+      source_sha: 20c4f4d59970471067388afea8b1d65ac39ee126
+      role: unchanged ProcessMessage, InitiateTds, repository persistence, Pay, payout client, and PayoutStatusChange functions
+      evidence: [inventory/runtime-fidelity-overlay.json, artifacts/journey-latest.json]
+    - id: s2p.runtime.monolith-payouts-boundary
+      status: CONTRACT_FAITHFUL_REPLACEMENT
+      implementation: runtime/boundary/server.py
+      role: selected caller-visible API-monolith and Payouts contracts only
+    - {id: s2p.runtime.kafka, status: CONTRACT_FAITHFUL_REPLACEMENT, implementation: Redpanda single broker with Kafka protocol}
+    - {id: s2p.runtime.mysql, status: CONTRACT_FAITHFUL_REPLACEMENT, role: actual vendor-payments migrations and repository state}
+    - {id: s2p.runtime.redis, status: CONTRACT_FAITHFUL_REPLACEMENT, role: source cache and distributed-lock interface}
+journey:
+  phases:
+    - id: accrual_and_tagback
+      sequence:
+        - fixture producer -> Kafka add-tds-entry
+        - source-driver Kafka adapter -> actual tasks.initiatetds.ProcessMessage
+        - actual InitiateTds -> actual MySQL tax_payments/tds/records
+        - actual taxpayments API caller -> boundary PATCH source payout tax-payment-id
+      note: Kafka ingestion creates or updates the monthly TDS aggregate and tags the originating payout. It does not initiate remittance.
+    - id: explicit_remittance
+      trigger: POST /_replica/pay with generated PayTaxPaymentRequest JSON
+      sequence:
+        - source-driver command adapter -> actual taxpayments.Core.Pay
+        - actual source -> boundary contact/fund-account/banking-account/OTP contracts
+        - actual source -> boundary POST internalContactPayout
+        - actual source -> MySQL vendorpayment_payout and money_loading_initiated
+    - id: callback
+      trigger: POST /_replica/status with PayoutStatusChangeRequest JSON
+      sequence:
+        - source-driver callback adapter -> actual VPServer.PayoutStatusChange
+        - actual source -> PayoutStatusUpdated -> money_loading_success
+      deviation: The adapter bypasses production SourceUpdater transport and Twirp authentication; the unchanged source callback implementation runs after it.
+excluded_from_running_topology:
+  - component: accounting-integrations
+    status: SOURCE_MAPPED_NOT_RUNNING
+    note: Its shared Kafka topic is source-mapped, but the executed TDS remittance callback emits no accounting event.
+  - {component: vendor-experience, status: SOURCE_MAPPED_NOT_RUNNING}
+  - component: original-vendor-payments-binaries
+    status: SOURCE_MAPPED_NOT_RUNNING
+    note: Built for compilation evidence; the source driver selects the runnable function slice.
+  - {component: direct-tax-filing-and-challan, status: SOURCE_MAPPED_NOT_RUNNING}
+production_unknowns: [replica_counts, service_discovery, deployed_flags, secret_values, active_topic_overrides, production_transport_security]

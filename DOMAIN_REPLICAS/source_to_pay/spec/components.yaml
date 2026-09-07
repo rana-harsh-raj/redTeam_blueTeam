@@ -1,0 +1,35 @@
+schema_version: 2
+components:
+  - id: s2p.vendor-payments.selected-functions
+    repository: vendor-payments
+    source_sha: 20c4f4d59970471067388afea8b1d65ac39ee126
+    status: ACTUAL_SOURCE_RUNNING
+    roles: [tds-ingestion, monthly-tax-payment-persistence, remittance-orchestration, payout-status-processing]
+    runtime_host: s2p.runtime.vp-source-driver
+    execution_scope: Function-level participation from inventory/runtime-fidelity-overlay.json; the original service process and all other functions are not claimed running.
+  - id: s2p.source-driver
+    repository: replica
+    status: CONTRACT_FAITHFUL_REPLACEMENT
+    roles: [narrow-startup, kafka-consume-adapter, local-command-adapter, callback-adapter, evidence-trace]
+    evidence: [runtime/source-driver/main.go, runtime/source-driver/boot.go]
+  - id: s2p.api-monolith-payouts-boundary
+    repository: replica
+    source_contract_repositories: [api, payouts, vendor-payments]
+    status: CONTRACT_FAITHFUL_REPLACEMENT
+    roles: [internal-app-contact-type-gate, contact-and-fund-account-fixture, banking-account-fixture, otp-verification, payout-create, payout-idempotency, payout-tagback]
+    state: project-scoped SQLite
+    scope_warning: Selected caller-visible contracts only; not a general API-monolith or Payouts implementation.
+  - {id: s2p.kafka-local, repository: replica, status: CONTRACT_FAITHFUL_REPLACEMENT, roles: [add-tds-entry-transport]}
+  - {id: s2p.mysql-local, repository: replica, status: CONTRACT_FAITHFUL_REPLACEMENT, roles: [vendor-payments-source-migrations, source-repository-state, replica-trace]}
+  - {id: s2p.redis-local, repository: replica, status: CONTRACT_FAITHFUL_REPLACEMENT, roles: [source-cache, source-distributed-lock]}
+  - id: s2p.vendor-payments.original-processes
+    repository: vendor-payments
+    status: SOURCE_MAPPED_NOT_RUNNING
+    roles: [web, worker, workerv2, migration, ap-worker, ocr-worker, accounting-payouts-cron]
+    note: Binaries compile, but the selected runtime does not start them.
+  - {id: s2p.vendor-experience, repository: vendor-experience, status: SOURCE_MAPPED_NOT_RUNNING, roles: [vendor-portal, vendor-workflows]}
+  - id: s2p.accounting-integrations
+    repository: accounting-integrations
+    status: SOURCE_MAPPED_NOT_RUNNING
+    roles: [accounting-payout-status-consumer, external-accounting-connectors]
+    note: The accounting status topic is outside the executed journey and receives no invented event.

@@ -1,0 +1,690 @@
+{
+  "files": [
+    {
+      "path": ".agents/.agent-ready-version",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/devstack/assets/chart-unification/report-templates/drift-check-template.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/devstack/assets/chart-unification/report-templates/ingress-baseline-template.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/devstack/assets/chart-unification/report-templates/ingress-postdeploy-template.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/devstack/examples/investigator/alert-investigation-example.md",
+      "repository": "vendor-payments",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/devstack/examples/investigator/e2e-failure-investigation-example.md",
+      "repository": "vendor-payments",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/devstack/examples/investigator/health-check-output-example.md",
+      "repository": "vendor-payments",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".claude/.gitignore",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".claude/agents/.gitkeep",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".claude/commands/.gitkeep",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".claude/hooks/.gitkeep",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".claude/output-styles/.gitkeep",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".claude/skills",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".cursorignore",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".dockerignore",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".gitignore",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "bin/.gitkeep",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "dangerfile.js",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "generated_endpoints/buf.lock",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "genericAI/buf.lock",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/pdfgeneration/html/test_header_template.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/pdfgeneration/html/test_template.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/pdfgeneration/templates/goods_received_note_issued_template.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/pdfgeneration/templates/goods_received_note_issued_template_footer.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/pdfgeneration/templates/purchase_order_issued_template.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/pdfgeneration/templates/purchase_order_issued_template_footer.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/tests/mem.pprof",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/vendorsettlement/templates/vendor_advice_pdf.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/vendorsettlement/templates/vendor_advice_pdf_header.html",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "pre-commit",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "queries.txt",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "scripts/ai_proto_modules",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "scripts/openapi_modules",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "scripts/vp_proto_modules",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "tests/e2e/resources/batchfiles/itf_item_success.csv",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "tests/e2e/resources/batchfiles/itf_po_success.csv",
+      "repository": "vendor-payments",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "tests/e2e/resources/invoices/invoice-test.png",
+      "repository": "vendor-payments",
+      "rule": "binary_or_dependency_lock"
+    },
+    {
+      "path": "tests/e2e/resources/purchase_order/sample_po.pdf",
+      "repository": "vendor-payments",
+      "rule": "binary_or_dependency_lock"
+    },
+    {
+      "path": "tests/e2e/resources/referencefiles/sample_reference_file.pdf",
+      "repository": "vendor-payments",
+      "rule": "binary_or_dependency_lock"
+    },
+    {
+      "path": "tests/e2e/tests/vendor-payments/invoice-test.png",
+      "repository": "vendor-payments",
+      "rule": "binary_or_dependency_lock"
+    },
+    {
+      "path": ".agents/.agent-ready-version",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/cell-readiness/assets/Cell-readiness-checklist.csv",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/cell-readiness/requirements.txt",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/cost-analysis/requirements.txt",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/dev-productivity-analytics/references/source-schemas/Aggregate Table Query.docx",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/dev-productivity-analytics/references/source-schemas/Data Dictionary Table_ de_metrics.sf_emp_data .docx",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/dev-productivity-analytics/references/source-schemas/GitHub PR Tables Data Dictionary & Metrics Definition.docx",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/dev-productivity-analytics/references/source-schemas/Tableau Calcualtion For PR Data.docx",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/integration-tester/examples/README.md",
+      "repository": "vendor-experience",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/integration-tester/examples/package.json",
+      "repository": "vendor-experience",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/integration-tester/examples/payment-server.js",
+      "repository": "vendor-experience",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/integration-tester/scripts/http-client.js",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/report-compare/.env.example",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/report-compare/.gitignore",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/report-compare/requirements.txt",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/skill-creator/LICENSE.txt",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/swe-agent/references/examples/payment-entity-complete.md",
+      "repository": "vendor-experience",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/.gitignore",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/examples/example_1_top_expensive_queries_by_cluster.md",
+      "repository": "vendor-experience",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/examples/example_2_analyze_and_optimize_query.md",
+      "repository": "vendor-experience",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/examples/example_3_cluster_insights_analysis.md",
+      "repository": "vendor-experience",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/examples/example_4_understanding_query_cost_metrics.md",
+      "repository": "vendor-experience",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/examples/example_5_compare_query_optimization.md",
+      "repository": "vendor-experience",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".claude/.gitignore",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".claude/skills",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".cursor/skills",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".cursorignore",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".dockerignore",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".editorconfig",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".env.example",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".gitignore",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".semgrepignore",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "buf.lock",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "build/.gitkeep",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "config/dev.toml.sample",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "deployment/dev/monitoring/caddy/Caddyfile",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "docs/.gitkeep",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "functional-test.exclusions",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "integration-coverage-sonar.exclusions",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/database/migrations/.gitignore",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "scripts/git_hooks/pre-commit",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "scripts/proto_modules",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "unit-test.exclusions",
+      "repository": "vendor-experience",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/.agent-ready-version",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/polyfills/agentsmd/.gitkeep",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/cost-analysis/requirements.txt",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/dev-productivity-analytics/references/source-schemas/Aggregate Table Query.docx",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/dev-productivity-analytics/references/source-schemas/Data Dictionary Table_ de_metrics.sf_emp_data .docx",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/dev-productivity-analytics/references/source-schemas/GitHub PR Tables Data Dictionary & Metrics Definition.docx",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/dev-productivity-analytics/references/source-schemas/Tableau Calcualtion For PR Data.docx",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/eks-version-analyzer/.gitignore",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/fe-unit-test-generator/scripts/analyze-components.js",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/fe-unit-test-generator/scripts/analyze-routes.js",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/fe-unit-test-generator/scripts/analyze-test-setup.js",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/fe-unit-test-generator/scripts/generate-jest-tests.js",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/flow-analyzer/assets/example_asset.txt",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/flow-analyzer/references/html-template.html",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/integration-tester/examples/README.md",
+      "repository": "accounting-integrations",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/integration-tester/examples/package.json",
+      "repository": "accounting-integrations",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/integration-tester/examples/payment-server.js",
+      "repository": "accounting-integrations",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/integration-tester/scripts/http-client.js",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/report-compare/.env.example",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/report-compare/.gitignore",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/report-compare/requirements.txt",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/skill-creator/LICENSE.txt",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/sop-generator/scripts/__pycache__/logger_util.cpython-311.pyc",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/sop-generator/scripts/__pycache__/logger_util.cpython-313.pyc",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/sop-generator/scripts/__pycache__/match_scenario.cpython-311.pyc",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/sop-generator/scripts/__pycache__/review_scenario.cpython-311.pyc",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/sop-generator/scripts/__pycache__/save_scenario.cpython-311.pyc",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/sop-generator/scripts/__pycache__/update_problem.cpython-311.pyc",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/swe-agent/references/examples/payment-entity-complete.md",
+      "repository": "accounting-integrations",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/.gitignore",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/examples/example_1_top_expensive_queries_by_cluster.md",
+      "repository": "accounting-integrations",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/examples/example_2_analyze_and_optimize_query.md",
+      "repository": "accounting-integrations",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/examples/example_3_cluster_insights_analysis.md",
+      "repository": "accounting-integrations",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/examples/example_4_understanding_query_cost_metrics.md",
+      "repository": "accounting-integrations",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".agents/skills/trino-analyzer/examples/example_5_compare_query_optimization.md",
+      "repository": "accounting-integrations",
+      "rule": "excluded_path_component"
+    },
+    {
+      "path": ".claude/.gitignore",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".claude/skills",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".cursorignore",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".dockerignore",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".editorconfig",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".github/CODEOWNERS",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".gitignore",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": ".gitkeep",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "bin/.gitkeep",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "buf.lock",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "dangerfile.js",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "db_queries.txt",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "docs/.gitkeep",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "internal/database/migrations/.gitkeep",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "scripts/git_hooks/pre-commit",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    },
+    {
+      "path": "scripts/proto_modules",
+      "repository": "accounting-integrations",
+      "rule": "unsupported_non_architecture_extension"
+    }
+  ],
+  "rules": [
+    "binary_or_dependency_lock",
+    "excluded_path_component",
+    "unsupported_non_architecture_extension"
+  ],
+  "schema_version": 1
+}
