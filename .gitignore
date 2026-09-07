@@ -8,3 +8,4 @@ ARCHITECTURE_EXPLORER/dist/
 .local/
 ENV2_COMPOSE/secrets/merchant-keys/
 ENV2_COMPOSE/.runtime/
+ENV2_COMPOSE/substitutes/workflow-engine/*.db

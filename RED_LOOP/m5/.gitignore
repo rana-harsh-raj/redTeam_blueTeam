@@ -1,0 +1,11 @@
+# runtime-only benchmark/campaign state (never evidence)
+.run/
+.builds/
+.control/
+benchmark/.builds/
+benchmark/.run/
+*.db
+*.db-*
+*.jsonl
+__pycache__/
+*.pyc
