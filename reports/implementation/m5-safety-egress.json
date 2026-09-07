@@ -1,0 +1,19 @@
+{
+  "attestation": "m5-safety-egress",
+  "generated_at": "2026-09-07T12:35:06Z",
+  "no_production_access": true,
+  "no_staging_access": true,
+  "no_real_customer_data": true,
+  "no_real_credentials": true,
+  "no_corporate_service_access": true,
+  "loopback_only_services": true,
+  "single_external_host_is_model_gateway": true,
+  "external_hosts_contacted": [
+    "llm-gateway.razorpay.com"
+  ],
+  "allowed_external_host": "llm-gateway.razorpay.com",
+  "plane_separation_public_manifest_clean": true,
+  "forbidden_host_references_in_source": [],
+  "synthetic_identities_only": true,
+  "pass": true
+}

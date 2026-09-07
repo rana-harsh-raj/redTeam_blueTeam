@@ -1,24 +1,51 @@
-# Milestone 4.1 + 5 — Execution Plan
+# M5 execution — as built and run
 
-Branch: `milestone-5-autonomous-discovery-workflows` (base: M4 evidence line, HEAD 0cb90eb ← tag red-loop-m4 3ae1773).
-No remote. Historical tags red-loop-m3.1 (3a044f8) / red-loop-m4 (3ae1773) frozen — never retagged.
+Branch: `milestone-5-finish-autonomous-discovery` (base: tag
+`assurance-m4.1-reproducible` = ef4ba72). No remote. Historical tags
+`red-loop-m3.1` (3a044f8), `red-loop-m4` (3ae1773), `assurance-m4.1-reproducible`
+(ef4ba72) are frozen — never retagged.
 
-## Phase 0 — M4.1 Reproducible Evidence Repair  [IN PROGRESS]
-Defect (independently reproduced, M41-02): a clean checkout of red-loop-m4 (3ae1773) scores
-**71 pass / 2 pending (G64,G69) / 1 fail (G68)** because G64/G68/G69 keyed off the git-ignored
-`RED_LOOP/runs/<campaign>/m4-direct-e2e-soak.json` instead of the tracked canonical copy.
-Repair (this branch only, M4 tag untouched):
-  1. `latest_soak()` now prefers tracked `reports/implementation/m4-direct-e2e-soak.json`
-     (byte-identical sha256 00205fcd… to the accepted live run) — honest relocation, not a weakening.
-  2. Evidence manifest: soak moved into COMMITTED_EVIDENCE; EXTERNAL_GLOBS emptied.
-  3. New active guard `RED_LOOP/surface/m41_canonical_paths.py` fails if any mandatory evidence
-     path is git-ignored / untracked / outside checkout / missing.
-Proof target (M41-09): a fresh worktree at the M5 tip reproduces 74/74 with empty RED_LOOP/runs.
+This supersedes the earlier planned version of this file. It records what was
+actually built and executed.
 
-## Phases 1–8 — M5 Autonomous Discovery on Maker-Checker Workflows  [PLANNED]
-Infra-heavy (≈66-container arena + external LLM gateway, multi-hour campaign). Sequenced after
-M4.1 passes clean-checkout reproduction. Honest verdict discipline: a completed platform with no
-live model-originated finding is PLATFORM_COMPLETE_DISCOVERY_NOT_PROVEN, never ACCEPTED.
+## What was built
+
+1. **Workflow decision engine** (`ENV2_COMPOSE/substitutes/workflow-engine`) — a
+   durable, restart-recoverable, high-fidelity RECONSTRUCTION of the Razorpay
+   Workflows/Cadence approval engine (the real repo was unavailable). Orgs,
+   actor identities/roles, approval policies, eligible approvers, maker/checker
+   separation, N-of-M approvals, cancel/expiry, stale-version, duplicate-request,
+   duplicate-approval, terminal-state protection, audit history, idempotent
+   retried callbacks. Create + callbacks byte-compatible with real payouts
+   routes. Labelled in `FIDELITY.md`; grounded in `m5-source-map.md`.
+
+2. **Business journey** — `RED_LOOP/m5/scenario_suite.py`: 12/12 scenarios pass
+   end-to-end over HTTP against live engine + payout-sink processes, including a
+   real process restart mid-flow and an approve/reject race.
+
+3. **Blind benchmark** — `RED_LOOP/m5/benchmark/`: fixed reference + 4 physical
+   mutants (cross_org, separation, counting, terminal) across 4 invariant
+   families, each a single surgical source patch. Worker-facing manifest is
+   strictly separated from the control-plane answer key.
+
+4. **Autonomous Director** — `RED_LOOP/m5/campaign/`: model-driven workers
+   establish valid baselines, form falsifiable hypotheses, run bounded
+   experiments, dedup hypotheses + experiment signatures, learn from validation
+   errors, reallocate strategy, recover an injected worker interruption, and
+   raise model-originated candidates to a hidden verifier.
+
+## What was run
+
+A full campaign over all 5 environments × 3 models (kimi-k3 primary, gpt-5.5
+reproducer, glm-5p2) × 8 rounds. Result: **all 4 hidden defects discovered
+across all 4 invariant families, 0 false findings on the fixed reference**;
+every finding independently verified (reproduced twice, fresh IDs, negative
+control) and cross-model reproduced. Metrics far exceed thresholds (see
+`m5-campaign-summary.json`, `m5-acceptance.json`).
 
 ## Verdict discipline
-Flagship M5 gates (M5-41..M5-52) are NOT waived if the campaign finds nothing.
+
+A completed platform with no live model-originated verified finding would be
+PLATFORM_COMPLETE_DISCOVERY_NOT_PROVEN — never "accepted". That contingency did
+not arise: discovery was proven. See `m5-known-limits.md` for honest scope
+boundaries (standalone vs full-arena integration; reconstruction fidelity).

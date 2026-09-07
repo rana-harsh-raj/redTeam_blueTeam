@@ -1,15 +1,59 @@
-# M5 / M4.1 Decisions
+# M5 decisions
 
-- **D5-001** Base the M5 branch on the M4 evidence line (HEAD 0cb90eb, descends from tag 3ae1773).
-  Rationale: it is the tip of the accepted M4 state and includes the finalize housekeeping commit.
-- **D5-002** Repair the soak-path defect by making the TRACKED canonical
-  `reports/implementation/m4-direct-e2e-soak.json` authoritative. Verified byte-identical
-  (sha256 00205fcd…) to the accepted live soak, so acceptance reads the same evidence — a
-  relocation to a tracked path, not a re-run or a weakened criterion.
-- **D5-003** Add an active canonical-path validator rather than only restructuring data, so the
-  defect class (mandatory evidence on an ignored path) fails loudly in future.
-- **D5-004** Preserve all 74 M4 gate semantics unchanged (M41-06); the validation-mode matrix is a
-  derived classification layer over the preserved gates, and honestly marks that only 7/74 are
-  independent machine checks (git/hash) while the rest read coordinator-written artifacts.
-- **D5-005** Do NOT edit the historical M4 evaluator in history or retag; the repair lives only on
-  the M5 branch working tree.
+Key engineering decisions for "Autonomous discovery on maker-checker workflows",
+with rationale.
+
+## D1 — Reconstruct the engine, do not stub
+The real Workflows/Cadence engine repo was unavailable. Rather than extend the
+thin `workflow-sim` stub, we built a durable, DB-backed decision engine
+(`ENV2_COMPOSE/substitutes/workflow-engine`) that reproduces the interface,
+identity, policy, approval, retry, idempotency, concurrency, and callback
+semantics. Labelled a RECONSTRUCTION (`FIDELITY.md`), grounded in real payouts
+source (`m5-source-map.md`). We deliberately did not chase Cadence internals.
+
+## D2 — SQLite + stdlib HTTP, loopback only
+Portability + true restart recovery + no new heavy container in a
+memory-constrained arena (host ~11.65 GiB, ~67 containers). The DB file is the
+single source of truth; undelivered callbacks resume on boot. Everything binds
+127.0.0.1.
+
+## D3 — Invariants as marked checks; defects as surgical patches
+Every invariant is a `# [CHECK:...]` in `core.py`, so a benchmark mutant
+disables exactly one property (`mutations.py`) while the valid workflow keeps
+working. The builder asserts each anchor still matches, so core drift fails the
+build loudly instead of producing a non-defective "mutant".
+
+## D4 — Strict plane separation for a blind benchmark
+Campaign workers receive ONLY a public manifest (base URL + their own actor
+tokens). The admin token, policy, answer key, and verifier live on the control
+plane. Environments are shuffled with opaque ids, so a worker cannot tell fixed
+from mutant except by behaviour.
+
+## D5 — Model-originated candidates, independent adjudication
+The Director surfaces raw runtime observations (including "an action a correct
+engine must forbid nonetheless succeeded") but never labels a defect. The MODEL
+forms the hypothesis and raises the candidate. A separate hidden verifier then
+reproduces it twice with fresh IDs, runs a negative control against the fixed
+reference, and consults the answer key for root-cause agreement. A fixed-env
+candidate is structurally unconfirmable (answer key + negative control both fail).
+
+## D6 — Exploration discipline to avoid the M4 failure
+The M4 loop resent the same invalid request many times. Here the Director dedups
+hypotheses (semantic key) and experiments (env|tool|org|role|status|error
+signature); a repeated signature is suppressed and the worker is pushed to a new
+probe. A two-phase turn (propose→interpret) forces the model to conclude each
+experiment before starting another.
+
+## D7 — Multi-model, cross-provider reproduction
+Primary kimi-k3 (Moonshot) + gpt-5.5 (OpenAI) are decorrelated providers; glm-5p2
+adds diversity. Every environment is probed by every model, so a finding
+reproduced by ≥2 independent model families is recorded as such, on top of the
+verifier's own mechanical reproduction.
+
+## D8 — Standalone benchmark vs full-arena integration
+The maker-checker business journey and the campaign run against the standalone
+engine + a `payout-sink` callback receiver, so callback identity / idempotency /
+retry are observable without the full 66-container arena. The create + callback
+surfaces are byte-compatible with the real payouts routes, so the same engine
+can be wired into the arena; full-arena integration is documented in
+`m5-known-limits.md`.

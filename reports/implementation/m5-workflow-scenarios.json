@@ -1,0 +1,71 @@
+{
+  "milestone": "M5",
+  "suite": "workflow-scenarios",
+  "engine": "workflow-engine (high-fidelity reconstruction)",
+  "generated_at": "2026-09-07T11:41:07Z",
+  "passed": 12,
+  "total": 12,
+  "all_passed": true,
+  "results": [
+    {
+      "scenario": "approval_success",
+      "passed": true,
+      "detail": "approve=200 state=approved callback_authed=True"
+    },
+    {
+      "scenario": "rejection",
+      "passed": true,
+      "detail": "reject=200 state=rejected"
+    },
+    {
+      "scenario": "cancellation",
+      "passed": true,
+      "detail": "cancel=200 state=cancelled"
+    },
+    {
+      "scenario": "expiry",
+      "passed": true,
+      "detail": "approve_after_expiry=409/terminal_state state=expired"
+    },
+    {
+      "scenario": "duplicate_approval",
+      "passed": true,
+      "detail": "count1=1 count2=1 state=pending"
+    },
+    {
+      "scenario": "duplicate_callback",
+      "passed": true,
+      "detail": "replay_status=409 (409=already_applied, engine-safe)"
+    },
+    {
+      "scenario": "stale_decision",
+      "passed": true,
+      "detail": "stale=409/stale_version fresh_state=approved"
+    },
+    {
+      "scenario": "concurrent_decisions",
+      "passed": true,
+      "detail": "codes=[200, 409] final=approved (exactly one winner)"
+    },
+    {
+      "scenario": "restart_recovery",
+      "passed": true,
+      "detail": "post_restart_state=pending count=1 then=approved"
+    },
+    {
+      "scenario": "cross_org_denial",
+      "passed": true,
+      "detail": "foreign_approve=403/cross_org"
+    },
+    {
+      "scenario": "maker_checker_separation",
+      "passed": true,
+      "detail": "self_approve=403/separation_violation"
+    },
+    {
+      "scenario": "callback_identity",
+      "passed": true,
+      "detail": "forged=401 authed=200"
+    }
+  ]
+}

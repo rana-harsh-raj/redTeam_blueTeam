@@ -1,0 +1,217 @@
+{
+  "campaign": "m5-autonomous-discovery",
+  "generated_at": "2026-09-07T12:34:42Z",
+  "duration_s": 1931.5,
+  "models": [
+    "kimi-k3",
+    "gpt-5.5",
+    "glm-5p2"
+  ],
+  "metrics": {
+    "note": "final",
+    "elapsed_s": 1931.5,
+    "hypotheses": 106,
+    "experiments_reached": 88,
+    "baselines": 189,
+    "meaningful_changes": 47,
+    "reallocations": 58,
+    "recovered_workers": 1,
+    "duplicates_suppressed": 181,
+    "candidates": 14,
+    "confirmed_findings": 4,
+    "usage": {
+      "calls": 240,
+      "prompt_tokens": 817224,
+      "completion_tokens": 58297,
+      "by_model": {
+        "kimi-k3": {
+          "calls": 80,
+          "prompt_tokens": 302845,
+          "completion_tokens": 15732
+        },
+        "gpt-5.5": {
+          "calls": 80,
+          "prompt_tokens": 267402,
+          "completion_tokens": 13297
+        },
+        "glm-5p2": {
+          "calls": 80,
+          "prompt_tokens": 246977,
+          "completion_tokens": 29268
+        }
+      }
+    }
+  },
+  "unique_hypotheses": 106,
+  "experiments_reached": 88,
+  "baseline_ops": 189,
+  "meaningful_changes": 47,
+  "strategic_reallocations": 58,
+  "recovered_workers": 1,
+  "duplicates_suppressed": 181,
+  "candidates": 14,
+  "confirmed_findings": [
+    {
+      "env_id": "env-7455d033",
+      "family": "state-integrity",
+      "root_cause": "terminal",
+      "first_proposed_by": "kimi-k3",
+      "reproduced_by": [
+        "kimi-k3",
+        "gpt-5.5"
+      ],
+      "verification": {
+        "verdict": "CONFIRMED",
+        "env_id": "env-7455d033",
+        "family": "state-integrity",
+        "reproduced_twice": true,
+        "negative_control_holds": true,
+        "answer_key_agrees": true,
+        "target_evidence": [
+          {
+            "approve_after_reject_status": 200,
+            "state": "approved",
+            "error": null
+          },
+          {
+            "approve_after_reject_status": 200,
+            "state": "approved",
+            "error": null
+          }
+        ],
+        "control_evidence": {
+          "approve_after_reject_status": 409,
+          "state": "rejected",
+          "error": "terminal_state"
+        },
+        "root_cause_defect": "terminal",
+        "verified_at": "2026-09-07T12:10:30Z"
+      }
+    },
+    {
+      "env_id": "env-ee79a471",
+      "family": "maker-checker",
+      "root_cause": "separation",
+      "first_proposed_by": "kimi-k3",
+      "reproduced_by": [
+        "kimi-k3",
+        "gpt-5.5",
+        "glm-5p2"
+      ],
+      "verification": {
+        "verdict": "CONFIRMED",
+        "env_id": "env-ee79a471",
+        "family": "maker-checker",
+        "reproduced_twice": true,
+        "negative_control_holds": true,
+        "answer_key_agrees": true,
+        "target_evidence": [
+          {
+            "self_approve_status": 200,
+            "state": "approved",
+            "error": null
+          },
+          {
+            "self_approve_status": 200,
+            "state": "approved",
+            "error": null
+          }
+        ],
+        "control_evidence": {
+          "self_approve_status": 403,
+          "state": null,
+          "error": "separation_violation"
+        },
+        "root_cause_defect": "separation",
+        "verified_at": "2026-09-07T12:16:02Z"
+      }
+    },
+    {
+      "env_id": "env-2193ea16",
+      "family": "org-boundary",
+      "root_cause": "cross_org",
+      "first_proposed_by": "kimi-k3",
+      "reproduced_by": [
+        "kimi-k3",
+        "gpt-5.5",
+        "glm-5p2"
+      ],
+      "verification": {
+        "verdict": "CONFIRMED",
+        "env_id": "env-2193ea16",
+        "family": "org-boundary",
+        "reproduced_twice": true,
+        "negative_control_holds": true,
+        "answer_key_agrees": true,
+        "target_evidence": [
+          {
+            "foreign_approve_status": 200,
+            "state": "approved",
+            "error": null
+          },
+          {
+            "foreign_approve_status": 200,
+            "state": "approved",
+            "error": null
+          }
+        ],
+        "control_evidence": {
+          "foreign_approve_status": 403,
+          "state": null,
+          "error": "cross_org"
+        },
+        "root_cause_defect": "cross_org",
+        "verified_at": "2026-09-07T12:23:53Z"
+      }
+    },
+    {
+      "env_id": "env-cc1504e2",
+      "family": "approval-integrity",
+      "root_cause": "counting",
+      "first_proposed_by": "kimi-k3",
+      "reproduced_by": [
+        "kimi-k3",
+        "gpt-5.5",
+        "glm-5p2"
+      ],
+      "verification": {
+        "verdict": "CONFIRMED",
+        "env_id": "env-cc1504e2",
+        "family": "approval-integrity",
+        "reproduced_twice": true,
+        "negative_control_holds": true,
+        "answer_key_agrees": true,
+        "target_evidence": [
+          {
+            "state_after_two_same_approver": "approved",
+            "approvals": 2
+          },
+          {
+            "state_after_two_same_approver": "approved",
+            "approvals": 2
+          }
+        ],
+        "control_evidence": {
+          "state_after_two_same_approver": "pending",
+          "approvals": 1
+        },
+        "root_cause_defect": "counting",
+        "verified_at": "2026-09-07T12:30:13Z"
+      }
+    }
+  ],
+  "distinct_defects_found": [
+    "counting",
+    "cross_org",
+    "separation",
+    "terminal"
+  ],
+  "defect_count": 4,
+  "invariant_families_found": [
+    "approval-integrity",
+    "maker-checker",
+    "org-boundary",
+    "state-integrity"
+  ],
+  "false_findings_on_fixed_reference": 0
+}
