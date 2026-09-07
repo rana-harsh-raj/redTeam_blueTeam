@@ -50,7 +50,10 @@ m4-clean:           ## safe teardown of a DISPOSABLE instance (ARGS=<instance-id
 m41-canonical-paths: ## guard: every mandatory evidence path is tracked, not git-ignored
 	@python3 RED_LOOP/surface/m41_canonical_paths.py
 
-m41-evidence-verify: ## rebuild + verify the evidence manifest from TRACKED evidence (no ignored globs)
+m41-evidence-verify: ## verify committed evidence manifest hashes (tracked evidence; no rebuild, no ignored globs)
+	@python3 RED_LOOP/surface/m4_evidence_manifest.py verify
+
+m41-evidence-rebuild: ## regenerate the manifest from tracked evidence, then verify (only when evidence changes)
 	@python3 RED_LOOP/surface/m4_evidence_manifest.py build
 	@python3 RED_LOOP/surface/m4_evidence_manifest.py verify
 

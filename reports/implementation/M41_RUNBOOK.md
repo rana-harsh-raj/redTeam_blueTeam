@@ -6,10 +6,11 @@ git-ignored run directories, NO prior Docker volumes, and NO developer working t
 ## One-command clean reproduction
 ```
 # from any clean checkout of the assurance-m4.1-reproducible tag:
-python3 RED_LOOP/surface/m41_canonical_paths.py           # guard: no ignored evidence paths
-python3 RED_LOOP/surface/m4_evidence_manifest.py build     # rebuild manifest from tracked evidence
-python3 RED_LOOP/surface/m4_evidence_manifest.py verify     # all hashes recompute (0 mismatch/missing)
-python3 RED_LOOP/surface/m4_acceptance.py --dry-run         # 74/74 (once tree is clean/committed)
+python3 RED_LOOP/surface/m41_canonical_paths.py            # guard: no ignored evidence paths
+python3 RED_LOOP/surface/m4_evidence_manifest.py verify     # committed hashes recompute (0 mismatch/missing)
+python3 RED_LOOP/surface/m4_acceptance.py --dry-run         # 74/74 accepted=true from the clean checkout
+# (do NOT run 'manifest build' here: it only bumps generated_at and churns the tree;
+#  use 'make m41-evidence-rebuild' only when the underlying evidence actually changes.)
 ```
 
 ## What was broken (M41-02)
