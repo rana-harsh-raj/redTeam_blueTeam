@@ -11,6 +11,8 @@ def module(name,p):
  s=importlib.util.spec_from_file_location(name,p); m=importlib.util.module_from_spec(s); s.loader.exec_module(m);return m
 verify_journey=module('verify_evidence',D/'tests/integration/verify_evidence.py').verify
 
+TRACE_REQUIREMENT_CHECKS={'kafka_ingest':['broker_input','source_consumer'],'tds_persisted':['record_persistence','tagback'],'pay_requested':['pay_controls','negative_contact'],'remittance_boundary':['idempotency_boundary','tagback_before_remittance'],'remittance_created':['remittance_persistence'],'money_loading_initiated':['source_pubsub_states'],'callback_received':['callback'],'money_loading_success':['state_scope','api_agrees','source_pubsub_states']}
+
 def main():
  ap=argparse.ArgumentParser();ap.add_argument('--runs',nargs='+',default=['final-1','final-2','final-3']);args=ap.parse_args()
  gates=[]; details={};lock=load(D/'source-lock.json'); source=pathlib.Path(os.getenv('S2P_SOURCE_ROOT',lock['source_root'])); head=cmd('git','-C',str(ROOT),'rev-parse','HEAD')
@@ -76,7 +78,7 @@ def main():
  gate(6,'all_three_repositories_build',bool(run_results) and all(r.get('build_ok') for r in run_results),['artifacts/clean-runs/*/build-command-packages.json','artifacts/clean-runs/*/build-manifest.json'])
  declared=set(re.findall(r'^\s*- id:\s*(\S+)',(D/'spec/declared-deviations.yaml').read_text(),re.M)); replacements=[i for i in mandatory if i['representation_status']=='CONTRACT_FAITHFUL_REPLACEMENT']
  contracts=bool(run_results) and all(r.get('run',{}).get('steps',{}).get('contracts',{}).get('returncode')==0 for r in run_results)
- requirement_checks={'kafka_ingest':['broker_input','source_consumer'],'tds_persisted':['record_persistence','tagback'],'pay_requested':['pay_controls','negative_contact'],'remittance_boundary':['idempotency_boundary','tagback_before_remittance'],'remittance_created':['remittance_persistence'],'money_loading_initiated':['source_pubsub'],'callback_received':['callback'],'money_loading_success':['state_scope','api_agrees','source_pubsub']}
+ requirement_checks=TRACE_REQUIREMENT_CHECKS
   # Bind declared runtime participation to independent controls in every clean run.
  for g in gates:
   if g['id'].startswith('10_'):g['passed']=g['passed'] and len(run_results)==3 and all(all(all(r.get('recomputed',{}).get('checks',{}).get(c) for c in requirement_checks.get(req,['unknown_requirement'])) for req in item['trace_requirements']) for item in mandatory for r in run_results)
