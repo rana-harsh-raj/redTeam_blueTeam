@@ -26,12 +26,21 @@ def _arena_tag():
     return m.group(1) if m else "local"
 
 
-def _s2p_image():
+S2P_IMAGE_PREFIX = "s2p-architecture-replica/vendor-payments:"
+
+
+def _s2p_image(cache=None):
+    """Source-to-Pay runtime image ref: the checkout's build record (DOMAIN_REPLICAS/source_to_pay/.build, not committed)
+    or, in a clean checkout, the newest S2P image in the factory image cache (exported from a checkout that built it)."""
     p = paths.S2P_IMAGE_ENV
     if p.is_file():
         m = re.search(r"^S2P_SOURCE_IMAGE=(\S+)", p.read_text(), re.M)
         if m:
             return m.group(1)
+    if cache is not None:
+        cands = [(v.get("exported_at") or "", ref) for ref, v in cache.index()["images"].items() if ref.startswith(S2P_IMAGE_PREFIX)]
+        if cands:
+            return sorted(cands)[-1][1]
     return None
 
 
@@ -111,7 +120,9 @@ class Factory:
         exec_dir.mkdir(parents=True, exist_ok=True)
         os.chmod(exec_dir, 0o700)
         epoch = PL.seed_epoch(seed)
-        img = s2p_image or (_s2p_image() if prof["s2p"] else None)
+        img = s2p_image or (_s2p_image(self.cache) if prof["s2p"] else None)
+        if prof["s2p"] and not img:
+            raise RuntimeError("profile needs the Source-to-Pay runtime image but none is recorded (build it with RED_LOOP/m7/s2p_stack.py build or seed the image cache)")
         t0 = time.time()
         ws = W.render(exec_dir, pl, epoch, img, _arena_tag())
         bk = B.get_backend(backend_name, backend_options)

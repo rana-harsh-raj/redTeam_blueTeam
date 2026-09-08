@@ -131,7 +131,7 @@ def main(argv=None):
             for s in list(pr["services"]) + list(pr["jobs"]):
                 img = (inp.recipes.get(s) or {}).get("runtime", {}).get("image") if s in inp.recipes else None
                 if img and "S2P_SOURCE_IMAGE" in img:
-                    img = _s2p_image()
+                    img = _s2p_image(f.cache)
                 if img:
                     img = img.replace("${ARENA_TAG:-local}", tag or "local")
                 if img and "${" not in img:
