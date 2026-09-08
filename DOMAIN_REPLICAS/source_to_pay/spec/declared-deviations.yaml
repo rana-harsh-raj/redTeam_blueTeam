@@ -1,0 +1,70 @@
+schema_version: 1
+deviations:
+  - id: D-STARTUP
+    category: dependency_replaced
+    component: source-driver
+    representation: CONTRACT_FAITHFUL_REPLACEMENT
+    description: An additive Go entrypoint selects existing source boot initializers and calls the unchanged tasks, core, repository, payout client, and callback implementations. The original cmd/workerv2 process is built but not started. The local /_replica/pay and /_replica/status HTTP endpoints directly invoke source methods; production Twirp authentication and SourceUpdater callback transport are not exercised.
+    rationale: The original worker initializes unrelated Elasticsearch, DCS, API servers, and worker registrations. The isolated driver makes the selected business slice reproducible without pretending these processes are running.
+    implementation: runtime/source-driver/boot.go
+    evidence: [vendor-payments/internal/boot/boot_workerv2.go, vendor-payments/internal/boot/helpers.go]
+  - id: D-KAFKA-LOOP
+    category: dependency_replaced
+    component: source-driver-kafka-loop
+    representation: CONTRACT_FAITHFUL_REPLACEMENT
+    description: kafka-go consumes the source-derived topic and passes the unchanged message to tasks.NewInitiateTdsTask().ProcessMessage. The synthetic consumer group is s2p-actual-source; the upstream task's returned-error behavior is preserved.
+    implementation: runtime/source-driver/main.go
+    evidence: [vendor-payments/internal/tasks/initiatetds.go, vendor-payments/internal/initiatetds/core.go]
+  - id: D-MONOLITH-PAYOUTS
+    category: dependency_replaced
+    component: monolith-boundary
+    representation: CONTRACT_FAITHFUL_REPLACEMENT
+    description: Local HTTP and SQLite replace the unavailable API-monolith and Payouts hop. Fidelity is limited to the selected caller-visible contact, banking-account, OTP, internal-contact payout, idempotency, and tax-payment-tag contracts. This is not a complete implementation of either service.
+    implementation: runtime/boundary/server.py
+    contract_tests: tests/contracts/test_monolith_boundary.py
+    evidence: [vendor-payments/internal/rxclient/core.go, vendor-payments/internal/payout/core.go, vendor-payments/internal/payout/model.go, vendor-payments/internal/taxpayments/apicaller.go, payouts/internal/app/contact/type.go]
+  - id: D-SYNTHETIC-IDENTITY
+    category: configuration_value_unknown
+    component: monolith-boundary
+    description: Fixed synthetic credentials map to internal application identities locally. Known synthetic merchant, contact, beneficiary, and account fixtures replace external identity and bank systems. Actual production credentials and authorizations are neither used nor inferred.
+  - id: D-BANK-CONSTANTS
+    category: configuration_value_unknown
+    component: vendor-payments
+    description: Only TaxPaymentFundAccountNumber and TaxPaymentFundAccountIFSC are changed in the isolated runtime build to synthetic destination values. Their validation logic is unchanged. The durable source snapshot remains byte-identical to its commit.
+    evidence: [vendor-payments/internal/taxpayments/constants.go, vendor-payments/internal/taxpayments/internal_tax_contact.go]
+    verification: artifacts/build-runtime-patch.json
+  - id: D-CLOCK
+    category: configuration_value_unknown
+    component: source-driver
+    description: The existing common.TimeNow injection point supplies an August 2026 business clock, advanced explicitly to September before remittance. The source's month-completion guard remains active. Source-generated IDs and some source time.Now timestamps remain nondeterministic; initial fixtures and normalized business outcomes are deterministic.
+    evidence: [vendor-payments/internal/common/GlobalStructs.go, vendor-payments/internal/taxpayments/core.go, vendor-payments/pkg/id/id.go]
+  - id: D-CORRELATION
+    category: configuration_value_unknown
+    component: source-driver
+    description: The adapter initializes a fixed synthetic request/task ID through existing source context APIs. Existing source HTTP code propagates X-Request-ID; replica_trace is an added evidence table, not a claimed production table.
+    evidence: [vendor-payments/internal/trace/core.go, vendor-payments/pkg/requestcontext/requestcontext.go, vendor-payments/pkg/http/http.go]
+  - id: D-LOCAL-TOPOLOGY
+    category: deployment_shape_unknown
+    component: isolated-compose
+    description: One Redpanda broker implementing Kafka transport, one MySQL instance, one Redis instance, the source adapter, and the boundary replacement use a dedicated internal Docker network and project-scoped state. Local plaintext transport is synthetic; production topology, replica counts, and active TLS configuration are unknown.
+  - id: D-FILING-SCOPE
+    category: source_mapped_not_running
+    component: downstream-tax-filing
+    description: The executed payout callback reaches processing/money_loading_success and the source tax_payment_updated pubsub event. Government transfer, bank settlement, challan generation, and filing are not executed or represented as paid. The normal direct-tax subscriber is mapped but not registered in the narrow driver.
+    evidence: [vendor-payments/internal/taxpayments/status.go, vendor-payments/internal/taxpayments/core.go, vendor-payments/internal/pubsub/core.go, vendor-payments/internal/boot/helpers.go]
+  - id: D-OTHER-PROCESSES
+    category: source_mapped_not_running
+    component: adjacent-source-to-pay-processes
+    description: Vendor-experience, accounting-integrations, and unselected vendor-payments processes are built and mapped but not started. Their Cadence, external accounting, OCR, GST, and related dependencies are outside the executed slice.
+  - id: D-CODEGEN
+    category: contract_reconstructed
+    component: generated-rpc
+    description: Missing generated code is rebuilt from pinned source proto inputs using the locked Go, Buf, protobuf, gateway, and Twirp toolchain. Documentation-only OpenAPI generation is omitted. Byte parity with an unavailable production generation output is not asserted.
+    verification: source-lock.json
+  - id: D-INVESTIGATION-CORRECTION
+    category: functional_behavior_reproduced
+    component: composed-tds-journey
+    description: Kafka ingestion tags the originating payout before a separate remittance command creates the internal-contact payout. A processed TDS remittance does not produce the accounting-payout status event asserted in the old investigation. Both corrections follow source; no automatic causal connection or accounting event is invented.
+    evidence: [vendor-payments/internal/initiatetds/core.go, vendor-payments/internal/taxpayments/core.go, vendor-payments/internal/apiservice/VpServer.go]
+behavioral_stubs_on_selected_business_path: []
+promotion_policy: Actual runtime execution and contract tests must pass before an inventory item is promoted from source-mapped status.

@@ -1,0 +1,45 @@
+name: ${COMPOSE_PROJECT_NAME:-s2p_architecture_replica}
+services:
+  kafka:
+    image: redpandadata/redpanda:v24.2.18@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8
+    command: [redpanda, start, --smp, "1", --memory, 512M, --reserve-memory, 0M, --overprovisioned, --node-id, "0", --check=false, --kafka-addr, PLAINTEXT://0.0.0.0:9092, --advertise-kafka-addr, PLAINTEXT://kafka:9092]
+    healthcheck: {test: [CMD-SHELL, "rpk cluster health --exit-when-healthy"], interval: 3s, timeout: 3s, retries: 30}
+    networks: [s2p_internal]
+  mysql:
+    image: mysql:8.4@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb
+    environment: {MYSQL_ROOT_PASSWORD: root-local-only, MYSQL_DATABASE: s2p, MYSQL_USER: s2p, MYSQL_PASSWORD: s2p}
+    volumes:
+      - s2p_mysql:/var/lib/mysql
+      - ./runtime/mysql/init.sql:/docker-entrypoint-initdb.d/001-source.sql:ro
+    healthcheck: {test: [CMD-SHELL, "mysqladmin ping -h 127.0.0.1 -uroot -proot-local-only --silent && mysql -h 127.0.0.1 -uroot -proot-local-only -Nse 'SELECT 1'"], interval: 3s, timeout: 3s, retries: 40}
+    networks: [s2p_internal]
+  redis:
+    image: redis:7-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf
+    command: [redis-server, --save, "", --appendonly, "no"]
+    healthcheck: {test: [CMD, redis-cli, ping], interval: 3s, timeout: 3s, retries: 30}
+    networks: [s2p_internal]
+  monolith-boundary:
+    build: {context: ., dockerfile: runtime/boundary/Dockerfile}
+    environment: {API_SECRET: local-vendor-payments-secret, BOUNDARY_DB: /state/boundary.sqlite}
+    volumes: [s2p_boundary:/state]
+    healthcheck: {test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://localhost:8080/health')"], interval: 3s, timeout: 3s, retries: 30}
+    networks:
+      s2p_internal:
+        aliases: [boundary]
+  vp-source:
+    image: ${S2P_SOURCE_IMAGE:?run scripts/build-runtime.sh first}
+    environment: {SOURCE_SHA: 20c4f4d59970471067388afea8b1d65ac39ee126}
+    restart: on-failure:5
+    depends_on:
+      kafka: {condition: service_healthy}
+      mysql: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      monolith-boundary: {condition: service_healthy}
+    healthcheck: {test: [CMD, /service, health], interval: 3s, timeout: 3s, retries: 40}
+    networks: [s2p_internal]
+networks:
+  s2p_internal:
+    internal: true
+volumes:
+  s2p_mysql: {}
+  s2p_boundary: {}

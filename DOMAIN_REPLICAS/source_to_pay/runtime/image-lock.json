@@ -1,0 +1,14 @@
+{
+  "schema_version": "s2p-image-lock/v1",
+  "images": {
+    "kafka": "redpandadata/redpanda:v24.2.18@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+    "mysql": "mysql:8.4@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+    "redis": "redis:7-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+    "boundary_base": "python:3.12-slim@sha256:78387bc3881b8273120a12ebe6c1ab22b018ccc2c9adf565ae1ac9b536e184ea"
+  },
+  "actual_source": {
+    "env_key": "S2P_SOURCE_IMAGE",
+    "generated_by": "scripts/build-runtime.sh",
+    "immutable_build_record": "artifacts/build-runtime.json"
+  }
+}

@@ -1,0 +1,976 @@
+{
+  "binary_reproducibility": {
+    "named_outputs_equal": true,
+    "source_runtime_equal": true
+  },
+  "inventory_evidence": {
+    "edge_integrity": true,
+    "invalid_evidence": [],
+    "valid_count": 28898
+  },
+  "runs": [
+    {
+      "build_ok": true,
+      "empty_after_reset": true,
+      "fresh_final_checkout": false,
+      "hash_bound": true,
+      "id": "m7-iso-5",
+      "named_binary_hashes": {
+        "accounting-integrations-api": "5beaf910f82e64cc43fadc1583d1a3bb81313fc4551d55706a4a4a7afa371249",
+        "accounting-integrations-cadence-worker": "44a2be92c9a39c803718673a5eaa7a624f0001f2ad5e98cd5bff78c5e1f1924e",
+        "accounting-integrations-worker": "d215b0dff4ce96136fb95917f304cd34c124d2938919bd388e21680a15987e76",
+        "vendor-experience-activity-worker": "1be7a9d07d054df3db8f59a3392677b013c954502ed747ffb03a8a7f815dd1e2",
+        "vendor-experience-api": "950f0aba7d3fcbbad6c68093a9501515c0fb75deb1033796f43bd489a411cb45",
+        "vendor-experience-workflow-worker": "16952990961192c3187f36aca0d7e1c10b56760baf3a9c774f5feb493c63a1ab",
+        "vendor-payments": "bb9f7766e51afea9b9220ac7198f14d5a03437299f55ab61dbb8cc7165aabb44",
+        "vendor-payments-migration": "710167a5bd66e2c14ae360338a80c926e1cbbb042967bba381729980a3c351bd",
+        "vendor-payments-worker": "ecb98edd844a8f0db05b3fd7ac33e61abb69dac531d76e4aead10633939c796c",
+        "vendor-payments-workerv2": "37a798b8c8d1fd5df3b19c149339341e174cde74e916d3c1b0d64f1b7e1c049b"
+      },
+      "passed": true,
+      "recomputed": {
+        "business_outcome": {
+          "amount": 12500,
+          "associations": 1,
+          "boundary_payouts": 2,
+          "broker_offsets": [
+            0,
+            1,
+            2
+          ],
+          "records": 1,
+          "tax_internal_status": "money_loading_success",
+          "tax_status": "processing"
+        },
+        "checks": {
+          "api_agrees": true,
+          "broker_input": true,
+          "callback": true,
+          "correlation": true,
+          "duplicate_zero_delta": true,
+          "idempotency_boundary": true,
+          "negative_contact": true,
+          "pay_controls": true,
+          "record_persistence": true,
+          "remittance_persistence": true,
+          "remittance_request": true,
+          "source_consumer": true,
+          "source_pubsub_states": true,
+          "source_sha": true,
+          "state_scope": true,
+          "tagback": true,
+          "tagback_before_remittance": true,
+          "tagback_request": true
+        },
+        "passed": true
+      },
+      "run": {
+        "build_root": "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/.build/clean-runs/m7-iso-5",
+        "build_root_absent_before": true,
+        "commit": "d87591000f359f1a58fc805c9667d84dc1871d09",
+        "containers": [
+          {
+            "created": "2026-09-08T06:56:21.917812651Z",
+            "health": "healthy",
+            "id": "d257d0cc07ff2d35438ef10544f0b428de226fa05768bd45f22a7605144b6171",
+            "image": "sha256:d7babb9e65e50d5e784b43949f8f2145c8abab77cc6da3975badea5111855e6b",
+            "name": "/s2p_m7_closure-vp-source-1",
+            "networks": [
+              "s2p_m7_closure_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T06:56:21.875373855Z",
+            "health": "healthy",
+            "id": "0f1fbe3f7a5bc999ddcf13178374da956b8a874063499fc48ebd3fa4507511c0",
+            "image": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+            "name": "/s2p_m7_closure-redis-1",
+            "networks": [
+              "s2p_m7_closure_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T06:56:21.866234554Z",
+            "health": "healthy",
+            "id": "df355c94e194f264fff8fe06619c5674c197288b61713cdc20373038e3419d78",
+            "image": "sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+            "name": "/s2p_m7_closure-mysql-1",
+            "networks": [
+              "s2p_m7_closure_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T06:56:21.859173779Z",
+            "health": "healthy",
+            "id": "59ce4dae28a1882c8cfccbb3a2eca78a7ca99ff41c740f4bb1823f950841f0f5",
+            "image": "sha256:b7a0e87dbdbf2ad39e7b801434b77f72de212fbbde1235d8447403eecb79f827",
+            "name": "/s2p_m7_closure-monolith-boundary-1",
+            "networks": [
+              "s2p_m7_closure_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T06:56:21.857460625Z",
+            "health": "healthy",
+            "id": "0f0e1d5e51549efd8d554a21a798ce5d87dd8af5c01a38d158caa613989ed5de",
+            "image": "sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+            "name": "/s2p_m7_closure-kafka-1",
+            "networks": [
+              "s2p_m7_closure_s2p_internal"
+            ],
+            "ports": {}
+          }
+        ],
+        "containers_after_reset": "",
+        "durations": {
+          "boot": 11.451728,
+          "bootstrap": 3.267032,
+          "build": 78.855175,
+          "build-runtime": 12.406628,
+          "contracts": 0.161977,
+          "health": 0.425548,
+          "independent-verification": 0.029761,
+          "journey": 3.487834,
+          "reset": 0.070647,
+          "verifier-tamper-tests": 0.051527
+        },
+        "empty_business_state": {
+          "boundary_payouts": [],
+          "records": [],
+          "tax_payments": [],
+          "tds": [],
+          "vendorpayment_payout": []
+        },
+        "file_hashes": {
+          "binaries/accounting-integrations-api": "5beaf910f82e64cc43fadc1583d1a3bb81313fc4551d55706a4a4a7afa371249",
+          "binaries/accounting-integrations-cadence-worker": "44a2be92c9a39c803718673a5eaa7a624f0001f2ad5e98cd5bff78c5e1f1924e",
+          "binaries/accounting-integrations-worker": "d215b0dff4ce96136fb95917f304cd34c124d2938919bd388e21680a15987e76",
+          "binaries/vendor-experience-activity-worker": "1be7a9d07d054df3db8f59a3392677b013c954502ed747ffb03a8a7f815dd1e2",
+          "binaries/vendor-experience-api": "950f0aba7d3fcbbad6c68093a9501515c0fb75deb1033796f43bd489a411cb45",
+          "binaries/vendor-experience-workflow-worker": "16952990961192c3187f36aca0d7e1c10b56760baf3a9c774f5feb493c63a1ab",
+          "binaries/vendor-payments": "bb9f7766e51afea9b9220ac7198f14d5a03437299f55ab61dbb8cc7165aabb44",
+          "binaries/vendor-payments-migration": "710167a5bd66e2c14ae360338a80c926e1cbbb042967bba381729980a3c351bd",
+          "binaries/vendor-payments-worker": "ecb98edd844a8f0db05b3fd7ac33e61abb69dac531d76e4aead10633939c796c",
+          "binaries/vendor-payments-workerv2": "37a798b8c8d1fd5df3b19c149339341e174cde74e916d3c1b0d64f1b7e1c049b",
+          "boot.log": "6639c948d4264065b28bdc12886f140c4fc235ef120b4cefc01535a07f7d1cc1",
+          "bootstrap.log": "7a7b03540b8c6f11959cb4de0e41349b3d70fa00d382d247b28bf0705b4e274b",
+          "build-command-packages.json": "5a1ff15a0b16e1ad56146155496118535c5c709d7f7088d1929abce173e87449",
+          "build-manifest.json": "26615541fee4af7abce4dea613016a5e82d8b5a34857dc13b4fdb625b4974ecb",
+          "build-runtime-source-verification.json": "96b2fcf88a7d5f3d58d22b68a088635080cfb210c0ec52f760f6a4cf3e67851a",
+          "build-runtime.json": "d729154ba22dda0c8aa0ab6110f6e079cbfcbe3171a38e9f8dce3f44a0fc1ef4",
+          "build-runtime.log": "af04c841a16a16d00131bfd2b5f64d918a1779bcbf16eb24ff89eece1141eef2",
+          "build.log": "b39d63231cf4cdfe3fe285467713ae0bb78596305ecfb07a9be3acb7e8e32724",
+          "contracts.log": "4bb3699d40b4d18f78de53b920f6bbf0a8c4a923e50beebb9cc48d8679f4b463",
+          "health.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "independent-verification.log": "c296176111ee1aeb0db4ff3920de0596c189a37e402a2a5c8cfb88b986ac49e4",
+          "journey.json": "bb7a2e66b5cc9ad5ab71bd3fdcd1aab1f8dd6fc175710f33f03cf23d72adb7e4",
+          "journey.log": "4346bdebd2ba3ed43bd92852a603dce3e1f9b4ca62cf566e3be1b9baece1d7f2",
+          "reset.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtime-source.bin": "8bc168dc3b83fca3018113826c99a633e11e3c4b4a9aac58b0a05db0add722bf",
+          "runtime.log": "2a7236a16bb48dee4b253945554229d22644b409ba5af866b8bd5b61b395c931",
+          "source-verification.json": "fdae9659b97a0484a7eab83bd1a0cdfca6e0c44fa73ae0c54cdff2415010d0a8",
+          "verifier-tamper-tests.log": "b540c5d12fbafb1e2847616147dba4cff0d8181ebfb9498d406c93e748a4fd4c"
+        },
+        "finished_at": "2026-09-08T06:56:36.808517+00:00",
+        "fixture_seed": "s2p-golden-20260820-001",
+        "git_status_before": "",
+        "git_tree": "dedab986844a068031a0ae65d8b3957755c6a7c2",
+        "git_worktree_list": "worktree /Users/rana.singh/rzp-payouts-architecture\nHEAD 020480e683d52fa3faf8340ba2ab40ff1f80ca66\nbranch refs/heads/milestone-7-shared-ingress-integration\n\nworktree /Users/rana.singh/rzp-payouts-architecture-expansion\nHEAD d54161c2e29873eb5f53804db58af45d48a7b4f6\nbranch refs/heads/graph-expansion-adjacent-domains\n\nworktree /Users/rana.singh/rzp-payouts-architecture/.claude/worktrees/agent-a00e097ab93ddcb76\nHEAD 5300617d5e572d2defebca9ee4b633c6347e4f6b\nbranch refs/heads/worktree-agent-a00e097ab93ddcb76\n\nworktree /Users/rana.singh/rzp-s2p-final-verification\nHEAD 3f8bddc4284103862bf9c90bc6ebb4ddd8d43d2f\ndetached\n\nworktree /Users/rana.singh/rzp-s2p-final-verification-2\nHEAD f913b5cf5d18e904b47585f7584908f13178d52a\ndetached\n\nworktree /Users/rana.singh/rzp-s2p-final-verification-3\nHEAD b6e4976f9baebfe770dfa30794f6f61ea08ccb1b\ndetached\n\nworktree /Users/rana.singh/rzp-s2p-m7-closure\nHEAD d87591000f359f1a58fc805c9667d84dc1871d09\nbranch refs/heads/s2p-acceptance-closure-m7\n\nworktree /Users/rana.singh/rzp-s2p-m7-closure-final\nHEAD d87591000f359f1a58fc805c9667d84dc1871d09\ndetached\n\nworktree /Users/rana.singh/rzp-source-to-pay-replica\nHEAD b6e4976f9baebfe770dfa30794f6f61ea08ccb1b\nbranch refs/heads/architecture-replica-s2p-v1",
+        "inputs": {
+          "build/README.md": "42582a552aff782493dbd938214d726a5a7fd7e1699077f4d43087788da8257d",
+          "build/codegen.py": "77ae5afdbab65d3fbaed544780ce0fe5f760700c6f460a737fbb0f65c8e1ed6f",
+          "build/command_packages.py": "183352e3674be355e34b00404c35ff3bbe181c76dd94a829da1ae5cd2fa80ec5",
+          "docker-compose.yml": "02b511674626fdf9981cc98b6e8e2d114f7af6befe7cf0a612aa2b440d0e388d",
+          "fixtures/tds-entry-invalid.json": "7be1c1cad847049c64beab9af49be1e8792fd4ba4ac72cb78fb2bb358be5b243",
+          "fixtures/tds-entry.json": "27a6afe708ed78e084671ceb4ee74183fe011cfbb7a414fe690d2cd6e998c83e",
+          "runtime/boundary/Dockerfile": "be992acd3f33c730dce8be42bb968713ca0b8f0c1685e3ff2abfee2f86bc1edf",
+          "runtime/boundary/server.py": "ec15728e15e023ea1c236ea7efb5a03817fd0e1331c4e8c4d5f347819db61117",
+          "runtime/image-lock.json": "15025dd2f3becd339344fc429cc4afafb5b6acccf7da44e8166bbbb9c203c0d5",
+          "runtime/images/source-runtime.Dockerfile": "6cedc8c4e9b58598a5347f47cb2d9c7008f81c01f94bff0c8d473c6074ab3e76",
+          "runtime/mysql/init.sql": "b832d2b507613f3918f85919e5078c822b33959316d1ccd83e6213f08b8f2e9b",
+          "runtime/source-driver/boot.go": "df20b8938c2d3f2f3f784ef3dc20ef4b204541f987fb35ae68f5958b1f51d163",
+          "runtime/source-driver/main.go": "7e1d97f1555b01919859dabe52ccbb31e0fe473b3c34a595ac7e90705b0e5151",
+          "scripts/_common.sh": "5c1f97d86b0036b400ef708e02297da27ecc4637abf3fff4e1cbeecb73b563aa",
+          "scripts/acceptance.py": "e050114cdcc189419ba27951d2ab43a34f5e1b5f896f0f9edc85cdac2209b3aa",
+          "scripts/acceptance.sh": "6745209874f274891ad77c30f6a5b0a668909a699504a761025427762a735342",
+          "scripts/apply-runtime-fidelity.py": "67d3e87d6760a8bb47b50f217f5726a790c92af696c3886166a13f9750249a8a",
+          "scripts/artifact_integrity.py": "d12d25a3c5718315606ad43ec11eaf962b76026d1b7348658cdb27eb4c8e907e",
+          "scripts/bootstrap.sh": "b4b5b57fac12ddca799e1029e1cbccdac64f756f743f1672a730ad798e5fbf10",
+          "scripts/build-runtime.sh": "3f796b46c67fc340552ef781a88ea63b25600868c69bb5ff3e844e933d9076fe",
+          "scripts/build.sh": "3afb03f29405b100d1c7f5e566f8cecb1a0397376559e82655f70374d312f0e3",
+          "scripts/clean-run.py": "324db4f6dcfd579ea629d69fd1aa57b2a3522537974cccb43f576c2532e19747",
+          "scripts/generate-inventory.py": "d8053cb45f4682c111dd65fbb414e8a4c2e766f06c9eaa00c19e2a580fdf711b",
+          "scripts/health.sh": "b1a8dc2ac865ef1ffedbd22b225372743318e838fc54825126b47b69bc976f0d",
+          "scripts/isolation.py": "6847a541b5a37e9ccda4ff0f829cbbbe996659636acc38623bb461ac17119660",
+          "scripts/isolation_baseline.py": "e63a520ce8833a791508c0d96821256ec7b3c9288c979f3847b6d6378bc0ae60",
+          "scripts/render-reports.py": "af1a6722b0a15a7f94af805bc3e79397ffe2bfbd57980532036b5572e46d2c4b",
+          "scripts/reset.sh": "d6bd7c38456ad902c7e1b134910cb1f6d83e8482b2564ec80dc1db259204c91f",
+          "scripts/run-golden-journey.sh": "2222d503afcbad1a6f467d481f7b02014d41870a3b95f2361f2c7c85c41deb54",
+          "scripts/scan-deliverables.py": "81120573245a8c76e21ef0c6b0aeaebb93bca7f950ba5579bb46e4e4ed7abc85",
+          "scripts/source_common.py": "9ec527a3c079d1f3e8dc44db656ca9d34251821295ef4ad61efd6865474f73e7",
+          "scripts/source_recover.py": "1274d4e23d15ed32edf2f4654991a04b5b05aed9a7ebb137317fb98946800bd2",
+          "scripts/source_verify.py": "4b20a5e4ccfc7aa3ee949a325ac540ae13a894c4284d78a9300626045ce0450f",
+          "scripts/up.sh": "63004653690966005ea4ddc4c572cfb00019c29e6a5be9e16950ad5f1f269a31",
+          "source-lock.json": "14cef5393a334acc3bb20af194d0ef72b1411ccd0cd033998bbabb9936a1bb7d",
+          "tests/contracts/test_monolith_boundary.py": "ba01f07c319655a0b7e21aa0376fc88013d9b3a7a261eacc7c2a4b2ce2676a1f",
+          "tests/integration/golden_journey.py": "c567b8af5854c7f1ab7eb73486d070dd02664d4daef923a7e3a0b50fe388a3ca",
+          "tests/integration/verify_evidence.py": "613bd69abc289c897b4270dc70c5078ea6752dd261828aa6f34f3e53cc6763b8",
+          "tests/reproducibility/test_evidence_verifier.py": "10114f7c7adb0c8776b325bcd8984f6fe8e71759155d9adc76c6b9592ae224a4",
+          "tests/reproducibility/test_fidelity_requirements.py": "39f7270979104787d7f24920c4fe42fd96ba29ee2381d3372b4dad3318585112"
+        },
+        "networks": [
+          {
+            "internal": true,
+            "name": "s2p_m7_closure_s2p_internal"
+          }
+        ],
+        "passed": true,
+        "project": "s2p_m7_closure",
+        "run_id": "m7-iso-5",
+        "schema_version": 1,
+        "started_at": "2026-09-08T06:54:45.774600+00:00",
+        "steps": {
+          "boot": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/up.sh"
+            ],
+            "log_sha256": "6639c948d4264065b28bdc12886f140c4fc235ef120b4cefc01535a07f7d1cc1",
+            "returncode": 0
+          },
+          "bootstrap": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/bootstrap.sh"
+            ],
+            "log_sha256": "7a7b03540b8c6f11959cb4de0e41349b3d70fa00d382d247b28bf0705b4e274b",
+            "returncode": 0
+          },
+          "build": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/build.sh"
+            ],
+            "log_sha256": "b39d63231cf4cdfe3fe285467713ae0bb78596305ecfb07a9be3acb7e8e32724",
+            "returncode": 0
+          },
+          "build-runtime": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/build-runtime.sh"
+            ],
+            "log_sha256": "af04c841a16a16d00131bfd2b5f64d918a1779bcbf16eb24ff89eece1141eef2",
+            "returncode": 0
+          },
+          "contracts": {
+            "command": [
+              "python3",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/tests/contracts",
+              "-p",
+              "test_*.py",
+              "-v"
+            ],
+            "log_sha256": "4bb3699d40b4d18f78de53b920f6bbf0a8c4a923e50beebb9cc48d8679f4b463",
+            "returncode": 0
+          },
+          "health": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/health.sh"
+            ],
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "returncode": 0
+          },
+          "independent-verification": {
+            "command": [
+              "python3",
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/tests/integration/verify_evidence.py",
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/artifacts/clean-runs/m7-iso-5/journey.json"
+            ],
+            "log_sha256": "c296176111ee1aeb0db4ff3920de0596c189a37e402a2a5c8cfb88b986ac49e4",
+            "returncode": 0
+          },
+          "journey": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/run-golden-journey.sh"
+            ],
+            "log_sha256": "4346bdebd2ba3ed43bd92852a603dce3e1f9b4ca62cf566e3be1b9baece1d7f2",
+            "returncode": 0
+          },
+          "reset": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/reset.sh"
+            ],
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "returncode": 0
+          },
+          "verifier-tamper-tests": {
+            "command": [
+              "python3",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/tests/reproducibility",
+              "-p",
+              "test_*.py",
+              "-v"
+            ],
+            "log_sha256": "b540c5d12fbafb1e2847616147dba4cff0d8181ebfb9498d406c93e748a4fd4c",
+            "returncode": 0
+          }
+        },
+        "volumes_after_reset": "",
+        "worktree": "/Users/rana.singh/rzp-s2p-m7-closure"
+      },
+      "same_runtime_inputs": true,
+      "source_runtime_binary_hash": "8bc168dc3b83fca3018113826c99a633e11e3c4b4a9aac58b0a05db0add722bf",
+      "steps_passed": true
+    },
+    {
+      "build_ok": true,
+      "empty_after_reset": true,
+      "fresh_final_checkout": false,
+      "hash_bound": true,
+      "id": "m7-iso-6",
+      "named_binary_hashes": {
+        "accounting-integrations-api": "5beaf910f82e64cc43fadc1583d1a3bb81313fc4551d55706a4a4a7afa371249",
+        "accounting-integrations-cadence-worker": "44a2be92c9a39c803718673a5eaa7a624f0001f2ad5e98cd5bff78c5e1f1924e",
+        "accounting-integrations-worker": "d215b0dff4ce96136fb95917f304cd34c124d2938919bd388e21680a15987e76",
+        "vendor-experience-activity-worker": "1be7a9d07d054df3db8f59a3392677b013c954502ed747ffb03a8a7f815dd1e2",
+        "vendor-experience-api": "950f0aba7d3fcbbad6c68093a9501515c0fb75deb1033796f43bd489a411cb45",
+        "vendor-experience-workflow-worker": "16952990961192c3187f36aca0d7e1c10b56760baf3a9c774f5feb493c63a1ab",
+        "vendor-payments": "bb9f7766e51afea9b9220ac7198f14d5a03437299f55ab61dbb8cc7165aabb44",
+        "vendor-payments-migration": "710167a5bd66e2c14ae360338a80c926e1cbbb042967bba381729980a3c351bd",
+        "vendor-payments-worker": "ecb98edd844a8f0db05b3fd7ac33e61abb69dac531d76e4aead10633939c796c",
+        "vendor-payments-workerv2": "37a798b8c8d1fd5df3b19c149339341e174cde74e916d3c1b0d64f1b7e1c049b"
+      },
+      "passed": true,
+      "recomputed": {
+        "business_outcome": {
+          "amount": 12500,
+          "associations": 1,
+          "boundary_payouts": 2,
+          "broker_offsets": [
+            0,
+            1,
+            2
+          ],
+          "records": 1,
+          "tax_internal_status": "money_loading_success",
+          "tax_status": "processing"
+        },
+        "checks": {
+          "api_agrees": true,
+          "broker_input": true,
+          "callback": true,
+          "correlation": true,
+          "duplicate_zero_delta": true,
+          "idempotency_boundary": true,
+          "negative_contact": true,
+          "pay_controls": true,
+          "record_persistence": true,
+          "remittance_persistence": true,
+          "remittance_request": true,
+          "source_consumer": true,
+          "source_pubsub_states": true,
+          "source_sha": true,
+          "state_scope": true,
+          "tagback": true,
+          "tagback_before_remittance": true,
+          "tagback_request": true
+        },
+        "passed": true
+      },
+      "run": {
+        "build_root": "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/.build/clean-runs/m7-iso-6",
+        "build_root_absent_before": true,
+        "commit": "d87591000f359f1a58fc805c9667d84dc1871d09",
+        "containers": [
+          {
+            "created": "2026-09-08T06:58:33.060322459Z",
+            "health": "healthy",
+            "id": "b5115b63c8a8bbae99aeddfea9240ac773a8f8c67267f27c6b82caa81cc0c5fa",
+            "image": "sha256:c22332c6cffa42dfb8068a169e30c81bb43f67fce0b91e958226fb73553241a1",
+            "name": "/s2p_m7_closure-vp-source-1",
+            "networks": [
+              "s2p_m7_closure_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T06:58:33.013317126Z",
+            "health": "healthy",
+            "id": "acdaf5cc7202af6e73f8956760955ac896451f8826a1e6eae92e7e80c41f737d",
+            "image": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+            "name": "/s2p_m7_closure-redis-1",
+            "networks": [
+              "s2p_m7_closure_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T06:58:33.00828425Z",
+            "health": "healthy",
+            "id": "a49ea552f148fc14e51a9c85a2d3f630a38c8c41677ab987d90377e8a98fad07",
+            "image": "sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+            "name": "/s2p_m7_closure-mysql-1",
+            "networks": [
+              "s2p_m7_closure_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T06:58:32.994557211Z",
+            "health": "healthy",
+            "id": "eefce2b3dad059c12cc87dc920300bb2e6c0ae0132ea99c5a5fefe637fb79fa5",
+            "image": "sha256:9dbe6fc592df440ce842862afe496db42ae8f6b3cf012784533447f11538fd70",
+            "name": "/s2p_m7_closure-monolith-boundary-1",
+            "networks": [
+              "s2p_m7_closure_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T06:58:32.992503793Z",
+            "health": "healthy",
+            "id": "2416a21c3569be113ac4d444a23b9e9028ba8e1032737c0791bf6a707a7e7e6a",
+            "image": "sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+            "name": "/s2p_m7_closure-kafka-1",
+            "networks": [
+              "s2p_m7_closure_s2p_internal"
+            ],
+            "ports": {}
+          }
+        ],
+        "containers_after_reset": "",
+        "durations": {
+          "boot": 15.773478,
+          "bootstrap": 3.167402,
+          "build": 87.902129,
+          "build-runtime": 12.509286,
+          "contracts": 4.103643,
+          "health": 1.084415,
+          "independent-verification": 0.032787,
+          "journey": 4.615682,
+          "reset": 10.298809,
+          "verifier-tamper-tests": 0.080666
+        },
+        "empty_business_state": {
+          "boundary_payouts": [],
+          "records": [],
+          "tax_payments": [],
+          "tds": [],
+          "vendorpayment_payout": []
+        },
+        "file_hashes": {
+          "binaries/accounting-integrations-api": "5beaf910f82e64cc43fadc1583d1a3bb81313fc4551d55706a4a4a7afa371249",
+          "binaries/accounting-integrations-cadence-worker": "44a2be92c9a39c803718673a5eaa7a624f0001f2ad5e98cd5bff78c5e1f1924e",
+          "binaries/accounting-integrations-worker": "d215b0dff4ce96136fb95917f304cd34c124d2938919bd388e21680a15987e76",
+          "binaries/vendor-experience-activity-worker": "1be7a9d07d054df3db8f59a3392677b013c954502ed747ffb03a8a7f815dd1e2",
+          "binaries/vendor-experience-api": "950f0aba7d3fcbbad6c68093a9501515c0fb75deb1033796f43bd489a411cb45",
+          "binaries/vendor-experience-workflow-worker": "16952990961192c3187f36aca0d7e1c10b56760baf3a9c774f5feb493c63a1ab",
+          "binaries/vendor-payments": "bb9f7766e51afea9b9220ac7198f14d5a03437299f55ab61dbb8cc7165aabb44",
+          "binaries/vendor-payments-migration": "710167a5bd66e2c14ae360338a80c926e1cbbb042967bba381729980a3c351bd",
+          "binaries/vendor-payments-worker": "ecb98edd844a8f0db05b3fd7ac33e61abb69dac531d76e4aead10633939c796c",
+          "binaries/vendor-payments-workerv2": "37a798b8c8d1fd5df3b19c149339341e174cde74e916d3c1b0d64f1b7e1c049b",
+          "boot.log": "b2fdf6f2e6d0c770feca06089710ef07a3ab9f3f504ec3d9f5896a6c40c88f49",
+          "bootstrap.log": "7a7b03540b8c6f11959cb4de0e41349b3d70fa00d382d247b28bf0705b4e274b",
+          "build-command-packages.json": "a1a3d3916cfc3414d61affde7684da27c078e9431ec8d1e9d0463e412106d8f3",
+          "build-manifest.json": "b15ea591235c5d5cc11f4507a485a86d5bbd6d4cdf510f7c66c2a7556cdac6e5",
+          "build-runtime-source-verification.json": "96b2fcf88a7d5f3d58d22b68a088635080cfb210c0ec52f760f6a4cf3e67851a",
+          "build-runtime.json": "68533c02ca999bd96fe9b9d6451bf8d16b855fb8e524308dac69b2de1df4e3ec",
+          "build-runtime.log": "b5928ad8b7822007d8308521fe3b18c69ccff95098b7145719406d02197c66b8",
+          "build.log": "131492bcb6530119b74b028cf4f5dfc6484929d96906efc27da461ddf5a42f07",
+          "contracts.log": "d4c4339310d429c9b1dc013cdd639238536681d44af5982538b43181a09e0fb6",
+          "health.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "independent-verification.log": "c296176111ee1aeb0db4ff3920de0596c189a37e402a2a5c8cfb88b986ac49e4",
+          "journey.json": "d52556d2481f7f3fa888f1fed8dfb87bda9fb0ac8ad596332e21e73b640764a2",
+          "journey.log": "4deb716f2be76f12030bb6257cdd61cee15c83acd747d4f13865d58953065765",
+          "reset.log": "0bd4de1f1aa85d78fa1bc5aeb897d510b1d7b9ce15c9238cb5630d5be1c339a0",
+          "runtime-source.bin": "8bc168dc3b83fca3018113826c99a633e11e3c4b4a9aac58b0a05db0add722bf",
+          "runtime.log": "bf8740bce83beb7b023ac588fc541c9984e96542792da1334c83e9283bfa15a4",
+          "source-verification.json": "b6b43a86b94e92598b8df443425dcdee38666a3f02c4c8c44e0ddbc2049b66b0",
+          "verifier-tamper-tests.log": "b540c5d12fbafb1e2847616147dba4cff0d8181ebfb9498d406c93e748a4fd4c"
+        },
+        "finished_at": "2026-09-08T06:58:58.159852+00:00",
+        "fixture_seed": "s2p-golden-20260820-001",
+        "git_status_before": "",
+        "git_tree": "dedab986844a068031a0ae65d8b3957755c6a7c2",
+        "git_worktree_list": "worktree /Users/rana.singh/rzp-payouts-architecture\nHEAD 020480e683d52fa3faf8340ba2ab40ff1f80ca66\nbranch refs/heads/milestone-7-shared-ingress-integration\n\nworktree /Users/rana.singh/rzp-payouts-architecture-expansion\nHEAD d54161c2e29873eb5f53804db58af45d48a7b4f6\nbranch refs/heads/graph-expansion-adjacent-domains\n\nworktree /Users/rana.singh/rzp-payouts-architecture/.claude/worktrees/agent-a00e097ab93ddcb76\nHEAD 5300617d5e572d2defebca9ee4b633c6347e4f6b\nbranch refs/heads/worktree-agent-a00e097ab93ddcb76\n\nworktree /Users/rana.singh/rzp-s2p-final-verification\nHEAD 3f8bddc4284103862bf9c90bc6ebb4ddd8d43d2f\ndetached\n\nworktree /Users/rana.singh/rzp-s2p-final-verification-2\nHEAD f913b5cf5d18e904b47585f7584908f13178d52a\ndetached\n\nworktree /Users/rana.singh/rzp-s2p-final-verification-3\nHEAD b6e4976f9baebfe770dfa30794f6f61ea08ccb1b\ndetached\n\nworktree /Users/rana.singh/rzp-s2p-m7-closure\nHEAD d87591000f359f1a58fc805c9667d84dc1871d09\nbranch refs/heads/s2p-acceptance-closure-m7\n\nworktree /Users/rana.singh/rzp-s2p-m7-closure-final\nHEAD d87591000f359f1a58fc805c9667d84dc1871d09\ndetached\n\nworktree /Users/rana.singh/rzp-source-to-pay-replica\nHEAD b6e4976f9baebfe770dfa30794f6f61ea08ccb1b\nbranch refs/heads/architecture-replica-s2p-v1",
+        "inputs": {
+          "build/README.md": "42582a552aff782493dbd938214d726a5a7fd7e1699077f4d43087788da8257d",
+          "build/codegen.py": "77ae5afdbab65d3fbaed544780ce0fe5f760700c6f460a737fbb0f65c8e1ed6f",
+          "build/command_packages.py": "183352e3674be355e34b00404c35ff3bbe181c76dd94a829da1ae5cd2fa80ec5",
+          "docker-compose.yml": "02b511674626fdf9981cc98b6e8e2d114f7af6befe7cf0a612aa2b440d0e388d",
+          "fixtures/tds-entry-invalid.json": "7be1c1cad847049c64beab9af49be1e8792fd4ba4ac72cb78fb2bb358be5b243",
+          "fixtures/tds-entry.json": "27a6afe708ed78e084671ceb4ee74183fe011cfbb7a414fe690d2cd6e998c83e",
+          "runtime/boundary/Dockerfile": "be992acd3f33c730dce8be42bb968713ca0b8f0c1685e3ff2abfee2f86bc1edf",
+          "runtime/boundary/server.py": "ec15728e15e023ea1c236ea7efb5a03817fd0e1331c4e8c4d5f347819db61117",
+          "runtime/image-lock.json": "15025dd2f3becd339344fc429cc4afafb5b6acccf7da44e8166bbbb9c203c0d5",
+          "runtime/images/source-runtime.Dockerfile": "6cedc8c4e9b58598a5347f47cb2d9c7008f81c01f94bff0c8d473c6074ab3e76",
+          "runtime/mysql/init.sql": "b832d2b507613f3918f85919e5078c822b33959316d1ccd83e6213f08b8f2e9b",
+          "runtime/source-driver/boot.go": "df20b8938c2d3f2f3f784ef3dc20ef4b204541f987fb35ae68f5958b1f51d163",
+          "runtime/source-driver/main.go": "7e1d97f1555b01919859dabe52ccbb31e0fe473b3c34a595ac7e90705b0e5151",
+          "scripts/_common.sh": "5c1f97d86b0036b400ef708e02297da27ecc4637abf3fff4e1cbeecb73b563aa",
+          "scripts/acceptance.py": "e050114cdcc189419ba27951d2ab43a34f5e1b5f896f0f9edc85cdac2209b3aa",
+          "scripts/acceptance.sh": "6745209874f274891ad77c30f6a5b0a668909a699504a761025427762a735342",
+          "scripts/apply-runtime-fidelity.py": "67d3e87d6760a8bb47b50f217f5726a790c92af696c3886166a13f9750249a8a",
+          "scripts/artifact_integrity.py": "d12d25a3c5718315606ad43ec11eaf962b76026d1b7348658cdb27eb4c8e907e",
+          "scripts/bootstrap.sh": "b4b5b57fac12ddca799e1029e1cbccdac64f756f743f1672a730ad798e5fbf10",
+          "scripts/build-runtime.sh": "3f796b46c67fc340552ef781a88ea63b25600868c69bb5ff3e844e933d9076fe",
+          "scripts/build.sh": "3afb03f29405b100d1c7f5e566f8cecb1a0397376559e82655f70374d312f0e3",
+          "scripts/clean-run.py": "324db4f6dcfd579ea629d69fd1aa57b2a3522537974cccb43f576c2532e19747",
+          "scripts/generate-inventory.py": "d8053cb45f4682c111dd65fbb414e8a4c2e766f06c9eaa00c19e2a580fdf711b",
+          "scripts/health.sh": "b1a8dc2ac865ef1ffedbd22b225372743318e838fc54825126b47b69bc976f0d",
+          "scripts/isolation.py": "6847a541b5a37e9ccda4ff0f829cbbbe996659636acc38623bb461ac17119660",
+          "scripts/isolation_baseline.py": "e63a520ce8833a791508c0d96821256ec7b3c9288c979f3847b6d6378bc0ae60",
+          "scripts/render-reports.py": "af1a6722b0a15a7f94af805bc3e79397ffe2bfbd57980532036b5572e46d2c4b",
+          "scripts/reset.sh": "d6bd7c38456ad902c7e1b134910cb1f6d83e8482b2564ec80dc1db259204c91f",
+          "scripts/run-golden-journey.sh": "2222d503afcbad1a6f467d481f7b02014d41870a3b95f2361f2c7c85c41deb54",
+          "scripts/scan-deliverables.py": "81120573245a8c76e21ef0c6b0aeaebb93bca7f950ba5579bb46e4e4ed7abc85",
+          "scripts/source_common.py": "9ec527a3c079d1f3e8dc44db656ca9d34251821295ef4ad61efd6865474f73e7",
+          "scripts/source_recover.py": "1274d4e23d15ed32edf2f4654991a04b5b05aed9a7ebb137317fb98946800bd2",
+          "scripts/source_verify.py": "4b20a5e4ccfc7aa3ee949a325ac540ae13a894c4284d78a9300626045ce0450f",
+          "scripts/up.sh": "63004653690966005ea4ddc4c572cfb00019c29e6a5be9e16950ad5f1f269a31",
+          "source-lock.json": "14cef5393a334acc3bb20af194d0ef72b1411ccd0cd033998bbabb9936a1bb7d",
+          "tests/contracts/test_monolith_boundary.py": "ba01f07c319655a0b7e21aa0376fc88013d9b3a7a261eacc7c2a4b2ce2676a1f",
+          "tests/integration/golden_journey.py": "c567b8af5854c7f1ab7eb73486d070dd02664d4daef923a7e3a0b50fe388a3ca",
+          "tests/integration/verify_evidence.py": "613bd69abc289c897b4270dc70c5078ea6752dd261828aa6f34f3e53cc6763b8",
+          "tests/reproducibility/test_evidence_verifier.py": "10114f7c7adb0c8776b325bcd8984f6fe8e71759155d9adc76c6b9592ae224a4",
+          "tests/reproducibility/test_fidelity_requirements.py": "39f7270979104787d7f24920c4fe42fd96ba29ee2381d3372b4dad3318585112"
+        },
+        "networks": [
+          {
+            "internal": true,
+            "name": "s2p_m7_closure_s2p_internal"
+          }
+        ],
+        "passed": true,
+        "project": "s2p_m7_closure",
+        "run_id": "m7-iso-6",
+        "schema_version": 1,
+        "started_at": "2026-09-08T06:56:37.341074+00:00",
+        "steps": {
+          "boot": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/up.sh"
+            ],
+            "log_sha256": "b2fdf6f2e6d0c770feca06089710ef07a3ab9f3f504ec3d9f5896a6c40c88f49",
+            "returncode": 0
+          },
+          "bootstrap": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/bootstrap.sh"
+            ],
+            "log_sha256": "7a7b03540b8c6f11959cb4de0e41349b3d70fa00d382d247b28bf0705b4e274b",
+            "returncode": 0
+          },
+          "build": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/build.sh"
+            ],
+            "log_sha256": "131492bcb6530119b74b028cf4f5dfc6484929d96906efc27da461ddf5a42f07",
+            "returncode": 0
+          },
+          "build-runtime": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/build-runtime.sh"
+            ],
+            "log_sha256": "b5928ad8b7822007d8308521fe3b18c69ccff95098b7145719406d02197c66b8",
+            "returncode": 0
+          },
+          "contracts": {
+            "command": [
+              "python3",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/tests/contracts",
+              "-p",
+              "test_*.py",
+              "-v"
+            ],
+            "log_sha256": "d4c4339310d429c9b1dc013cdd639238536681d44af5982538b43181a09e0fb6",
+            "returncode": 0
+          },
+          "health": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/health.sh"
+            ],
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "returncode": 0
+          },
+          "independent-verification": {
+            "command": [
+              "python3",
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/tests/integration/verify_evidence.py",
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/artifacts/clean-runs/m7-iso-6/journey.json"
+            ],
+            "log_sha256": "c296176111ee1aeb0db4ff3920de0596c189a37e402a2a5c8cfb88b986ac49e4",
+            "returncode": 0
+          },
+          "journey": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/run-golden-journey.sh"
+            ],
+            "log_sha256": "4deb716f2be76f12030bb6257cdd61cee15c83acd747d4f13865d58953065765",
+            "returncode": 0
+          },
+          "reset": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/scripts/reset.sh"
+            ],
+            "log_sha256": "0bd4de1f1aa85d78fa1bc5aeb897d510b1d7b9ce15c9238cb5630d5be1c339a0",
+            "returncode": 0
+          },
+          "verifier-tamper-tests": {
+            "command": [
+              "python3",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "/Users/rana.singh/rzp-s2p-m7-closure/DOMAIN_REPLICAS/source_to_pay/tests/reproducibility",
+              "-p",
+              "test_*.py",
+              "-v"
+            ],
+            "log_sha256": "b540c5d12fbafb1e2847616147dba4cff0d8181ebfb9498d406c93e748a4fd4c",
+            "returncode": 0
+          }
+        },
+        "volumes_after_reset": "",
+        "worktree": "/Users/rana.singh/rzp-s2p-m7-closure"
+      },
+      "same_runtime_inputs": true,
+      "source_runtime_binary_hash": "8bc168dc3b83fca3018113826c99a633e11e3c4b4a9aac58b0a05db0add722bf",
+      "steps_passed": true
+    },
+    {
+      "build_ok": true,
+      "empty_after_reset": true,
+      "fresh_final_checkout": true,
+      "hash_bound": true,
+      "id": "m7-iso-7",
+      "named_binary_hashes": {
+        "accounting-integrations-api": "5beaf910f82e64cc43fadc1583d1a3bb81313fc4551d55706a4a4a7afa371249",
+        "accounting-integrations-cadence-worker": "44a2be92c9a39c803718673a5eaa7a624f0001f2ad5e98cd5bff78c5e1f1924e",
+        "accounting-integrations-worker": "d215b0dff4ce96136fb95917f304cd34c124d2938919bd388e21680a15987e76",
+        "vendor-experience-activity-worker": "1be7a9d07d054df3db8f59a3392677b013c954502ed747ffb03a8a7f815dd1e2",
+        "vendor-experience-api": "950f0aba7d3fcbbad6c68093a9501515c0fb75deb1033796f43bd489a411cb45",
+        "vendor-experience-workflow-worker": "16952990961192c3187f36aca0d7e1c10b56760baf3a9c774f5feb493c63a1ab",
+        "vendor-payments": "bb9f7766e51afea9b9220ac7198f14d5a03437299f55ab61dbb8cc7165aabb44",
+        "vendor-payments-migration": "710167a5bd66e2c14ae360338a80c926e1cbbb042967bba381729980a3c351bd",
+        "vendor-payments-worker": "ecb98edd844a8f0db05b3fd7ac33e61abb69dac531d76e4aead10633939c796c",
+        "vendor-payments-workerv2": "37a798b8c8d1fd5df3b19c149339341e174cde74e916d3c1b0d64f1b7e1c049b"
+      },
+      "passed": true,
+      "recomputed": {
+        "business_outcome": {
+          "amount": 12500,
+          "associations": 1,
+          "boundary_payouts": 2,
+          "broker_offsets": [
+            0,
+            1,
+            2
+          ],
+          "records": 1,
+          "tax_internal_status": "money_loading_success",
+          "tax_status": "processing"
+        },
+        "checks": {
+          "api_agrees": true,
+          "broker_input": true,
+          "callback": true,
+          "correlation": true,
+          "duplicate_zero_delta": true,
+          "idempotency_boundary": true,
+          "negative_contact": true,
+          "pay_controls": true,
+          "record_persistence": true,
+          "remittance_persistence": true,
+          "remittance_request": true,
+          "source_consumer": true,
+          "source_pubsub_states": true,
+          "source_sha": true,
+          "state_scope": true,
+          "tagback": true,
+          "tagback_before_remittance": true,
+          "tagback_request": true
+        },
+        "passed": true
+      },
+      "run": {
+        "build_root": "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/.build/clean-runs/m7-iso-7",
+        "build_root_absent_before": true,
+        "commit": "d87591000f359f1a58fc805c9667d84dc1871d09",
+        "containers": [
+          {
+            "created": "2026-09-08T07:00:59.270304066Z",
+            "health": "healthy",
+            "id": "8e2457414b3056283464b7524b288852edddb6cbf79fe054a51b0a82897a0b3c",
+            "image": "sha256:93380b9dcd029d2718114032ce610a61576b196250aff44df6fa400e24e94abe",
+            "name": "/s2p_m7_closure_final-vp-source-1",
+            "networks": [
+              "s2p_m7_closure_final_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T07:00:59.206508684Z",
+            "health": "healthy",
+            "id": "f264fce45b684cc6742152ff4fec5a53a720e2a49a8349dcdc8105d63f6979af",
+            "image": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+            "name": "/s2p_m7_closure_final-redis-1",
+            "networks": [
+              "s2p_m7_closure_final_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T07:00:59.204595685Z",
+            "health": "healthy",
+            "id": "526271ddf55ce61e66e6b4efc46bf0c9d0171972077cade29f9d7f4572a8dcb3",
+            "image": "sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+            "name": "/s2p_m7_closure_final-mysql-1",
+            "networks": [
+              "s2p_m7_closure_final_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T07:00:59.201235259Z",
+            "health": "healthy",
+            "id": "9fd423de393886f6fa04b9394940417c4c9bcb6330addbe6a1d413e9999d35d3",
+            "image": "sha256:d27fbc5e1f09123ad5448d4369a8fe990727d98c9a262f75b5ea77a6346b76a7",
+            "name": "/s2p_m7_closure_final-monolith-boundary-1",
+            "networks": [
+              "s2p_m7_closure_final_s2p_internal"
+            ],
+            "ports": {}
+          },
+          {
+            "created": "2026-09-08T07:00:59.199724546Z",
+            "health": "healthy",
+            "id": "a7f83acadcc6c8113983e6b81feeb18d1ca33a35ad371e9acf751127191dccf9",
+            "image": "sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+            "name": "/s2p_m7_closure_final-kafka-1",
+            "networks": [
+              "s2p_m7_closure_final_s2p_internal"
+            ],
+            "ports": {}
+          }
+        ],
+        "containers_after_reset": "",
+        "durations": {
+          "boot": 15.297295,
+          "bootstrap": 3.97106,
+          "build": 91.907327,
+          "build-runtime": 12.221503,
+          "contracts": 0.167771,
+          "health": 0.420181,
+          "independent-verification": 0.030836,
+          "journey": 3.54124,
+          "reset": 0.131323,
+          "verifier-tamper-tests": 0.048821
+        },
+        "empty_business_state": {
+          "boundary_payouts": [],
+          "records": [],
+          "tax_payments": [],
+          "tds": [],
+          "vendorpayment_payout": []
+        },
+        "file_hashes": {
+          "binaries/accounting-integrations-api": "5beaf910f82e64cc43fadc1583d1a3bb81313fc4551d55706a4a4a7afa371249",
+          "binaries/accounting-integrations-cadence-worker": "44a2be92c9a39c803718673a5eaa7a624f0001f2ad5e98cd5bff78c5e1f1924e",
+          "binaries/accounting-integrations-worker": "d215b0dff4ce96136fb95917f304cd34c124d2938919bd388e21680a15987e76",
+          "binaries/vendor-experience-activity-worker": "1be7a9d07d054df3db8f59a3392677b013c954502ed747ffb03a8a7f815dd1e2",
+          "binaries/vendor-experience-api": "950f0aba7d3fcbbad6c68093a9501515c0fb75deb1033796f43bd489a411cb45",
+          "binaries/vendor-experience-workflow-worker": "16952990961192c3187f36aca0d7e1c10b56760baf3a9c774f5feb493c63a1ab",
+          "binaries/vendor-payments": "bb9f7766e51afea9b9220ac7198f14d5a03437299f55ab61dbb8cc7165aabb44",
+          "binaries/vendor-payments-migration": "710167a5bd66e2c14ae360338a80c926e1cbbb042967bba381729980a3c351bd",
+          "binaries/vendor-payments-worker": "ecb98edd844a8f0db05b3fd7ac33e61abb69dac531d76e4aead10633939c796c",
+          "binaries/vendor-payments-workerv2": "37a798b8c8d1fd5df3b19c149339341e174cde74e916d3c1b0d64f1b7e1c049b",
+          "boot.log": "992e9cd455bde5cdeef38a5b441d2b6f3308266131fd2aea62d7b4c68d36ed97",
+          "bootstrap.log": "7a7b03540b8c6f11959cb4de0e41349b3d70fa00d382d247b28bf0705b4e274b",
+          "build-command-packages.json": "76e219a59266f68b306e6575f7637224e15b7e186dabd77fcf06bdbbe2f7fe97",
+          "build-manifest.json": "a52ff8c4e9688e79dfb27b9062d5615043e20ba0460874f971a4887c1ccc68e9",
+          "build-runtime-source-verification.json": "96b2fcf88a7d5f3d58d22b68a088635080cfb210c0ec52f760f6a4cf3e67851a",
+          "build-runtime.json": "7cccde764262f8f345cc5c62874bab8da47430c49f34707ffeb0ec417df127a0",
+          "build-runtime.log": "a75329e574224c69fbaaa971b2c24fd61503e4b134ca3ebe6c1bd7310e8d1fbf",
+          "build.log": "e1257436f838b806812b32ce15836104c615287df34f5ba9a99e0cbe3ea30cdb",
+          "contracts.log": "1539291964fb86230f421d347969e473323ba8ab44cc9bdfaabe9506d3ec7ef4",
+          "health.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "independent-verification.log": "c296176111ee1aeb0db4ff3920de0596c189a37e402a2a5c8cfb88b986ac49e4",
+          "journey.json": "f408d6c3d783c9710e32f80db86b084e95da30c6ce3d1fe596f7935537b9e36e",
+          "journey.log": "cd09e6a3e1198f7c2218a367b46c5f8729dd49eeafbad7a8270a73ac65791482",
+          "reset.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+          "runtime-source.bin": "8bc168dc3b83fca3018113826c99a633e11e3c4b4a9aac58b0a05db0add722bf",
+          "runtime.log": "c1d98a412de0da83d8ef9c6b266b4712ec4e758988da4da9e1e09d90e13effa1",
+          "source-verification.json": "d44444132bde0b95b40cfd5c1721847155dd1d2547b5bb5387aa93f2919d934e",
+          "verifier-tamper-tests.log": "b540c5d12fbafb1e2847616147dba4cff0d8181ebfb9498d406c93e748a4fd4c"
+        },
+        "finished_at": "2026-09-08T07:01:18.088723+00:00",
+        "fixture_seed": "s2p-golden-20260820-001",
+        "git_status_before": "",
+        "git_tree": "dedab986844a068031a0ae65d8b3957755c6a7c2",
+        "git_worktree_list": "worktree /Users/rana.singh/rzp-payouts-architecture\nHEAD 020480e683d52fa3faf8340ba2ab40ff1f80ca66\nbranch refs/heads/milestone-7-shared-ingress-integration\n\nworktree /Users/rana.singh/rzp-payouts-architecture-expansion\nHEAD d54161c2e29873eb5f53804db58af45d48a7b4f6\nbranch refs/heads/graph-expansion-adjacent-domains\n\nworktree /Users/rana.singh/rzp-payouts-architecture/.claude/worktrees/agent-a00e097ab93ddcb76\nHEAD 5300617d5e572d2defebca9ee4b633c6347e4f6b\nbranch refs/heads/worktree-agent-a00e097ab93ddcb76\n\nworktree /Users/rana.singh/rzp-s2p-final-verification\nHEAD 3f8bddc4284103862bf9c90bc6ebb4ddd8d43d2f\ndetached\n\nworktree /Users/rana.singh/rzp-s2p-final-verification-2\nHEAD f913b5cf5d18e904b47585f7584908f13178d52a\ndetached\n\nworktree /Users/rana.singh/rzp-s2p-final-verification-3\nHEAD b6e4976f9baebfe770dfa30794f6f61ea08ccb1b\ndetached\n\nworktree /Users/rana.singh/rzp-s2p-m7-closure\nHEAD d87591000f359f1a58fc805c9667d84dc1871d09\nbranch refs/heads/s2p-acceptance-closure-m7\n\nworktree /Users/rana.singh/rzp-s2p-m7-closure-final\nHEAD d87591000f359f1a58fc805c9667d84dc1871d09\ndetached\n\nworktree /Users/rana.singh/rzp-source-to-pay-replica\nHEAD b6e4976f9baebfe770dfa30794f6f61ea08ccb1b\nbranch refs/heads/architecture-replica-s2p-v1",
+        "inputs": {
+          "build/README.md": "42582a552aff782493dbd938214d726a5a7fd7e1699077f4d43087788da8257d",
+          "build/codegen.py": "77ae5afdbab65d3fbaed544780ce0fe5f760700c6f460a737fbb0f65c8e1ed6f",
+          "build/command_packages.py": "183352e3674be355e34b00404c35ff3bbe181c76dd94a829da1ae5cd2fa80ec5",
+          "docker-compose.yml": "02b511674626fdf9981cc98b6e8e2d114f7af6befe7cf0a612aa2b440d0e388d",
+          "fixtures/tds-entry-invalid.json": "7be1c1cad847049c64beab9af49be1e8792fd4ba4ac72cb78fb2bb358be5b243",
+          "fixtures/tds-entry.json": "27a6afe708ed78e084671ceb4ee74183fe011cfbb7a414fe690d2cd6e998c83e",
+          "runtime/boundary/Dockerfile": "be992acd3f33c730dce8be42bb968713ca0b8f0c1685e3ff2abfee2f86bc1edf",
+          "runtime/boundary/server.py": "ec15728e15e023ea1c236ea7efb5a03817fd0e1331c4e8c4d5f347819db61117",
+          "runtime/image-lock.json": "15025dd2f3becd339344fc429cc4afafb5b6acccf7da44e8166bbbb9c203c0d5",
+          "runtime/images/source-runtime.Dockerfile": "6cedc8c4e9b58598a5347f47cb2d9c7008f81c01f94bff0c8d473c6074ab3e76",
+          "runtime/mysql/init.sql": "b832d2b507613f3918f85919e5078c822b33959316d1ccd83e6213f08b8f2e9b",
+          "runtime/source-driver/boot.go": "df20b8938c2d3f2f3f784ef3dc20ef4b204541f987fb35ae68f5958b1f51d163",
+          "runtime/source-driver/main.go": "7e1d97f1555b01919859dabe52ccbb31e0fe473b3c34a595ac7e90705b0e5151",
+          "scripts/_common.sh": "5c1f97d86b0036b400ef708e02297da27ecc4637abf3fff4e1cbeecb73b563aa",
+          "scripts/acceptance.py": "e050114cdcc189419ba27951d2ab43a34f5e1b5f896f0f9edc85cdac2209b3aa",
+          "scripts/acceptance.sh": "6745209874f274891ad77c30f6a5b0a668909a699504a761025427762a735342",
+          "scripts/apply-runtime-fidelity.py": "67d3e87d6760a8bb47b50f217f5726a790c92af696c3886166a13f9750249a8a",
+          "scripts/artifact_integrity.py": "d12d25a3c5718315606ad43ec11eaf962b76026d1b7348658cdb27eb4c8e907e",
+          "scripts/bootstrap.sh": "b4b5b57fac12ddca799e1029e1cbccdac64f756f743f1672a730ad798e5fbf10",
+          "scripts/build-runtime.sh": "3f796b46c67fc340552ef781a88ea63b25600868c69bb5ff3e844e933d9076fe",
+          "scripts/build.sh": "3afb03f29405b100d1c7f5e566f8cecb1a0397376559e82655f70374d312f0e3",
+          "scripts/clean-run.py": "324db4f6dcfd579ea629d69fd1aa57b2a3522537974cccb43f576c2532e19747",
+          "scripts/generate-inventory.py": "d8053cb45f4682c111dd65fbb414e8a4c2e766f06c9eaa00c19e2a580fdf711b",
+          "scripts/health.sh": "b1a8dc2ac865ef1ffedbd22b225372743318e838fc54825126b47b69bc976f0d",
+          "scripts/isolation.py": "6847a541b5a37e9ccda4ff0f829cbbbe996659636acc38623bb461ac17119660",
+          "scripts/isolation_baseline.py": "e63a520ce8833a791508c0d96821256ec7b3c9288c979f3847b6d6378bc0ae60",
+          "scripts/render-reports.py": "af1a6722b0a15a7f94af805bc3e79397ffe2bfbd57980532036b5572e46d2c4b",
+          "scripts/reset.sh": "d6bd7c38456ad902c7e1b134910cb1f6d83e8482b2564ec80dc1db259204c91f",
+          "scripts/run-golden-journey.sh": "2222d503afcbad1a6f467d481f7b02014d41870a3b95f2361f2c7c85c41deb54",
+          "scripts/scan-deliverables.py": "81120573245a8c76e21ef0c6b0aeaebb93bca7f950ba5579bb46e4e4ed7abc85",
+          "scripts/source_common.py": "9ec527a3c079d1f3e8dc44db656ca9d34251821295ef4ad61efd6865474f73e7",
+          "scripts/source_recover.py": "1274d4e23d15ed32edf2f4654991a04b5b05aed9a7ebb137317fb98946800bd2",
+          "scripts/source_verify.py": "4b20a5e4ccfc7aa3ee949a325ac540ae13a894c4284d78a9300626045ce0450f",
+          "scripts/up.sh": "63004653690966005ea4ddc4c572cfb00019c29e6a5be9e16950ad5f1f269a31",
+          "source-lock.json": "14cef5393a334acc3bb20af194d0ef72b1411ccd0cd033998bbabb9936a1bb7d",
+          "tests/contracts/test_monolith_boundary.py": "ba01f07c319655a0b7e21aa0376fc88013d9b3a7a261eacc7c2a4b2ce2676a1f",
+          "tests/integration/golden_journey.py": "c567b8af5854c7f1ab7eb73486d070dd02664d4daef923a7e3a0b50fe388a3ca",
+          "tests/integration/verify_evidence.py": "613bd69abc289c897b4270dc70c5078ea6752dd261828aa6f34f3e53cc6763b8",
+          "tests/reproducibility/test_evidence_verifier.py": "10114f7c7adb0c8776b325bcd8984f6fe8e71759155d9adc76c6b9592ae224a4",
+          "tests/reproducibility/test_fidelity_requirements.py": "39f7270979104787d7f24920c4fe42fd96ba29ee2381d3372b4dad3318585112"
+        },
+        "networks": [
+          {
+            "internal": true,
+            "name": "s2p_m7_closure_final_s2p_internal"
+          }
+        ],
+        "passed": true,
+        "project": "s2p_m7_closure_final",
+        "run_id": "m7-iso-7",
+        "schema_version": 1,
+        "started_at": "2026-09-08T06:59:09.478975+00:00",
+        "steps": {
+          "boot": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/scripts/up.sh"
+            ],
+            "log_sha256": "992e9cd455bde5cdeef38a5b441d2b6f3308266131fd2aea62d7b4c68d36ed97",
+            "returncode": 0
+          },
+          "bootstrap": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/scripts/bootstrap.sh"
+            ],
+            "log_sha256": "7a7b03540b8c6f11959cb4de0e41349b3d70fa00d382d247b28bf0705b4e274b",
+            "returncode": 0
+          },
+          "build": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/scripts/build.sh"
+            ],
+            "log_sha256": "e1257436f838b806812b32ce15836104c615287df34f5ba9a99e0cbe3ea30cdb",
+            "returncode": 0
+          },
+          "build-runtime": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/scripts/build-runtime.sh"
+            ],
+            "log_sha256": "a75329e574224c69fbaaa971b2c24fd61503e4b134ca3ebe6c1bd7310e8d1fbf",
+            "returncode": 0
+          },
+          "contracts": {
+            "command": [
+              "python3",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/tests/contracts",
+              "-p",
+              "test_*.py",
+              "-v"
+            ],
+            "log_sha256": "1539291964fb86230f421d347969e473323ba8ab44cc9bdfaabe9506d3ec7ef4",
+            "returncode": 0
+          },
+          "health": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/scripts/health.sh"
+            ],
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "returncode": 0
+          },
+          "independent-verification": {
+            "command": [
+              "python3",
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/tests/integration/verify_evidence.py",
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/artifacts/clean-runs/m7-iso-7/journey.json"
+            ],
+            "log_sha256": "c296176111ee1aeb0db4ff3920de0596c189a37e402a2a5c8cfb88b986ac49e4",
+            "returncode": 0
+          },
+          "journey": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/scripts/run-golden-journey.sh"
+            ],
+            "log_sha256": "cd09e6a3e1198f7c2218a367b46c5f8729dd49eeafbad7a8270a73ac65791482",
+            "returncode": 0
+          },
+          "reset": {
+            "command": [
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/scripts/reset.sh"
+            ],
+            "log_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+            "returncode": 0
+          },
+          "verifier-tamper-tests": {
+            "command": [
+              "python3",
+              "-m",
+              "unittest",
+              "discover",
+              "-s",
+              "/Users/rana.singh/rzp-s2p-m7-closure-final/DOMAIN_REPLICAS/source_to_pay/tests/reproducibility",
+              "-p",
+              "test_*.py",
+              "-v"
+            ],
+            "log_sha256": "b540c5d12fbafb1e2847616147dba4cff0d8181ebfb9498d406c93e748a4fd4c",
+            "returncode": 0
+          }
+        },
+        "volumes_after_reset": "",
+        "worktree": "/Users/rana.singh/rzp-s2p-m7-closure-final"
+      },
+      "same_runtime_inputs": true,
+      "source_runtime_binary_hash": "8bc168dc3b83fca3018113826c99a633e11e3c4b4a9aac58b0a05db0add722bf",
+      "steps_passed": true
+    }
+  ]
+}

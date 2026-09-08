@@ -1,0 +1,595 @@
+{
+  "captured_at": "2026-09-07T22:19:25.893562+00:00",
+  "baseline_sha256": "cdd9f41ce810eb992181095855d2b726191c088b118ed6e05b5ead329732ac68",
+  "worktrees": [
+    {
+      "path": "/Users/rana.singh/rzp-payouts-architecture",
+      "head_before": "2613f383297c7c3b5c0831c26c5c7472494b6e7b",
+      "head_after": "2613f383297c7c3b5c0831c26c5c7472494b6e7b",
+      "changed_files": [
+        "ENV2_COMPOSE/config/generate.py",
+        "ENV2_COMPOSE/substitutes/kong-lite/CONTRACT.md",
+        "ENV2_COMPOSE/substitutes/kong-lite/server.py",
+        "ENV2_COMPOSE/substitutes/monolith-stub/server.py",
+        "Makefile",
+        "RED_LOOP/m6/journeys/framework.py",
+        "RED_LOOP/m6/journeys/j_approval.py",
+        "RED_LOOP/m6/journeys/j_bulk.py",
+        "RED_LOOP/m6/journeys/j_failure.py",
+        "RED_LOOP/m6/journeys/j_fetch.py",
+        "RED_LOOP/m6/journeys/j_onhold.py",
+        "RED_LOOP/m6/journeys/j_pricing.py",
+        "RED_LOOP/m6/journeys/j_scheduled.py",
+        "RED_LOOP/m6/journeys/j_shared.py",
+        "RED_LOOP/m6/journeys/j_source.py",
+        "RED_LOOP/m6/journeys/j_workers.py",
+        "RED_LOOP/m6/journeys/run.py",
+        "RED_LOOP/m6/refresh_demo.py",
+        "RED_LOOP/red_loop/provisioner.py",
+        "RED_LOOP/red_loop/provisioner_direct.py",
+        "RED_LOOP/tests/test_kong_passport.py",
+        "RED_LOOP/tests/test_ledger_ids.py",
+        "TWIN_SPEC/README.md",
+        "TWIN_SPEC/expected-failures.yaml",
+        "reports/domain/SNAPSHOT_MANIFEST.json",
+        "reports/domain/recipes/asv-stub.yaml",
+        "reports/domain/recipes/bankingaccounts-stub.yaml",
+        "reports/domain/recipes/batch-sim.yaml",
+        "reports/domain/recipes/cfa-migrate.yaml",
+        "reports/domain/recipes/cfa-server.yaml",
+        "reports/domain/recipes/cfa-worker-contact.yaml",
+        "reports/domain/recipes/cfa-worker-fa.yaml",
+        "reports/domain/recipes/cron-driver.yaml",
+        "reports/domain/recipes/dcs-stub.yaml",
+        "reports/domain/recipes/fts-migrate.yaml",
+        "reports/domain/recipes/fts-web.yaml",
+        "reports/domain/recipes/fts-worker-check-transfer-status.yaml",
+        "reports/domain/recipes/fts-worker-default.yaml",
+        "reports/domain/recipes/fts-worker-fire-transfer-status-webhook.yaml",
+        "reports/domain/recipes/fts-worker-initiate-transfer.yaml",
+        "reports/domain/recipes/fts-worker-rbl-check-transfer-status.yaml",
+        "reports/domain/recipes/fts-worker-rbl-direct-imps-check-transfer-status.yaml",
+        "reports/domain/recipes/fts-worker-rbl-direct-imps-initiate-transfer.yaml",
+        "reports/domain/recipes/fts-worker-rbl-imps-check-transfer-status.yaml",
+        "reports/domain/recipes/fts-worker-rbl-imps-initiate-transfer.yaml",
+        "reports/domain/recipes/fts-worker-rbl-initiate-transfer.yaml",
+        "reports/domain/recipes/fts-worker-retry-transfer-preprocessor.yaml",
+        "reports/domain/recipes/fts-worker-retry-transfer-source-update.yaml",
+        "reports/domain/recipes/fts-worker-retry-transfer.yaml",
+        "reports/domain/recipes/kafka.yaml",
+        "reports/domain/recipes/kong-lite.yaml",
+        "reports/domain/recipes/ledger-api.yaml",
+        "reports/domain/recipes/ledger-gate.yaml",
+        "reports/domain/recipes/ledger-migrate.yaml",
+        "reports/domain/recipes/ledger-scheduler.yaml",
+        "reports/domain/recipes/ledger-worker-balance-update.yaml",
+        "reports/domain/recipes/ledger-worker-entry-details-create-pg.yaml",
+        "reports/domain/recipes/ledger-worker-entry-details-create.yaml",
+        "reports/domain/recipes/ledger-worker-journal-create.yaml",
+        "reports/domain/recipes/ledger-worker.yaml",
+        "reports/domain/recipes/localstack.yaml",
+        "reports/domain/recipes/merchant-webhook-sink.yaml",
+        "reports/domain/recipes/mongo-cfa.yaml",
+        "reports/domain/recipes/monolith-stub.yaml",
+        "reports/domain/recipes/mozart-mock.yaml",
+        "reports/domain/recipes/mozart-sim.yaml",
+        "reports/domain/recipes/mysql-apidb-stub.yaml",
+        "reports/domain/recipes/mysql-fts.yaml",
+        "reports/domain/recipes/mysql-payouts.yaml",
+        "reports/domain/recipes/mysql-xbalances.yaml",
+        "reports/domain/recipes/payouts-api.yaml",
+        "reports/domain/recipes/payouts-kafka-fts-status-updates-consumer.yaml",
+        "reports/domain/recipes/payouts-kafka-fts-status-updates-retry-consumer.yaml",
+        "reports/domain/recipes/payouts-migrate.yaml",
+        "reports/domain/recipes/payouts-worker-api-queue-for-async-dual-write-direct-push.yaml",
+        "reports/domain/recipes/payouts-worker-async-dual-write.yaml",
+        "reports/domain/recipes/payouts-worker-batch-submitted-merchants.yaml",
+        "reports/domain/recipes/payouts-worker-bulk-payouts.yaml",
+        "reports/domain/recipes/payouts-worker-data-consistency-checker.yaml",
+        "reports/domain/recipes/payouts-worker-data-consistency-event.yaml",
+        "reports/domain/recipes/payouts-worker-fts-async-hv-processing.yaml",
+        "reports/domain/recipes/payouts-worker-fts-async-processing.yaml",
+        "reports/domain/recipes/payouts-worker-fund-management-payout-check.yaml",
+        "reports/domain/recipes/payouts-worker-fund-management-payout-initiate.yaml",
+        "reports/domain/recipes/payouts-worker-generic-processing.yaml",
+        "reports/domain/recipes/payouts-worker-on-hold-payout.yaml",
+        "reports/domain/recipes/payouts-worker-partner-bank-hold-payouts.yaml",
+        "reports/domain/recipes/payouts-worker-payout-create-failure-handling.yaml",
+        "reports/domain/recipes/payouts-worker-payout-source-updater.yaml",
+        "reports/domain/recipes/payouts-worker-payout-update-failure-handling.yaml",
+        "reports/domain/recipes/payouts-worker-payout-usage-event-processing.yaml",
+        "reports/domain/recipes/payouts-worker-queued-payout.yaml",
+        "reports/domain/recipes/payouts-worker-rbl-banking-account-statement.yaml",
+        "reports/domain/recipes/payouts-worker-schedule-payout.yaml",
+        "reports/domain/recipes/payouts-worker-transaction-create.yaml",
+        "reports/domain/recipes/payouts-worker-webhook-event.yaml",
+        "reports/domain/recipes/payouts-worker-x-account-statement-source-event.yaml",
+        "reports/domain/recipes/payouts-worker-x-balance-payouts-event.yaml",
+        "reports/domain/recipes/payouts-worker-x-balances-balance-refresh.yaml",
+        "reports/domain/recipes/postgres-ledger.yaml",
+        "reports/domain/recipes/pricing-stub.yaml",
+        "reports/domain/recipes/redis.yaml",
+        "reports/domain/recipes/repo-accounting-integrations.yaml",
+        "reports/domain/recipes/repo-admin-dashboard.yaml",
+        "reports/domain/recipes/repo-alert-rules.yaml",
+        "reports/domain/recipes/repo-api.yaml",
+        "reports/domain/recipes/repo-authz.yaml",
+        "reports/domain/recipes/repo-banking-accounts.yaml",
+        "reports/domain/recipes/repo-batch.yaml",
+        "reports/domain/recipes/repo-cfa.yaml",
+        "reports/domain/recipes/repo-charge-collections.yaml",
+        "reports/domain/recipes/repo-config-proto.yaml",
+        "reports/domain/recipes/repo-dcs.yaml",
+        "reports/domain/recipes/repo-edge.yaml",
+        "reports/domain/recipes/repo-fts.yaml",
+        "reports/domain/recipes/repo-goutils.yaml",
+        "reports/domain/recipes/repo-governor-executor.yaml",
+        "reports/domain/recipes/repo-governor.yaml",
+        "reports/domain/recipes/repo-kube-manifests.yaml",
+        "reports/domain/recipes/repo-ledger-sdk.yaml",
+        "reports/domain/recipes/repo-ledger.yaml",
+        "reports/domain/recipes/repo-mozart.yaml",
+        "reports/domain/recipes/repo-payments-upi.yaml",
+        "reports/domain/recipes/repo-payout-links.yaml",
+        "reports/domain/recipes/repo-payouts.yaml",
+        "reports/domain/recipes/repo-proto.yaml",
+        "reports/domain/recipes/repo-recon.yaml",
+        "reports/domain/recipes/repo-shield-sdk.yaml",
+        "reports/domain/recipes/repo-spinacode.yaml",
+        "reports/domain/recipes/repo-splitz.yaml",
+        "reports/domain/recipes/repo-stork.yaml",
+        "reports/domain/recipes/repo-terraform-kong.yaml",
+        "reports/domain/recipes/repo-validx.yaml",
+        "reports/domain/recipes/repo-vendor-payments.yaml",
+        "reports/domain/recipes/repo-virtual-account.yaml",
+        "reports/domain/recipes/repo-workflows.yaml",
+        "reports/domain/recipes/repo-x-account-statements.yaml",
+        "reports/domain/recipes/repo-x-balances.yaml",
+        "reports/domain/recipes/repo-x.yaml",
+        "reports/domain/recipes/repo-xperience.yaml",
+        "reports/domain/recipes/shield-stub.yaml",
+        "reports/domain/recipes/splitz-stub.yaml",
+        "reports/domain/recipes/stork-capture.yaml",
+        "reports/domain/recipes/verifier.yaml",
+        "reports/domain/recipes/workflow-engine.yaml",
+        "reports/domain/recipes/workflow-sim.yaml",
+        "reports/domain/recipes/xas-sim.yaml",
+        "reports/domain/recipes/xbalances-migrate.yaml",
+        "reports/domain/recipes/xbalances-server.yaml",
+        "reports/domain/recipes/xbalances-worker.yaml",
+        "reports/implementation/M6_RUNBOOK.md",
+        "reports/implementation/m6-clean-boot.json",
+        "reports/implementation/m6-journey-coverage.md",
+        "reports/implementation/m6-journeys.json"
+      ],
+      "status_unchanged": false,
+      "diff_unchanged": false,
+      "unchanged": false
+    },
+    {
+      "path": "/Users/rana.singh/rzp-payouts-architecture-expansion",
+      "head_before": "d54161c2e29873eb5f53804db58af45d48a7b4f6",
+      "head_after": "d54161c2e29873eb5f53804db58af45d48a7b4f6",
+      "changed_files": [],
+      "status_unchanged": true,
+      "diff_unchanged": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/rana.singh/rzp-payouts-architecture/.claude/worktrees/agent-a00e097ab93ddcb76",
+      "head_before": "5300617d5e572d2defebca9ee4b633c6347e4f6b",
+      "head_after": "5300617d5e572d2defebca9ee4b633c6347e4f6b",
+      "changed_files": [],
+      "status_unchanged": true,
+      "diff_unchanged": true,
+      "unchanged": true
+    }
+  ],
+  "containers": [
+    {
+      "id": "a218f4a946e59d26423a19cc53433f76abae61be4c6a39ff6bedbfc8cff6b7ea",
+      "name": "/env2_compose-xas-sim-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "eee7631b242ef0a207b29b574608404d72179ad12285222aeefc477e1993bedf",
+      "name": "/env2_compose-dcs-stub-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "477286a7040e1239a6cfd1c7e5cb814739936803f271f6a967184f2b52c4d7df",
+      "name": "/env2_compose-monolith-stub-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "5231c370b5286e1531e213b7815014988d69561e4ccd167a7ff8177ec25c9f2c",
+      "name": "/env2_compose-payouts-worker-rbl-banking-account-statement-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "aa0584e2ed37213ec488e831e86ececdaeda35f6fb337db9ecd1c62a1fcdae37",
+      "name": "/env2_compose-bankingaccounts-stub-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "a9eee14563b1fe3556037a79bc1bc817d9bfa2d074060292b1e927fc0be6da0e",
+      "name": "/env2_compose-mozart-sim-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "86a1edb21cd24bebdd0303da88642f283c66272a6b6a8e5b88ac00f8987f66b6",
+      "name": "/env2_compose-stork-capture-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "3a5698a5d0914eba4fe03ffd977e18d50f2461236c10f65725f2a49b0e596a04",
+      "name": "/env2_compose-kong-lite-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "d898de0e5c87b5d5c4526ad21f56847b824b47f59eb9729a164dd662455902b3",
+      "name": "/env2_compose-payouts-worker-schedule-payout-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "5d6aba9e49d52d89ed5186421015cdcaf1cbb2a29880083340030d70e668f361",
+      "name": "/env2_compose-payouts-worker-transaction-create-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "fec4d621d630e8657696f6184b7f1e8481ca4e7ba6febdc1d51cefb26b7acda7",
+      "name": "/env2_compose-payouts-worker-queued-payout-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "909a9c3829f56e09b0de58f9e7a725e382df37129be50bec385382fcdaf7f9d1",
+      "name": "/env2_compose-xbalances-server-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "2c505ff2b108c62a7554262e036ea747c2d8436fa2b954f6052fc8101fb331ab",
+      "name": "/env2_compose-fts-worker-retry-transfer-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "1d723ed90d6bf1cc75c0c509dd6135c5b89c8585482d2ac7c8abf68e037a0b7a",
+      "name": "/env2_compose-payouts-worker-payout-source-updater-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "79ecd8ea94068d299c35f81334fee336105a4d03df5a03d85596ef7b4d175aec",
+      "name": "/env2_compose-fts-worker-initiate-transfer-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "16af47fbf6198a3a4ec2a6d08c7bce3fcdac65e6608030477d2b3d26100d7aea",
+      "name": "/env2_compose-payouts-worker-x-balances-balance-refresh-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "6818009fed71f20fab4506abdaee8b7748a88ac49b665775311d2eb61fb045a2",
+      "name": "/env2_compose-fts-worker-retry-transfer-preprocessor-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "ff3c98ec1bcbb443a871cf158d5b80bf967912731531b7c9fb8c2077587f93c5",
+      "name": "/env2_compose-fts-worker-rbl-initiate-transfer-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "c36fb8390fe03ff32f54aae769f5843aca572c1a344741927bcd9a20db6b50e1",
+      "name": "/env2_compose-fts-worker-rbl-imps-initiate-transfer-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "b350d0cc233b28ac9205a8ab0ef59a5582b1ff53c6d5db2881effa34fbff051c",
+      "name": "/env2_compose-payouts-worker-partner-bank-hold-payouts-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "2ec4e7cde2dfed3ddd75c91f130fc1e063aee80c10aaccee06e0a15ca8ffd9aa",
+      "name": "/env2_compose-cfa-worker-contact-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "adabd6b4406fd150f0f156c8517169a8a0c5ebbc76d91d69d014d907e2342a29",
+      "name": "/env2_compose-fts-worker-check-transfer-status-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "6384636398f2e1475d924e26244a5e23b9fe958e95c4e2f86e0f8b7ac5b07b26",
+      "name": "/env2_compose-payouts-worker-generic-processing-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "92b698ccd670c95b41860ca664acc1696a22326d2a2d4c4ba77fc570e3df2264",
+      "name": "/env2_compose-payouts-worker-async-dual-write-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "46450879ffd3fd44d5d80438f4151f587a33e9c2b73ce8f82e2cceeaf3f3e00f",
+      "name": "/env2_compose-fts-worker-retry-transfer-source-update-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "bc3e8f3733ac5c723a3e17ee1bc2c2e9ae11d18fb95777293466fee0ba632225",
+      "name": "/env2_compose-payouts-worker-fts-async-hv-processing-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "f5f382629b5a247aaa13f7e7a62d528e765cfac7c3e75169fba8bf968a9b10dc",
+      "name": "/env2_compose-ledger-worker-entry-details-create-pg-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "0ccdc164aac3cfa1aadbfa521f0e575160ad17730a8b2d7edd8eeb3a760a67c6",
+      "name": "/env2_compose-payouts-worker-payout-update-failure-handling-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "b96b102b3d0bce655b15b537d75f34e42a7601cf63a52f816dbc13e487ff2c27",
+      "name": "/env2_compose-xbalances-worker-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "65f16e9d2e716b3f60e7625bc0c2510e9b133c0016627a07d0ac310eceddeb59",
+      "name": "/env2_compose-fts-web-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "7398f30eca729d7264242b8ebd7a00362a3c1515b4a8393705bdb961e8f2df4c",
+      "name": "/env2_compose-fts-worker-rbl-imps-check-transfer-status-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "236e41c05500ba2950306cf4d1fd7ff6339af8eff9cc13dc726292dc023dbaed",
+      "name": "/env2_compose-ledger-worker-journal-create-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "2da6b5f851e8b31083c1250405251c445d08fc0440d6dca9fbcda37b04b225b0",
+      "name": "/env2_compose-fts-worker-fire-transfer-status-webhook-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "66f01a33940f9c6a455579a9067d58e6e47147bbfdde08c0a04c119cb3b7629a",
+      "name": "/env2_compose-cfa-worker-fa-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "0438b3bb54e8c03ad6de77a4539ef1171947c60f829d46c2df23eee47152b554",
+      "name": "/env2_compose-fts-worker-default-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "b53f287492140c224a332f8ff222025e69923f6ddfe53d16fa04b5f511456301",
+      "name": "/env2_compose-fts-worker-rbl-direct-imps-initiate-transfer-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "e37f4bef1d2dabdd72c47ea95746a08540bad803c9b3efe4365abb40c2fe2d60",
+      "name": "/env2_compose-payouts-api-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "f1195559d468ead4c797e23c04c9c317f76ed570eb8705867736ca4d37bdb8c2",
+      "name": "/env2_compose-ledger-worker-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "20f9a7c4ac448a42cea82e314f737c6d909af88ab442821edcd003cd26d898d2",
+      "name": "/env2_compose-cfa-server-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "b63d52b66d9fe00d186666cee3c4fe3d37523a884493c7adaa64657b66fa7c85",
+      "name": "/env2_compose-fts-worker-rbl-check-transfer-status-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "899fb2887cc49e0a0048622ce345e9cf1266c354c4f0fdc28d4666cfe2116212",
+      "name": "/env2_compose-fts-worker-rbl-direct-imps-check-transfer-status-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "f9102c3d45b85e093289012892ae166e1e82c99ecc7f2beec1c1e93503df5a00",
+      "name": "/env2_compose-payouts-worker-webhook-event-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "4378da9a32afc7c0751eba8b499e1ae284ab30735deac7fd5bcfc267eda2a836",
+      "name": "/env2_compose-ledger-api-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "1707ccb367c4ced8f7e9a585d1930812704cfc9ad328050039276e4f5c07925f",
+      "name": "/env2_compose-payouts-kafka-fts-status-updates-retry-consumer-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "b5e94f831cb5183ff74c4818fc28fc772cc1270068d77d6c7cfa00f276b35798",
+      "name": "/env2_compose-payouts-worker-fts-async-processing-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "39ea7c6e71643f5e898d1dee43560ab02f7648af39a032e279543ac39894ebc3",
+      "name": "/env2_compose-payouts-worker-on-hold-payout-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "382bb0813fcf7782d10f8ca0fd48f80e0ec86d98ea4b78a16b11f5d03bacfd18",
+      "name": "/env2_compose-payouts-worker-payout-create-failure-handling-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "06c6349ff36374852ea98bcbba495cf15eec53026a52edaa2371706f2f8a9055",
+      "name": "/env2_compose-ledger-worker-balance-update-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "f50d3929b42458a5812926fa2b1b870e5ec6e7b08e8ff4b1230aa48cee8da8ac",
+      "name": "/env2_compose-ledger-worker-entry-details-create-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "e9f94fe956c9bb2dbeffb61b8e27f236db4561fbd16db7144c6614180a001c37",
+      "name": "/env2_compose-payouts-kafka-fts-status-updates-consumer-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "c1ad8bf8aa9917a4d5aa37f8ec051339d7188d851e1519d9c582955301dd6744",
+      "name": "/env2_compose-cron-driver-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "897073d08d49b3d1153946a14c0a59c66708cc2c736c7f05c35b3d125ecb467a",
+      "name": "/env2_compose-shield-stub-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "83ffa1e1b9f4ef22bad38ca74f57593fcc4152fec7bb148d8097fe0609d62f9c",
+      "name": "/env2_compose-merchant-webhook-sink-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "4c936597b0477026a5d3854efc8b5fe3dadc8ca813032f76d8758300d42a7c6b",
+      "name": "/env2_compose-workflow-sim-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "64dc54208553aba49ab606e6b1444d479244cb660e127255403ba3c5ae42a897",
+      "name": "/env2_compose-asv-stub-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "c7ede7c6f669a0c459cb1c75b3c9c2beb353fdddcf6d1d327da7fac81c68d5d8",
+      "name": "/env2_compose-pricing-stub-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "1b0bcc04d1f7fe7dd290d855ea2bbb65972bb14f734ec0a91911091d3ae75d2c",
+      "name": "/env2_compose-splitz-stub-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "c04f2affec85a375dc41ff2dbaede3af09ae08bbc867810515acb7d9d3b8e854",
+      "name": "/env2_compose-ledger-gate-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "15ca055a3465dc4bf6c8c6ff0c74e64b481984d91670c93a3d73c6b1a9a64adc",
+      "name": "/env2_compose-postgres-ledger-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "a921718af44491810c28e8e32d86da61d408ae0c8f673317823ad0b336c27d65",
+      "name": "/env2_compose-localstack-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "30063c8a6cf06b9d3c66fc391805822872bddba727581999c43aca908b906425",
+      "name": "/env2_compose-redis-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "3cdf2c660570b819f5cdaf73eb695aabba4733865807cdbaa4db5967cf4bbaaf",
+      "name": "/env2_compose-mysql-xbalances-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "31932ea76b46ea118626c19607af0c7b8f489e283b9513344a5bb1bf5d47f304",
+      "name": "/env2_compose-mysql-payouts-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "749189edef58cdd93fe219769b591646aea2bf00b81c63548a7ebc350c967386",
+      "name": "/env2_compose-mysql-apidb-stub-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "ddefd802bb29eb5005b5eac2d0d0d9ebb354882d79a6f7b43c391ce7e8662066",
+      "name": "/env2_compose-mysql-fts-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "095a0472b2de4bd90144922edbb9d5f85ec80f474454c04bb19b0150c59c41ae",
+      "name": "/env2_compose-mongo-cfa-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    },
+    {
+      "id": "1b052387116b7f871426666c27a69b4c132b970780d647f209a9e70387ca1bce",
+      "name": "/env2_compose-kafka-1",
+      "unchanged": false,
+      "reason": "pre-existing container no longer inspectable"
+    }
+  ],
+  "protected_worktrees_unchanged": false,
+  "preexisting_containers_unchanged": false,
+  "limitation": "Concurrent external changes cannot be attributed by snapshot comparison."
+}

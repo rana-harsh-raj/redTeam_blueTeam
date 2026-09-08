@@ -1,0 +1,42 @@
+schema_version: 1
+state_machines:
+  - id: s2p.tds-source-ingestion
+    trigger: add-tds-entry
+    transitions:
+      - from: absent
+        to: monthly_tax_record_created
+        guard: valid_payload; duplicate lookup is conditional on a non-empty message ID
+        evidence: vendor-payments/internal/taxpayments/core.go:3864
+      - from: monthly_tax_record_created
+        to: source_payout_tag_attempted
+        guard: entity_type_is_payout
+        evidence: vendor-payments/internal/taxpayments/core.go:3930
+    duplicate_semantics: "The selected Kafka path passes an empty idempotency key. Exact sequential replay computes zero delta and creates no additional record; three clean runs verify this. Core also has a conditional non-empty-key lookup, which is not exercised by this fixture. No concurrent exactly-once guarantee is claimed."
+  - id: s2p.tds-remittance
+    trigger: explicit_Core.Pay_after_month_boundary
+    transitions:
+      - from: tax_payment_payable
+        to: payout_creation_requested
+        guard: internal_contact_and_request_validation_pass
+        evidence: vendor-payments/internal/taxpayments/core.go:1871
+      - from: payout_creation_requested
+        to: money_loading_success
+        external_status: processing
+        guard: payout_processed_callback
+        evidence: vendor-payments/internal/taxpayments/core.go:1744
+    warning: This is a later phase; it is not synchronously chained from add-tds-entry. Processed payout does not establish completed tax filing.
+  - id: s2p.tax-payment-internal-state-machine
+    evidence: vendor-payments/internal/taxpayments/status.go:52
+    transitions:
+      "": [unpaid]
+      unpaid: [money_loading_initiated, manually_marked_paid, cancelled]
+      attempted: [money_loading_initiated, manually_marked_paid, cancelled]
+      money_loading_initiated: [attempted, money_loading_success]
+      money_loading_success: [goi_transfer_initiated, goi_transfer_failed]
+      goi_transfer_initiated: [goi_transfer_success, goi_transfer_failed]
+      goi_transfer_failed: [goi_transfer_initiated, goi_transfer_success, failed]
+      goi_transfer_success: []
+      manually_marked_paid: []
+      cancelled: []
+      failed: []
+    runtime_scope: Ingestion, money-loading initiation, processed-payout callback, and tag-back. Government-transfer/filing transitions are mapped but not executed.

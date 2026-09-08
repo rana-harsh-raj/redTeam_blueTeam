@@ -1,0 +1,32 @@
+schema_version: 1
+derivation_order: [migrations, schema_files, orm_models, sql, fixtures]
+inventory_reference: ../inventory/architecture-inventory.json
+runtime_schema: vendor_payments
+schema_creation: All 88 pinned Go Goose migrations in internal/migrations run through the source migration registry; no replacement business schema is generated.
+critical_tables:
+  - name: tax_payments
+    role: Monthly tax aggregate and external/internal state
+    evidence: vendor-payments/internal/migrations/20200619084342_create_tax_payments_table.go:14
+  - name: records
+    role: Source payout TDS credit with tax-payment association
+    evidence: vendor-payments/internal/migrations/20200619084340_create_records_table.go:14
+  - name: tds
+    role: Tax detail row linked to the aggregate
+    evidence: vendor-payments/internal/migrations/20200619084341_create_tds_payments_table.go:14
+  - name: vendorpayment_payout
+    role: Remittance request, payout ID, shared idempotency key, and callback status
+    evidence: vendor-payments/internal/migrations/20200331184550_create_vendorpayment_payout_table.go:14
+  - name: tds_categories
+    role: Migration-seeded category used by the synthetic credit
+    evidence: vendor-payments/internal/migrations/20200402152150_create_and_insert_into_tds_categories_table.go:15
+added_evidence_table:
+  name: replica_trace
+  production_schema_claim: false
+  implementation: runtime/source-driver/main.go
+replacement_persistence:
+  engine: SQLite
+  owner: monolith-boundary
+  implementation: runtime/boundary/server.py
+  scope: Caller-visible payout request/response, merchant-scoped idempotency, origin tag, and safe HTTP audit
+unknowns:
+  - Production database topology, deployed migrations, indexes, retention and scale are not inferred from this local schema.

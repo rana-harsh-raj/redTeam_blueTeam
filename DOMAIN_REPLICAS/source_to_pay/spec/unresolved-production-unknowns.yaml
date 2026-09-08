@@ -1,0 +1,10 @@
+schema_version: 1
+unknowns:
+  - id: s2p.unknown.deployment-topology
+    description: Actual deployed processes, versions, replica counts, and routing are unavailable.
+  - id: s2p.unknown.feature-state
+    description: Actual production feature-flag values are unavailable.
+  - id: s2p.unknown.dynamic-contracts
+    description: Some generated or centrally owned contracts are absent from the three pinned repositories.
+  - id: s2p.unknown.event-producer
+    description: The producer of add-tds-entry is outside the selected repositories.

@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-08T03:00:00+05:30",
+  "source_root": "/Users/rana.singh/.rzp-architecture-replica/repos",
+  "repositories": [
+    {"name":"vendor-payments","sha":"20c4f4d59970471067388afea8b1d65ac39ee126","tree":"cfb4aa359061fd01c3c47d2e30c05946a18a3309","tracked_files":2469,"remote":"https://github.com/razorpay/vendor-payments.git","recovery":"intact local depth-1 pack; remote fetch fallback","verification":"artifacts/source-verification.json","role":"primary-runtime"},
+    {"name":"vendor-experience","sha":"df90df21bee54ce0148df43d3fc65e7ba7b60160","tree":"ee05cee33045e8521e2595847bf838828eb8e1c9","tracked_files":1307,"remote":"https://github.com/razorpay/vendor-experience.git","recovery":"intact local depth-1 pack; remote fetch fallback","verification":"artifacts/source-verification.json","role":"architecture-source"},
+    {"name":"accounting-integrations","sha":"fc13a0b2a38214374e80a16af3ed4465b2d84ef1","tree":"6dbf3ff9046be7e3e7beffdaae86654bc6e6038a","tracked_files":1860,"remote":"https://github.com/razorpay/accounting-integrations.git","recovery":"intact local depth-1 pack; remote fetch fallback","verification":"artifacts/source-verification.json","role":"architecture-source"},
+    {"name":"proto","sha":"52682577d79d7237944e9fbb10477a1721623065","tree":"3e68190943c249dce37a9a06b185ce710c4a08c4","tracked_files":2768,"remote":"https://github.com/razorpay/proto.git","recovery":"independent clone from intact local snapshot; remote fetch fallback","verification":"artifacts/source-verification.json","role":"codegen-input"},
+    {"name":"api","sha":"2d665f918b60e917ec92be648fb5816d247f72b1","tree":"5aa47f521fa451b4b1d2b3419d15bb620664be74","tracked_files":13172,"remote":"https://github.com/razorpay/api.git","recovery":"independent clone from intact local snapshot; remote fetch fallback","verification":"artifacts/source-verification.json","role":"contract-source"},
+    {"name":"payouts","sha":"4bf3dbf9239feadea6d65ca90c893a988e116173","tree":"d82d81436aea51e2c9c26c65665cd11f83f4b4d1","tracked_files":2578,"remote":"https://github.com/razorpay/payouts.git","recovery":"intact local depth-1 pack; remote fetch fallback","verification":"artifacts/source-verification.json","role":"contract-source"},
+    {"name":"workflows","sha":"080d71a51b777c89af586c92ac4b5f683a473a7c","tree":"d79a4240c1c749f5fb1829af30f44df4e9acc77a","tracked_files":335,"remote":"https://github.com/razorpay/workflows.git","recovery":"independent clone from intact local snapshot; remote fetch fallback","verification":"artifacts/source-verification.json","role":"contract-source"},
+    {"name":"rpc","sha":"27388ee6335145064774ef31440cc91dbccd8bb0","tree":"1fdb35bb3e39dfa56ecf1749d1655502890829d2","tracked_files":2699,"remote":"https://github.com/razorpay/rpc.git","recovery":"independent clone from intact local snapshot; remote fetch fallback","verification":"artifacts/source-verification.json","role":"contract-source"},
+    {"name":"config-proto","sha":"a6b201039f22cc543efb740eba9dd72fd29474b0","tree":"91a212f219ccdfc8dad05ece3506be368ef6b5ce","tracked_files":7181,"remote":"https://github.com/razorpay/config-proto.git","recovery":"independent clone from intact local snapshot; remote fetch fallback","verification":"artifacts/source-verification.json","role":"configuration-contract"}
+  ],
+  "toolchain": {
+    "go": "1.26.6",
+    "buf": "1.32.0",
+    "protoc_gen_go": "v1.28.1",
+    "protoc_gen_go_grpc": "v1.3.0",
+    "protoc_gen_grpc_gateway": "v2.11.3",
+    "protoc_gen_twirp": "v8.1.2+incompatible",
+    "platform": "darwin/arm64",
+    "sha256": {
+      "buf": "0c67c1f3fe757a202a2bbe2cd0e5ca32d53d7bdc005b8b24572e367f7ca839d9",
+      "protoc-gen-go": "0a6430a4bde940812c1df774b697f90fd7af6a21943adaef1e569f04b6791aef",
+      "protoc-gen-go-grpc": "0af2cb0836806a938a5b49b430eb4e426206928ee7781d3d965be5b61f93ad42",
+      "protoc-gen-grpc-gateway": "3ad8c3ff5f7b7f97785c433be1b0312f7e512cfad8d04df6a167709003990908",
+      "protoc-gen-twirp": "90acb4f6aa07291418e4716ba2e2210cfbf1dc6bb9f3b821e4419692e8a3540f"
+    }
+  },
+  "buf_module_dependencies": [
+    "buf.build/googleapis/googleapis@f0e53af8f2fc4556b94f482688b57223",
+    "buf.build/grpc-ecosystem/grpc-gateway@f04e50c23f5f40f786d0e8fa3fe3d713",
+    "buf.build/googleapis/googleapis@553fd4b4b3a640be9b69a3fa0c17b383",
+    "buf.build/grpc-ecosystem/grpc-gateway@a48fcebcf8f140dd9d09359b9bb185a4",
+    "buf.build/googleapis/googleapis@61b203b9a9164be9a834f58c37be6f62",
+    "buf.build/grpc-ecosystem/grpc-gateway@4c5ba75caaf84e928b7137ae5c18c26a"
+  ],
+  "prerequisites": [
+    "GitHub read access to the private Razorpay repositories is needed only if the durable snapshots are absent.",
+    "Private github.com/razorpay Go modules must be present in GOMODCACHE or downloadable with the operator's existing Git credentials; credentials are never copied into this tree.",
+    "Public Go modules and pinned code generators may be downloaded from their canonical module proxies during bootstrap.",
+    "Pinned BSR module commits in each repository's buf.lock must be available from the operator's existing Buf cache or buf.build during code generation."
+  ]
+}

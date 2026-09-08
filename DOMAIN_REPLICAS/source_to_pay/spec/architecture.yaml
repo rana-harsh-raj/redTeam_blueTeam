@@ -1,0 +1,11 @@
+schema_version: 1
+domain: source_to_pay
+scope_repositories:
+  - vendor-payments
+  - vendor-experience
+  - accounting-integrations
+coverage_source: ../inventory/architecture-inventory.json
+production_deployment_claim: unknown
+notes:
+  - The selected repositories describe a wider Source-to-Pay domain than the executable TDS slice.
+  - Runtime topology and production feature values are not inferred from source configuration files.

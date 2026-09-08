@@ -1,0 +1,3 @@
+CREATE DATABASE IF NOT EXISTS vendor_payments;
+GRANT ALL PRIVILEGES ON vendor_payments.* TO 's2p'@'%';
+FLUSH PRIVILEGES;
