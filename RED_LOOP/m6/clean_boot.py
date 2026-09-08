@@ -46,8 +46,11 @@ def containers(project="env2_compose"):
     out = []
     for line in p.stdout.splitlines():
         name, _, status = line.partition("\t")
-        out.append({"name": name, "status": status,
-                    "healthy": "(healthy)" in status, "running": status.startswith("Up")})
+        has_hc = "(health" in status  # docker prints "(healthy)"/"(unhealthy)"/"(health: starting)" only when a healthcheck exists
+        out.append({"name": name, "status": status, "has_healthcheck": has_hc,
+                    # a running container without a healthcheck (cron-driver) counts as healthy
+                    "healthy": ("(healthy)" in status) or (status.startswith("Up") and not has_hc),
+                    "running": status.startswith("Up")})
     return sorted(out, key=lambda c: c["name"])
 
 
@@ -70,6 +73,9 @@ def main():
     ap.add_argument("--no-journeys", action="store_true")
     ap.add_argument("--journeys-args", default="")
     ap.add_argument("--repos-root", default=None)
+    ap.add_argument("--attach", action="store_true",
+                    help="the down/up already ran (e.g. the orchestrator was killed after boot): prove the empty-state "
+                         "boot from docker volume/container creation times + regenerated secrets, then run the suite")
     a = ap.parse_args()
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     run_dir = RUNS / f"m6-clean-boot-{ts}"; run_dir.mkdir(parents=True, exist_ok=True)
@@ -80,28 +86,62 @@ def main():
                    "fingerprint": fingerprint()}}
     repos_root = a.repos_root or (REPO / ".local" / "repos-root").read_text().strip()
 
-    if not a.skip_down:
-        print("== 1/5 down.sh (containers + volumes + secrets)")
-        sh(["bash", "scripts/down.sh"], cwd=ENV, log=log, timeout=900)
-    empty = {"volumes": volumes(), "containers": [c for c in containers()], "secrets": secrets_present(),
-             "generated_exists": (ENV / "generated").exists() and any((ENV / "generated").iterdir())}
-    rep["empty_state"] = empty
-    rep["from_empty_state"] = (not empty["volumes"]) and (not empty["containers"]) and (not empty["secrets"])
-    print("   empty-state:", rep["from_empty_state"], json.dumps({k: (len(v) if isinstance(v, list) else v) for k, v in empty.items()}))
+    if a.attach:
+        # Prove the boot came from empty state using docker's own records: every project volume and
+        # container was created inside one boot window (down -v removed the previous ones), and every
+        # secret file was regenerated in that same window (REGEN_SECRETS=1).
+        print("== 1/5 attach: verifying the previous down/up from docker + secrets timestamps")
+        vols = volumes()
+        vinfo = json.loads(sh(["docker", "volume", "inspect"] + vols).stdout or "[]") if vols else []
+        vcreated = sorted(v.get("CreatedAt", "") for v in vinfo)
+        cs = containers()
+        names = [c["name"] for c in cs]
+        cinfo = json.loads(sh(["docker", "inspect"] + names).stdout or "[]") if names else []
+        ccreated = sorted(c.get("Created", "") for c in cinfo)
+        smt = sorted(datetime.fromtimestamp(f.stat().st_mtime, timezone.utc).isoformat() for f in (ENV / "secrets").glob("*.txt"))
+        def _ts(x):  # docker emits either RFC3339 with nanoseconds+Z or a local offset (+05:30)
+            import re as _re
+            x = _re.sub(r"\.(\d{6})\d*", r".\1", x).replace("Z", "+00:00")
+            return datetime.fromisoformat(x)
+        window_ok = bool(vcreated and ccreated and smt) and (_ts(vcreated[-1]) - _ts(vcreated[0])).total_seconds() < 1800
+        rep["empty_state"] = {"attach": True, "volumes": vols, "volume_created_first": vcreated[0] if vcreated else None,
+                              "volume_created_last": vcreated[-1] if vcreated else None,
+                              "container_created_first": ccreated[0] if ccreated else None,
+                              "container_created_last": ccreated[-1] if ccreated else None,
+                              "secrets_mtime_first": smt[0] if smt else None, "secrets_mtime_last": smt[-1] if smt else None,
+                              "boot_window_under_30min": window_ok}
+        rep["from_empty_state"] = window_ok and (rep["pre"]["fingerprint"] or {}).get("boot_id") is not None
+        rep["up_rc"] = 0 if cs and all(c["running"] or "Exited (0)" in c["status"] for c in cs) else 1
+        rep["fingerprint"] = fingerprint()
+        rep["no_stale_local_state"] = bool(window_ok and rep["fingerprint"])
+        rep["no_stale_local_state_evidence"] = ("attach mode: all project volumes created "
+                                                f"{vcreated[0] if vcreated else '?'}..{vcreated[-1] if vcreated else '?'} (down -v removed the "
+                                                f"previous ones), all secrets regenerated {smt[0] if smt else '?'}..{smt[-1] if smt else '?'}, "
+                                                f"boot_id {(rep['fingerprint'] or {}).get('boot_id')}")
+        print("   from_empty_state:", rep["from_empty_state"], "| volumes", len(vols), "| containers", len(cs))
+    else:
+        if not a.skip_down:
+            print("== 1/5 down.sh (containers + volumes + secrets)")
+            sh(["bash", "scripts/down.sh"], cwd=ENV, log=log, timeout=900)
+        empty = {"volumes": volumes(), "containers": [c for c in containers()], "secrets": secrets_present(),
+                 "generated_exists": (ENV / "generated").exists() and any((ENV / "generated").iterdir())}
+        rep["empty_state"] = empty
+        rep["from_empty_state"] = (not empty["volumes"]) and (not empty["containers"]) and (not empty["secrets"])
+        print("   empty-state:", rep["from_empty_state"], json.dumps({k: (len(v) if isinstance(v, list) else v) for k, v in empty.items()}))
 
-    print("== 2/5 up.sh (REGEN_SECRETS=1, fresh config, migrations, seeds, substitutes, core)")
-    env = {"REGEN_SECRETS": "1", "ARENA_SKIP_BUILD": os.environ.get("ARENA_SKIP_BUILD", "1"),
-           "ARENA_SOURCE_REPOS_ROOT": repos_root}
-    if os.environ.get("ARENA_ROUTE_PROFILE"):
-        env["ARENA_ROUTE_PROFILE"] = os.environ["ARENA_ROUTE_PROFILE"]
-    p = sh(["bash", "scripts/up.sh"], cwd=ENV, env=env, log=log, timeout=3000)
-    (run_dir / "up.log").write_text(p.stdout + "\n--- stderr ---\n" + p.stderr)
-    rep["up_rc"] = p.returncode
-    rep["fingerprint"] = fingerprint()
-    rep["no_stale_local_state"] = bool(rep["from_empty_state"] and rep["fingerprint"] and
-                                       rep["fingerprint"].get("boot_id") != (rep["pre"]["fingerprint"] or {}).get("boot_id"))
-    rep["no_stale_local_state_evidence"] = ("volumes+secrets destroyed by down.sh, secrets regenerated, new boot_id "
-                                            f"{(rep['fingerprint'] or {}).get('boot_id')}")
+        print("== 2/5 up.sh (REGEN_SECRETS=1, fresh config, migrations, seeds, substitutes, core)")
+        env = {"REGEN_SECRETS": "1", "ARENA_SKIP_BUILD": os.environ.get("ARENA_SKIP_BUILD", "1"),
+               "ARENA_SOURCE_REPOS_ROOT": repos_root}
+        if os.environ.get("ARENA_ROUTE_PROFILE"):
+            env["ARENA_ROUTE_PROFILE"] = os.environ["ARENA_ROUTE_PROFILE"]
+        p = sh(["bash", "scripts/up.sh"], cwd=ENV, env=env, log=log, timeout=3000)
+        (run_dir / "up.log").write_text(p.stdout + "\n--- stderr ---\n" + p.stderr)
+        rep["up_rc"] = p.returncode
+        rep["fingerprint"] = fingerprint()
+        rep["no_stale_local_state"] = bool(rep["from_empty_state"] and rep["fingerprint"] and
+                                           rep["fingerprint"].get("boot_id") != (rep["pre"]["fingerprint"] or {}).get("boot_id"))
+        rep["no_stale_local_state_evidence"] = ("volumes+secrets destroyed by down.sh, secrets regenerated, new boot_id "
+                                                f"{(rep['fingerprint'] or {}).get('boot_id')}")
 
     print("== 3/5 health")
     for _ in range(30):

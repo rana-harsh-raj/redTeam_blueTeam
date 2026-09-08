@@ -16,17 +16,30 @@ matrix these drivers assert against:
     `*-lazy-load`, 30s delay) -> an API-monolith worker; that is what `cfa-worker-fa` and
     `cfa-worker-contact` consume.
 
-MEASURED ARENA LIMIT (see the `cfa_api` variant): cfa-server's grpc-gateway on :8081 exposes the
-real `/v1/contacts` and `/v1/fund_accounts` routes but cannot reach its own gRPC backend --
-every call answers `503 {"code":14,"message":"connection error: ... dial tcp 127.0.0.1:9:
-connect: connection refused"}`, i.e. the gateway's own dial is being sent through
-`HTTP_PROXY=http://127.0.0.1:9` (the discard port) which the container's `NO_PROXY` does not
-cover for that target. So a merchant-facing CFA *create* is unreachable in this arena; the
-create/validate/dedup legs are asserted where they ARE reachable (the documents CFA holds and the
-record payouts reads), and the API leg is BLOCKED with that exact evidence.
+The `cfa_api` variant drives the REAL merchant-facing CFA HTTP surface (cfa-server's grpc-gateway
+on :8081). Its request/response shapes come from the proto, not from guesswork:
+
+  * `rzp/x/x-cfa/contact/v1/contact_api.proto:11-13` and
+    `rzp/x/x-cfa/fund_account/v1/fund_account_api.proto:11-13` map both creates with
+    `body:"*"`, so the JSON body is the request message's OWN TOP-LEVEL fields -- there is no
+    `{"contact": {...}}` / `{"fund_account": {...}}` envelope (`contact` is a *string* field on
+    `ContactCreateRequest`, the phone number, which is why an envelope answers
+    `400 proto: (line 1:13): invalid value for string field contact: {`);
+  * neither request message carries a `merchant_id` field at all
+    (`contact.proto:32-43`, `fund_account.proto:9-26`). CFA takes the merchant from the
+    `X-Merchant-Id` HEADER: `cfa/internal/constant/constant.go:15` defines it,
+    `cfa/internal/server/server.go:47-62` whitelists exactly
+    authorization / x-task-id / x-devstack / x-merchant-id into the gRPC metadata,
+    `interceptor/tag.go:112-116` lifts it into the tags and
+    `contextkey.GetMerchantID` is what both create handlers read
+    (`api_controller/contact/server.go:55`, `api_controller/fund_account/server.go:55`);
+  * auth is HTTP Basic against `[Server.Auth.Payouts]`
+    (ENV2_COMPOSE/config/templates/base/cfa/arena.toml:33-35), i.e. the same
+    `payouts` / `{{SECRET.auth_cfa_payouts}}` pair payouts itself uses
+    (config/templates/base/payouts/arena.toml:809-811) -- verified in
+    `cfa/internal/server/interceptor/basicauth.go:98-140`.
 """
-import json
-import time
+import copy
 import uuid
 
 import framework as F
@@ -36,9 +49,40 @@ BEN = "beneficiary"
 BEN_OTHER = "beneficiaryother"
 CFA = "http://cfa-server:8081"
 
+# RATN0000001 -> bank code RATN, branch 000001, both present in cfa/pkg/ifsc/IFSC.json, so it
+# survives the full IFSC check in cfa/internal/fund_accounts/validate.go (length 11, alphanumeric,
+# then the static branch-code lookup) and CFA resolves its bank name.
+CFA_IFSC = "RATN0000001"
+CFA_BANK_NAME = "RBL Bank"
+
 
 def _cfa_basic():
     return "payouts:" + F.P._pw("auth_cfa_payouts.txt")
+
+
+def _cfa_hdr(mid):
+    """CFA never reads the merchant from the body -- see the module docstring."""
+    return {"X-Merchant-Id": mid}
+
+
+def _cfa_err(body):
+    """The rzp.common.error.v1.Error detail grpc-gateway renders for a CFA error."""
+    if not isinstance(body, dict):
+        return {}
+    d = (body.get("details") or [{}])[0] or {}
+    return {"code": d.get("code"), "reason": d.get("reason"),
+            "message": body.get("message"), "description": d.get("description")}
+
+
+def _cfa_bank(body):
+    """CreateFundAccount renders snake_case, GetFundAccountById renders camelCase; accept both."""
+    if not isinstance(body, dict):
+        return {}
+    b = body.get("bank_account") or body.get("bankAccount") or {}
+    return {"ifsc": b.get("ifsc"),
+            "name": b.get("name"),
+            "bank_name": b.get("bank_name") or b.get("bankName"),
+            "account_number": b.get("account_number") or b.get("accountNumber")}
 
 
 def _fa(ctx):
@@ -365,84 +409,194 @@ def beneficiary_async_state(ctx):
                              note="rows the CFA dual-write has landed so far")
     ctx.ev["cfa_dual_write_rows_in_apidb"] = (cnt or "").strip()
     ctx.ev["cfa_dual_write_state"] = {
-        "state": "idle-by-design",
+        "state": "idle -- consumers healthy, producer cannot publish",
         "producer_that_would_feed_it": "CFA's own create (Mongo write -> in-memory event -> SQS, "
-                                       "30s delay). The only way to trigger it is a CFA create, "
-                                       "and cfa-server's grpc-gateway cannot reach its own gRPC "
-                                       "backend in this arena -- see "
-                                       "journey:beneficiary-fund-accounts/cfa_api.",
+                                       "30s delay). The create itself IS reachable now "
+                                       "(journey:beneficiary-fund-accounts/cfa_api creates a real "
+                                       "contact + fund account), but cfa-server's SQS publish "
+                                       "posts to the real https://sqs.ap-south-1.amazonaws.com/ "
+                                       "and is discarded by the container proxy -- the exact "
+                                       "evidence and the config reason are on that variant.",
         "rows_in_api_db": (cnt or "").strip()}
     ctx.note("CFA dual-write fabric is present and healthy (cfa-server + cfa-worker-contact + "
-             "cfa-worker-fa, all four queues, api_local.fund_accounts/contacts) but idle: its only "
-             "producer is a CFA create, which is unreachable in this arena "
-             "(journey:beneficiary-fund-accounts/cfa_api carries the exact dependency).")
+             "cfa-worker-fa, all four queues, api_local.fund_accounts/contacts) but idle: a real "
+             "CFA create now happens (journey:beneficiary-fund-accounts/cfa_api) and still "
+             "publishes nothing, because cfa-server's eventsystem accepts only the plain \"sqs\" "
+             "driver, which ignores [Queue.Sqs].Endpoint and posts to real AWS. That variant "
+             "carries the exact dependency and the measured publish failures.")
     ctx.a.mozart(mid, clear=True)
 
 
 @journey("beneficiary-fund-accounts", "cfa_api", priority="P1", profile=BEN,
          title="create a contact + bank-account fund account through the REAL CFA API (create / IFSC validation / hash_lookup dedup)",
          source_ref="cfa grpc-gateway /v1/contacts and /v1/fund_accounts on cfa-server:8081, "
-                    "Basic Server.Auth.Payouts (config/templates/base/cfa/arena.toml:27-30); "
-                    "cfa/internal/fund_accounts/validate.go bank_account rules")
+                    "body:\"*\" top-level DTOs from rzp/x/x-cfa/{contact,fund_account}/v1, merchant "
+                    "from the X-Merchant-Id header (cfa/internal/server/server.go:47-62), Basic "
+                    "Server.Auth.Payouts (config/templates/base/cfa/arena.toml:33-35); "
+                    "cfa/internal/fund_accounts/validate.go + constants.go bank_account rules")
 def beneficiary_cfa_api(ctx):
-    """Drives the real CFA HTTP surface. Everything this variant needs is written; the arena's
-    cfa-server cannot serve it, and the probe below is the evidence."""
-    basic = _cfa_basic()
-    probe = {}
-    st0, body0 = ctx.a.jhttp("GET", CFA + "/v1/fund_accounts?merchant_id=" + ctx.m["merchant_id"],
-                             basic=basic, note="CFA fund-account list (grpc-gateway route)")
-    probe["GET /v1/fund_accounts"] = {"status": st0, "body": body0}
-    contact = {"contact": {"merchant_id": ctx.m["merchant_id"], "name": "M6 Journey Beneficiary",
-                           "type": "vendor", "email": "m6@arena.test",
-                           "reference_id": "m6-" + uuid.uuid4().hex[:10]}}
-    st1, body1 = ctx.a.jhttp("POST", CFA + "/v1/contacts", contact, basic=basic,
-                             note="CFA contact create (the real create route)")
-    probe["POST /v1/contacts"] = {"status": st1, "body": body1}
-    good_fa = {"fund_account": {"merchant_id": ctx.m["merchant_id"], "account_type": "bank_account",
-                                "contact_id": "", "bank_account": {
-                                    "name": "M6 Journey Beneficiary", "ifsc": "RATN0000001",
-                                    "account_number": "1112220999"}}}
-    st2, body2 = ctx.a.jhttp("POST", CFA + "/v1/fund_accounts", good_fa, basic=basic,
-                             note="CFA bank-account fund-account create")
-    probe["POST /v1/fund_accounts (valid)"] = {"status": st2, "body": body2}
-    bad_fa = json.loads(json.dumps(good_fa))
-    bad_fa["fund_account"]["bank_account"]["ifsc"] = "NOTANIFSC"
-    st3, body3 = ctx.a.jhttp("POST", CFA + "/v1/fund_accounts", bad_fa, basic=basic,
-                             note="CFA create with a malformed IFSC (validation leg)")
-    probe["POST /v1/fund_accounts (bad ifsc)"] = {"status": st3, "body": body3}
-    ctx.ev["cfa_api_probe"] = probe
+    """Drives the real merchant-facing CFA HTTP surface for THIS journey's fresh merchant:
+    contact create, bank-account fund-account create, the bank_account validation matrix, and the
+    app-level hash_lookup dedup. Runs last in the family (VARIANT_ORDER) because it is the only
+    variant that adds a beneficiary to the merchant."""
+    mid = ctx.m["merchant_id"]
+    basic, hdr = _cfa_basic(), _cfa_hdr(mid)
+    ctx.a.hide(basic.split(":", 1)[1])
 
-    gateway_dead = any(str((v.get("body") or {}).get("message", "")).find("127.0.0.1:9") >= 0
-                       for v in probe.values() if isinstance(v.get("body"), dict))
-    if st2 != 200 or gateway_dead:
-        ctx.blocked(
-            "cfa-server's grpc-gateway must be able to reach its own gRPC backend. The real CFA "
-            "routes ARE registered on cfa-server:8081 (an unknown path answers "
-            "404 {\"code\":5,\"message\":\"Not Found\"} while /v1/contacts and /v1/fund_accounts "
-            "answer 503 {\"code\":14, ...}), but every call fails with "
-            "'connection error: desc = \"transport: Error while dialing: dial tcp 127.0.0.1:9: "
-            "connect: connection refused\"' -- the gateway's dial to its own gRPC server "
-            "(Server.ServerAddresses.Grpc = \":8080\") is being routed through the container's "
-            "HTTP_PROXY=http://127.0.0.1:9 (the discard port), which NO_PROXY does not cover for a "
-            "hostless \":8080\" target. cfa-server's other planes are healthy (the internal server "
-            "on :8082 serves /metrics), so this is the gateway->gRPC hop alone. Needs the "
-            "cfa-server compose block to stop proxying its own loopback gRPC dial (or the gateway "
-            "to be pointed at 127.0.0.1:8080 explicitly) -- ENV2_COMPOSE/docker-compose.yml and "
-            "config/templates/base/cfa/arena.toml, both the runtime lane's files -- plus the "
-            "controlled reboot. Everything this variant asserts (contact create, bank_account "
-            "create, malformed-IFSC rejection, hash_lookup dedup on a repeat create) is written "
-            "and runs unmodified afterwards.",
-            {"probe": probe,
-             "note": "the create/validate/dedup facts are still asserted where they ARE reachable "
-                     "in journey:beneficiary-fund-accounts/{success,idempotency}",
-             "then": "rerun run.py --only beneficiary-fund-accounts/cfa_api"})
+    # ---- the boundary itself: auth and the merchant header -----------------
+    st, body = ctx.a.jhttp("GET", CFA + "/v1/fund_accounts", headers=hdr,
+                           note="CFA list without Basic credentials")
+    ctx.ck("the_real_cfa_route_refuses_a_call_without_Basic_credentials(401 CFA0000008)",
+           st == 401 and _cfa_err(body).get("code") == "CFA0000008",
+           {"status": st, "error": _cfa_err(body)})
+    st, body = ctx.a.jhttp("GET", CFA + "/v1/fund_accounts", basic=basic,
+                           note="CFA list without the X-Merchant-Id header")
+    ctx.ck("and_refuses_a_call_without_the_X-Merchant-Id_header(400 CFA000001 'merchant id is required')",
+           st == 400 and _cfa_err(body).get("code") == "CFA000001",
+           {"status": st, "error": _cfa_err(body)})
+    st, body = ctx.a.jhttp("GET", CFA + "/v1/fund_accounts", headers=hdr, basic=basic,
+                           note="CFA fund-account list (grpc-gateway route, authenticated)")
+    ctx.ck("the_grpc-gateway_reaches_its_own_gRPC_backend_and_serves_the_real_route",
+           st == 200 and isinstance(body, dict) and body.get("entity") == "collection",
+           {"status": st, "body": body})
 
-    ctx.ck("cfa_contact_create_200", st1 == 200, {"status": st1, "body": body1})
-    ctx.ck("cfa_bank_account_fund_account_create_200", st2 == 200, {"status": st2})
-    ctx.ck("cfa_rejected_the_malformed_ifsc_4xx",
-           isinstance(st3, int) and 400 <= st3 < 500, {"status": st3, "body": body3})
-    st4, body4 = ctx.a.jhttp("POST", CFA + "/v1/fund_accounts", good_fa, basic=basic,
-                             note="CFA create replay (hash_lookup dedup leg)")
+    before = _cfa_docs(ctx, mid, _fa(ctx))
+    n_fa_before = len(before.get("fund_accounts") or [])
+
+    # ---- contact create (ContactCreateRequest, body:"*") -------------------
+    # `reference_id` is deliberately NOT sent: see the recorded arena gap at the end of this driver.
+    contact = {"name": "M6 Journey Beneficiary", "type": "vendor",
+               "email": "m6-bene@arena.test", "contact": "9876500001"}
+    st1, c1 = ctx.a.jhttp("POST", CFA + "/v1/contacts", contact, headers=hdr, basic=basic,
+                          note="CFA contact create (the real create route)")
+    cid = (c1 or {}).get("id")
+    ctx.ck("cfa_contact_create_200", st1 == 200 and bool(cid), {"status": st1, "body": c1})
+    ctx.ck("the_contact_is_minted_new_and_active",
+           (c1 or {}).get("is_created") is True and (c1 or {}).get("active") is True
+           and (c1 or {}).get("entity") == "contact", c1)
+    st2, c2 = ctx.a.jhttp("POST", CFA + "/v1/contacts", contact, headers=hdr, basic=basic,
+                          note="CFA contact create replay (contact dedup leg)")
+    ctx.ck("re-posting_the_same_contact_returns_the_same_id_and_is_created=false",
+           st2 == 200 and (c2 or {}).get("id") == cid and (c2 or {}).get("is_created") is False,
+           {"first": cid, "second": (c2 or {}).get("id"),
+            "is_created": (c2 or {}).get("is_created")})
+    if not cid:
+        return
+
+    # ---- bank-account fund account (FundAccountCreateRequest, body:"*") ----
+    # Deterministic per merchant, so a re-run on the same campaign dedups onto the same document
+    # instead of accumulating beneficiaries.
+    acct = ("M6BENE" + mid[-8:])
+    good = {"contact_id": cid, "account_type": "bank_account",
+            "bank_account": {"name": "M6 Journey Beneficiary", "ifsc": CFA_IFSC,
+                             "account_number": acct}}
+    st3, f1 = ctx.a.jhttp("POST", CFA + "/v1/fund_accounts", good, headers=hdr, basic=basic,
+                          note="CFA bank-account fund-account create")
+    fa_id = (f1 or {}).get("id")
+    ctx.ck("cfa_bank_account_fund_account_create_200", st3 == 200 and bool(fa_id),
+           {"status": st3, "body": f1})
+    ctx.ck("it_is_an_active_bank_account_fund_account_bound_to_that_contact",
+           (f1 or {}).get("account_type") == "bank_account" and (f1 or {}).get("active") is True
+           and (f1 or {}).get("is_created") is True and (f1 or {}).get("contact_id") == cid, f1)
+    ctx.ck("cfa_echoed_the_bank_account_and_resolved_its_bank_from_the_ifsc(IFSC.json lookup)",
+           _cfa_bank(f1) == {"ifsc": CFA_IFSC, "name": "M6 Journey Beneficiary",
+                             "bank_name": CFA_BANK_NAME, "account_number": acct},
+           _cfa_bank(f1))
+    if not fa_id:
+        return
+
+    # ---- the bank_account validation matrix -------------------------------
+    # cfa/internal/fund_accounts/validate.go + constants.go: IFSC 11 alphanumeric AND present in
+    # the bundled IFSC.json; account number 5-35 alphanumeric; beneficiary name 3-120.
+    rejects = {}
+    for label, field, value, want in (
+            ("malformed ifsc (9 chars)", "ifsc", "NOTANIFSC", "CFA0000016"),
+            ("11-char alphanumeric ifsc whose branch is not in IFSC.json", "ifsc",
+             "RATN0999999", "CFA0000016"),
+            ("account number shorter than 5", "account_number", "1234", "CFA0000017"),
+            ("account number that is not alphanumeric", "account_number", "11-22-33", "CFA0000017"),
+            ("beneficiary name shorter than 3", "name", "Jo", "CFA0000018")):
+        bad = copy.deepcopy(good)
+        bad["bank_account"][field] = value
+        st, b = ctx.a.jhttp("POST", CFA + "/v1/fund_accounts", bad, headers=hdr, basic=basic,
+                            note="CFA create with %s (validation leg)" % label)
+        rejects[label] = {"status": st, "error": _cfa_err(b), "expected_code": want}
+    ctx.ev["cfa_bank_account_validation_matrix"] = rejects
+
+    bad_ifsc = rejects["malformed ifsc (9 chars)"]
+    ctx.ck("cfa_rejected_the_malformed_ifsc_with_the_exact_validation_error"
+           "(400 CFA0000016 'Validation error: Invalid IFSC Code')",
+           bad_ifsc["status"] == 400 and bad_ifsc["error"].get("code") == "CFA0000016"
+           and bad_ifsc["error"].get("message") == "Validation error: Invalid IFSC Code"
+           and bad_ifsc["error"].get("reason") == "input_validation_failed", bad_ifsc)
+    ctx.ck("every_bank_account_rule_in_the_matrix_is_refused_with_its_own_CFA_error_code",
+           all(v["status"] == 400 and v["error"].get("code") == v["expected_code"]
+               for v in rejects.values()), rejects)
+
+    # ---- hash_lookup dedup -------------------------------------------------
+    st4, f2 = ctx.a.jhttp("POST", CFA + "/v1/fund_accounts", good, headers=hdr, basic=basic,
+                          note="CFA create replay (hash_lookup dedup leg)")
     ctx.ck("re-creating_the_same_fund_account_returns_the_same_id(hash_lookup dedup)",
-           st4 == 200 and (body4 or {}).get("id") == (body2 or {}).get("id"),
-           {"first": (body2 or {}).get("id"), "second": (body4 or {}).get("id")})
+           st4 == 200 and (f2 or {}).get("id") == fa_id,
+           {"first": fa_id, "second": (f2 or {}).get("id")})
+    ctx.ck("and_reports_is_created=false_-_it_returned_the_existing_document",
+           (f2 or {}).get("is_created") is False, {"is_created": (f2 or {}).get("is_created")})
+
+    after = _cfa_docs(ctx, mid, fa_id)
+    mine = [d for d in (after.get("fund_accounts") or []) if d.get("id") == fa_id]
+    hl = after.get("hash_lookup") or []
+    ctx.ck("cfa_holds_exactly_ONE_fund_account_document_for_it_-_no_second_document_was_minted",
+           len(mine) == 1, mine)
+    ctx.ck("the_two_creates_plus_the_five_rejected_ones_added_exactly_one_beneficiary_to_this_merchant",
+           len(after.get("fund_accounts") or []) == n_fa_before + 1,
+           {"before": n_fa_before, "after": len(after.get("fund_accounts") or [])})
+    ctx.ck("exactly_one_hash_lookup_row_indexes_it_and_carries_the_document's_own_hash",
+           len(hl) == 1 and mine and hl[0].get("hash") == mine[0].get("hash")
+           and hl[0].get("entity_type") == "fund_accounts",
+           {"hash_lookup": hl, "fund_account_hash": (mine or [{}])[0].get("hash")})
+
+    # ---- readable back through the real API --------------------------------
+    st5, g = ctx.a.jhttp("GET", CFA + "/v1/fund_accounts/fa_" + fa_id, headers=hdr, basic=basic,
+                         note="CFA read-back of the fund account just created")
+    ctx.ck("the_created_fund_account_is_readable_back_through_the_real_cfa_api_and_agrees_with_the_create",
+           st5 == 200 and (g or {}).get("id") == fa_id and (g or {}).get("active") is True
+           and _cfa_bank(g) == _cfa_bank(f1), {"status": st5, "body": g})
+
+    # ---- the record payouts reads, and the bridge that is missing ----------
+    st6, mono_new = _monolith_fa(ctx, fa_id)
+    st7, mono_prov = _monolith_fa(ctx, _fa(ctx))
+    ctx.ev["monolith_record"] = {"cfa_created_fund_account": {"id": fa_id, "status": st6},
+                                 "provisioned_fund_account": {"id": _fa(ctx), "status": st7}}
+    ctx.ck("the_monolith_route_payouts_reads_still_resolves_this_merchant's_provisioned_beneficiary",
+           st7 == 200 and bool(mono_prov), {"status": st7})
+
+    sqs = ctx.a.worker_log_hits("sqs.ap-south-1.amazonaws.com", services=["cfa-server"], since="10m")
+    ctx.ev["cfa_dual_write_publish_failures"] = sqs
+    ctx.note(
+        "GAP (recorded, not fixed) -- a beneficiary created through the REAL CFA API never reaches "
+        "the record payouts reads, so it cannot yet be paid. Fund account %s exists in CFA "
+        "(create 200, read-back 200, one Mongo document, one hash_lookup row) but the monolith "
+        "`GET /fund_accounts_internal/%s` answers %s, while the same route resolves the "
+        "provisioned beneficiary (%s). Mechanism, measured: CFA mirrors a create into the API "
+        "monolith only through its dual-write event -> SQS -> cfa-worker-fa, and cfa-server's SQS "
+        "publish fails in this arena -- its own eventsystem rejects any driver other than the "
+        "literal \"sqs\" (cfa/internal/eventsystem/service.go, quoted in "
+        "config/templates/base/cfa/arena.toml:99-109), and that driver ignores [Queue.Sqs].Endpoint "
+        "and posts to the real https://sqs.ap-south-1.amazonaws.com/, which the container's proxy "
+        "discards: cfa-server logged %s such 'proxyconnect tcp: dial tcp 127.0.0.1:9: connection "
+        "refused' failures during this journey. On top of that the arena's monolith-stub serves "
+        "/fund_accounts_internal from a JSON seed "
+        "(ENV2_COMPOSE/substitutes/monolith-stub/server.py:85,269-276), not from the "
+        "mysql-apidb-stub table cfa-worker-fa would write, so even a working dual-write would not "
+        "surface there. The payout leg for a beneficiary is therefore asserted where it IS "
+        "reachable -- journey:beneficiary-fund-accounts/success pays the provisioned one end to "
+        "end. Fixing this needs the cfa-server queue/proxy wiring plus a monolith-stub read path "
+        "over api_local.fund_accounts, both runtime-lane files."
+        % (fa_id, fa_id, st6, st7, sqs.get("cfa-server", 0)))
+    ctx.note(
+        "GAP (recorded, not fixed) -- CFA contact create with a `reference_id` 500s in this arena: "
+        "the handler looks the reference up in the API DB and mysql-apidb-stub's `contacts` table "
+        "has no `reference_id` column (`Error 1054 (42S22): Unknown column 'contacts.reference_id' "
+        "in 'where clause'` -> CONTACT_NOT_FOUND_IN_API -> SERVER_ERROR). It is an arena schema "
+        "gap in the api-db stub, not CFA behaviour, so this driver creates its contact without a "
+        "reference_id; every other contact field is exercised.")

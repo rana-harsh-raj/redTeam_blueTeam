@@ -71,9 +71,15 @@ def main():
         if a.execute and ids:
             # run.py always writes the canonical reports; preserve the full-suite evidence around the subset run
             canon = {n: (IMPL / n).read_bytes() for n in ("m6-journeys.json", "m6-journey-coverage.md") if (IMPL / n).exists()}
+            rerun_dir = REPO / "RED_LOOP" / "runs" / "m6-refresh-demo-rerun"  # must be inside the repo (framework evidence paths)
+            rerun_dir.mkdir(parents=True, exist_ok=True)  # run.py reuses an EXISTING run dir
+            env_restart = os.environ.get("M6_ALLOW_RESTART", "1")
+            os.environ["M6_ALLOW_RESTART"] = env_restart
             p = sh([sys.executable, str(REPO / "RED_LOOP" / "m6" / "journeys" / "run.py"), "--only", ",".join(ids),
-                    "--run-dir", str(SCRATCH / "rerun")], check=False)
+                    "--run-dir", str(rerun_dir)], check=False)
             rep["rerun_rc"] = p.returncode
+            rep["rerun_stdout_tail"] = p.stdout[-1500:]
+            rep["rerun_stderr_tail"] = p.stderr[-1500:]
             try:
                 jr = json.loads((IMPL / "m6-journeys.json").read_text())
                 (IMPL / "m6-refresh-demo-journeys.json").write_text(json.dumps(jr, indent=2))
