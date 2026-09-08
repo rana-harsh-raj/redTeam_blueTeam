@@ -1,0 +1,52 @@
+{
+  "at": "2026-09-08T17:51:39Z",
+  "attributed": true,
+  "attribution": {
+    "canonical_report_untouched": true,
+    "compose_project_matches": true,
+    "docker_host_matches": true,
+    "instance_id_matches": true,
+    "run_dir_inside_instance": true,
+    "runtime_instance_id_matches": true
+  },
+  "boot_id_matches_instance": true,
+  "fingerprint_boot_id": "46748827-5fa9-4d8e-983d-c72ac4096fb9",
+  "instance_block": {
+    "arena_network": "rzp-arena-beta-focused",
+    "compose_project": "twin_beta_focused",
+    "docker_host": "unix:///Users/rana.singh/.colima/twin-beta-focused/docker.sock",
+    "env2_root": "/Users/rana.singh/.twin-factory/instances/beta-focused/ENV2_COMPOSE",
+    "instance_id": "beta-focused",
+    "runtime_instance_id": "04926d624a082d27daadb3abf868e8995c0f7ce2c06e99782a5dcace7b9308f8"
+  },
+  "instance_id": "beta-focused",
+  "journeys": [
+    {
+      "checks_passed": 12,
+      "checks_total": 12,
+      "duration_s": 68.0,
+      "evidence_path": "/Users/rana.singh/.twin-factory/instances/beta-focused/journeys/run-20260908T175031Z/evidence/journey-shared-payouts-success.json",
+      "expected_failure_ref": null,
+      "failed_checks": null,
+      "id": "journey:shared-payouts/success",
+      "merchant_id": "ARENAM91719557",
+      "missing_dependency": null,
+      "result": "PASS"
+    }
+  ],
+  "rc": 0,
+  "run_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused/journeys/run-20260908T175031Z",
+  "runtime_instance_id": "04926d624a082d27daadb3abf868e8995c0f7ce2c06e99782a5dcace7b9308f8",
+  "secs": 68.25,
+  "selection": {
+    "family": null,
+    "only": "journey:shared-payouts/success"
+  },
+  "summary": {
+    "blocked": 0,
+    "expected_failure": 0,
+    "fail": 0,
+    "pass": 1,
+    "total": 1
+  }
+}

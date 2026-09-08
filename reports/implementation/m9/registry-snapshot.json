@@ -1,0 +1,88 @@
+{
+  "destroyed": [
+    {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "created_at": "2026-09-08T17:10:49Z",
+      "destroyed_at": "2026-09-08T17:19:58Z",
+      "exec_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused",
+      "instance_id": "beta-focused",
+      "profile": "focused:shared-payouts",
+      "runtime_instance_id": "9d1154d1abe511eb4316689948cacc2a5a51b10784a80baf777bd5ed0c50ade7"
+    },
+    {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "created_at": "2026-09-08T17:19:58Z",
+      "destroyed_at": "2026-09-08T17:22:37Z",
+      "exec_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused",
+      "instance_id": "beta-focused",
+      "profile": "focused:shared-payouts",
+      "runtime_instance_id": "c246b7dd59e31751634df6e19ad00c139473f35b15d07a0b2c7854d65903f8bd"
+    },
+    {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "created_at": "2026-09-08T17:22:38Z",
+      "destroyed_at": "2026-09-08T17:31:07Z",
+      "exec_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused",
+      "instance_id": "beta-focused",
+      "profile": "focused:shared-payouts",
+      "runtime_instance_id": "3c60dd902ea95e7d3ed7703e9c5244b789d13e970eeecd03582d508bc2bdc3a0"
+    },
+    {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "created_at": "2026-09-08T17:31:08Z",
+      "destroyed_at": "2026-09-08T17:43:26Z",
+      "exec_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused",
+      "instance_id": "beta-focused",
+      "profile": "focused:shared-payouts",
+      "runtime_instance_id": "31fb951252c8bdb098cebee05bbe06c2d5b838629e99bc0c46f569b7d4597840"
+    },
+    {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "created_at": "2026-09-08T17:43:27Z",
+      "destroyed_at": "2026-09-08T17:47:56Z",
+      "exec_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused",
+      "instance_id": "beta-focused",
+      "profile": "focused:shared-payouts",
+      "runtime_instance_id": "31774a96c1f321f037396ade647259878fac95a5a71c58e9b9663029069ede2c"
+    },
+    {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "created_at": "2026-09-08T17:10:48Z",
+      "destroyed_at": "2026-09-08T18:06:54Z",
+      "exec_dir": "/Users/rana.singh/.twin-factory/instances/alpha-full",
+      "instance_id": "alpha-full",
+      "profile": "full",
+      "runtime_instance_id": "2d6cbfdaee2476c2e1d8744d464c9c3a71abdf07ed4b80ccf09afa7077b71c4e"
+    },
+    {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "created_at": "2026-09-08T18:06:55Z",
+      "destroyed_at": "2026-09-08T18:27:30Z",
+      "exec_dir": "/Users/rana.singh/.twin-factory/instances/alpha-full",
+      "instance_id": "alpha-full",
+      "profile": "full",
+      "runtime_instance_id": "db7721e10f74939467b536686e5ef68ea5d93acd03ed00d3faebe0741bfb78e2"
+    },
+    {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "created_at": "2026-09-08T17:47:57Z",
+      "destroyed_at": "2026-09-08T18:33:48Z",
+      "exec_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused",
+      "instance_id": "beta-focused",
+      "profile": "focused:shared-payouts",
+      "runtime_instance_id": "04926d624a082d27daadb3abf868e8995c0f7ce2c06e99782a5dcace7b9308f8"
+    },
+    {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "created_at": "2026-09-08T18:27:31Z",
+      "destroyed_at": "2026-09-08T18:33:51Z",
+      "exec_dir": "/Users/rana.singh/.twin-factory/instances/alpha-full",
+      "instance_id": "alpha-full",
+      "profile": "full",
+      "runtime_instance_id": "bf19b122ab39c6dcfbddf3dfc99830cf0c4989b10e45e4f14af26441a2096e1e"
+    }
+  ],
+  "instances": {},
+  "kind": "twin_instance_registry",
+  "schema_version": "m9.1"
+}

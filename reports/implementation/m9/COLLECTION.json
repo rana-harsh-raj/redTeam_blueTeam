@@ -1,0 +1,38 @@
+{
+  "collected_at": "2026-09-08T18:34:24Z",
+  "instances": {
+    "alpha-full": {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "profile": "full",
+      "runtime_instance_id": "bf19b122ab39c6dcfbddf3dfc99830cf0c4989b10e45e4f14af26441a2096e1e",
+      "state": "destroyed",
+      "timings": {
+        "boot_secs": 122.3,
+        "build_secs": 126.2,
+        "create_secs": 0.3,
+        "destroy_secs": 40.3,
+        "generate_secs": 2.0,
+        "images_secs": 100.5,
+        "provision_secs": 23.3
+      }
+    },
+    "beta-focused": {
+      "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+      "profile": "focused:shared-payouts",
+      "runtime_instance_id": "04926d624a082d27daadb3abf868e8995c0f7ce2c06e99782a5dcace7b9308f8",
+      "state": "destroyed",
+      "timings": {
+        "boot_secs": 83.2,
+        "build_secs": 69.4,
+        "create_secs": 0.4,
+        "destroy_secs": 37.7,
+        "generate_secs": 1.9,
+        "images_secs": 41.0,
+        "provision_secs": 25.5,
+        "reset_secs": 63.9,
+        "restore_state_secs": 18.8,
+        "snapshot_state_secs": 8.3
+      }
+    }
+  }
+}

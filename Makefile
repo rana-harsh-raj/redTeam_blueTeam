@@ -189,3 +189,36 @@ m8-hashes:         ## bind snapshot store + archkit + reports into reports/imple
 	@python3 -c "from archkit.acceptance import build_hashes; from archkit.store import SnapshotStore; s=SnapshotStore(); print(build_hashes(s, s.resolve('current'))['count'])"
 m8-acceptance:     ## evaluate the 20 M8 gates -> reports/implementation/M8_ACCEPTANCE.json
 	@python3 -m archkit acceptance
+
+# ---- M9: isolated Twin Factory (twinfactory; one execution boundary per instance) ----
+.PHONY: m9-profiles m9-create m9-build m9-start m9-status m9-journeys m9-reset m9-stop m9-destroy m9-ls m9-images m9-test m9-isolation m9-acceptance m9-report
+m9-profiles:       ## runtime profiles derivable from the current M8 snapshot
+	@python3 -m twinfactory profiles
+m9-create:         ## ID=<id> PROFILE=full|critical-payouts|focused:<family> SEED=<seed> [BACKEND=colima]
+	@python3 -m twinfactory create $(ID) --profile $(PROFILE) --seed $(SEED) --backend $(or $(BACKEND),colima) $(ARGS)
+m9-build:          ## ID=<id>: provision the boundary, generate config/secrets/fixtures, resolve + record image digests
+	@python3 -m twinfactory build $(ID)
+m9-start:          ## ID=<id>: boot (or resume) the instance
+	@python3 -m twinfactory start $(ID)
+m9-status:         ## ID=<id>
+	@python3 -m twinfactory status $(ID)
+m9-journeys:       ## ID=<id> [ARGS=--only journey:shared-payouts/success]
+	@python3 -m twinfactory journeys $(ID) $(ARGS)
+m9-reset:          ## ID=<id>
+	@python3 -m twinfactory reset $(ID)
+m9-stop:           ## ID=<id> [ARGS=--boundary]
+	@python3 -m twinfactory stop $(ID) $(ARGS)
+m9-destroy:        ## ID=<id> [ARGS=--purge]
+	@python3 -m twinfactory destroy $(ID) $(ARGS)
+m9-ls:             ## registered instances
+	@python3 -m twinfactory ls
+m9-images:         ## seed the factory image cache from a daemon that has the images (FROM=unix://.../docker.sock)
+	@python3 -m twinfactory images export --from $(FROM) --profile full
+m9-test:           ## twinfactory offline tests
+	@python3 -m unittest twinfactory.tests.test_factory twinfactory.tests.test_isolation
+m9-isolation:      ## two-instance isolation proof (A=<full id> B=<focused id>)
+	@python3 -m twinfactory isolation run --a $(A) --b $(B) $(ARGS)
+m9-acceptance:     ## evaluate the M9 gates -> reports/implementation/M9_ACCEPTANCE.json
+	@python3 -m twinfactory acceptance
+m9-report:         ## render reports/implementation/M9_FINAL_REPORT.md from the machine records
+	@python3 -m twinfactory report

@@ -1,0 +1,210 @@
+[
+  {
+    "log": "01-host-bridge-stop.log",
+    "rc_line": "rc=0 secs=0.44 at=2026-09-08T18:33:14Z"
+  },
+  {
+    "log": "01-materialize.log",
+    "rc_line": "rc=0 secs=6.49 at=2026-09-08T18:29:45Z"
+  },
+  {
+    "log": "01-seeds-generate.log",
+    "rc_line": "rc=0 secs=0.45 at=2026-09-08T18:27:56Z"
+  },
+  {
+    "log": "02-datastores-up.log",
+    "rc_line": "rc=0 secs=2.15 at=2026-09-08T18:29:47Z"
+  },
+  {
+    "log": "02-destroy-down.log",
+    "rc_line": "rc=0 secs=35.22 at=2026-09-08T18:33:50Z"
+  },
+  {
+    "log": "02-gen-secrets.log",
+    "rc_line": "rc=0 secs=1.39 at=2026-09-08T18:27:57Z"
+  },
+  {
+    "log": "03-config-generate.log",
+    "rc_line": "rc=0 secs=0.08 at=2026-09-08T18:27:57Z"
+  },
+  {
+    "log": "04-migrate-payouts-migrate.log",
+    "rc_line": "rc=0 secs=2.75 at=2026-09-08T18:30:11Z"
+  },
+  {
+    "log": "04-preflight.log",
+    "rc_line": "rc=0 secs=0.07 at=2026-09-08T18:27:57Z"
+  },
+  {
+    "log": "05-migrate-ledger-migrate.log",
+    "rc_line": "rc=0 secs=1.12 at=2026-09-08T18:30:13Z"
+  },
+  {
+    "log": "06-migrate-fts-migrate.log",
+    "rc_line": "rc=0 secs=3.66 at=2026-09-08T18:30:16Z"
+  },
+  {
+    "log": "07-migrate-cfa-migrate.log",
+    "rc_line": "rc=0 secs=0.87 at=2026-09-08T18:30:17Z"
+  },
+  {
+    "log": "08-migrate-xbalances-migrate.log",
+    "rc_line": "rc=0 secs=0.67 at=2026-09-08T18:30:18Z"
+  },
+  {
+    "log": "09-schema-patch-mysql-payouts.log",
+    "rc_line": "rc=0 secs=0.14 at=2026-09-08T18:30:18Z"
+  },
+  {
+    "log": "10-schema-patch-mysql-apidb-stub.log",
+    "rc_line": "rc=0 secs=0.15 at=2026-09-08T18:30:18Z"
+  },
+  {
+    "log": "11-seed-mysql-payouts.log",
+    "rc_line": "rc=0 secs=1.22 at=2026-09-08T18:30:19Z"
+  },
+  {
+    "log": "12-seed-mysql-fts.log",
+    "rc_line": "rc=0 secs=0.87 at=2026-09-08T18:30:20Z"
+  },
+  {
+    "log": "13-seed-mysql-xbalances.log",
+    "rc_line": "rc=0 secs=0.26 at=2026-09-08T18:30:20Z"
+  },
+  {
+    "log": "14-seed-mysql-apidb-stub.log",
+    "rc_line": "rc=0 secs=0.6 at=2026-09-08T18:30:21Z"
+  },
+  {
+    "log": "15-seed-postgres-ledger.log",
+    "rc_line": "rc=0 secs=0.2 at=2026-09-08T18:30:21Z"
+  },
+  {
+    "log": "16-seed-mongo-cfa.log",
+    "rc_line": "rc=0 secs=1.46 at=2026-09-08T18:30:23Z"
+  },
+  {
+    "log": "17-provision-monolith-db.log",
+    "rc_line": "rc=0 secs=0.37 at=2026-09-08T18:30:23Z"
+  },
+  {
+    "log": "18-substitutes-up.log",
+    "rc_line": "rc=0 secs=2.91 at=2026-09-08T18:30:26Z"
+  },
+  {
+    "log": "20-mozart-sim-up.log",
+    "rc_line": "rc=0 secs=0.37 at=2026-09-08T18:30:32Z"
+  },
+  {
+    "log": "22-cron-driver-up.log",
+    "rc_line": "rc=0 secs=0.56 at=2026-09-08T18:30:39Z"
+  },
+  {
+    "log": "23-stork-subscriptions.log",
+    "rc_line": "rc=0 secs=0.17 at=2026-09-08T18:30:39Z"
+  },
+  {
+    "log": "24-core-up.log",
+    "rc_line": "rc=1 secs=13.6 at=2026-09-08T18:30:53Z"
+  },
+  {
+    "log": "25-core-up-retry1.log",
+    "rc_line": "rc=0 secs=3.94 at=2026-09-08T18:31:02Z"
+  },
+  {
+    "log": "27-ledger-config-shared-account-x.log",
+    "rc_line": "rc=0 secs=0.34 at=2026-09-08T18:31:09Z"
+  },
+  {
+    "log": "28-ledger-config-direct-account-x.log",
+    "rc_line": "rc=0 secs=0.3 at=2026-09-08T18:31:09Z"
+  },
+  {
+    "log": "29-ledger-da-parents.log",
+    "rc_line": "rc=0 secs=0.26 at=2026-09-08T18:31:09Z"
+  },
+  {
+    "log": "30-ledger-da-inactive.log",
+    "rc_line": "rc=0 secs=0.14 at=2026-09-08T18:31:09Z"
+  },
+  {
+    "log": "31-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.24 at=2026-09-08T18:31:10Z"
+  },
+  {
+    "log": "32-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.26 at=2026-09-08T18:31:10Z"
+  },
+  {
+    "log": "33-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.25 at=2026-09-08T18:31:10Z"
+  },
+  {
+    "log": "34-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.26 at=2026-09-08T18:31:10Z"
+  },
+  {
+    "log": "35-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.21 at=2026-09-08T18:31:11Z"
+  },
+  {
+    "log": "36-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.24 at=2026-09-08T18:31:11Z"
+  },
+  {
+    "log": "37-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.22 at=2026-09-08T18:31:11Z"
+  },
+  {
+    "log": "38-ledger-da-count.log",
+    "rc_line": "rc=0 secs=0.15 at=2026-09-08T18:31:11Z"
+  },
+  {
+    "log": "39-reservation-reconcile.log",
+    "rc_line": "rc=0 secs=0.38 at=2026-09-08T18:31:12Z"
+  },
+  {
+    "log": "40-reservation-readiness.log",
+    "rc_line": "rc=0 secs=0.25 at=2026-09-08T18:31:12Z"
+  },
+  {
+    "log": "41-host-bridge-start.log",
+    "rc_line": "rc=0 secs=0.22 at=2026-09-08T18:31:12Z"
+  },
+  {
+    "log": "42-fingerprint.log",
+    "rc_line": "rc=0 secs=1.15 at=2026-09-08T18:31:13Z"
+  },
+  {
+    "log": "43-s2p-ingress-attach.log",
+    "rc_line": "rc=0 secs=11.16 at=2026-09-08T18:31:24Z"
+  },
+  {
+    "log": "44-s2p-datastores-up.log",
+    "rc_line": "rc=0 secs=10.39 at=2026-09-08T18:31:35Z"
+  },
+  {
+    "log": "45-s2p-topic-add-tds-entry.log",
+    "rc_line": "rc=1 secs=0.11 at=2026-09-08T18:31:35Z"
+  },
+  {
+    "log": "46-s2p-topic-create-add-tds-entry.log",
+    "rc_line": "rc=0 secs=0.31 at=2026-09-08T18:31:35Z"
+  },
+  {
+    "log": "47-s2p-topic-prod-x-vendor-paymen.log",
+    "rc_line": "rc=1 secs=0.12 at=2026-09-08T18:31:35Z"
+  },
+  {
+    "log": "48-s2p-topic-create-prod-x-vendor-paymen.log",
+    "rc_line": "rc=0 secs=0.3 at=2026-09-08T18:31:36Z"
+  },
+  {
+    "log": "49-s2p-source-up.log",
+    "rc_line": "rc=0 secs=5.22 at=2026-09-08T18:31:41Z"
+  },
+  {
+    "log": "50-s2p-health.log",
+    "rc_line": "rc=0 secs=0.09 at=2026-09-08T18:31:41Z"
+  }
+]

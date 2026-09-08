@@ -43,12 +43,16 @@ REPO = Path(__file__).resolve().parents[3]
 sys.path.insert(0, str(REPO / "RED_LOOP"))
 sys.path.insert(0, str(REPO / "RED_LOOP" / "surface"))
 
+from red_loop import config                     # noqa: E402
 from red_loop import provisioner as P            # noqa: E402
 from red_loop import provisioner_direct as D     # noqa: E402
 
-ENV2 = REPO / "ENV2_COMPOSE"
-RUNS = REPO / "RED_LOOP" / "runs"
-IMPL = REPO / "reports" / "implementation"
+# Instance-aware roots. A disposable twin instance points these at its own
+# rendered workspace (ARENA_ENV2_ROOT / TWIN_RUNS_DIR / TWIN_REPORTS_DIR) so
+# several instances can be driven concurrently; unset => today's layout.
+ENV2 = config.ENV2
+RUNS = config.RUNS_DIR
+IMPL = Path(os.environ.get("TWIN_REPORTS_DIR") or (REPO / "reports" / "implementation"))
 
 # in-arena service URLs (reached through a throwaway curl container on the arena network)
 PAYOUTS = "http://payouts-api:9400"
@@ -110,6 +114,16 @@ def save(path, obj):
     Path(path).parent.mkdir(parents=True, exist_ok=True)
     Path(path).write_text(json.dumps(obj, indent=2, default=str))
     return str(path)
+
+
+def rel_to_repo(path):
+    """Repo-relative when the path is inside the checkout, absolute otherwise.
+    A twin instance's run dir lives outside the repo (TWIN_RUNS_DIR)."""
+    p = Path(path)
+    try:
+        return str(p.resolve().relative_to(REPO))
+    except ValueError:
+        return str(p)
 
 
 def git_head():
@@ -979,8 +993,8 @@ class MerchantPool:
             "ledger_accounts_owned": d.get("ledger_accounts_owned"),
             "ledger_account_id_collisions": collisions,
             "failed_steps": [s["step"] for s in d.get("steps", []) if not s.get("ok")],
-            "descriptor": "RED_LOOP/runs/.../descriptor-%s.json (git-ignored, carries the key secret)"
-                          % d["merchant_id"]}
+            "descriptor": "%s (git-ignored, carries the key secret)"
+                          % rel_to_repo(self.run_dir / ("descriptor-%s.json" % d["merchant_id"]))}
         save(self.run_dir / "merchants.json", self.setup_log)
         if collisions:
             self.collisions.extend(collisions)
@@ -1213,7 +1227,7 @@ class Runner:
         rec = {"id": spec["id"], "family": spec["family"], "variant": spec["variant"],
                "priority": spec["priority"], "result": result, "fidelity": ctx.fidelity,
                "title": spec.get("title"),
-               "evidence_path": str(ev_path.relative_to(REPO)),
+               "evidence_path": rel_to_repo(ev_path),
                "merchant_id": (merchant or {}).get("merchant_id"),
                "duration_s": round(time.time() - t0, 1),
                "checks_passed": sum(1 for c in ctx.ev["checks"] if c["ok"]),

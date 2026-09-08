@@ -17,9 +17,18 @@ Options
     --list     print the registry and exit
     --campaign fixed campaign prefix (reuses the same deterministic fresh merchants
                across iterations instead of minting a new set)
-    --run-dir  reuse an existing run directory
+    --run-dir  reuse an existing run directory (may be absolute / outside the repo)
+    --instance-id
+               drive one named twin instance (sets TWIN_INSTANCE_ID); with
+               ARENA_ENV2_ROOT / TWIN_RUNS_DIR / TWIN_REPORTS_DIR pointing at that
+               instance's own workspace, several runners are concurrency-safe
+
+When TWIN_REPORTS_DIR is set the two canonical reports above are written under it
+instead of the checkout's reports/implementation/, so an instance run never
+overwrites the accepted single-arena evidence.
 """
 import argparse
+import hashlib
 import json
 import os
 import sys
@@ -28,6 +37,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 import framework as F  # noqa: E402
+
+from red_loop import config  # noqa: E402  (framework put RED_LOOP on sys.path)
 
 
 VARIANT_ORDER = ["success", "failure", "pending", "retry", "duplicate", "idempotency",
@@ -50,6 +61,19 @@ def select(specs, only, families):
                     break
         out = picked
     return out
+
+
+def default_campaign(stamp):
+    """A campaign prefix no concurrent runner can collide with.
+
+    The old prefix had minute resolution (stamp[2:13]), so two runners started in
+    the same minute minted the SAME deterministic merchant ids. Seconds + 4 random
+    hex remove the collision within one instance; the instance token removes it
+    across instances (and makes a merchant traceable back to the instance that
+    minted it). `--campaign` still pins a fixed prefix for a repeat run."""
+    inst = os.environ.get("TWIN_INSTANCE_ID")
+    token = (hashlib.sha256(inst.encode()).hexdigest()[:6] + "-") if inst else ""
+    return "m6i4-" + token + stamp[2:15].lower() + "-" + os.urandom(2).hex()
 
 
 def coverage_md(doc, path):
@@ -171,7 +195,11 @@ def main():
     ap.add_argument("--list", action="store_true")
     ap.add_argument("--campaign", default=None)
     ap.add_argument("--run-dir")
+    ap.add_argument("--instance-id", default=None,
+                    help="twin instance this run drives (sets TWIN_INSTANCE_ID)")
     args = ap.parse_args()
+    if args.instance_id:
+        os.environ["TWIN_INSTANCE_ID"] = args.instance_id
 
     mods = F.load_drivers()
     specs = sorted(F.REGISTRY, key=lambda s: (
@@ -199,11 +227,13 @@ def main():
     stamp = F.ts()
     run_dir = Path(args.run_dir) if args.run_dir else F.RUNS / ("m6-journeys-" + stamp)
     run_dir.mkdir(parents=True, exist_ok=True)
-    campaign = args.campaign or ("m6i4-" + stamp[2:13].lower())
+    campaign = args.campaign or default_campaign(stamp)
+    inst = config.instance_context()
 
     pool = F.MerchantPool(run_dir, campaign)
     runner = F.Runner(run_dir, pool)
     print("run_dir  = %s" % run_dir)
+    print("instance = %s   compose_project=%s" % (inst["instance_id"] or "-", inst["compose_project"]))
     print("campaign = %s   (fresh deterministic ARENA-prefixed merchants)" % campaign)
     print("journeys = %d\n" % len(chosen))
 
@@ -221,20 +251,25 @@ def main():
                "expected_failure": sum(1 for r in rows if r["result"] == F.EXPECTED_FAILURE),
                "blocked": sum(1 for r in rows if r["result"] == F.BLOCKED)}
     doc = {"schema_version": 1, "lane": "I4 business-journeys", "milestone": "M6",
-           "generated_at": F.now(), "run_dir": str(run_dir.relative_to(F.REPO)),
+           "generated_at": F.now(), "run_dir": F.rel_to_repo(run_dir),
            "git_head": F.git_head(), "fingerprint": F.fingerprint(),
            "campaign_prefix": campaign,
+           "instance": inst,
            "merchants": pool.setup_log,
            "provisioner_findings": {"ledger_account_id_collisions": pool.collisions},
            "summary": summary,
            "journeys": [{k: v for k, v in r.items() if k != "title"} for r in rows]}
-    F.save(F.IMPL / "m6-journeys.json", doc)
-    coverage_md(doc, F.IMPL / "m6-journey-coverage.md")
+    # F.IMPL is reports/implementation/ on the single-arena layout and the
+    # instance's own reports dir when TWIN_REPORTS_DIR is set, so an instance run
+    # never touches the checked-in canonical evidence.
+    F.IMPL.mkdir(parents=True, exist_ok=True)
+    results_path = F.save(F.IMPL / "m6-journeys.json", doc)
+    coverage_path = coverage_md(doc, F.IMPL / "m6-journey-coverage.md")
     F.save(run_dir / "summary.json", doc)
 
     print("\n" + json.dumps(summary))
-    print("reports/implementation/m6-journeys.json")
-    print("reports/implementation/m6-journey-coverage.md")
+    print(F.rel_to_repo(results_path))
+    print(F.rel_to_repo(coverage_path))
     return 0 if summary["fail"] == 0 else 1
 
 

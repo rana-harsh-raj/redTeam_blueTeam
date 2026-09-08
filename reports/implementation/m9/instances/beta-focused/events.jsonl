@@ -1,0 +1,11 @@
+{"at": "2026-09-08T17:47:57Z", "backend": "colima", "kind": "create", "profile": "focused:shared-payouts", "seed": "seed-b"}
+{"at": "2026-09-08T17:49:06Z", "kind": "state", "state": "built"}
+{"at": "2026-09-08T17:50:31Z", "kind": "state", "state": "running"}
+{"at": "2026-09-08T17:51:39Z", "failed": 0, "kind": "journeys", "passed": 1, "run_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused/journeys/run-20260908T175031Z"}
+{"at": "2026-09-08T17:57:24Z", "failed": 0, "kind": "journeys", "passed": 1, "run_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused/journeys/run-20260908T175615Z"}
+{"at": "2026-09-08T17:58:35Z", "failed": 0, "kind": "journeys", "passed": 1, "run_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused/journeys/run-20260908T175754Z"}
+{"at": "2026-09-08T18:01:19Z", "kind": "reset", "secs": 63.9}
+{"at": "2026-09-08T18:01:34Z", "kind": "snapshot_state", "label": "p8-baseline", "secs": 8.3}
+{"at": "2026-09-08T18:05:45Z", "failed": 1, "kind": "journeys", "passed": 0, "run_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused/journeys/run-20260908T180137Z"}
+{"at": "2026-09-08T18:06:06Z", "kind": "restore_state", "label": "p8-baseline", "secs": 18.8}
+{"at": "2026-09-08T18:33:48Z", "kind": "destroy", "purge": false, "secs": 37.7}

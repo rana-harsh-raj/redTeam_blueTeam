@@ -1,0 +1,21 @@
+{
+  "at": "2026-09-08T18:34:24Z",
+  "colima_version": "colima version 0.10.3",
+  "cpu_count": 15,
+  "docker_compose_version": "Docker Compose version 5.5.1",
+  "home_free_kib": 309871104,
+  "memory_bytes": 25769803776,
+  "model": "Mac17,9",
+  "platform": "macOS-26.6.1-arm64-arm-64bit-Mach-O",
+  "vms": [
+    {
+      "arch": "aarch64",
+      "cpus": 4,
+      "disk": 64424509440,
+      "memory": 12884901888,
+      "name": "default",
+      "runtime": "docker",
+      "status": "Running"
+    }
+  ]
+}

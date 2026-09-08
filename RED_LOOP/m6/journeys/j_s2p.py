@@ -25,6 +25,7 @@ The S2P stack is RED_LOOP/m7/s2p_stack.py (compose overlay ENV2_COMPOSE/docker-c
 import csv
 import io
 import json
+import os
 import subprocess
 import time
 import uuid
@@ -34,7 +35,11 @@ import j_ingress as I
 from framework import journey
 
 S2P = "s2p"
-S2P_NET = "rzp-s2p-internal"
+# Per-instance S2P private network / MySQL credential, the same override shape
+# provisioner.arena_network() uses. Unset => today's single-arena values.
+S2P_NET = os.environ.get("ARENA_S2P_NETWORK") or ("rzp-s2p-internal" + os.environ.get("ARENA_SUFFIX", ""))
+S2P_MYSQL_USER = os.environ.get("S2P_MYSQL_USER", "s2p")
+S2P_MYSQL_PASSWORD = os.environ.get("S2P_MYSQL_PASSWORD", "s2p")
 TAX_FA_NUMBER, TAX_FA_IFSC, TAX_FA_NAME = "000000000000001", "TEST0000001", "RZPX PRIVATE LIMITED"   # synthetic constants patched into the S2P runtime (build-runtime-patch.json)
 CURL_IMAGE = "curlimages/curl:latest"
 
@@ -62,7 +67,8 @@ def s2p_http(ctx, method, path, body=None, headers=None, timeout=20):
 
 
 def s2p_sql(ctx, query):
-    out = subprocess.run(["docker", "exec", F.P.cname("s2p-mysql"), "env", "MYSQL_PWD=s2p", "mysql", "-B", "--raw", "-us2p", "vendor_payments", "-e", query],
+    out = subprocess.run(["docker", "exec", F.P.cname("s2p-mysql"), "env", "MYSQL_PWD=" + S2P_MYSQL_PASSWORD,
+                          "mysql", "-B", "--raw", "-u" + S2P_MYSQL_USER, "vendor_payments", "-e", query],
                          capture_output=True, text=True, timeout=60)
     rows = list(csv.DictReader(io.StringIO(out.stdout), delimiter="\t")) if out.returncode == 0 else []
     ctx.a._rec("db", {"store": "s2p-mysql/vendor_payments", "sql": query, "rows": len(rows), "err": out.stderr[:200] if out.returncode else None})

@@ -1,0 +1,448 @@
+{
+  "images": {
+    "apache/kafka:3.8.0": {
+      "architecture": "arm64",
+      "created": "2024-07-23T09:01:41.928351182Z",
+      "exported_at": "2026-09-08T17:08:12Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069",
+      "repo_digests": [
+        "apache/kafka@sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069"
+      ],
+      "size_bytes": 206687495,
+      "tar": "c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069.tar",
+      "tar_sha256": "79527574bf32e3092d04b67375ac986b75f21a74ada56234c7bb95ab92881bbd"
+    },
+    "curlimages/curl:latest": {
+      "architecture": "arm64",
+      "created": "2026-09-02T09:32:48.079548369Z",
+      "exported_at": "2026-09-08T17:08:12Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777",
+      "repo_digests": [
+        "curlimages/curl@sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777"
+      ],
+      "size_bytes": 10916635,
+      "tar": "58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777.tar",
+      "tar_sha256": "3b0a4bbdd0955d9323ac25c967cf82af4589e54c1a8e70eac0c213e9174b6d20"
+    },
+    "localstack/localstack:3.8": {
+      "architecture": "arm64",
+      "created": "2024-10-08T11:22:45.050812491Z",
+      "exported_at": "2026-09-08T17:08:12Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7",
+      "repo_digests": [
+        "localstack/localstack@sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7"
+      ],
+      "size_bytes": 631113272,
+      "tar": "b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7.tar",
+      "tar_sha256": "770f0cfa7897c6674f5bfaa142cff5b82379c36b4fa31b89bbbaba05868f4a99"
+    },
+    "mongo:6.0": {
+      "architecture": "arm64",
+      "created": "2026-05-15T21:11:58.755840624Z",
+      "exported_at": "2026-09-08T17:08:12Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac",
+      "repo_digests": [
+        "mongo@sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac"
+      ],
+      "size_bytes": 266506602,
+      "tar": "8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac.tar",
+      "tar_sha256": "ecb504b31ab2a6dd5f94d68b680d5bf63d2e84c22753b997a51742ca676c55d1"
+    },
+    "mysql:8.0": {
+      "architecture": "arm64",
+      "created": "2026-05-04T21:11:12.426166735Z",
+      "exported_at": "2026-09-08T17:08:12Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+      "repo_digests": [
+        "mysql@sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b"
+      ],
+      "size_bytes": 229152189,
+      "tar": "7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b.tar",
+      "tar_sha256": "10c57e49e52b1ace58564f60599e7d863d4cc040cbde8ad3164407c3d0ce94c4"
+    },
+    "mysql:8.4@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb": {
+      "architecture": "arm64",
+      "created": "2026-07-27T22:08:33.80804977Z",
+      "exported_at": "2026-09-08T17:07:14Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+      "repo_digests": [
+        "mysql@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb"
+      ],
+      "size_bytes": 233716908,
+      "tar": "b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb.tar",
+      "tar_sha256": "872ca4cf3545b4d17e60c41fb3e2967840a53662028c41bda3152747c645fad6"
+    },
+    "postgres:15-alpine": {
+      "architecture": "arm64",
+      "created": "2026-08-13T19:19:46.01016687Z",
+      "exported_at": "2026-09-08T17:08:12Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b",
+      "repo_digests": [
+        "postgres@sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b"
+      ],
+      "size_bytes": 113079998,
+      "tar": "fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b.tar",
+      "tar_sha256": "3f29d6820d841e5b5774565de05ba2b9734deddbfe494bed540d5051c24e63ff"
+    },
+    "python:3.12-alpine": {
+      "architecture": "arm64",
+      "created": "2026-08-31T23:50:14.903448568Z",
+      "exported_at": "2026-09-08T17:08:13Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a",
+      "repo_digests": [
+        "python@sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a"
+      ],
+      "size_bytes": 21396649,
+      "tar": "b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a.tar",
+      "tar_sha256": "26d4b90aac83bff2b2e4d7ffd21a5bae3a3fc2ded4b783d9e3c0593147b48ac5"
+    },
+    "redis:7-alpine": {
+      "architecture": "arm64",
+      "created": "2026-08-18T16:56:43.004916419Z",
+      "exported_at": "2026-09-08T17:08:13Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+      "repo_digests": [
+        "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+      ],
+      "size_bytes": 16791444,
+      "tar": "ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf.tar",
+      "tar_sha256": "e6f464c7086c784c0b1c8ada684242c006193b88c27025c4f8edc8b0d83a7e25"
+    },
+    "redis:7-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf": {
+      "architecture": "arm64",
+      "created": "2026-08-18T16:56:43.004916419Z",
+      "exported_at": "2026-09-08T17:07:15Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+      "repo_digests": [
+        "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+      ],
+      "size_bytes": 16791444,
+      "tar": "ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf.tar",
+      "tar_sha256": "e6f464c7086c784c0b1c8ada684242c006193b88c27025c4f8edc8b0d83a7e25"
+    },
+    "redpandadata/redpanda:v24.2.18@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8": {
+      "architecture": "arm64",
+      "created": "2025-02-14T13:03:19.410962908Z",
+      "exported_at": "2026-09-08T17:07:17Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+      "repo_digests": [
+        "redpandadata/redpanda@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8"
+      ],
+      "size_bytes": 163496987,
+      "tar": "0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8.tar",
+      "tar_sha256": "2902c29f4c9fa32847c4687cf2233ade6be790ea3387d80cc14467d4d39693bf"
+    },
+    "rzp-arena/api-ingress:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-08T13:10:13.137943638+05:30",
+      "exported_at": "2026-09-08T17:08:13Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb",
+      "repo_digests": [
+        "rzp-arena/api-ingress@sha256:8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb"
+      ],
+      "size_bytes": 21429374,
+      "tar": "8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb.tar",
+      "tar_sha256": "13cd167f5d54a7c599e345640838802e5e8d15803078185b73feb0a2a9ae1286"
+    },
+    "rzp-arena/asv-stub:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-06T17:44:50.005830985+05:30",
+      "exported_at": "2026-09-08T17:08:14Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f",
+      "repo_digests": [
+        "rzp-arena/asv-stub@sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f"
+      ],
+      "size_bytes": 21398204,
+      "tar": "aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f.tar",
+      "tar_sha256": "24a076fb9788f2af7efd939f6d27c6332ae5b06af49a439df1a519d0676ded2c"
+    },
+    "rzp-arena/bankingaccounts-stub:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-07T03:11:16.492843494+05:30",
+      "exported_at": "2026-09-08T17:08:14Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d",
+      "repo_digests": [
+        "rzp-arena/bankingaccounts-stub@sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d"
+      ],
+      "size_bytes": 21399369,
+      "tar": "d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d.tar",
+      "tar_sha256": "a93ca6f1529d35c99c3742c90c297bc5b8d36d52a142668e7ace325c08ae4b90"
+    },
+    "rzp-arena/batch-sim:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-08T12:59:02.752331881+05:30",
+      "exported_at": "2026-09-08T17:08:14Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696",
+      "repo_digests": [
+        "rzp-arena/batch-sim@sha256:bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696"
+      ],
+      "size_bytes": 21436284,
+      "tar": "bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696.tar",
+      "tar_sha256": "b9e295dea31335c9453adec472a42abd546f161599e036590a20a1fe8d85e8f3"
+    },
+    "rzp-arena/cfa:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-05T17:15:49.787643427+05:30",
+      "exported_at": "2026-09-08T17:08:15Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+      "repo_digests": [
+        "rzp-arena/cfa@sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206"
+      ],
+      "size_bytes": 80349190,
+      "tar": "1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206.tar",
+      "tar_sha256": "09617f8771ab56033ea3b636113d392676c43bd99c4bafde5b6d7fabd65f016d"
+    },
+    "rzp-arena/dcs-stub:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-07T03:11:16.507626999+05:30",
+      "exported_at": "2026-09-08T17:08:15Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b",
+      "repo_digests": [
+        "rzp-arena/dcs-stub@sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b"
+      ],
+      "size_bytes": 21403002,
+      "tar": "9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b.tar",
+      "tar_sha256": "ece75adcf548e53d8b7645151c8765cbe32e602c3836b16fb080d12261664ee1"
+    },
+    "rzp-arena/fts:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-05T17:03:13.495780953+05:30",
+      "exported_at": "2026-09-08T17:08:16Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "size_bytes": 89042783,
+      "tar": "dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d.tar",
+      "tar_sha256": "74bc733fcfc44c7d7ce7cf36b5116085136f3dc4210eb05949623a45a02ef892"
+    },
+    "rzp-arena/kong-lite:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-08T03:24:18.6382408+05:30",
+      "exported_at": "2026-09-08T17:08:17Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f",
+      "repo_digests": [
+        "rzp-arena/kong-lite@sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f"
+      ],
+      "size_bytes": 21416509,
+      "tar": "fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f.tar",
+      "tar_sha256": "b31f5bd031e32854a5ecdd5fa10724dc38904367754cdccccee14adf538d547a"
+    },
+    "rzp-arena/ledger-gate:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-06T17:44:50.087583072+05:30",
+      "exported_at": "2026-09-08T17:08:18Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f",
+      "repo_digests": [
+        "rzp-arena/ledger-gate@sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f"
+      ],
+      "size_bytes": 21401117,
+      "tar": "2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f.tar",
+      "tar_sha256": "b5148fdfa9de2a4cc7804f7bd252e6be872dadea2dd2947234d10a967a86b5fa"
+    },
+    "rzp-arena/ledger:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-05T17:05:55.702391409+05:30",
+      "exported_at": "2026-09-08T17:08:19Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "repo_digests": [
+        "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+      ],
+      "size_bytes": 95188613,
+      "tar": "878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361.tar",
+      "tar_sha256": "b84d6d00d0b10ccd3e36750c08b0c8f27e80437ef621ac134524cb1535bb70d4"
+    },
+    "rzp-arena/merchant-webhook-sink:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-06T17:44:50.130646694+05:30",
+      "exported_at": "2026-09-08T17:08:19Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13",
+      "repo_digests": [
+        "rzp-arena/merchant-webhook-sink@sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13"
+      ],
+      "size_bytes": 21399413,
+      "tar": "75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13.tar",
+      "tar_sha256": "63d61c13f311b81aef3a4cffb4874851b717cf9a4c9d8ad7773d730a02a772d3"
+    },
+    "rzp-arena/monolith-stub:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-08T02:57:04.680578964+05:30",
+      "exported_at": "2026-09-08T17:08:19Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557",
+      "repo_digests": [
+        "rzp-arena/monolith-stub@sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557"
+      ],
+      "size_bytes": 24921745,
+      "tar": "7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557.tar",
+      "tar_sha256": "7c3135c8c58830de0c4ac4c2436547fe05d17656c5a608cc668db10752037cda"
+    },
+    "rzp-arena/mozart-sim:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-07T03:11:16.511727126+05:30",
+      "exported_at": "2026-09-08T17:08:20Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9",
+      "repo_digests": [
+        "rzp-arena/mozart-sim@sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9"
+      ],
+      "size_bytes": 21406371,
+      "tar": "cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9.tar",
+      "tar_sha256": "ee3565d83591a2fe174b500bdaf8e800977106fe5f60c7620e145f270f734829"
+    },
+    "rzp-arena/payouts:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-05T21:32:45.429587476+05:30",
+      "exported_at": "2026-09-08T17:08:21Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "size_bytes": 122568316,
+      "tar": "915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b.tar",
+      "tar_sha256": "d6f5b4a4f9c5d74e82ee99a152dbf6c91143d408adbc36a16f13e85bd7b63339"
+    },
+    "rzp-arena/pricing-stub:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-06T17:44:49.973948637+05:30",
+      "exported_at": "2026-09-08T17:08:21Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05",
+      "repo_digests": [
+        "rzp-arena/pricing-stub@sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05"
+      ],
+      "size_bytes": 21398876,
+      "tar": "8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05.tar",
+      "tar_sha256": "cb9e50008be3dff1642250b71bf33833481ac47e5b822a2ef58b7c88b7fab78c"
+    },
+    "rzp-arena/shield-stub:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-06T17:44:49.976553521+05:30",
+      "exported_at": "2026-09-08T17:08:21Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43",
+      "repo_digests": [
+        "rzp-arena/shield-stub@sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43"
+      ],
+      "size_bytes": 21399055,
+      "tar": "6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43.tar",
+      "tar_sha256": "a44ce87dcaf92216ff8fdc7e7517f94b0a402bf66d85355ab9d54c958afc6535"
+    },
+    "rzp-arena/splitz-stub:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-06T17:44:50.008587209+05:30",
+      "exported_at": "2026-09-08T17:08:22Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a",
+      "repo_digests": [
+        "rzp-arena/splitz-stub@sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a"
+      ],
+      "size_bytes": 21400183,
+      "tar": "4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a.tar",
+      "tar_sha256": "8b9e7335d09f15a7b449a0d144e533eff32b4572a91e0f41c9f8ada62f29bf42"
+    },
+    "rzp-arena/stork-capture:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-06T17:44:50.128374862+05:30",
+      "exported_at": "2026-09-08T17:08:22Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c",
+      "repo_digests": [
+        "rzp-arena/stork-capture@sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c"
+      ],
+      "size_bytes": 21403178,
+      "tar": "4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c.tar",
+      "tar_sha256": "f469a12e9f267412d6da97e95139d26911a26376715c04cb5574b55df5c83c37"
+    },
+    "rzp-arena/workflow-engine:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-07T22:54:57.251748132+05:30",
+      "exported_at": "2026-09-08T17:08:23Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0",
+      "repo_digests": [
+        "rzp-arena/workflow-engine@sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0"
+      ],
+      "size_bytes": 21410036,
+      "tar": "2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0.tar",
+      "tar_sha256": "fcc36001dc2ba29ccc560559faddcc8b434f865c311053028c4059e81371aef7"
+    },
+    "rzp-arena/workflow-sim:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-06T17:44:50.017144264+05:30",
+      "exported_at": "2026-09-08T17:08:23Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96",
+      "repo_digests": [
+        "rzp-arena/workflow-sim@sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96"
+      ],
+      "size_bytes": 21404810,
+      "tar": "81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96.tar",
+      "tar_sha256": "60f640bf737abf6bb997e5dbf81fb01c2e167dd42dff88443da0fd2c8434ad87"
+    },
+    "rzp-arena/xas-sim:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-07T03:11:16.807787238+05:30",
+      "exported_at": "2026-09-08T17:08:23Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7",
+      "repo_digests": [
+        "rzp-arena/xas-sim@sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7"
+      ],
+      "size_bytes": 21412023,
+      "tar": "7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7.tar",
+      "tar_sha256": "931f1124ef8e8a9f74b3efd003fee6aa4ca96091f72d9255f6d78e4e59e39564"
+    },
+    "rzp-arena/xbalances:v1-candidate": {
+      "architecture": "arm64",
+      "created": "2026-09-05T16:56:59.885940679+05:30",
+      "exported_at": "2026-09-08T17:08:24Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+      "repo_digests": [
+        "rzp-arena/xbalances@sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f"
+      ],
+      "size_bytes": 65576166,
+      "tar": "980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f.tar",
+      "tar_sha256": "3b1ed0029836302bff94990b75249f6fc9d101fa8ab544ba489c17936942b0af"
+    },
+    "s2p-architecture-replica/vendor-payments:20c4f4d59970471067388afea8b1d65ac39ee126-45fbf8fbbe82efd9": {
+      "architecture": "arm64",
+      "created": "2026-09-08T22:33:36.278921844+05:30",
+      "exported_at": "2026-09-08T17:08:25Z",
+      "exported_from": "export:unix:///Users/rana.singh/.colima/default/docker.sock",
+      "image_id": "sha256:18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18",
+      "repo_digests": [
+        "s2p-architecture-replica/vendor-payments@sha256:18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18"
+      ],
+      "size_bytes": 30344394,
+      "tar": "18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18.tar",
+      "tar_sha256": "f4a2103f08340039c7a4344b70b0df3b3adb4eb833429f9e0b7af5e2e8b51b18"
+    }
+  },
+  "kind": "twin_image_cache",
+  "schema_version": "m9.1"
+}

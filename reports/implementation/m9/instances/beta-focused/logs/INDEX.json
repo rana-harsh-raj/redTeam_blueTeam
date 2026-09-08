@@ -1,0 +1,402 @@
+[
+  {
+    "log": "01-dump-mysql-payouts.log",
+    "rc_line": "rc=0 secs=2.06 at=2026-09-08T18:01:28Z"
+  },
+  {
+    "log": "01-host-bridge-stop.log",
+    "rc_line": "rc=0 secs=0.45 at=2026-09-08T18:33:15Z"
+  },
+  {
+    "log": "01-materialize.log",
+    "rc_line": "rc=0 secs=7.04 at=2026-09-08T17:49:14Z"
+  },
+  {
+    "log": "01-reset-redis-flush.log",
+    "rc_line": "rc=0 secs=0.42 at=2026-09-08T18:00:16Z"
+  },
+  {
+    "log": "01-restore-mysql-apidb-stub.log",
+    "rc_line": "rc=0 secs=2.32 at=2026-09-08T18:05:51Z"
+  },
+  {
+    "log": "01-seeds-generate.log",
+    "rc_line": "rc=0 secs=0.54 at=2026-09-08T17:48:24Z"
+  },
+  {
+    "log": "02-datastores-up.log",
+    "rc_line": "rc=0 secs=1.61 at=2026-09-08T17:49:16Z"
+  },
+  {
+    "log": "02-destroy-down.log",
+    "rc_line": "rc=0 secs=30.29 at=2026-09-08T18:33:46Z"
+  },
+  {
+    "log": "02-dump-mysql-fts.log",
+    "rc_line": "rc=0 secs=2.37 at=2026-09-08T18:01:31Z"
+  },
+  {
+    "log": "02-gen-secrets.log",
+    "rc_line": "rc=0 secs=1.21 at=2026-09-08T17:48:25Z"
+  },
+  {
+    "log": "02-reset-localstack-list.log",
+    "rc_line": "rc=0 secs=0.99 at=2026-09-08T18:00:17Z"
+  },
+  {
+    "log": "02-restore-mysql-fts.log",
+    "rc_line": "rc=0 secs=4.69 at=2026-09-08T18:05:55Z"
+  },
+  {
+    "log": "03-config-generate.log",
+    "rc_line": "rc=0 secs=0.08 at=2026-09-08T17:48:25Z"
+  },
+  {
+    "log": "03-dump-mysql-xbalances.log",
+    "rc_line": "rc=0 secs=1.07 at=2026-09-08T18:01:32Z"
+  },
+  {
+    "log": "03-reset-purge.log",
+    "rc_line": "rc=0 secs=1.7 at=2026-09-08T18:00:18Z"
+  },
+  {
+    "log": "03-restore-mysql-payouts.log",
+    "rc_line": "rc=0 secs=8.04 at=2026-09-08T18:06:03Z"
+  },
+  {
+    "log": "04-dump-mysql-apidb-stub.log",
+    "rc_line": "rc=0 secs=1.24 at=2026-09-08T18:01:33Z"
+  },
+  {
+    "log": "04-migrate-payouts-migrate.log",
+    "rc_line": "rc=0 secs=2.23 at=2026-09-08T17:49:35Z"
+  },
+  {
+    "log": "04-preflight.log",
+    "rc_line": "rc=0 secs=0.06 at=2026-09-08T17:48:25Z"
+  },
+  {
+    "log": "04-reset-purge.log",
+    "rc_line": "rc=0 secs=1.19 at=2026-09-08T18:00:20Z"
+  },
+  {
+    "log": "04-restore-mysql-xbalances.log",
+    "rc_line": "rc=0 secs=0.75 at=2026-09-08T18:06:04Z"
+  },
+  {
+    "log": "05-dump-postgres-ledger.log",
+    "rc_line": "rc=0 secs=0.66 at=2026-09-08T18:01:34Z"
+  },
+  {
+    "log": "05-migrate-ledger-migrate.log",
+    "rc_line": "rc=0 secs=0.91 at=2026-09-08T17:49:36Z"
+  },
+  {
+    "log": "05-reset-purge.log",
+    "rc_line": "rc=0 secs=0.86 at=2026-09-08T18:00:21Z"
+  },
+  {
+    "log": "05-restore-postgres-ledger.log",
+    "rc_line": "rc=0 secs=1.88 at=2026-09-08T18:06:06Z"
+  },
+  {
+    "log": "06-migrate-fts-migrate.log",
+    "rc_line": "rc=0 secs=1.99 at=2026-09-08T17:49:38Z"
+  },
+  {
+    "log": "06-reset-purge.log",
+    "rc_line": "rc=0 secs=1.59 at=2026-09-08T18:00:22Z"
+  },
+  {
+    "log": "07-migrate-cfa-migrate.log",
+    "rc_line": "rc=0 secs=0.7 at=2026-09-08T17:49:38Z"
+  },
+  {
+    "log": "07-reset-purge.log",
+    "rc_line": "rc=0 secs=2.83 at=2026-09-08T18:00:25Z"
+  },
+  {
+    "log": "08-migrate-xbalances-migrate.log",
+    "rc_line": "rc=0 secs=0.52 at=2026-09-08T17:49:39Z"
+  },
+  {
+    "log": "08-reset-purge.log",
+    "rc_line": "rc=0 secs=0.88 at=2026-09-08T18:00:26Z"
+  },
+  {
+    "log": "09-reset-purge.log",
+    "rc_line": "rc=0 secs=0.87 at=2026-09-08T18:00:27Z"
+  },
+  {
+    "log": "09-schema-patch-mysql-payouts.log",
+    "rc_line": "rc=0 secs=0.23 at=2026-09-08T17:49:39Z"
+  },
+  {
+    "log": "10-reset-purge.log",
+    "rc_line": "rc=0 secs=0.58 at=2026-09-08T18:00:27Z"
+  },
+  {
+    "log": "10-schema-patch-mysql-apidb-stub.log",
+    "rc_line": "rc=0 secs=0.21 at=2026-09-08T17:49:39Z"
+  },
+  {
+    "log": "11-reset-purge.log",
+    "rc_line": "rc=0 secs=0.76 at=2026-09-08T18:00:28Z"
+  },
+  {
+    "log": "11-seed-mysql-payouts.log",
+    "rc_line": "rc=0 secs=0.75 at=2026-09-08T17:49:40Z"
+  },
+  {
+    "log": "12-reset-purge.log",
+    "rc_line": "rc=0 secs=0.61 at=2026-09-08T18:00:29Z"
+  },
+  {
+    "log": "12-seed-mysql-fts.log",
+    "rc_line": "rc=0 secs=0.52 at=2026-09-08T17:49:40Z"
+  },
+  {
+    "log": "13-reset-purge.log",
+    "rc_line": "rc=0 secs=1.12 at=2026-09-08T18:00:30Z"
+  },
+  {
+    "log": "13-seed-mysql-xbalances.log",
+    "rc_line": "rc=0 secs=0.18 at=2026-09-08T17:49:41Z"
+  },
+  {
+    "log": "14-reset-purge.log",
+    "rc_line": "rc=0 secs=0.64 at=2026-09-08T18:00:30Z"
+  },
+  {
+    "log": "14-seed-mysql-apidb-stub.log",
+    "rc_line": "rc=0 secs=0.57 at=2026-09-08T17:49:41Z"
+  },
+  {
+    "log": "15-reset-purge.log",
+    "rc_line": "rc=0 secs=0.57 at=2026-09-08T18:00:31Z"
+  },
+  {
+    "log": "15-seed-postgres-ledger.log",
+    "rc_line": "rc=0 secs=0.29 at=2026-09-08T17:49:42Z"
+  },
+  {
+    "log": "16-reset-purge.log",
+    "rc_line": "rc=0 secs=0.82 at=2026-09-08T18:00:32Z"
+  },
+  {
+    "log": "16-seed-mongo-cfa.log",
+    "rc_line": "rc=0 secs=1.15 at=2026-09-08T17:49:43Z"
+  },
+  {
+    "log": "17-provision-monolith-db.log",
+    "rc_line": "rc=0 secs=0.42 at=2026-09-08T17:49:43Z"
+  },
+  {
+    "log": "17-reset-purge.log",
+    "rc_line": "rc=0 secs=0.59 at=2026-09-08T18:00:32Z"
+  },
+  {
+    "log": "18-reset-purge.log",
+    "rc_line": "rc=0 secs=1.03 at=2026-09-08T18:00:33Z"
+  },
+  {
+    "log": "18-substitutes-up.log",
+    "rc_line": "rc=0 secs=2.2 at=2026-09-08T17:49:45Z"
+  },
+  {
+    "log": "19-reset-purge.log",
+    "rc_line": "rc=0 secs=0.87 at=2026-09-08T18:00:34Z"
+  },
+  {
+    "log": "20-mozart-sim-up.log",
+    "rc_line": "rc=0 secs=0.44 at=2026-09-08T17:49:52Z"
+  },
+  {
+    "log": "20-reset-purge.log",
+    "rc_line": "rc=0 secs=1.31 at=2026-09-08T18:00:36Z"
+  },
+  {
+    "log": "21-reset-purge.log",
+    "rc_line": "rc=0 secs=1.93 at=2026-09-08T18:00:38Z"
+  },
+  {
+    "log": "22-cron-driver-up.log",
+    "rc_line": "rc=0 secs=0.78 at=2026-09-08T17:49:59Z"
+  },
+  {
+    "log": "22-reset-purge.log",
+    "rc_line": "rc=0 secs=1.46 at=2026-09-08T18:00:39Z"
+  },
+  {
+    "log": "23-reset-purge.log",
+    "rc_line": "rc=0 secs=1.51 at=2026-09-08T18:00:41Z"
+  },
+  {
+    "log": "23-stork-subscriptions.log",
+    "rc_line": "rc=0 secs=0.18 at=2026-09-08T17:49:59Z"
+  },
+  {
+    "log": "24-core-up.log",
+    "rc_line": "rc=0 secs=19.52 at=2026-09-08T17:50:19Z"
+  },
+  {
+    "log": "24-reset-purge.log",
+    "rc_line": "rc=0 secs=1.51 at=2026-09-08T18:00:42Z"
+  },
+  {
+    "log": "25-reset-purge.log",
+    "rc_line": "rc=0 secs=1.09 at=2026-09-08T18:00:43Z"
+  },
+  {
+    "log": "26-ledger-config-shared-account-x.log",
+    "rc_line": "rc=0 secs=0.35 at=2026-09-08T17:50:26Z"
+  },
+  {
+    "log": "26-reset-purge.log",
+    "rc_line": "rc=0 secs=0.54 at=2026-09-08T18:00:44Z"
+  },
+  {
+    "log": "27-ledger-config-direct-account-x.log",
+    "rc_line": "rc=0 secs=0.25 at=2026-09-08T17:50:26Z"
+  },
+  {
+    "log": "27-reset-purge.log",
+    "rc_line": "rc=0 secs=0.98 at=2026-09-08T18:00:45Z"
+  },
+  {
+    "log": "28-ledger-da-parents.log",
+    "rc_line": "rc=0 secs=0.27 at=2026-09-08T17:50:26Z"
+  },
+  {
+    "log": "28-reset-purge.log",
+    "rc_line": "rc=0 secs=1.84 at=2026-09-08T18:00:47Z"
+  },
+  {
+    "log": "29-ledger-da-inactive.log",
+    "rc_line": "rc=0 secs=0.15 at=2026-09-08T17:50:26Z"
+  },
+  {
+    "log": "29-reset-purge.log",
+    "rc_line": "rc=0 secs=2.64 at=2026-09-08T18:00:49Z"
+  },
+  {
+    "log": "30-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.22 at=2026-09-08T17:50:26Z"
+  },
+  {
+    "log": "30-reset-purge.log",
+    "rc_line": "rc=0 secs=1.65 at=2026-09-08T18:00:51Z"
+  },
+  {
+    "log": "31-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.22 at=2026-09-08T17:50:27Z"
+  },
+  {
+    "log": "31-reset-purge.log",
+    "rc_line": "rc=0 secs=1.27 at=2026-09-08T18:00:52Z"
+  },
+  {
+    "log": "32-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.22 at=2026-09-08T17:50:27Z"
+  },
+  {
+    "log": "32-reset-purge.log",
+    "rc_line": "rc=0 secs=2.69 at=2026-09-08T18:00:55Z"
+  },
+  {
+    "log": "33-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.24 at=2026-09-08T17:50:27Z"
+  },
+  {
+    "log": "33-reset-purge.log",
+    "rc_line": "rc=0 secs=3.19 at=2026-09-08T18:00:58Z"
+  },
+  {
+    "log": "34-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.28 at=2026-09-08T17:50:27Z"
+  },
+  {
+    "log": "34-reset-purge.log",
+    "rc_line": "rc=0 secs=2.64 at=2026-09-08T18:01:01Z"
+  },
+  {
+    "log": "35-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.23 at=2026-09-08T17:50:28Z"
+  },
+  {
+    "log": "35-reset-purge.log",
+    "rc_line": "rc=0 secs=1.3 at=2026-09-08T18:01:02Z"
+  },
+  {
+    "log": "36-ledger-da-activate.log",
+    "rc_line": "rc=0 secs=0.21 at=2026-09-08T17:50:28Z"
+  },
+  {
+    "log": "36-reset-purge.log",
+    "rc_line": "rc=0 secs=1.95 at=2026-09-08T18:01:04Z"
+  },
+  {
+    "log": "37-ledger-da-count.log",
+    "rc_line": "rc=0 secs=0.13 at=2026-09-08T17:50:28Z"
+  },
+  {
+    "log": "37-reset-purge.log",
+    "rc_line": "rc=0 secs=2.16 at=2026-09-08T18:01:06Z"
+  },
+  {
+    "log": "38-reservation-reconcile.log",
+    "rc_line": "rc=0 secs=0.4 at=2026-09-08T17:50:28Z"
+  },
+  {
+    "log": "38-reset-purge.log",
+    "rc_line": "rc=0 secs=0.91 at=2026-09-08T18:01:07Z"
+  },
+  {
+    "log": "39-reservation-readiness.log",
+    "rc_line": "rc=0 secs=0.37 at=2026-09-08T17:50:29Z"
+  },
+  {
+    "log": "39-seed-mysql-payouts.log",
+    "rc_line": "rc=0 secs=0.44 at=2026-09-08T18:01:07Z"
+  },
+  {
+    "log": "40-host-bridge-start.log",
+    "rc_line": "rc=0 secs=0.25 at=2026-09-08T17:50:29Z"
+  },
+  {
+    "log": "40-seed-mysql-fts.log",
+    "rc_line": "rc=0 secs=1.28 at=2026-09-08T18:01:09Z"
+  },
+  {
+    "log": "41-fingerprint.log",
+    "rc_line": "rc=0 secs=1.52 at=2026-09-08T17:50:31Z"
+  },
+  {
+    "log": "41-seed-mysql-xbalances.log",
+    "rc_line": "rc=0 secs=0.38 at=2026-09-08T18:01:09Z"
+  },
+  {
+    "log": "42-seed-mysql-apidb-stub.log",
+    "rc_line": "rc=0 secs=0.25 at=2026-09-08T18:01:09Z"
+  },
+  {
+    "log": "43-seed-postgres-ledger.log",
+    "rc_line": "rc=0 secs=0.23 at=2026-09-08T18:01:10Z"
+  },
+  {
+    "log": "44-seed-mongo-cfa.log",
+    "rc_line": "rc=0 secs=6.55 at=2026-09-08T18:01:16Z"
+  },
+  {
+    "log": "45-provision-monolith-db.log",
+    "rc_line": "rc=0 secs=1.14 at=2026-09-08T18:01:17Z"
+  },
+  {
+    "log": "46-reset-ingress.log",
+    "rc_line": "rc=0 secs=1.24 at=2026-09-08T18:01:19Z"
+  },
+  {
+    "log": "47-reset-reservation-reconcile.log",
+    "rc_line": "rc=0 secs=0.75 at=2026-09-08T18:01:19Z"
+  }
+]

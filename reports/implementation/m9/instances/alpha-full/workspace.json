@@ -1,0 +1,28 @@
+{
+  "compose_subnet_defaults_rewritten": true,
+  "env2_root": "/Users/rana.singh/.twin-factory/instances/alpha-full/ENV2_COMPOSE",
+  "exec_dir": "/Users/rana.singh/.twin-factory/instances/alpha-full",
+  "fts_config": {
+    "source": "/Users/rana.singh/rzp-payouts-architecture/.local/twin-repos/accepted/fts/config",
+    "source_kind": "local-accepted-copies",
+    "status": "COPIED",
+    "tree_digest": "99e263315e87d038aaa3cdffa8d6d7dd9a58ea1cf3a8e104c713ab4e4b247264"
+  },
+  "inputs_file_count": 579,
+  "inputs_hash": "86423bfb9fe8fdc0deb1c633beb371cd6745190fa863c5c3cbb7da2ec7c1a6f3",
+  "migrations": {
+    "manifest_sha256": "337615ea5320c793c6dcf371010b6e632707d53e9c339eb42b0d3a9cec14698f",
+    "source": "/Users/rana.singh/rzp-payouts-architecture/.local/twin-runtime-migrations/accepted",
+    "source_kind": "local-accepted-copies",
+    "status": "COPIED",
+    "tree_digest": "81ae74eebaf5b88677ef1dbfb5362df56c80a9bdc9e5c0b83f6968ece52f99a7"
+  },
+  "s2p_inputs": {
+    "init_sql_sha256": "b832d2b507613f3918f85919e5078c822b33959316d1ccd83e6213f08b8f2e9b"
+  },
+  "source_checkout": "/Users/rana.singh/rzp-payouts-architecture",
+  "source_definition_hashes": {
+    "docker-compose.s2p.yml": "b68b23c17ddb7c76da644d7f6f11b4595a86323bd95294d605967373310173df",
+    "docker-compose.yml": "55b5026f0a5a851decdd3f0f849442b1a62c42d1ec1e885b98b9869c24c0bc01"
+  }
+}

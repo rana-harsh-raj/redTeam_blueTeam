@@ -1,0 +1,386 @@
+{
+  "finished_at": "2026-09-08T18:01:19Z",
+  "ingress_reset": true,
+  "instance_id": "beta-focused",
+  "queues_purged": 36,
+  "secs": 63.9,
+  "started_at": "2026-09-08T18:00:15Z",
+  "steps": [
+    {
+      "at": "2026-09-08T18:00:16Z",
+      "log": "01-reset-redis-flush.log",
+      "n": 1,
+      "rc": 0,
+      "secs": 0.42,
+      "step": "reset-redis-flush"
+    },
+    {
+      "at": "2026-09-08T18:00:17Z",
+      "log": "02-reset-localstack-list.log",
+      "n": 2,
+      "rc": 0,
+      "secs": 0.99,
+      "step": "reset-localstack-list"
+    },
+    {
+      "at": "2026-09-08T18:00:18Z",
+      "log": "03-reset-purge.log",
+      "n": 3,
+      "rc": 0,
+      "secs": 1.7,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:20Z",
+      "log": "04-reset-purge.log",
+      "n": 4,
+      "rc": 0,
+      "secs": 1.19,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:21Z",
+      "log": "05-reset-purge.log",
+      "n": 5,
+      "rc": 0,
+      "secs": 0.86,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:22Z",
+      "log": "06-reset-purge.log",
+      "n": 6,
+      "rc": 0,
+      "secs": 1.59,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:25Z",
+      "log": "07-reset-purge.log",
+      "n": 7,
+      "rc": 0,
+      "secs": 2.83,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:26Z",
+      "log": "08-reset-purge.log",
+      "n": 8,
+      "rc": 0,
+      "secs": 0.88,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:27Z",
+      "log": "09-reset-purge.log",
+      "n": 9,
+      "rc": 0,
+      "secs": 0.87,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:27Z",
+      "log": "10-reset-purge.log",
+      "n": 10,
+      "rc": 0,
+      "secs": 0.58,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:28Z",
+      "log": "11-reset-purge.log",
+      "n": 11,
+      "rc": 0,
+      "secs": 0.76,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:29Z",
+      "log": "12-reset-purge.log",
+      "n": 12,
+      "rc": 0,
+      "secs": 0.61,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:30Z",
+      "log": "13-reset-purge.log",
+      "n": 13,
+      "rc": 0,
+      "secs": 1.12,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:30Z",
+      "log": "14-reset-purge.log",
+      "n": 14,
+      "rc": 0,
+      "secs": 0.64,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:31Z",
+      "log": "15-reset-purge.log",
+      "n": 15,
+      "rc": 0,
+      "secs": 0.57,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:32Z",
+      "log": "16-reset-purge.log",
+      "n": 16,
+      "rc": 0,
+      "secs": 0.82,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:32Z",
+      "log": "17-reset-purge.log",
+      "n": 17,
+      "rc": 0,
+      "secs": 0.59,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:33Z",
+      "log": "18-reset-purge.log",
+      "n": 18,
+      "rc": 0,
+      "secs": 1.03,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:34Z",
+      "log": "19-reset-purge.log",
+      "n": 19,
+      "rc": 0,
+      "secs": 0.87,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:36Z",
+      "log": "20-reset-purge.log",
+      "n": 20,
+      "rc": 0,
+      "secs": 1.31,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:38Z",
+      "log": "21-reset-purge.log",
+      "n": 21,
+      "rc": 0,
+      "secs": 1.93,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:39Z",
+      "log": "22-reset-purge.log",
+      "n": 22,
+      "rc": 0,
+      "secs": 1.46,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:41Z",
+      "log": "23-reset-purge.log",
+      "n": 23,
+      "rc": 0,
+      "secs": 1.51,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:42Z",
+      "log": "24-reset-purge.log",
+      "n": 24,
+      "rc": 0,
+      "secs": 1.51,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:43Z",
+      "log": "25-reset-purge.log",
+      "n": 25,
+      "rc": 0,
+      "secs": 1.09,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:44Z",
+      "log": "26-reset-purge.log",
+      "n": 26,
+      "rc": 0,
+      "secs": 0.54,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:45Z",
+      "log": "27-reset-purge.log",
+      "n": 27,
+      "rc": 0,
+      "secs": 0.98,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:47Z",
+      "log": "28-reset-purge.log",
+      "n": 28,
+      "rc": 0,
+      "secs": 1.84,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:49Z",
+      "log": "29-reset-purge.log",
+      "n": 29,
+      "rc": 0,
+      "secs": 2.64,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:51Z",
+      "log": "30-reset-purge.log",
+      "n": 30,
+      "rc": 0,
+      "secs": 1.65,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:52Z",
+      "log": "31-reset-purge.log",
+      "n": 31,
+      "rc": 0,
+      "secs": 1.27,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:55Z",
+      "log": "32-reset-purge.log",
+      "n": 32,
+      "rc": 0,
+      "secs": 2.69,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:00:58Z",
+      "log": "33-reset-purge.log",
+      "n": 33,
+      "rc": 0,
+      "secs": 3.19,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:01:01Z",
+      "log": "34-reset-purge.log",
+      "n": 34,
+      "rc": 0,
+      "secs": 2.64,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:01:02Z",
+      "log": "35-reset-purge.log",
+      "n": 35,
+      "rc": 0,
+      "secs": 1.3,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:01:04Z",
+      "log": "36-reset-purge.log",
+      "n": 36,
+      "rc": 0,
+      "secs": 1.95,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:01:06Z",
+      "log": "37-reset-purge.log",
+      "n": 37,
+      "rc": 0,
+      "secs": 2.16,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:01:07Z",
+      "log": "38-reset-purge.log",
+      "n": 38,
+      "rc": 0,
+      "secs": 0.91,
+      "step": "reset-purge"
+    },
+    {
+      "at": "2026-09-08T18:01:07Z",
+      "log": "39-seed-mysql-payouts.log",
+      "n": 39,
+      "rc": 0,
+      "secs": 0.44,
+      "step": "seed-mysql-payouts"
+    },
+    {
+      "at": "2026-09-08T18:01:09Z",
+      "log": "40-seed-mysql-fts.log",
+      "n": 40,
+      "rc": 0,
+      "secs": 1.28,
+      "step": "seed-mysql-fts"
+    },
+    {
+      "at": "2026-09-08T18:01:09Z",
+      "log": "41-seed-mysql-xbalances.log",
+      "n": 41,
+      "rc": 0,
+      "secs": 0.38,
+      "step": "seed-mysql-xbalances"
+    },
+    {
+      "at": "2026-09-08T18:01:09Z",
+      "log": "42-seed-mysql-apidb-stub.log",
+      "n": 42,
+      "rc": 0,
+      "secs": 0.25,
+      "step": "seed-mysql-apidb-stub"
+    },
+    {
+      "at": "2026-09-08T18:01:10Z",
+      "log": "43-seed-postgres-ledger.log",
+      "n": 43,
+      "rc": 0,
+      "secs": 0.23,
+      "step": "seed-postgres-ledger"
+    },
+    {
+      "at": "2026-09-08T18:01:16Z",
+      "log": "44-seed-mongo-cfa.log",
+      "n": 44,
+      "rc": 0,
+      "secs": 6.55,
+      "step": "seed-mongo-cfa"
+    },
+    {
+      "at": "2026-09-08T18:01:17Z",
+      "log": "45-provision-monolith-db.log",
+      "n": 45,
+      "rc": 0,
+      "secs": 1.14,
+      "step": "provision-monolith-db"
+    },
+    {
+      "at": "2026-09-08T18:01:19Z",
+      "log": "46-reset-ingress.log",
+      "n": 46,
+      "rc": 0,
+      "secs": 1.24,
+      "step": "reset-ingress"
+    },
+    {
+      "at": "2026-09-08T18:01:19Z",
+      "log": "47-reset-reservation-reconcile.log",
+      "n": 47,
+      "rc": 0,
+      "secs": 0.75,
+      "step": "reset-reservation-reconcile"
+    }
+  ]
+}

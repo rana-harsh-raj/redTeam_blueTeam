@@ -10,12 +10,15 @@ import os
 from pathlib import Path
 
 # --- repo layout -----------------------------------------------------------
+# A disposable twin instance renders its OWN ENV2_COMPOSE workspace outside this
+# checkout and writes its runs there too, so several instances can be driven
+# concurrently from one clone. Unset => today's single-arena layout, exactly.
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RED_LOOP_DIR = REPO_ROOT / "RED_LOOP"
-RUNS_DIR = RED_LOOP_DIR / "runs"
+RUNS_DIR = Path(os.environ.get("TWIN_RUNS_DIR") or (RED_LOOP_DIR / "runs"))
 REGISTRY_DIR = RED_LOOP_DIR / "registry"
 PROMPTS_DIR = RED_LOOP_DIR / "prompts"
-ENV2 = REPO_ROOT / "ENV2_COMPOSE"
+ENV2 = Path(os.environ.get("ARENA_ENV2_ROOT") or (REPO_ROOT / "ENV2_COMPOSE")).resolve()
 
 # Admitted source snapshots the red agent is ALLOWED to read (white/gray box).
 ACCEPTED_SRC = REPO_ROOT / ".local" / "twin-repos" / "accepted"
@@ -75,3 +78,22 @@ ATTACKER_DENIED_FRAGMENTS = (
 # Merchant secret locations on host (control plane only; NEVER exposed to red).
 MERCHANT_KEYS_DIR = ENV2 / "secrets" / "merchant-keys"
 GENERATED_MERCHANTS = ENV2 / "seeds" / "generated" / "merchants.json"
+
+
+# --- twin instance identity ------------------------------------------------
+def instance_context():
+    """Which twin instance this process is driving, for the record.
+
+    The compose project and arena network are computed the same way
+    provisioner.compose_project() / provisioner.arena_network() compute them,
+    inline here so config stays import-cycle free. Every value is None/default
+    on the single-arena layout, so an unset environment reads exactly as before.
+    """
+    return {"instance_id": os.environ.get("TWIN_INSTANCE_ID"),
+            "runtime_instance_id": os.environ.get("TWIN_RUNTIME_INSTANCE_ID"),
+            "compose_project": os.environ.get("ARENA_COMPOSE_PROJECT",
+                                              os.environ.get("COMPOSE_PROJECT_NAME", "env2_compose")),
+            "arena_network": os.environ.get("ARENA_NETWORK",
+                                            "rzp-arena" + os.environ.get("ARENA_SUFFIX", "")),
+            "docker_host": os.environ.get("DOCKER_HOST"),
+            "env2_root": str(ENV2)}

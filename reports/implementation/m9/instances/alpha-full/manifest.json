@@ -1,0 +1,1866 @@
+{
+  "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+  "arena_network": "rzp-arena-alpha-full",
+  "arena_subnet": "172.28.92.0/24",
+  "arena_suffix": "-alpha-full",
+  "arena_tag": "v1-candidate",
+  "backend": {
+    "identity": {
+      "daemon_id": "a26c5852-a7ba-4731-975d-ca69a86d91dc",
+      "docker_host": "unix:///Users/rana.singh/.colima/twin-alpha-full/docker.sock",
+      "docker_root": "/var/lib/docker",
+      "kernel": "6.8.0-117-generic",
+      "mem_total": 10404249600,
+      "name": "colima-twin-alpha-full",
+      "ncpu": 4,
+      "os": "Ubuntu 24.04.4 LTS",
+      "provision_secs": 23.3,
+      "reachable": true,
+      "server_version": "29.5.2"
+    },
+    "isolation_boundary": true,
+    "kind": "colima",
+    "options": {},
+    "profile": "twin-alpha-full"
+  },
+  "backend_profile": "twin-alpha-full",
+  "boot": {
+    "boot_id": "520e96ad-fbe6-4438-83a5-c64005412c14",
+    "config_digest": "fa6b7ed2420da1ba0649d0f841e880930ab62ad1b652ceea44cd50d594e445c4",
+    "crash_restarts": [],
+    "finished_at": "2026-09-08T18:31:41Z",
+    "secs": 122.3,
+    "started_at": "2026-09-08T18:31:41Z",
+    "steps": [
+      {
+        "at": "2026-09-08T18:29:45Z",
+        "log": "01-materialize.log",
+        "n": 1,
+        "rc": 0,
+        "secs": 6.49,
+        "step": "materialize"
+      },
+      {
+        "at": "2026-09-08T18:29:47Z",
+        "log": "02-datastores-up.log",
+        "n": 2,
+        "rc": 0,
+        "secs": 2.15,
+        "step": "datastores-up"
+      },
+      {
+        "crash_restarts": {},
+        "healthy": [
+          "kafka",
+          "localstack",
+          "mongo-cfa",
+          "mysql-apidb-stub",
+          "mysql-fts",
+          "mysql-payouts",
+          "mysql-xbalances",
+          "postgres-ledger",
+          "redis"
+        ],
+        "n": 3,
+        "rc": 0,
+        "secs": 21.3,
+        "step": "datastores-health",
+        "unhealthy": []
+      },
+      {
+        "at": "2026-09-08T18:30:11Z",
+        "log": "04-migrate-payouts-migrate.log",
+        "n": 4,
+        "rc": 0,
+        "secs": 2.75,
+        "step": "migrate-payouts-migrate"
+      },
+      {
+        "at": "2026-09-08T18:30:13Z",
+        "log": "05-migrate-ledger-migrate.log",
+        "n": 5,
+        "rc": 0,
+        "secs": 1.12,
+        "step": "migrate-ledger-migrate"
+      },
+      {
+        "at": "2026-09-08T18:30:16Z",
+        "log": "06-migrate-fts-migrate.log",
+        "n": 6,
+        "rc": 0,
+        "secs": 3.66,
+        "step": "migrate-fts-migrate"
+      },
+      {
+        "at": "2026-09-08T18:30:17Z",
+        "log": "07-migrate-cfa-migrate.log",
+        "n": 7,
+        "rc": 0,
+        "secs": 0.87,
+        "step": "migrate-cfa-migrate"
+      },
+      {
+        "at": "2026-09-08T18:30:18Z",
+        "log": "08-migrate-xbalances-migrate.log",
+        "n": 8,
+        "rc": 0,
+        "secs": 0.67,
+        "step": "migrate-xbalances-migrate"
+      },
+      {
+        "at": "2026-09-08T18:30:18Z",
+        "log": "09-schema-patch-mysql-payouts.log",
+        "n": 9,
+        "rc": 0,
+        "secs": 0.14,
+        "step": "schema-patch-mysql-payouts"
+      },
+      {
+        "at": "2026-09-08T18:30:18Z",
+        "log": "10-schema-patch-mysql-apidb-stub.log",
+        "n": 10,
+        "rc": 0,
+        "secs": 0.15,
+        "step": "schema-patch-mysql-apidb-stub"
+      },
+      {
+        "at": "2026-09-08T18:30:19Z",
+        "log": "11-seed-mysql-payouts.log",
+        "n": 11,
+        "rc": 0,
+        "secs": 1.22,
+        "step": "seed-mysql-payouts"
+      },
+      {
+        "at": "2026-09-08T18:30:20Z",
+        "log": "12-seed-mysql-fts.log",
+        "n": 12,
+        "rc": 0,
+        "secs": 0.87,
+        "step": "seed-mysql-fts"
+      },
+      {
+        "at": "2026-09-08T18:30:20Z",
+        "log": "13-seed-mysql-xbalances.log",
+        "n": 13,
+        "rc": 0,
+        "secs": 0.26,
+        "step": "seed-mysql-xbalances"
+      },
+      {
+        "at": "2026-09-08T18:30:21Z",
+        "log": "14-seed-mysql-apidb-stub.log",
+        "n": 14,
+        "rc": 0,
+        "secs": 0.6,
+        "step": "seed-mysql-apidb-stub"
+      },
+      {
+        "at": "2026-09-08T18:30:21Z",
+        "log": "15-seed-postgres-ledger.log",
+        "n": 15,
+        "rc": 0,
+        "secs": 0.2,
+        "step": "seed-postgres-ledger"
+      },
+      {
+        "at": "2026-09-08T18:30:23Z",
+        "log": "16-seed-mongo-cfa.log",
+        "n": 16,
+        "rc": 0,
+        "secs": 1.46,
+        "step": "seed-mongo-cfa"
+      },
+      {
+        "at": "2026-09-08T18:30:23Z",
+        "log": "17-provision-monolith-db.log",
+        "n": 17,
+        "rc": 0,
+        "secs": 0.37,
+        "step": "provision-monolith-db"
+      },
+      {
+        "at": "2026-09-08T18:30:26Z",
+        "log": "18-substitutes-up.log",
+        "n": 18,
+        "rc": 0,
+        "secs": 2.91,
+        "step": "substitutes-up"
+      },
+      {
+        "crash_restarts": {},
+        "healthy": [
+          "api-ingress",
+          "asv-stub",
+          "bankingaccounts-stub",
+          "batch-sim",
+          "dcs-stub",
+          "kong-lite",
+          "ledger-gate",
+          "merchant-webhook-sink",
+          "monolith-stub",
+          "pricing-stub",
+          "shield-stub",
+          "splitz-stub",
+          "stork-capture",
+          "workflow-engine",
+          "workflow-sim",
+          "xas-sim"
+        ],
+        "n": 19,
+        "rc": 0,
+        "secs": 6.0,
+        "step": "substitutes-health",
+        "unhealthy": []
+      },
+      {
+        "at": "2026-09-08T18:30:32Z",
+        "log": "20-mozart-sim-up.log",
+        "n": 20,
+        "rc": 0,
+        "secs": 0.37,
+        "step": "mozart-sim-up"
+      },
+      {
+        "crash_restarts": {},
+        "healthy": [
+          "mozart-sim"
+        ],
+        "n": 21,
+        "rc": 0,
+        "secs": 6.4,
+        "step": "mozart-health",
+        "unhealthy": []
+      },
+      {
+        "at": "2026-09-08T18:30:39Z",
+        "log": "22-cron-driver-up.log",
+        "n": 22,
+        "rc": 0,
+        "secs": 0.56,
+        "step": "cron-driver-up"
+      },
+      {
+        "at": "2026-09-08T18:30:39Z",
+        "log": "23-stork-subscriptions.log",
+        "n": 23,
+        "rc": 0,
+        "secs": 0.17,
+        "step": "stork-subscriptions",
+        "stork_loaded": true
+      },
+      {
+        "at": "2026-09-08T18:30:53Z",
+        "log": "24-core-up.log",
+        "n": 24,
+        "rc": 1,
+        "secs": 13.6,
+        "step": "core-up"
+      },
+      {
+        "at": "2026-09-08T18:31:02Z",
+        "log": "25-core-up-retry1.log",
+        "n": 25,
+        "rc": 0,
+        "secs": 3.94,
+        "step": "core-up-retry1"
+      },
+      {
+        "crash_restarts": {},
+        "healthy": [
+          "cfa-server",
+          "cfa-worker-contact",
+          "cfa-worker-fa",
+          "fts-web",
+          "fts-worker-check-transfer-status",
+          "fts-worker-default",
+          "fts-worker-fire-transfer-status-webhook",
+          "fts-worker-hv-fire-transfer-status-webhook",
+          "fts-worker-hv-initiate-transfer",
+          "fts-worker-initiate-transfer",
+          "fts-worker-rbl-check-transfer-status",
+          "fts-worker-rbl-direct-check-transfer-status",
+          "fts-worker-rbl-direct-imps-check-transfer-status",
+          "fts-worker-rbl-direct-imps-hv-initiate-transfer",
+          "fts-worker-rbl-direct-imps-initiate-transfer",
+          "fts-worker-rbl-direct-initiate-transfer",
+          "fts-worker-rbl-direct-slow-lane-initiate-transfer",
+          "fts-worker-rbl-direct-upi-check-transfer-status",
+          "fts-worker-rbl-direct-upi-initiate-transfer",
+          "fts-worker-rbl-imps-check-transfer-status",
+          "fts-worker-rbl-imps-initiate-transfer",
+          "fts-worker-rbl-initiate-transfer",
+          "fts-worker-rbl-upi-check-transfer-status",
+          "fts-worker-rbl-upi-hv-check-transfer-status",
+          "fts-worker-rbl-upi-hv-initiate-transfer",
+          "fts-worker-rbl-upi-initiate-transfer",
+          "fts-worker-retry-transfer",
+          "fts-worker-retry-transfer-preprocessor",
+          "fts-worker-retry-transfer-source-update",
+          "fts-worker-slow-lane-initiate-transfer",
+          "ledger-api",
+          "ledger-worker",
+          "ledger-worker-balance-update",
+          "ledger-worker-entry-details-create",
+          "ledger-worker-entry-details-create-pg",
+          "ledger-worker-journal-create",
+          "payouts-api",
+          "payouts-kafka-fts-status-updates-consumer",
+          "payouts-kafka-fts-status-updates-retry-consumer",
+          "payouts-worker-api-queue-for-async-dual-write-direct-push",
+          "payouts-worker-async-dual-write",
+          "payouts-worker-batch-submitted-merchants",
+          "payouts-worker-bulk-payouts",
+          "payouts-worker-data-consistency-checker",
+          "payouts-worker-data-consistency-event",
+          "payouts-worker-fts-async-hv-processing",
+          "payouts-worker-fts-async-processing",
+          "payouts-worker-fund-management-payout-check",
+          "payouts-worker-fund-management-payout-initiate",
+          "payouts-worker-generic-processing",
+          "payouts-worker-on-hold-payout",
+          "payouts-worker-partner-bank-hold-payouts",
+          "payouts-worker-payout-create-failure-handling",
+          "payouts-worker-payout-source-updater",
+          "payouts-worker-payout-update-failure-handling",
+          "payouts-worker-payout-usage-event-processing",
+          "payouts-worker-queued-payout",
+          "payouts-worker-rbl-banking-account-statement",
+          "payouts-worker-schedule-payout",
+          "payouts-worker-transaction-create",
+          "payouts-worker-webhook-event",
+          "payouts-worker-x-account-statement-source-event",
+          "payouts-worker-x-balance-payouts-event",
+          "payouts-worker-x-balances-balance-refresh",
+          "xbalances-server",
+          "xbalances-worker"
+        ],
+        "n": 26,
+        "rc": 0,
+        "secs": 6.1,
+        "step": "core-health",
+        "unhealthy": []
+      },
+      {
+        "at": "2026-09-08T18:31:09Z",
+        "log": "27-ledger-config-shared-account-x.log",
+        "n": 27,
+        "rc": 0,
+        "secs": 0.34,
+        "step": "ledger-config-shared_account_x"
+      },
+      {
+        "at": "2026-09-08T18:31:09Z",
+        "log": "28-ledger-config-direct-account-x.log",
+        "n": 28,
+        "rc": 0,
+        "secs": 0.3,
+        "step": "ledger-config-direct_account_x"
+      },
+      {
+        "at": "2026-09-08T18:31:09Z",
+        "log": "29-ledger-da-parents.log",
+        "n": 29,
+        "rc": 0,
+        "secs": 0.26,
+        "step": "ledger-da-parents"
+      },
+      {
+        "at": "2026-09-08T18:31:09Z",
+        "log": "30-ledger-da-inactive.log",
+        "n": 30,
+        "rc": 0,
+        "secs": 0.14,
+        "step": "ledger-da-inactive"
+      },
+      {
+        "at": "2026-09-08T18:31:10Z",
+        "log": "31-ledger-da-activate.log",
+        "n": 31,
+        "rc": 0,
+        "secs": 0.24,
+        "step": "ledger-da-activate"
+      },
+      {
+        "at": "2026-09-08T18:31:10Z",
+        "log": "32-ledger-da-activate.log",
+        "n": 32,
+        "rc": 0,
+        "secs": 0.26,
+        "step": "ledger-da-activate"
+      },
+      {
+        "at": "2026-09-08T18:31:10Z",
+        "log": "33-ledger-da-activate.log",
+        "n": 33,
+        "rc": 0,
+        "secs": 0.25,
+        "step": "ledger-da-activate"
+      },
+      {
+        "at": "2026-09-08T18:31:10Z",
+        "log": "34-ledger-da-activate.log",
+        "n": 34,
+        "rc": 0,
+        "secs": 0.26,
+        "step": "ledger-da-activate"
+      },
+      {
+        "at": "2026-09-08T18:31:11Z",
+        "log": "35-ledger-da-activate.log",
+        "n": 35,
+        "rc": 0,
+        "secs": 0.21,
+        "step": "ledger-da-activate"
+      },
+      {
+        "at": "2026-09-08T18:31:11Z",
+        "log": "36-ledger-da-activate.log",
+        "n": 36,
+        "rc": 0,
+        "secs": 0.24,
+        "step": "ledger-da-activate"
+      },
+      {
+        "at": "2026-09-08T18:31:11Z",
+        "log": "37-ledger-da-activate.log",
+        "n": 37,
+        "rc": 0,
+        "secs": 0.22,
+        "step": "ledger-da-activate"
+      },
+      {
+        "at": "2026-09-08T18:31:11Z",
+        "da_parents_activated": "7",
+        "log": "38-ledger-da-count.log",
+        "n": 38,
+        "rc": 0,
+        "secs": 0.15,
+        "step": "ledger-da-count"
+      },
+      {
+        "at": "2026-09-08T18:31:12Z",
+        "log": "39-reservation-reconcile.log",
+        "n": 39,
+        "rc": 0,
+        "secs": 0.38,
+        "step": "reservation-reconcile"
+      },
+      {
+        "at": "2026-09-08T18:31:12Z",
+        "log": "40-reservation-readiness.log",
+        "n": 40,
+        "rc": 0,
+        "secs": 0.25,
+        "step": "reservation-readiness"
+      },
+      {
+        "at": "2026-09-08T18:31:12Z",
+        "log": "41-host-bridge-start.log",
+        "n": 41,
+        "rc": 0,
+        "secs": 0.22,
+        "step": "host-bridge-start"
+      },
+      {
+        "at": "2026-09-08T18:31:13Z",
+        "log": "42-fingerprint.log",
+        "n": 42,
+        "rc": 0,
+        "secs": 1.15,
+        "step": "fingerprint"
+      },
+      {
+        "at": "2026-09-08T18:31:24Z",
+        "log": "43-s2p-ingress-attach.log",
+        "n": 43,
+        "rc": 0,
+        "secs": 11.16,
+        "step": "s2p-ingress-attach"
+      },
+      {
+        "at": "2026-09-08T18:31:35Z",
+        "log": "44-s2p-datastores-up.log",
+        "n": 44,
+        "rc": 0,
+        "secs": 10.39,
+        "step": "s2p-datastores-up"
+      },
+      {
+        "at": "2026-09-08T18:31:35Z",
+        "log": "45-s2p-topic-add-tds-entry.log",
+        "n": 45,
+        "rc": 1,
+        "secs": 0.11,
+        "step": "s2p-topic-add-tds-entry"
+      },
+      {
+        "at": "2026-09-08T18:31:35Z",
+        "log": "46-s2p-topic-create-add-tds-entry.log",
+        "n": 46,
+        "rc": 0,
+        "secs": 0.31,
+        "step": "s2p-topic-create-add-tds-entry"
+      },
+      {
+        "at": "2026-09-08T18:31:35Z",
+        "log": "47-s2p-topic-prod-x-vendor-paymen.log",
+        "n": 47,
+        "rc": 1,
+        "secs": 0.12,
+        "step": "s2p-topic-prod.x.vendor-paymen"
+      },
+      {
+        "at": "2026-09-08T18:31:36Z",
+        "log": "48-s2p-topic-create-prod-x-vendor-paymen.log",
+        "n": 48,
+        "rc": 0,
+        "secs": 0.3,
+        "step": "s2p-topic-create-prod.x.vendor-paymen"
+      },
+      {
+        "at": "2026-09-08T18:31:41Z",
+        "log": "49-s2p-source-up.log",
+        "n": 49,
+        "rc": 0,
+        "secs": 5.22,
+        "step": "s2p-source-up"
+      },
+      {
+        "at": "2026-09-08T18:31:41Z",
+        "log": "50-s2p-health.log",
+        "n": 50,
+        "rc": 0,
+        "secs": 0.09,
+        "step": "s2p-health",
+        "vp_source_health_rc": 0
+      }
+    ]
+  },
+  "compose_profiles": [
+    "core",
+    "datastores",
+    "migrations",
+    "s2p",
+    "substitutes"
+  ],
+  "compose_project": "twin_alpha_full",
+  "created_at": "2026-09-08T18:27:31Z",
+  "destroyed_at": "2026-09-08T18:33:51Z",
+  "env2_root": "/Users/rana.singh/.twin-factory/instances/alpha-full/ENV2_COMPOSE",
+  "exec_dir": "/Users/rana.singh/.twin-factory/instances/alpha-full",
+  "generate_steps": [
+    {
+      "at": "2026-09-08T18:27:56Z",
+      "log": "01-seeds-generate.log",
+      "n": 1,
+      "rc": 0,
+      "secs": 0.45,
+      "step": "seeds-generate"
+    },
+    {
+      "at": "2026-09-08T18:27:57Z",
+      "log": "02-gen-secrets.log",
+      "n": 2,
+      "rc": 0,
+      "secs": 1.39,
+      "step": "gen-secrets"
+    },
+    {
+      "at": "2026-09-08T18:27:57Z",
+      "log": "03-config-generate.log",
+      "n": 3,
+      "rc": 0,
+      "secs": 0.08,
+      "step": "config-generate"
+    },
+    {
+      "at": "2026-09-08T18:27:57Z",
+      "log": "04-preflight.log",
+      "n": 4,
+      "rc": 0,
+      "secs": 0.07,
+      "step": "preflight"
+    }
+  ],
+  "image_digests": {
+    "apache/kafka:3.8.0": {
+      "image_id": "sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069",
+      "repo_digests": [
+        "apache/kafka@sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069"
+      ],
+      "services": [
+        "kafka"
+      ]
+    },
+    "curlimages/curl:latest": {
+      "image_id": "sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777",
+      "repo_digests": [
+        "curlimages/curl@sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777"
+      ],
+      "services": [
+        "_curlimages-curl"
+      ]
+    },
+    "localstack/localstack:3.8": {
+      "image_id": "sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7",
+      "repo_digests": [
+        "localstack/localstack@sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7"
+      ],
+      "services": [
+        "localstack"
+      ]
+    },
+    "mongo:6.0": {
+      "image_id": "sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac",
+      "repo_digests": [
+        "mongo@sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac"
+      ],
+      "services": [
+        "mongo-cfa"
+      ]
+    },
+    "mysql:8.0": {
+      "image_id": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+      "repo_digests": [
+        "mysql@sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b"
+      ],
+      "services": [
+        "mysql-apidb-stub",
+        "mysql-fts",
+        "mysql-payouts",
+        "mysql-xbalances"
+      ]
+    },
+    "mysql:8.4@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb": {
+      "image_id": "sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+      "repo_digests": [
+        "mysql@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb"
+      ],
+      "services": [
+        "s2p-mysql"
+      ]
+    },
+    "postgres:15-alpine": {
+      "image_id": "sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b",
+      "repo_digests": [
+        "postgres@sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b"
+      ],
+      "services": [
+        "postgres-ledger"
+      ]
+    },
+    "python:3.12-alpine": {
+      "image_id": "sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a",
+      "repo_digests": [
+        "python@sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a"
+      ],
+      "services": [
+        "_python",
+        "cron-driver"
+      ]
+    },
+    "redis:7-alpine": {
+      "image_id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+      "repo_digests": [
+        "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+      ],
+      "services": [
+        "redis"
+      ]
+    },
+    "redis:7-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf": {
+      "image_id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+      "repo_digests": [
+        "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+      ],
+      "services": [
+        "s2p-redis"
+      ]
+    },
+    "redpandadata/redpanda:v24.2.18@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8": {
+      "image_id": "sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+      "repo_digests": [
+        "redpandadata/redpanda@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8"
+      ],
+      "services": [
+        "s2p-kafka"
+      ]
+    },
+    "rzp-arena/api-ingress:v1-candidate": {
+      "image_id": "sha256:8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb",
+      "repo_digests": [
+        "rzp-arena/api-ingress@sha256:8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb"
+      ],
+      "services": [
+        "api-ingress"
+      ]
+    },
+    "rzp-arena/asv-stub:v1-candidate": {
+      "image_id": "sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f",
+      "repo_digests": [
+        "rzp-arena/asv-stub@sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f"
+      ],
+      "services": [
+        "asv-stub"
+      ]
+    },
+    "rzp-arena/bankingaccounts-stub:v1-candidate": {
+      "image_id": "sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d",
+      "repo_digests": [
+        "rzp-arena/bankingaccounts-stub@sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d"
+      ],
+      "services": [
+        "bankingaccounts-stub"
+      ]
+    },
+    "rzp-arena/batch-sim:v1-candidate": {
+      "image_id": "sha256:bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696",
+      "repo_digests": [
+        "rzp-arena/batch-sim@sha256:bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696"
+      ],
+      "services": [
+        "batch-sim"
+      ]
+    },
+    "rzp-arena/cfa:v1-candidate": {
+      "image_id": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+      "repo_digests": [
+        "rzp-arena/cfa@sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206"
+      ],
+      "services": [
+        "cfa-migrate",
+        "cfa-server",
+        "cfa-worker-contact",
+        "cfa-worker-fa"
+      ]
+    },
+    "rzp-arena/dcs-stub:v1-candidate": {
+      "image_id": "sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b",
+      "repo_digests": [
+        "rzp-arena/dcs-stub@sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b"
+      ],
+      "services": [
+        "dcs-stub"
+      ]
+    },
+    "rzp-arena/fts:v1-candidate": {
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "services": [
+        "fts-migrate",
+        "fts-web",
+        "fts-worker-check-transfer-status",
+        "fts-worker-default",
+        "fts-worker-fire-transfer-status-webhook",
+        "fts-worker-hv-fire-transfer-status-webhook",
+        "fts-worker-hv-initiate-transfer",
+        "fts-worker-initiate-transfer",
+        "fts-worker-rbl-check-transfer-status",
+        "fts-worker-rbl-direct-check-transfer-status",
+        "fts-worker-rbl-direct-imps-check-transfer-status",
+        "fts-worker-rbl-direct-imps-hv-initiate-transfer",
+        "fts-worker-rbl-direct-imps-initiate-transfer",
+        "fts-worker-rbl-direct-initiate-transfer",
+        "fts-worker-rbl-direct-slow-lane-initiate-transfer",
+        "fts-worker-rbl-direct-upi-check-transfer-status",
+        "fts-worker-rbl-direct-upi-initiate-transfer",
+        "fts-worker-rbl-imps-check-transfer-status",
+        "fts-worker-rbl-imps-initiate-transfer",
+        "fts-worker-rbl-initiate-transfer",
+        "fts-worker-rbl-upi-check-transfer-status",
+        "fts-worker-rbl-upi-hv-check-transfer-status",
+        "fts-worker-rbl-upi-hv-initiate-transfer",
+        "fts-worker-rbl-upi-initiate-transfer",
+        "fts-worker-retry-transfer",
+        "fts-worker-retry-transfer-preprocessor",
+        "fts-worker-retry-transfer-source-update",
+        "fts-worker-slow-lane-initiate-transfer"
+      ]
+    },
+    "rzp-arena/kong-lite:v1-candidate": {
+      "image_id": "sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f",
+      "repo_digests": [
+        "rzp-arena/kong-lite@sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f"
+      ],
+      "services": [
+        "kong-lite"
+      ]
+    },
+    "rzp-arena/ledger-gate:v1-candidate": {
+      "image_id": "sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f",
+      "repo_digests": [
+        "rzp-arena/ledger-gate@sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f"
+      ],
+      "services": [
+        "ledger-gate"
+      ]
+    },
+    "rzp-arena/ledger:v1-candidate": {
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "repo_digests": [
+        "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+      ],
+      "services": [
+        "ledger-api",
+        "ledger-migrate",
+        "ledger-scheduler",
+        "ledger-worker",
+        "ledger-worker-balance-update",
+        "ledger-worker-entry-details-create",
+        "ledger-worker-entry-details-create-pg",
+        "ledger-worker-journal-create"
+      ]
+    },
+    "rzp-arena/merchant-webhook-sink:v1-candidate": {
+      "image_id": "sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13",
+      "repo_digests": [
+        "rzp-arena/merchant-webhook-sink@sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13"
+      ],
+      "services": [
+        "merchant-webhook-sink"
+      ]
+    },
+    "rzp-arena/monolith-stub:v1-candidate": {
+      "image_id": "sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557",
+      "repo_digests": [
+        "rzp-arena/monolith-stub@sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557"
+      ],
+      "services": [
+        "monolith-stub"
+      ]
+    },
+    "rzp-arena/mozart-sim:v1-candidate": {
+      "image_id": "sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9",
+      "repo_digests": [
+        "rzp-arena/mozart-sim@sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9"
+      ],
+      "services": [
+        "mozart-sim"
+      ]
+    },
+    "rzp-arena/payouts:v1-candidate": {
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "services": [
+        "payouts-api",
+        "payouts-kafka-fts-status-updates-consumer",
+        "payouts-kafka-fts-status-updates-retry-consumer",
+        "payouts-migrate",
+        "payouts-worker-api-queue-for-async-dual-write-direct-push",
+        "payouts-worker-async-dual-write",
+        "payouts-worker-batch-submitted-merchants",
+        "payouts-worker-bulk-payouts",
+        "payouts-worker-data-consistency-checker",
+        "payouts-worker-data-consistency-event",
+        "payouts-worker-fts-async-hv-processing",
+        "payouts-worker-fts-async-processing",
+        "payouts-worker-fund-management-payout-check",
+        "payouts-worker-fund-management-payout-initiate",
+        "payouts-worker-generic-processing",
+        "payouts-worker-on-hold-payout",
+        "payouts-worker-partner-bank-hold-payouts",
+        "payouts-worker-payout-create-failure-handling",
+        "payouts-worker-payout-source-updater",
+        "payouts-worker-payout-update-failure-handling",
+        "payouts-worker-payout-usage-event-processing",
+        "payouts-worker-queued-payout",
+        "payouts-worker-rbl-banking-account-statement",
+        "payouts-worker-schedule-payout",
+        "payouts-worker-transaction-create",
+        "payouts-worker-webhook-event",
+        "payouts-worker-x-account-statement-source-event",
+        "payouts-worker-x-balance-payouts-event",
+        "payouts-worker-x-balances-balance-refresh"
+      ]
+    },
+    "rzp-arena/pricing-stub:v1-candidate": {
+      "image_id": "sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05",
+      "repo_digests": [
+        "rzp-arena/pricing-stub@sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05"
+      ],
+      "services": [
+        "pricing-stub"
+      ]
+    },
+    "rzp-arena/shield-stub:v1-candidate": {
+      "image_id": "sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43",
+      "repo_digests": [
+        "rzp-arena/shield-stub@sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43"
+      ],
+      "services": [
+        "shield-stub"
+      ]
+    },
+    "rzp-arena/splitz-stub:v1-candidate": {
+      "image_id": "sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a",
+      "repo_digests": [
+        "rzp-arena/splitz-stub@sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a"
+      ],
+      "services": [
+        "splitz-stub"
+      ]
+    },
+    "rzp-arena/stork-capture:v1-candidate": {
+      "image_id": "sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c",
+      "repo_digests": [
+        "rzp-arena/stork-capture@sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c"
+      ],
+      "services": [
+        "stork-capture"
+      ]
+    },
+    "rzp-arena/workflow-engine:v1-candidate": {
+      "image_id": "sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0",
+      "repo_digests": [
+        "rzp-arena/workflow-engine@sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0"
+      ],
+      "services": [
+        "workflow-engine"
+      ]
+    },
+    "rzp-arena/workflow-sim:v1-candidate": {
+      "image_id": "sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96",
+      "repo_digests": [
+        "rzp-arena/workflow-sim@sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96"
+      ],
+      "services": [
+        "workflow-sim"
+      ]
+    },
+    "rzp-arena/xas-sim:v1-candidate": {
+      "image_id": "sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7",
+      "repo_digests": [
+        "rzp-arena/xas-sim@sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7"
+      ],
+      "services": [
+        "xas-sim"
+      ]
+    },
+    "rzp-arena/xbalances:v1-candidate": {
+      "image_id": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+      "repo_digests": [
+        "rzp-arena/xbalances@sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f"
+      ],
+      "services": [
+        "xbalances-migrate",
+        "xbalances-server",
+        "xbalances-worker"
+      ]
+    },
+    "s2p-architecture-replica/vendor-payments:20c4f4d59970471067388afea8b1d65ac39ee126-45fbf8fbbe82efd9": {
+      "image_id": "sha256:18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18",
+      "repo_digests": [
+        "s2p-architecture-replica/vendor-payments@sha256:18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18"
+      ],
+      "services": [
+        "s2p-vp-source"
+      ]
+    }
+  },
+  "image_records": {
+    "_curlimages-curl": {
+      "image": "curlimages/curl:latest",
+      "image_id": "sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777",
+      "repo_digests": [
+        "curlimages/curl@sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777"
+      ],
+      "source": "cache"
+    },
+    "_python": {
+      "image": "python:3.12-alpine",
+      "image_id": "sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a",
+      "repo_digests": [
+        "python@sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a"
+      ],
+      "source": "cache"
+    },
+    "api-ingress": {
+      "image": "rzp-arena/api-ingress:v1-candidate",
+      "image_id": "sha256:8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb",
+      "repo_digests": [
+        "rzp-arena/api-ingress@sha256:8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb"
+      ],
+      "source": "cache"
+    },
+    "asv-stub": {
+      "image": "rzp-arena/asv-stub:v1-candidate",
+      "image_id": "sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f",
+      "repo_digests": [
+        "rzp-arena/asv-stub@sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f"
+      ],
+      "source": "cache"
+    },
+    "bankingaccounts-stub": {
+      "image": "rzp-arena/bankingaccounts-stub:v1-candidate",
+      "image_id": "sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d",
+      "repo_digests": [
+        "rzp-arena/bankingaccounts-stub@sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d"
+      ],
+      "source": "cache"
+    },
+    "batch-sim": {
+      "image": "rzp-arena/batch-sim:v1-candidate",
+      "image_id": "sha256:bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696",
+      "repo_digests": [
+        "rzp-arena/batch-sim@sha256:bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696"
+      ],
+      "source": "cache"
+    },
+    "cfa-migrate": {
+      "image": "rzp-arena/cfa:v1-candidate",
+      "image_id": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+      "repo_digests": [
+        "rzp-arena/cfa@sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206"
+      ],
+      "source": "cache"
+    },
+    "cfa-server": {
+      "image": "rzp-arena/cfa:v1-candidate",
+      "image_id": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+      "repo_digests": [
+        "rzp-arena/cfa@sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206"
+      ],
+      "source": "present"
+    },
+    "cfa-worker-contact": {
+      "image": "rzp-arena/cfa:v1-candidate",
+      "image_id": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+      "repo_digests": [
+        "rzp-arena/cfa@sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206"
+      ],
+      "source": "present"
+    },
+    "cfa-worker-fa": {
+      "image": "rzp-arena/cfa:v1-candidate",
+      "image_id": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+      "repo_digests": [
+        "rzp-arena/cfa@sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206"
+      ],
+      "source": "present"
+    },
+    "cron-driver": {
+      "image": "python:3.12-alpine",
+      "image_id": "sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a",
+      "repo_digests": [
+        "python@sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a"
+      ],
+      "source": "present"
+    },
+    "dcs-stub": {
+      "image": "rzp-arena/dcs-stub:v1-candidate",
+      "image_id": "sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b",
+      "repo_digests": [
+        "rzp-arena/dcs-stub@sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b"
+      ],
+      "source": "cache"
+    },
+    "fts-migrate": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "cache"
+    },
+    "fts-web": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-check-transfer-status": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-default": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-fire-transfer-status-webhook": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-hv-fire-transfer-status-webhook": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-hv-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-check-transfer-status": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-direct-check-transfer-status": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-direct-imps-check-transfer-status": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-direct-imps-hv-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-direct-imps-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-direct-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-direct-slow-lane-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-direct-upi-check-transfer-status": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-direct-upi-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-imps-check-transfer-status": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-imps-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-upi-check-transfer-status": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-upi-hv-check-transfer-status": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-upi-hv-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-rbl-upi-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-retry-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-retry-transfer-preprocessor": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-retry-transfer-source-update": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "fts-worker-slow-lane-initiate-transfer": {
+      "image": "rzp-arena/fts:v1-candidate",
+      "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+      "repo_digests": [
+        "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+      ],
+      "source": "present"
+    },
+    "kafka": {
+      "image": "apache/kafka:3.8.0",
+      "image_id": "sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069",
+      "repo_digests": [
+        "apache/kafka@sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069"
+      ],
+      "source": "cache"
+    },
+    "kong-lite": {
+      "image": "rzp-arena/kong-lite:v1-candidate",
+      "image_id": "sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f",
+      "repo_digests": [
+        "rzp-arena/kong-lite@sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f"
+      ],
+      "source": "cache"
+    },
+    "ledger-api": {
+      "image": "rzp-arena/ledger:v1-candidate",
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "repo_digests": [
+        "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+      ],
+      "source": "cache"
+    },
+    "ledger-gate": {
+      "image": "rzp-arena/ledger-gate:v1-candidate",
+      "image_id": "sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f",
+      "repo_digests": [
+        "rzp-arena/ledger-gate@sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f"
+      ],
+      "source": "cache"
+    },
+    "ledger-migrate": {
+      "image": "rzp-arena/ledger:v1-candidate",
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "repo_digests": [
+        "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+      ],
+      "source": "present"
+    },
+    "ledger-scheduler": {
+      "image": "rzp-arena/ledger:v1-candidate",
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "repo_digests": [
+        "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+      ],
+      "source": "present"
+    },
+    "ledger-worker": {
+      "image": "rzp-arena/ledger:v1-candidate",
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "repo_digests": [
+        "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+      ],
+      "source": "present"
+    },
+    "ledger-worker-balance-update": {
+      "image": "rzp-arena/ledger:v1-candidate",
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "repo_digests": [
+        "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+      ],
+      "source": "present"
+    },
+    "ledger-worker-entry-details-create": {
+      "image": "rzp-arena/ledger:v1-candidate",
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "repo_digests": [
+        "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+      ],
+      "source": "present"
+    },
+    "ledger-worker-entry-details-create-pg": {
+      "image": "rzp-arena/ledger:v1-candidate",
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "repo_digests": [
+        "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+      ],
+      "source": "present"
+    },
+    "ledger-worker-journal-create": {
+      "image": "rzp-arena/ledger:v1-candidate",
+      "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+      "repo_digests": [
+        "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+      ],
+      "source": "present"
+    },
+    "localstack": {
+      "image": "localstack/localstack:3.8",
+      "image_id": "sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7",
+      "repo_digests": [
+        "localstack/localstack@sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7"
+      ],
+      "source": "cache"
+    },
+    "merchant-webhook-sink": {
+      "image": "rzp-arena/merchant-webhook-sink:v1-candidate",
+      "image_id": "sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13",
+      "repo_digests": [
+        "rzp-arena/merchant-webhook-sink@sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13"
+      ],
+      "source": "cache"
+    },
+    "mongo-cfa": {
+      "image": "mongo:6.0",
+      "image_id": "sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac",
+      "repo_digests": [
+        "mongo@sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac"
+      ],
+      "source": "cache"
+    },
+    "monolith-stub": {
+      "image": "rzp-arena/monolith-stub:v1-candidate",
+      "image_id": "sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557",
+      "repo_digests": [
+        "rzp-arena/monolith-stub@sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557"
+      ],
+      "source": "cache"
+    },
+    "mozart-sim": {
+      "image": "rzp-arena/mozart-sim:v1-candidate",
+      "image_id": "sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9",
+      "repo_digests": [
+        "rzp-arena/mozart-sim@sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9"
+      ],
+      "source": "cache"
+    },
+    "mysql-apidb-stub": {
+      "image": "mysql:8.0",
+      "image_id": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+      "repo_digests": [
+        "mysql@sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b"
+      ],
+      "source": "cache"
+    },
+    "mysql-fts": {
+      "image": "mysql:8.0",
+      "image_id": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+      "repo_digests": [
+        "mysql@sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b"
+      ],
+      "source": "present"
+    },
+    "mysql-payouts": {
+      "image": "mysql:8.0",
+      "image_id": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+      "repo_digests": [
+        "mysql@sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b"
+      ],
+      "source": "present"
+    },
+    "mysql-xbalances": {
+      "image": "mysql:8.0",
+      "image_id": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+      "repo_digests": [
+        "mysql@sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b"
+      ],
+      "source": "present"
+    },
+    "payouts-api": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "cache"
+    },
+    "payouts-kafka-fts-status-updates-consumer": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-kafka-fts-status-updates-retry-consumer": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-migrate": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-api-queue-for-async-dual-write-direct-push": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-async-dual-write": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-batch-submitted-merchants": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-bulk-payouts": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-data-consistency-checker": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-data-consistency-event": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-fts-async-hv-processing": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-fts-async-processing": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-fund-management-payout-check": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-fund-management-payout-initiate": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-generic-processing": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-on-hold-payout": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-partner-bank-hold-payouts": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-payout-create-failure-handling": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-payout-source-updater": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-payout-update-failure-handling": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-payout-usage-event-processing": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-queued-payout": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-rbl-banking-account-statement": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-schedule-payout": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-transaction-create": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-webhook-event": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-x-account-statement-source-event": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-x-balance-payouts-event": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "payouts-worker-x-balances-balance-refresh": {
+      "image": "rzp-arena/payouts:v1-candidate",
+      "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+      "repo_digests": [
+        "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+      ],
+      "source": "present"
+    },
+    "postgres-ledger": {
+      "image": "postgres:15-alpine",
+      "image_id": "sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b",
+      "repo_digests": [
+        "postgres@sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b"
+      ],
+      "source": "cache"
+    },
+    "pricing-stub": {
+      "image": "rzp-arena/pricing-stub:v1-candidate",
+      "image_id": "sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05",
+      "repo_digests": [
+        "rzp-arena/pricing-stub@sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05"
+      ],
+      "source": "cache"
+    },
+    "redis": {
+      "image": "redis:7-alpine",
+      "image_id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+      "repo_digests": [
+        "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+      ],
+      "source": "cache"
+    },
+    "s2p-kafka": {
+      "image": "redpandadata/redpanda:v24.2.18@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+      "image_id": "sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+      "repo_digests": [
+        "redpandadata/redpanda@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8"
+      ],
+      "source": "pull-pinned"
+    },
+    "s2p-mysql": {
+      "image": "mysql:8.4@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+      "image_id": "sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+      "repo_digests": [
+        "mysql@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb"
+      ],
+      "source": "pull-pinned"
+    },
+    "s2p-redis": {
+      "image": "redis:7-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+      "image_id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+      "repo_digests": [
+        "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+      ],
+      "source": "present-pinned"
+    },
+    "s2p-vp-source": {
+      "image": "s2p-architecture-replica/vendor-payments:20c4f4d59970471067388afea8b1d65ac39ee126-45fbf8fbbe82efd9",
+      "image_id": "sha256:18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18",
+      "repo_digests": [
+        "s2p-architecture-replica/vendor-payments@sha256:18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18"
+      ],
+      "source": "cache"
+    },
+    "shield-stub": {
+      "image": "rzp-arena/shield-stub:v1-candidate",
+      "image_id": "sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43",
+      "repo_digests": [
+        "rzp-arena/shield-stub@sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43"
+      ],
+      "source": "cache"
+    },
+    "splitz-stub": {
+      "image": "rzp-arena/splitz-stub:v1-candidate",
+      "image_id": "sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a",
+      "repo_digests": [
+        "rzp-arena/splitz-stub@sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a"
+      ],
+      "source": "cache"
+    },
+    "stork-capture": {
+      "image": "rzp-arena/stork-capture:v1-candidate",
+      "image_id": "sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c",
+      "repo_digests": [
+        "rzp-arena/stork-capture@sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c"
+      ],
+      "source": "cache"
+    },
+    "workflow-engine": {
+      "image": "rzp-arena/workflow-engine:v1-candidate",
+      "image_id": "sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0",
+      "repo_digests": [
+        "rzp-arena/workflow-engine@sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0"
+      ],
+      "source": "cache"
+    },
+    "workflow-sim": {
+      "image": "rzp-arena/workflow-sim:v1-candidate",
+      "image_id": "sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96",
+      "repo_digests": [
+        "rzp-arena/workflow-sim@sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96"
+      ],
+      "source": "cache"
+    },
+    "xas-sim": {
+      "image": "rzp-arena/xas-sim:v1-candidate",
+      "image_id": "sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7",
+      "repo_digests": [
+        "rzp-arena/xas-sim@sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7"
+      ],
+      "source": "cache"
+    },
+    "xbalances-migrate": {
+      "image": "rzp-arena/xbalances:v1-candidate",
+      "image_id": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+      "repo_digests": [
+        "rzp-arena/xbalances@sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f"
+      ],
+      "source": "cache"
+    },
+    "xbalances-server": {
+      "image": "rzp-arena/xbalances:v1-candidate",
+      "image_id": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+      "repo_digests": [
+        "rzp-arena/xbalances@sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f"
+      ],
+      "source": "present"
+    },
+    "xbalances-worker": {
+      "image": "rzp-arena/xbalances:v1-candidate",
+      "image_id": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+      "repo_digests": [
+        "rzp-arena/xbalances@sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f"
+      ],
+      "source": "present"
+    }
+  },
+  "ingress_network": "rzp-ingress-alpha-full",
+  "ingress_subnet": "172.28.93.0/24",
+  "inputs_file_count": 579,
+  "inputs_hash": "86423bfb9fe8fdc0deb1c633beb371cd6745190fa863c5c3cbb7da2ec7c1a6f3",
+  "instance_id": "alpha-full",
+  "kind": "twin_instance_manifest",
+  "kong_host_port": 18236,
+  "profile": "full",
+  "profile_digest": "c6b951c21e695c64d727011f8b8cd372d14078471e6262c577119a7f8fd598ff",
+  "recipe_set_id": "85f237c46431c2af8b1ad9818a9e3b266080c7db829c198bf8811c8c02ee1bc0",
+  "rendered_config_hash": "02c6f726ed525d20f79ecd558f7526daf5b5e93cddb1f27f870ce188653541cf",
+  "runtime_instance_id": "bf19b122ab39c6dcfbddf3dfc99830cf0c4989b10e45e4f14af26441a2096e1e",
+  "s2p_image": "s2p-architecture-replica/vendor-payments:20c4f4d59970471067388afea8b1d65ac39ee126-45fbf8fbbe82efd9",
+  "s2p_network": "rzp-s2p-internal-alpha-full",
+  "schema_version": "m9.1",
+  "secrets_manifest_count": 166,
+  "secrets_manifest_digest": "2ad6e4ed59d6ef47d098a503deaad8e269001f8972eef8bc6cf4672ff46f4887",
+  "seed": "seed-a",
+  "seed_epoch": 1754641637,
+  "sizing": {
+    "cpus": 4,
+    "disk_gib": 40,
+    "memory_gib": 10
+  },
+  "source_checkout_head": "a84a668720692be0ba71b187e149dea4bfc85c66",
+  "state": "destroyed",
+  "timings": {
+    "boot_secs": 122.3,
+    "build_secs": 126.2,
+    "create_secs": 0.3,
+    "destroy_secs": 40.3,
+    "generate_secs": 2.0,
+    "images_secs": 100.5,
+    "provision_secs": 23.3
+  },
+  "updated_at": "2026-09-08T18:31:41Z",
+  "workspace": {
+    "compose_subnet_defaults_rewritten": true,
+    "fts_config": {
+      "source": "/Users/rana.singh/rzp-payouts-architecture/.local/twin-repos/accepted/fts/config",
+      "source_kind": "local-accepted-copies",
+      "status": "COPIED",
+      "tree_digest": "99e263315e87d038aaa3cdffa8d6d7dd9a58ea1cf3a8e104c713ab4e4b247264"
+    },
+    "migrations": {
+      "manifest_sha256": "337615ea5320c793c6dcf371010b6e632707d53e9c339eb42b0d3a9cec14698f",
+      "source": "/Users/rana.singh/rzp-payouts-architecture/.local/twin-runtime-migrations/accepted",
+      "source_kind": "local-accepted-copies",
+      "status": "COPIED",
+      "tree_digest": "81ae74eebaf5b88677ef1dbfb5362df56c80a9bdc9e5c0b83f6968ece52f99a7"
+    },
+    "s2p_inputs": {
+      "init_sql_sha256": "b832d2b507613f3918f85919e5078c822b33959316d1ccd83e6213f08b8f2e9b"
+    },
+    "source_definition_hashes": {
+      "docker-compose.s2p.yml": "b68b23c17ddb7c76da644d7f6f11b4595a86323bd95294d605967373310173df",
+      "docker-compose.yml": "55b5026f0a5a851decdd3f0f849442b1a62c42d1ec1e885b98b9869c24c0bc01"
+    }
+  }
+}

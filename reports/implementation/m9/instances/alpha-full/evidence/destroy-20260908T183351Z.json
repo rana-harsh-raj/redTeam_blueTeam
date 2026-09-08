@@ -1,0 +1,30 @@
+{
+  "boundary": {
+    "data_dirs_left": [],
+    "destroyed": true,
+    "rc": 0,
+    "secs": 1.4
+  },
+  "containers_left": [],
+  "instance_id": "alpha-full",
+  "secs": 40.3,
+  "started_at": "2026-09-08T18:33:11Z",
+  "steps": [
+    {
+      "at": "2026-09-08T18:33:14Z",
+      "log": "01-host-bridge-stop.log",
+      "n": 1,
+      "rc": 0,
+      "secs": 0.44,
+      "step": "host-bridge-stop"
+    },
+    {
+      "at": "2026-09-08T18:33:50Z",
+      "log": "02-destroy-down.log",
+      "n": 2,
+      "rc": 0,
+      "secs": 35.22,
+      "step": "destroy-down"
+    }
+  ]
+}
