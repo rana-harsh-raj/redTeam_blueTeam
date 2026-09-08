@@ -1,20 +1,20 @@
 # M8 — Immutable Architecture Snapshot and Query Service (final report)
 
-Branch `milestone-8-snapshot-query` from tag `twin-m7-shared-ingress-integration` (37ac47d). Everything in this milestone is repository-only: no docker, no clones, no secrets, no arena change. Machine acceptance: `reports/implementation/M8_ACCEPTANCE.json` (20 gates, evaluator `archkit/acceptance.py`).
+Branch `milestone-8-snapshot-query` from tag `twin-m7-shared-ingress-integration` (37ac47d). Everything in this milestone is repository-only: no docker, no clones, no secrets, no arena change. Machine acceptance: `reports/implementation/M8_ACCEPTANCE.json` (20 gates, evaluator `archkit/acceptance.py`). This file is rendered by `python3 -m archkit.report` from the store.
 
 ## Result
 
 | Item | Value |
 |---|---|
 | Architecture snapshot id | `5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141` |
-| Store | `reports/architecture/snapshots/5b6a5dade17e/` (snapshot.json 3.7 MB canonical JSON; summary, manifest, recipes/, imports/m7/) |
+| Store | `reports/architecture/snapshots/5b6a5dade17e…/` (snapshot.json 3.7 MB canonical JSON; summary, manifest, recipes/, imports/m7/) |
 | Source lock id | `6f1f77748e9260b12ab82d61a842bd5a46b123d67526c0694b5731ba44a98f61` (86 repositories; 27 with an explicit UNKNOWN sha) |
 | Canonical graph | 3065 nodes / 5267 edges / 45 families / 202 journey definitions (11 lanes; the runtime overlay lane replaced by a compose-definition lane) |
 | Source-to-Pay namespace | 930 projected nodes in the canonical graph; full detail graph 27994 nodes / 34744 edges referenced by sha256 `a16269693289…`, loaded only by `s2p_detail` |
-| Recipes | 98/98 canonical services (`recipe_set_id` `422d2535e31c…`): core-real-binary 67, datastore-or-infra 9, source-to-pay 4, substitute 18 |
+| Recipes | 98/98 canonical services (`recipe_set_id` `85f237c46431…`): core-real-binary 67, datastore-or-infra 9, source-to-pay 4, substitute 18 |
 | Production unknowns | 14 consolidated (PU-1..PU-10 + 4 Source-to-Pay ids), each with `origin.file` / `original_id`; 81 nodes affected |
 | M7 import | node ids identical; 0 edges lost (1 added: batch-sim `implements` svc:batch from its CONTRACT); 10 fidelity deltas and 49 label deltas, every one classified (below); M7 files unchanged (sha-bound) |
-| Runtime / evidence / acceptance | RuntimeInstance `10d78b6bfce4…` (boot `6cdf3d73-c39c-4ff7-aafb-856774ed2fd0`), EvidenceBundle `76907ee5d6e1…` (143 files, 110 PASS / 1 EXPECTED_FAILURE), AcceptanceRecord `057671330877…` (M7 22/22) |
+| Runtime / evidence / acceptance | RuntimeInstance `10d78b6bfce4…` (boot `6cdf3d73-c39c-4ff7-aafb-856774ed2fd0`), EvidenceBundle `76907ee5d6e1…` (143 files, 1 EXPECTED_FAILURE, 110 PASS), AcceptanceRecord `057671330877…` (M7 22/22) |
 
 ## Coverage (every measure carries numerator, denominator and population)
 
@@ -65,35 +65,35 @@ Every envelope carries `snapshot_id`, `fidelity` (label histogram of the touched
 
 | Measure | ms |
 |---|---:|
-| load + verify snapshot (3.7 MB) | 21.3 |
-| index build | 6.7 |
+| load + verify snapshot (3.7 MB) | 21.7 |
+| index build | 8.0 |
 | node | 0.005 |
-| search | 0.808 |
-| service_card | 0.309 |
-| neighbors_d2 | 0.220 |
-| shortest_path | 0.264 |
+| search | 0.798 |
+| service_card | 0.220 |
+| neighbors_d2 | 0.208 |
+| shortest_path | 0.269 |
 | paths_h6 | 0.149 |
-| identity_reachability | 0.076 |
-| data_flow | 0.047 |
-| fidelity_gaps | 0.451 |
-| uncovered_trust_boundaries | 0.089 |
-| affected | 2.223 |
-| context_packet | 1.207 |
-| compare_self | 28.162 |
-| s2p_detail first call (loads 27,994-node patch) | 75.3 |
-| s2p_detail warm | 0.415 |
+| identity_reachability | 0.072 |
+| data_flow | 0.046 |
+| fidelity_gaps | 0.406 |
+| uncovered_trust_boundaries | 0.081 |
+| affected | 1.651 |
+| context_packet | 1.001 |
+| compare_self | 26.352 |
+| s2p_detail first call (loads the 27994-node patch) | 119.1 |
+| s2p_detail warm | 0.759 |
 
-RSS: 44.6 MB after index, 140.4 MB after the detail namespace. No graph database is needed at this size.
+RSS: 44.6 MB after index, 140.9 MB after the detail namespace. No graph database is needed at this size.
 
 ## Findings surfaced by the queries
 
-- `uncovered_trust_boundaries`: `identity:trust-boundary:payouts-service` has no gated routes or identities in any discovery lane (uncovered); the other three boundaries are covered by journey definitions (administrator: 2 routes, 10 journey definitions; internal-service: 16 routes, 34 journey definitions; public-merchant: 7 routes, 49 journey definitions).
+- `uncovered_trust_boundaries`: `identity:trust-boundary:payouts-service` has no gated routes or identities in any discovery lane (uncovered); the other boundaries are covered by journey definitions (administrator: 2 routes, 10 journey definitions; internal-service: 16 routes, 34 journey definitions; public-merchant: 7 routes, 49 journey definitions).
 
 - `fidelity_gaps` (population p0_critical_kinds): 105 of 364 nodes are not ACTUAL_SOURCE_RUNNING / CONTRACT_FAITHFUL_REPLACEMENT: BEHAVIORAL_STUB 14, GRAPH_ONLY 51, PRODUCTION_STATE_UNKNOWN 11, SOURCE_MAPPED_NOT_RUNNING 29.
 
 - Recipes: unknown-field histogram {"fixtures": 14, "graph_node": 36, "health": 1, "production.configuration": 98, "production.deployment_manifest": 98, "production.replica_count": 98, "runtime.image_digest": 98} — image digests are build outputs (not committed inputs), production replica counts/configuration/manifests are production unknowns.
 
-- Source lock: `ledger-sdk` carries a conflicting sha between the inventory CSV and the graph (kept as `conflicts`, not resolved by guessing).
+- Source lock: `ledger-sdk` carry conflicting shas between committed sources (kept as `conflicts`, not resolved by guessing).
 
 ## Tests
 

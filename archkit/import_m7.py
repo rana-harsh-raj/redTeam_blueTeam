@@ -115,7 +115,8 @@ def build_acceptance_record(body, evidence_bundle_id):
     return rec
 
 
-def run_import(store, sid):
+def run_import(store, sid=None):
+    sid = store.resolve(sid)
     doc = store.load(sid)
     body = doc["body"]
     d = store.dir(sid) / "imports" / "m7"

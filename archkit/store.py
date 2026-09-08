@@ -28,6 +28,7 @@ class SnapshotStore:
         (self.root / "REGISTRY.json").write_bytes(canonical_bytes(reg))
 
     def register(self, sid, **fields):
+        sid = self.resolve(sid)
         reg = self.registry()
         cur = reg["snapshots"].get(sid, {})
         cur.update(fields)
