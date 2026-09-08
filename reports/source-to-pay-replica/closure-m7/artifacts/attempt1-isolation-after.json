@@ -1,0 +1,2034 @@
+{
+  "captured_at": "2026-09-08T06:53:01.422066+00:00",
+  "baseline_sha256": "8cab79b0db109f2ddb544934c42b4882b8c14260b0d3c73bced6c954ced9bd18",
+  "worktrees": [
+    {
+      "path": "/Users/rana.singh/rzp-payouts-architecture",
+      "head_before": "020480e683d52fa3faf8340ba2ab40ff1f80ca66",
+      "head_after": "020480e683d52fa3faf8340ba2ab40ff1f80ca66",
+      "changed_files": [],
+      "status_unchanged": true,
+      "diff_unchanged": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/rana.singh/rzp-payouts-architecture-expansion",
+      "head_before": "d54161c2e29873eb5f53804db58af45d48a7b4f6",
+      "head_after": "d54161c2e29873eb5f53804db58af45d48a7b4f6",
+      "changed_files": [],
+      "status_unchanged": true,
+      "diff_unchanged": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/rana.singh/rzp-payouts-architecture/.claude/worktrees/agent-a00e097ab93ddcb76",
+      "head_before": "5300617d5e572d2defebca9ee4b633c6347e4f6b",
+      "head_after": "5300617d5e572d2defebca9ee4b633c6347e4f6b",
+      "changed_files": [],
+      "status_unchanged": true,
+      "diff_unchanged": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/rana.singh/rzp-s2p-final-verification",
+      "head_before": "3f8bddc4284103862bf9c90bc6ebb4ddd8d43d2f",
+      "head_after": "3f8bddc4284103862bf9c90bc6ebb4ddd8d43d2f",
+      "changed_files": [],
+      "status_unchanged": true,
+      "diff_unchanged": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/rana.singh/rzp-s2p-final-verification-2",
+      "head_before": "f913b5cf5d18e904b47585f7584908f13178d52a",
+      "head_after": "f913b5cf5d18e904b47585f7584908f13178d52a",
+      "changed_files": [],
+      "status_unchanged": true,
+      "diff_unchanged": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/rana.singh/rzp-s2p-final-verification-3",
+      "head_before": "b6e4976f9baebfe770dfa30794f6f61ea08ccb1b",
+      "head_after": "b6e4976f9baebfe770dfa30794f6f61ea08ccb1b",
+      "changed_files": [],
+      "status_unchanged": true,
+      "diff_unchanged": true,
+      "unchanged": true
+    },
+    {
+      "path": "/Users/rana.singh/rzp-source-to-pay-replica",
+      "head_before": "b6e4976f9baebfe770dfa30794f6f61ea08ccb1b",
+      "head_after": "b6e4976f9baebfe770dfa30794f6f61ea08ccb1b",
+      "changed_files": [],
+      "status_unchanged": true,
+      "diff_unchanged": true,
+      "unchanged": true
+    }
+  ],
+  "containers": [
+    {
+      "before": {
+        "Id": "c8c90fc6328fc9a32192671ac5fc51392b1c2d4189b788c94cc8eedc5221a2bc",
+        "Name": "/env2_compose-fts-worker-rbl-direct-upi-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.245433465Z",
+        "StartedAt": "2026-09-08T00:52:42.175118026Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "c8c90fc6328fc9a32192671ac5fc51392b1c2d4189b788c94cc8eedc5221a2bc",
+        "Name": "/env2_compose-fts-worker-rbl-direct-upi-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.245433465Z",
+        "StartedAt": "2026-09-08T00:52:42.175118026Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "9bf9363b797a40f891372c20892a3d68293a6fd94d461f7e477d9dc493537613",
+        "Name": "/env2_compose-fts-worker-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.24533388Z",
+        "StartedAt": "2026-09-08T00:52:40.378830071Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "9bf9363b797a40f891372c20892a3d68293a6fd94d461f7e477d9dc493537613",
+        "Name": "/env2_compose-fts-worker-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.24533388Z",
+        "StartedAt": "2026-09-08T00:52:40.378830071Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "84c34139af3a305685152256c13e2010aae23b60b395e820385d2b348f9f30c3",
+        "Name": "/env2_compose-payouts-worker-on-hold-payout-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.245069375Z",
+        "StartedAt": "2026-09-08T00:52:36.543018228Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "84c34139af3a305685152256c13e2010aae23b60b395e820385d2b348f9f30c3",
+        "Name": "/env2_compose-payouts-worker-on-hold-payout-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.245069375Z",
+        "StartedAt": "2026-09-08T00:52:36.543018228Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "50b3c0d8248bd52a07195a77e9e6e7d24cc2356700962a1b3aff7232931ccd04",
+        "Name": "/env2_compose-fts-worker-retry-transfer-preprocessor-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.244080772Z",
+        "StartedAt": "2026-09-08T00:52:36.755381906Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "50b3c0d8248bd52a07195a77e9e6e7d24cc2356700962a1b3aff7232931ccd04",
+        "Name": "/env2_compose-fts-worker-retry-transfer-preprocessor-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.244080772Z",
+        "StartedAt": "2026-09-08T00:52:36.755381906Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "7dbf780fcd7d4bd979c9136069d58b484b87e11098c7017d2cc20a475fab80eb",
+        "Name": "/env2_compose-fts-worker-hv-fire-transfer-status-webhook-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.244052813Z",
+        "StartedAt": "2026-09-08T00:52:39.112577963Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "7dbf780fcd7d4bd979c9136069d58b484b87e11098c7017d2cc20a475fab80eb",
+        "Name": "/env2_compose-fts-worker-hv-fire-transfer-status-webhook-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.244052813Z",
+        "StartedAt": "2026-09-08T00:52:39.112577963Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "2dcd493d5c66847cf72e4dbe7aee05686e1255d36bf678bc875d279eb1da0860",
+        "Name": "/env2_compose-payouts-worker-async-dual-write-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.244017812Z",
+        "StartedAt": "2026-09-08T00:52:40.178851907Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "2dcd493d5c66847cf72e4dbe7aee05686e1255d36bf678bc875d279eb1da0860",
+        "Name": "/env2_compose-payouts-worker-async-dual-write-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.244017812Z",
+        "StartedAt": "2026-09-08T00:52:40.178851907Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "c0539b99bf5d0db3e6a639fa1439009ceaacc1d2e710d7d163d2d79ed27a2e83",
+        "Name": "/env2_compose-payouts-worker-batch-submitted-merchants-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.243395008Z",
+        "StartedAt": "2026-09-08T00:52:40.644412907Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "c0539b99bf5d0db3e6a639fa1439009ceaacc1d2e710d7d163d2d79ed27a2e83",
+        "Name": "/env2_compose-payouts-worker-batch-submitted-merchants-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.243395008Z",
+        "StartedAt": "2026-09-08T00:52:40.644412907Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "b9c1da0193a88ffa8887f9cefcef5ce6ac248b318e5a717f86af09a0ecad29b0",
+        "Name": "/env2_compose-fts-worker-rbl-imps-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.243194546Z",
+        "StartedAt": "2026-09-08T00:52:41.963466849Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "b9c1da0193a88ffa8887f9cefcef5ce6ac248b318e5a717f86af09a0ecad29b0",
+        "Name": "/env2_compose-fts-worker-rbl-imps-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.243194546Z",
+        "StartedAt": "2026-09-08T00:52:41.963466849Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "eefbbfe5cfd94beaade453c201e4d7afc0c66b11f88a952af780bb8edcb625dc",
+        "Name": "/env2_compose-fts-web-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.243125753Z",
+        "StartedAt": "2026-09-08T00:52:38.198782225Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "eefbbfe5cfd94beaade453c201e4d7afc0c66b11f88a952af780bb8edcb625dc",
+        "Name": "/env2_compose-fts-web-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.243125753Z",
+        "StartedAt": "2026-09-08T00:52:38.198782225Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "753f4aa4bc976f622e16be78e459e6bff16d1bf2f15e7bc75ddf9dec8f804034",
+        "Name": "/env2_compose-payouts-worker-schedule-payout-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.242751704Z",
+        "StartedAt": "2026-09-08T00:52:41.28270065Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "753f4aa4bc976f622e16be78e459e6bff16d1bf2f15e7bc75ddf9dec8f804034",
+        "Name": "/env2_compose-payouts-worker-schedule-payout-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.242751704Z",
+        "StartedAt": "2026-09-08T00:52:41.28270065Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "c2bc5f21ec4cf7399a9980b796b0d3fbf0f67cf46a2a10a2cb9005e21caed529",
+        "Name": "/env2_compose-fts-worker-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.242286403Z",
+        "StartedAt": "2026-09-08T00:52:38.523234074Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "c2bc5f21ec4cf7399a9980b796b0d3fbf0f67cf46a2a10a2cb9005e21caed529",
+        "Name": "/env2_compose-fts-worker-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.242286403Z",
+        "StartedAt": "2026-09-08T00:52:38.523234074Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "d9cc268a5a7967e8b219ca3ce3f642b1c1020ffed485714fee0e00723b0bbfe7",
+        "Name": "/env2_compose-fts-worker-rbl-upi-hv-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.241419844Z",
+        "StartedAt": "2026-09-08T00:52:41.885324597Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "d9cc268a5a7967e8b219ca3ce3f642b1c1020ffed485714fee0e00723b0bbfe7",
+        "Name": "/env2_compose-fts-worker-rbl-upi-hv-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.241419844Z",
+        "StartedAt": "2026-09-08T00:52:41.885324597Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "367fb78adecf8f829b3b6bfeca56e0c7cb7cf6b0b44b048937d01db1ccc424ed",
+        "Name": "/env2_compose-fts-worker-rbl-upi-hv-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.241377718Z",
+        "StartedAt": "2026-09-08T00:52:37.72254361Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "367fb78adecf8f829b3b6bfeca56e0c7cb7cf6b0b44b048937d01db1ccc424ed",
+        "Name": "/env2_compose-fts-worker-rbl-upi-hv-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.241377718Z",
+        "StartedAt": "2026-09-08T00:52:37.72254361Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "e9e96736656dd8502fe707c4a8f0ae134214fe5cd8d1835f848193be1a4c628f",
+        "Name": "/env2_compose-fts-worker-default-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.241036336Z",
+        "StartedAt": "2026-09-08T00:52:42.908403495Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "e9e96736656dd8502fe707c4a8f0ae134214fe5cd8d1835f848193be1a4c628f",
+        "Name": "/env2_compose-fts-worker-default-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.241036336Z",
+        "StartedAt": "2026-09-08T00:52:42.908403495Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "715e8cbf971660449112b73423d4c0151710ab46c99883edbef43f180c1f65c5",
+        "Name": "/env2_compose-cfa-server-1",
+        "Image": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+        "Created": "2026-09-08T00:52:35.240979918Z",
+        "StartedAt": "2026-09-08T00:52:40.264448267Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "715e8cbf971660449112b73423d4c0151710ab46c99883edbef43f180c1f65c5",
+        "Name": "/env2_compose-cfa-server-1",
+        "Image": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+        "Created": "2026-09-08T00:52:35.240979918Z",
+        "StartedAt": "2026-09-08T00:52:40.264448267Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "68ac116ba2d12207f5571aea0d1b7f8043cef30942c73c099c6f42a8a50590d6",
+        "Name": "/env2_compose-fts-worker-rbl-direct-imps-hv-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240909042Z",
+        "StartedAt": "2026-09-08T00:52:43.04705623Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "68ac116ba2d12207f5571aea0d1b7f8043cef30942c73c099c6f42a8a50590d6",
+        "Name": "/env2_compose-fts-worker-rbl-direct-imps-hv-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240909042Z",
+        "StartedAt": "2026-09-08T00:52:43.04705623Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "700c9e9b182ff7627ece5e8f81aca9859eabf7ac69d32b7f4e98b8a12d600cc5",
+        "Name": "/env2_compose-ledger-worker-balance-update-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.240806581Z",
+        "StartedAt": "2026-09-08T00:52:42.332265918Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "700c9e9b182ff7627ece5e8f81aca9859eabf7ac69d32b7f4e98b8a12d600cc5",
+        "Name": "/env2_compose-ledger-worker-balance-update-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.240806581Z",
+        "StartedAt": "2026-09-08T00:52:42.332265918Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "04fb82d9ecba27fba66bc508711208f97e1f504767e7b120b9a66019ae0353fa",
+        "Name": "/env2_compose-fts-worker-rbl-upi-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240655953Z",
+        "StartedAt": "2026-09-08T00:52:40.555668693Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "04fb82d9ecba27fba66bc508711208f97e1f504767e7b120b9a66019ae0353fa",
+        "Name": "/env2_compose-fts-worker-rbl-upi-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240655953Z",
+        "StartedAt": "2026-09-08T00:52:40.555668693Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "1ad7196cc26743c2334f6acfb96967b0c696b4e689053df89ff3f2c89e481ca6",
+        "Name": "/env2_compose-fts-worker-rbl-direct-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240612244Z",
+        "StartedAt": "2026-09-08T00:52:37.891110706Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "1ad7196cc26743c2334f6acfb96967b0c696b4e689053df89ff3f2c89e481ca6",
+        "Name": "/env2_compose-fts-worker-rbl-direct-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240612244Z",
+        "StartedAt": "2026-09-08T00:52:37.891110706Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "e1654420681ee29939247e5b6aa0be66b4f8662c4c17cd8d5b9e07a0f10c281d",
+        "Name": "/env2_compose-ledger-worker-entry-details-create-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.240410115Z",
+        "StartedAt": "2026-09-08T00:52:41.743599464Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "e1654420681ee29939247e5b6aa0be66b4f8662c4c17cd8d5b9e07a0f10c281d",
+        "Name": "/env2_compose-ledger-worker-entry-details-create-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.240410115Z",
+        "StartedAt": "2026-09-08T00:52:41.743599464Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "5ab3e7726bc0cf2dab38740120f77479fa95e09a8a633e1810add72c55832887",
+        "Name": "/env2_compose-fts-worker-rbl-direct-imps-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240331947Z",
+        "StartedAt": "2026-09-08T00:52:38.62046196Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "5ab3e7726bc0cf2dab38740120f77479fa95e09a8a633e1810add72c55832887",
+        "Name": "/env2_compose-fts-worker-rbl-direct-imps-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240331947Z",
+        "StartedAt": "2026-09-08T00:52:38.62046196Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "5b72f2039608dda86c221a2d6f5371a1705ce0a83dc70f65b6f919d8014ffc57",
+        "Name": "/env2_compose-fts-worker-rbl-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240177652Z",
+        "StartedAt": "2026-09-08T00:52:38.331507606Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "5b72f2039608dda86c221a2d6f5371a1705ce0a83dc70f65b6f919d8014ffc57",
+        "Name": "/env2_compose-fts-worker-rbl-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240177652Z",
+        "StartedAt": "2026-09-08T00:52:38.331507606Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "62d1fab52a0a186315228104d670c011c1158858c5f989dfa8215d97d30cf952",
+        "Name": "/env2_compose-fts-worker-retry-transfer-source-update-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240123193Z",
+        "StartedAt": "2026-09-08T00:52:38.104103847Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "62d1fab52a0a186315228104d670c011c1158858c5f989dfa8215d97d30cf952",
+        "Name": "/env2_compose-fts-worker-retry-transfer-source-update-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.240123193Z",
+        "StartedAt": "2026-09-08T00:52:38.104103847Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "35965985d97001310bef7519ec54e7be11f7ada6d8a485894f25bb5ddeb402a3",
+        "Name": "/env2_compose-payouts-worker-generic-processing-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.238777374Z",
+        "StartedAt": "2026-09-08T00:52:36.950011191Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "35965985d97001310bef7519ec54e7be11f7ada6d8a485894f25bb5ddeb402a3",
+        "Name": "/env2_compose-payouts-worker-generic-processing-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.238777374Z",
+        "StartedAt": "2026-09-08T00:52:36.950011191Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "06c894304a52c0e9bdd9f22f4669522e85000dcf8eea55e88aa02279a87cbece",
+        "Name": "/env2_compose-payouts-kafka-fts-status-updates-retry-consumer-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.238741582Z",
+        "StartedAt": "2026-09-08T00:52:38.422700414Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "06c894304a52c0e9bdd9f22f4669522e85000dcf8eea55e88aa02279a87cbece",
+        "Name": "/env2_compose-payouts-kafka-fts-status-updates-retry-consumer-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.238741582Z",
+        "StartedAt": "2026-09-08T00:52:38.422700414Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "f4b0bc16ac90522bf8b3f92aa2798fbd58b932e08725c2657f8f60321519c8a7",
+        "Name": "/env2_compose-payouts-worker-fund-management-payout-check-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.238578495Z",
+        "StartedAt": "2026-09-08T00:52:39.377447083Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "f4b0bc16ac90522bf8b3f92aa2798fbd58b932e08725c2657f8f60321519c8a7",
+        "Name": "/env2_compose-payouts-worker-fund-management-payout-check-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.238578495Z",
+        "StartedAt": "2026-09-08T00:52:39.377447083Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "977564fbe601598656f3b2d15d868a7d0817bf835dbeadb607fb2b772d85c666",
+        "Name": "/env2_compose-payouts-worker-data-consistency-checker-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.238515328Z",
+        "StartedAt": "2026-09-08T00:52:41.639783746Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "977564fbe601598656f3b2d15d868a7d0817bf835dbeadb607fb2b772d85c666",
+        "Name": "/env2_compose-payouts-worker-data-consistency-checker-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.238515328Z",
+        "StartedAt": "2026-09-08T00:52:41.639783746Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "bc89e076e360a3d1ee31d9839428d67f65e7b6bdb608bc6f0ef3896d84513c6a",
+        "Name": "/env2_compose-payouts-worker-x-account-statement-source-event-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.237618351Z",
+        "StartedAt": "2026-09-08T00:52:37.620667962Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "bc89e076e360a3d1ee31d9839428d67f65e7b6bdb608bc6f0ef3896d84513c6a",
+        "Name": "/env2_compose-payouts-worker-x-account-statement-source-event-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.237618351Z",
+        "StartedAt": "2026-09-08T00:52:37.620667962Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "f82cb3a5ba6a3d0c3d8269fe6f1f9527042a1521d3bf7b7eb63be940a7a33c1e",
+        "Name": "/env2_compose-payouts-worker-payout-update-failure-handling-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.237579142Z",
+        "StartedAt": "2026-09-08T00:52:40.732899324Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "f82cb3a5ba6a3d0c3d8269fe6f1f9527042a1521d3bf7b7eb63be940a7a33c1e",
+        "Name": "/env2_compose-payouts-worker-payout-update-failure-handling-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.237579142Z",
+        "StartedAt": "2026-09-08T00:52:40.732899324Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "cdb507efa42d7f0467f2f4d0d3d94162c0c0a28e58a46b39a6bd34d79ca0a61c",
+        "Name": "/env2_compose-ledger-worker-entry-details-create-pg-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.237403014Z",
+        "StartedAt": "2026-09-08T00:52:41.383593018Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "cdb507efa42d7f0467f2f4d0d3d94162c0c0a28e58a46b39a6bd34d79ca0a61c",
+        "Name": "/env2_compose-ledger-worker-entry-details-create-pg-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.237403014Z",
+        "StartedAt": "2026-09-08T00:52:41.383593018Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "9190716081dd46f5066a0172a551fba8608a7ac9bd4599d97374fcd10da5e51d",
+        "Name": "/env2_compose-xbalances-server-1",
+        "Image": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+        "Created": "2026-09-08T00:52:35.23698738Z",
+        "StartedAt": "2026-09-08T00:52:39.53842523Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "9190716081dd46f5066a0172a551fba8608a7ac9bd4599d97374fcd10da5e51d",
+        "Name": "/env2_compose-xbalances-server-1",
+        "Image": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+        "Created": "2026-09-08T00:52:35.23698738Z",
+        "StartedAt": "2026-09-08T00:52:39.53842523Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "68517c06db90968cc082a4ad5d0df381246525e855cb6616b0bc903c528485f1",
+        "Name": "/env2_compose-ledger-scheduler-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.236089821Z",
+        "StartedAt": "2026-09-08T00:52:40.999884563Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "68517c06db90968cc082a4ad5d0df381246525e855cb6616b0bc903c528485f1",
+        "Name": "/env2_compose-ledger-scheduler-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.236089821Z",
+        "StartedAt": "2026-09-08T00:52:40.999884563Z",
+        "RestartCount": 0
+      },
+      "running": false,
+      "unchanged": false
+    },
+    {
+      "before": {
+        "Id": "56e5e50441c0756d2fea18c461a13a0df05b69aae88aae9f7ca1228bbaf23a12",
+        "Name": "/env2_compose-fts-worker-rbl-upi-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.236023945Z",
+        "StartedAt": "2026-09-08T00:52:37.458306448Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "56e5e50441c0756d2fea18c461a13a0df05b69aae88aae9f7ca1228bbaf23a12",
+        "Name": "/env2_compose-fts-worker-rbl-upi-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.236023945Z",
+        "StartedAt": "2026-09-08T00:52:37.458306448Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "1c2c557cc79bfc70ed078264227173a00ee084c0df4b51574723f1a00a02df5c",
+        "Name": "/env2_compose-payouts-worker-queued-payout-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.235925234Z",
+        "StartedAt": "2026-09-08T00:52:37.034189613Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "1c2c557cc79bfc70ed078264227173a00ee084c0df4b51574723f1a00a02df5c",
+        "Name": "/env2_compose-payouts-worker-queued-payout-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.235925234Z",
+        "StartedAt": "2026-09-08T00:52:37.034189613Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "034977b90bc356dfec4499dbd11db7404ae612a785e1949fe181ce6bdbe93fc8",
+        "Name": "/env2_compose-payouts-worker-api-queue-for-async-dual-write-direct-push-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.235865483Z",
+        "StartedAt": "2026-09-08T00:52:36.844441885Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "034977b90bc356dfec4499dbd11db7404ae612a785e1949fe181ce6bdbe93fc8",
+        "Name": "/env2_compose-payouts-worker-api-queue-for-async-dual-write-direct-push-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.235865483Z",
+        "StartedAt": "2026-09-08T00:52:36.844441885Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "7d1960c17efb14eed1cd7035c9127a39326b0930f19ac366105d138c1f0bf7ae",
+        "Name": "/env2_compose-payouts-worker-payout-create-failure-handling-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.235824857Z",
+        "StartedAt": "2026-09-08T00:52:42.591404157Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "7d1960c17efb14eed1cd7035c9127a39326b0930f19ac366105d138c1f0bf7ae",
+        "Name": "/env2_compose-payouts-worker-payout-create-failure-handling-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.235824857Z",
+        "StartedAt": "2026-09-08T00:52:42.591404157Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "03b096d4eea2781325af6dbfcb0fc76bbe6a0dc84dfbbf65bac718fc0467aa01",
+        "Name": "/env2_compose-fts-worker-rbl-direct-imps-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.235713188Z",
+        "StartedAt": "2026-09-08T00:52:38.957528017Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "03b096d4eea2781325af6dbfcb0fc76bbe6a0dc84dfbbf65bac718fc0467aa01",
+        "Name": "/env2_compose-fts-worker-rbl-direct-imps-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.235713188Z",
+        "StartedAt": "2026-09-08T00:52:38.957528017Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "f6f27097fd7f1f5bb29cf1e61195cc65f36ea539d4f5fcff37f01a640a486bde",
+        "Name": "/env2_compose-payouts-worker-webhook-event-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.235662062Z",
+        "StartedAt": "2026-09-08T01:59:11.650164228Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "f6f27097fd7f1f5bb29cf1e61195cc65f36ea539d4f5fcff37f01a640a486bde",
+        "Name": "/env2_compose-payouts-worker-webhook-event-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.235662062Z",
+        "StartedAt": "2026-09-08T01:59:11.650164228Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "260e8f883a347b423817b94c915c52fdf66764546d3352f495de093b3b1b198b",
+        "Name": "/env2_compose-fts-worker-rbl-imps-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.235608811Z",
+        "StartedAt": "2026-09-08T00:52:39.213547755Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "260e8f883a347b423817b94c915c52fdf66764546d3352f495de093b3b1b198b",
+        "Name": "/env2_compose-fts-worker-rbl-imps-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.235608811Z",
+        "StartedAt": "2026-09-08T00:52:39.213547755Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "357a8653e931dfa40a73c2b7c4773adf07ebcc5a2c8303f08eb148d8e549bd6d",
+        "Name": "/env2_compose-fts-worker-rbl-direct-slow-lane-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.234982966Z",
+        "StartedAt": "2026-09-08T00:52:43.257399834Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "357a8653e931dfa40a73c2b7c4773adf07ebcc5a2c8303f08eb148d8e549bd6d",
+        "Name": "/env2_compose-fts-worker-rbl-direct-slow-lane-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.234982966Z",
+        "StartedAt": "2026-09-08T00:52:43.257399834Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "8770f9b9c945b967aff768ae1b85d41d551115551013674c2d31930455b1c949",
+        "Name": "/env2_compose-fts-worker-slow-lane-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.234595Z",
+        "StartedAt": "2026-09-08T00:52:37.201608019Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "8770f9b9c945b967aff768ae1b85d41d551115551013674c2d31930455b1c949",
+        "Name": "/env2_compose-fts-worker-slow-lane-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.234595Z",
+        "StartedAt": "2026-09-08T00:52:37.201608019Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "63b0fedc70853e277a6107a41791dba377b2979279808187b0e69b38885661b0",
+        "Name": "/env2_compose-payouts-worker-fts-async-hv-processing-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.234175908Z",
+        "StartedAt": "2026-09-08T00:52:38.045249639Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "63b0fedc70853e277a6107a41791dba377b2979279808187b0e69b38885661b0",
+        "Name": "/env2_compose-payouts-worker-fts-async-hv-processing-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.234175908Z",
+        "StartedAt": "2026-09-08T00:52:38.045249639Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "fc91ac4acb42452be5350cfeba99c5d473b28c6a06db0918d79b8c408f8d2cd6",
+        "Name": "/env2_compose-cfa-worker-fa-1",
+        "Image": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+        "Created": "2026-09-08T00:52:35.234129699Z",
+        "StartedAt": "2026-09-08T00:52:39.691833809Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "fc91ac4acb42452be5350cfeba99c5d473b28c6a06db0918d79b8c408f8d2cd6",
+        "Name": "/env2_compose-cfa-worker-fa-1",
+        "Image": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+        "Created": "2026-09-08T00:52:35.234129699Z",
+        "StartedAt": "2026-09-08T00:52:39.691833809Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "ab693c855582d0afae5e711d55fe0c2d6f913742acd5fe297f8c4e5da2176b5a",
+        "Name": "/env2_compose-fts-worker-hv-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.234002654Z",
+        "StartedAt": "2026-09-08T00:52:42.066576384Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "ab693c855582d0afae5e711d55fe0c2d6f913742acd5fe297f8c4e5da2176b5a",
+        "Name": "/env2_compose-fts-worker-hv-initiate-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.234002654Z",
+        "StartedAt": "2026-09-08T00:52:42.066576384Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "095502723fa497710593230de9adb029b746618947a687943c0c7d77cb9d94f1",
+        "Name": "/env2_compose-payouts-worker-x-balances-balance-refresh-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.233874944Z",
+        "StartedAt": "2026-09-08T00:52:36.602741498Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "095502723fa497710593230de9adb029b746618947a687943c0c7d77cb9d94f1",
+        "Name": "/env2_compose-payouts-worker-x-balances-balance-refresh-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.233874944Z",
+        "StartedAt": "2026-09-08T00:52:36.602741498Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "0e71f874de08fcfc775e92c30ba77b9a00f6857d07038453d69c6700968010d7",
+        "Name": "/env2_compose-fts-worker-fire-transfer-status-webhook-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.233780025Z",
+        "StartedAt": "2026-09-08T01:59:12.102120185Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "0e71f874de08fcfc775e92c30ba77b9a00f6857d07038453d69c6700968010d7",
+        "Name": "/env2_compose-fts-worker-fire-transfer-status-webhook-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.233780025Z",
+        "StartedAt": "2026-09-08T01:59:12.102120185Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "2806dfd9632b2801673ec5be5369371b2cc3d41bfe0a6628e1eeb4abcb14252a",
+        "Name": "/env2_compose-fts-worker-retry-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.232720671Z",
+        "StartedAt": "2026-09-08T00:52:40.81571992Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "2806dfd9632b2801673ec5be5369371b2cc3d41bfe0a6628e1eeb4abcb14252a",
+        "Name": "/env2_compose-fts-worker-retry-transfer-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.232720671Z",
+        "StartedAt": "2026-09-08T00:52:40.81571992Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "c7ce2572e57b35b29f92e4be0873deededf3cfc3dba12d8ff271f693e5d3ca4f",
+        "Name": "/env2_compose-payouts-api-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.232651878Z",
+        "StartedAt": "2026-09-08T00:52:38.841718179Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "c7ce2572e57b35b29f92e4be0873deededf3cfc3dba12d8ff271f693e5d3ca4f",
+        "Name": "/env2_compose-payouts-api-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.232651878Z",
+        "StartedAt": "2026-09-08T00:52:38.841718179Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "33f649a12b83e450472e33876fce6ba2c385b4c54ca66fd24aa640efbea650f7",
+        "Name": "/env2_compose-xbalances-worker-1",
+        "Image": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+        "Created": "2026-09-08T00:52:35.23259946Z",
+        "StartedAt": "2026-09-08T00:52:41.089384456Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "33f649a12b83e450472e33876fce6ba2c385b4c54ca66fd24aa640efbea650f7",
+        "Name": "/env2_compose-xbalances-worker-1",
+        "Image": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+        "Created": "2026-09-08T00:52:35.23259946Z",
+        "StartedAt": "2026-09-08T00:52:41.089384456Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "3c1d541b3a933847b1c0666b7e62f8d7ff88e1f57c70d9048e1416c8fb2e1199",
+        "Name": "/env2_compose-payouts-worker-fund-management-payout-initiate-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.232449582Z",
+        "StartedAt": "2026-09-08T00:52:43.153186113Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "3c1d541b3a933847b1c0666b7e62f8d7ff88e1f57c70d9048e1416c8fb2e1199",
+        "Name": "/env2_compose-payouts-worker-fund-management-payout-initiate-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.232449582Z",
+        "StartedAt": "2026-09-08T00:52:43.153186113Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "6870f55053208df671b5a236397fef28254fc313287d6c649fe26969cfd0d43d",
+        "Name": "/env2_compose-payouts-kafka-fts-status-updates-consumer-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.232418123Z",
+        "StartedAt": "2026-09-08T00:52:39.850262738Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "6870f55053208df671b5a236397fef28254fc313287d6c649fe26969cfd0d43d",
+        "Name": "/env2_compose-payouts-kafka-fts-status-updates-consumer-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.232418123Z",
+        "StartedAt": "2026-09-08T00:52:39.850262738Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "52cfda6212fea98ff8bc37f1c6f43eb053db7454e37d30e2b679e7b47aaa58cc",
+        "Name": "/env2_compose-payouts-worker-bulk-payouts-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.232079866Z",
+        "StartedAt": "2026-09-08T00:52:40.903127982Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "52cfda6212fea98ff8bc37f1c6f43eb053db7454e37d30e2b679e7b47aaa58cc",
+        "Name": "/env2_compose-payouts-worker-bulk-payouts-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.232079866Z",
+        "StartedAt": "2026-09-08T00:52:40.903127982Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "04e2e64cd0756b89aee9f6b36d9f3c2685fad0ea04d42b9940265bbe85a59af8",
+        "Name": "/env2_compose-ledger-api-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.232037615Z",
+        "StartedAt": "2026-09-08T00:52:37.294067771Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "04e2e64cd0756b89aee9f6b36d9f3c2685fad0ea04d42b9940265bbe85a59af8",
+        "Name": "/env2_compose-ledger-api-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.232037615Z",
+        "StartedAt": "2026-09-08T00:52:37.294067771Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "9149c026d5ab70a61da29924cda4834da0237ec8fe28db9c9874dccabc9c8cbf",
+        "Name": "/env2_compose-payouts-worker-data-consistency-event-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.231641149Z",
+        "StartedAt": "2026-09-08T00:52:37.543236634Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "9149c026d5ab70a61da29924cda4834da0237ec8fe28db9c9874dccabc9c8cbf",
+        "Name": "/env2_compose-payouts-worker-data-consistency-event-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.231641149Z",
+        "StartedAt": "2026-09-08T00:52:37.543236634Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "69f0a7175830deb417e1d4c83488ed42bcbde5442a53f358b920d49e41b3e530",
+        "Name": "/env2_compose-payouts-worker-payout-usage-event-processing-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.231488479Z",
+        "StartedAt": "2026-09-08T00:52:36.464994011Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "69f0a7175830deb417e1d4c83488ed42bcbde5442a53f358b920d49e41b3e530",
+        "Name": "/env2_compose-payouts-worker-payout-usage-event-processing-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.231488479Z",
+        "StartedAt": "2026-09-08T00:52:36.464994011Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "9c2ef2795e3274879739bc2b8c67e2d62f0aee7f72ae9c71fe2e8eac751c1817",
+        "Name": "/env2_compose-fts-worker-rbl-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.230072201Z",
+        "StartedAt": "2026-09-08T00:52:39.997823868Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "9c2ef2795e3274879739bc2b8c67e2d62f0aee7f72ae9c71fe2e8eac751c1817",
+        "Name": "/env2_compose-fts-worker-rbl-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.230072201Z",
+        "StartedAt": "2026-09-08T00:52:39.997823868Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "779e8c1b86bd2b3647362c44b23e2c3c5d1fe78576b8d72c766317303a40fd7a",
+        "Name": "/env2_compose-payouts-worker-payout-source-updater-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.229991408Z",
+        "StartedAt": "2026-09-08T00:52:41.176672972Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "779e8c1b86bd2b3647362c44b23e2c3c5d1fe78576b8d72c766317303a40fd7a",
+        "Name": "/env2_compose-payouts-worker-payout-source-updater-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.229991408Z",
+        "StartedAt": "2026-09-08T00:52:41.176672972Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "f48c540018911848032edf018a2ea8dda73ca6a1a622b9531fa8493098c0f287",
+        "Name": "/env2_compose-ledger-worker-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.226708301Z",
+        "StartedAt": "2026-09-08T00:52:37.382070518Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "f48c540018911848032edf018a2ea8dda73ca6a1a622b9531fa8493098c0f287",
+        "Name": "/env2_compose-ledger-worker-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.226708301Z",
+        "StartedAt": "2026-09-08T00:52:37.382070518Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "ad1712126a8e4305c7753fb8d3941ce3c1b5b5cf109da664ab34ebc491ac3bef",
+        "Name": "/env2_compose-payouts-worker-rbl-banking-account-statement-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.226463213Z",
+        "StartedAt": "2026-09-08T00:52:37.813626709Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "ad1712126a8e4305c7753fb8d3941ce3c1b5b5cf109da664ab34ebc491ac3bef",
+        "Name": "/env2_compose-payouts-worker-rbl-banking-account-statement-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.226463213Z",
+        "StartedAt": "2026-09-08T00:52:37.813626709Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "66f205f9e7cc1d5ea3125cf78ad205c2283b2bc927c6cf11dbc1bfe6b4487c84",
+        "Name": "/env2_compose-payouts-worker-transaction-create-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.226431629Z",
+        "StartedAt": "2026-09-08T00:52:42.83162923Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "66f205f9e7cc1d5ea3125cf78ad205c2283b2bc927c6cf11dbc1bfe6b4487c84",
+        "Name": "/env2_compose-payouts-worker-transaction-create-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.226431629Z",
+        "StartedAt": "2026-09-08T00:52:42.83162923Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "9ea7b40ee3060e31b15c228ae2771d3160a9db9bcb1d21777ab3012d302947ef",
+        "Name": "/env2_compose-fts-worker-rbl-direct-upi-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.226349002Z",
+        "StartedAt": "2026-09-08T00:52:40.462309347Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "9ea7b40ee3060e31b15c228ae2771d3160a9db9bcb1d21777ab3012d302947ef",
+        "Name": "/env2_compose-fts-worker-rbl-direct-upi-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.226349002Z",
+        "StartedAt": "2026-09-08T00:52:40.462309347Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "ca2d20e802fb94ab595a3fba33cf744f608a5e26562dc394d5289f1119e9d5ff",
+        "Name": "/env2_compose-payouts-worker-x-balance-payouts-event-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.224710095Z",
+        "StartedAt": "2026-09-08T00:52:36.695593385Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "ca2d20e802fb94ab595a3fba33cf744f608a5e26562dc394d5289f1119e9d5ff",
+        "Name": "/env2_compose-payouts-worker-x-balance-payouts-event-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.224710095Z",
+        "StartedAt": "2026-09-08T00:52:36.695593385Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "111b010c1c701824b34251ad2371925f661eea061476fbe554238b07ccaf3399",
+        "Name": "/env2_compose-payouts-worker-partner-bank-hold-payouts-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.224613343Z",
+        "StartedAt": "2026-09-08T00:52:37.957458439Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "111b010c1c701824b34251ad2371925f661eea061476fbe554238b07ccaf3399",
+        "Name": "/env2_compose-payouts-worker-partner-bank-hold-payouts-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.224613343Z",
+        "StartedAt": "2026-09-08T00:52:37.957458439Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "9fab72a695c5460ea21551409c32aed3828c174ec6a0c8a8e868354e91538363",
+        "Name": "/env2_compose-ledger-worker-journal-create-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.224269377Z",
+        "StartedAt": "2026-09-08T00:52:41.466404446Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "9fab72a695c5460ea21551409c32aed3828c174ec6a0c8a8e868354e91538363",
+        "Name": "/env2_compose-ledger-worker-journal-create-1",
+        "Image": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+        "Created": "2026-09-08T00:52:35.224269377Z",
+        "StartedAt": "2026-09-08T00:52:41.466404446Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "cdfd5f86a78fb09548d84ad231822c2076d9dfcab6aa6b4fd680b1e55ef90d43",
+        "Name": "/env2_compose-fts-worker-rbl-direct-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.224060373Z",
+        "StartedAt": "2026-09-08T00:52:38.711790437Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "cdfd5f86a78fb09548d84ad231822c2076d9dfcab6aa6b4fd680b1e55ef90d43",
+        "Name": "/env2_compose-fts-worker-rbl-direct-check-transfer-status-1",
+        "Image": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+        "Created": "2026-09-08T00:52:35.224060373Z",
+        "StartedAt": "2026-09-08T00:52:38.711790437Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "9c0561caff163dc74308e052be598992212ab39a2735e789ecc9c87c71ed882b",
+        "Name": "/env2_compose-payouts-worker-fts-async-processing-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.223026728Z",
+        "StartedAt": "2026-09-08T01:59:01.402724436Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "9c0561caff163dc74308e052be598992212ab39a2735e789ecc9c87c71ed882b",
+        "Name": "/env2_compose-payouts-worker-fts-async-processing-1",
+        "Image": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+        "Created": "2026-09-08T00:52:35.223026728Z",
+        "StartedAt": "2026-09-08T01:59:01.402724436Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "2e76cf9b00b939df53188231baf0b5522a0c058bd33a0c0afbb2f9e40778833f",
+        "Name": "/env2_compose-cfa-worker-contact-1",
+        "Image": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+        "Created": "2026-09-08T00:52:35.220825851Z",
+        "StartedAt": "2026-09-08T00:52:41.545592343Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "2e76cf9b00b939df53188231baf0b5522a0c058bd33a0c0afbb2f9e40778833f",
+        "Name": "/env2_compose-cfa-worker-contact-1",
+        "Image": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+        "Created": "2026-09-08T00:52:35.220825851Z",
+        "StartedAt": "2026-09-08T00:52:41.545592343Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "589edeb415e7d18141a951a4e29d8a15dd36e61fb50872b756f55f81d3a978a6",
+        "Name": "/env2_compose-cron-driver-1",
+        "Image": "sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a",
+        "Created": "2026-09-08T00:52:24.489455143Z",
+        "StartedAt": "2026-09-08T00:52:25.029673699Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "589edeb415e7d18141a951a4e29d8a15dd36e61fb50872b756f55f81d3a978a6",
+        "Name": "/env2_compose-cron-driver-1",
+        "Image": "sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a",
+        "Created": "2026-09-08T00:52:24.489455143Z",
+        "StartedAt": "2026-09-08T00:52:25.029673699Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "7f3442042c044a4781763c30915b3500015dbde9bfa5d077ffb9351b86c76759",
+        "Name": "/env2_compose-kong-lite-1",
+        "Image": "sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f",
+        "Created": "2026-09-08T00:52:24.488425622Z",
+        "StartedAt": "2026-09-08T02:24:21.652630347Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "7f3442042c044a4781763c30915b3500015dbde9bfa5d077ffb9351b86c76759",
+        "Name": "/env2_compose-kong-lite-1",
+        "Image": "sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f",
+        "Created": "2026-09-08T00:52:24.488425622Z",
+        "StartedAt": "2026-09-08T02:24:21.652630347Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "70adebac775bfbe075615142ae007ec301791c8fcf67455c4182db63fe3a386e",
+        "Name": "/env2_compose-workflow-engine-1",
+        "Image": "sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0",
+        "Created": "2026-09-08T00:52:24.487155138Z",
+        "StartedAt": "2026-09-08T00:52:25.345846273Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "70adebac775bfbe075615142ae007ec301791c8fcf67455c4182db63fe3a386e",
+        "Name": "/env2_compose-workflow-engine-1",
+        "Image": "sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0",
+        "Created": "2026-09-08T00:52:24.487155138Z",
+        "StartedAt": "2026-09-08T00:52:25.345846273Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "176e87d98ddf1e20d80458e9e8672f482a36b393c13d0e47e5db30f981e91dcc",
+        "Name": "/env2_compose-splitz-stub-1",
+        "Image": "sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a",
+        "Created": "2026-09-08T00:52:24.485811528Z",
+        "StartedAt": "2026-09-08T02:01:19.911402136Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "176e87d98ddf1e20d80458e9e8672f482a36b393c13d0e47e5db30f981e91dcc",
+        "Name": "/env2_compose-splitz-stub-1",
+        "Image": "sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a",
+        "Created": "2026-09-08T00:52:24.485811528Z",
+        "StartedAt": "2026-09-08T02:01:19.911402136Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "9032a5fb30d249f62c05081c6eca227747bfd7ec8d5205239d74e1c9ef74dc1b",
+        "Name": "/env2_compose-batch-sim-1",
+        "Image": "sha256:c05c61d28a6174a3d36bd4bdaeac6ceea4cbcd4f3fbedbddd14bd475e308cd87",
+        "Created": "2026-09-08T00:52:24.483534232Z",
+        "StartedAt": "2026-09-08T00:52:25.543565213Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "9032a5fb30d249f62c05081c6eca227747bfd7ec8d5205239d74e1c9ef74dc1b",
+        "Name": "/env2_compose-batch-sim-1",
+        "Image": "sha256:c05c61d28a6174a3d36bd4bdaeac6ceea4cbcd4f3fbedbddd14bd475e308cd87",
+        "Created": "2026-09-08T00:52:24.483534232Z",
+        "StartedAt": "2026-09-08T00:52:25.543565213Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "a027bf32f3b799e1e0f6469a4b988043713fdd60af111b52782234a4dbe3289a",
+        "Name": "/env2_compose-shield-stub-1",
+        "Image": "sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43",
+        "Created": "2026-09-08T00:52:24.483416479Z",
+        "StartedAt": "2026-09-08T00:52:24.747396551Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "a027bf32f3b799e1e0f6469a4b988043713fdd60af111b52782234a4dbe3289a",
+        "Name": "/env2_compose-shield-stub-1",
+        "Image": "sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43",
+        "Created": "2026-09-08T00:52:24.483416479Z",
+        "StartedAt": "2026-09-08T00:52:24.747396551Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "bd080c98096875ebaa98d1ede2d3f1d7fb3c87a6acab2c7e203279cb3e5b6f9a",
+        "Name": "/env2_compose-workflow-sim-1",
+        "Image": "sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96",
+        "Created": "2026-09-08T00:52:24.483382604Z",
+        "StartedAt": "2026-09-08T00:52:24.889218118Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "bd080c98096875ebaa98d1ede2d3f1d7fb3c87a6acab2c7e203279cb3e5b6f9a",
+        "Name": "/env2_compose-workflow-sim-1",
+        "Image": "sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96",
+        "Created": "2026-09-08T00:52:24.483382604Z",
+        "StartedAt": "2026-09-08T00:52:24.889218118Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "3f05aa201618bee5d1ce06cead5c42a4edce3e291b0b43684aa00ffd3eac354b",
+        "Name": "/env2_compose-dcs-stub-1",
+        "Image": "sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b",
+        "Created": "2026-09-08T00:52:24.48335727Z",
+        "StartedAt": "2026-09-08T02:01:09.659544201Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "3f05aa201618bee5d1ce06cead5c42a4edce3e291b0b43684aa00ffd3eac354b",
+        "Name": "/env2_compose-dcs-stub-1",
+        "Image": "sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b",
+        "Created": "2026-09-08T00:52:24.48335727Z",
+        "StartedAt": "2026-09-08T02:01:09.659544201Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "0cfd67c666ce03d477aa3f3258d30ac8eeda9dbdc4be7b1702515e0c994d213a",
+        "Name": "/env2_compose-stork-capture-1",
+        "Image": "sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c",
+        "Created": "2026-09-08T00:52:24.483063097Z",
+        "StartedAt": "2026-09-08T00:52:24.80496342Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "0cfd67c666ce03d477aa3f3258d30ac8eeda9dbdc4be7b1702515e0c994d213a",
+        "Name": "/env2_compose-stork-capture-1",
+        "Image": "sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c",
+        "Created": "2026-09-08T00:52:24.483063097Z",
+        "StartedAt": "2026-09-08T00:52:24.80496342Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "81fb2468cacb46c0a7e9e0f6f0f4f363ffefbac31bcc3eb38932febd36962405",
+        "Name": "/env2_compose-xas-sim-1",
+        "Image": "sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7",
+        "Created": "2026-09-08T00:52:24.483021763Z",
+        "StartedAt": "2026-09-08T00:52:25.276025284Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "81fb2468cacb46c0a7e9e0f6f0f4f363ffefbac31bcc3eb38932febd36962405",
+        "Name": "/env2_compose-xas-sim-1",
+        "Image": "sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7",
+        "Created": "2026-09-08T00:52:24.483021763Z",
+        "StartedAt": "2026-09-08T00:52:25.276025284Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "844c566e09254694167a54098182b8beeeedb5c698e6a4625071c980c8f05676",
+        "Name": "/env2_compose-asv-stub-1",
+        "Image": "sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f",
+        "Created": "2026-09-08T00:52:24.482748799Z",
+        "StartedAt": "2026-09-08T00:52:25.871824739Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "844c566e09254694167a54098182b8beeeedb5c698e6a4625071c980c8f05676",
+        "Name": "/env2_compose-asv-stub-1",
+        "Image": "sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f",
+        "Created": "2026-09-08T00:52:24.482748799Z",
+        "StartedAt": "2026-09-08T00:52:25.871824739Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "ad2a9e82639c90579930465e1bdfbc04f91e91e462bb3ee73e7a8a0bf244185c",
+        "Name": "/env2_compose-ledger-gate-1",
+        "Image": "sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f",
+        "Created": "2026-09-08T00:52:24.482702673Z",
+        "StartedAt": "2026-09-08T00:52:25.468406616Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "ad2a9e82639c90579930465e1bdfbc04f91e91e462bb3ee73e7a8a0bf244185c",
+        "Name": "/env2_compose-ledger-gate-1",
+        "Image": "sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f",
+        "Created": "2026-09-08T00:52:24.482702673Z",
+        "StartedAt": "2026-09-08T00:52:25.468406616Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "a36cbba742bdb50f92ad6c3ec3be19b595371b7904c688ac0454476bdbc7c1eb",
+        "Name": "/env2_compose-mozart-sim-1",
+        "Image": "sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9",
+        "Created": "2026-09-08T00:52:24.481770113Z",
+        "StartedAt": "2026-09-08T00:52:24.966000541Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "a36cbba742bdb50f92ad6c3ec3be19b595371b7904c688ac0454476bdbc7c1eb",
+        "Name": "/env2_compose-mozart-sim-1",
+        "Image": "sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9",
+        "Created": "2026-09-08T00:52:24.481770113Z",
+        "StartedAt": "2026-09-08T00:52:24.966000541Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "3e05a157d8d2e5fbb84ef7bfcee0b1b9177cf52e66542f6f600dbf902529ce5e",
+        "Name": "/env2_compose-bankingaccounts-stub-1",
+        "Image": "sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d",
+        "Created": "2026-09-08T00:52:24.481497524Z",
+        "StartedAt": "2026-09-08T02:00:59.381461211Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "3e05a157d8d2e5fbb84ef7bfcee0b1b9177cf52e66542f6f600dbf902529ce5e",
+        "Name": "/env2_compose-bankingaccounts-stub-1",
+        "Image": "sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d",
+        "Created": "2026-09-08T00:52:24.481497524Z",
+        "StartedAt": "2026-09-08T02:00:59.381461211Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "b5fea42884df7ed58aed8d282b764ef3d1fd6f0ec584f542e40fe5f1f29b1a9a",
+        "Name": "/env2_compose-monolith-stub-1",
+        "Image": "sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557",
+        "Created": "2026-09-08T00:52:24.481434856Z",
+        "StartedAt": "2026-09-08T02:24:08.160442717Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "b5fea42884df7ed58aed8d282b764ef3d1fd6f0ec584f542e40fe5f1f29b1a9a",
+        "Name": "/env2_compose-monolith-stub-1",
+        "Image": "sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557",
+        "Created": "2026-09-08T00:52:24.481434856Z",
+        "StartedAt": "2026-09-08T02:24:08.160442717Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "99d369e15c1bd5f84040771ecd4b05a3bef7e3ff63ec9facfe8e4149884e0d4b",
+        "Name": "/env2_compose-merchant-webhook-sink-1",
+        "Image": "sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13",
+        "Created": "2026-09-08T00:52:24.480844261Z",
+        "StartedAt": "2026-09-08T00:52:24.679135467Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "99d369e15c1bd5f84040771ecd4b05a3bef7e3ff63ec9facfe8e4149884e0d4b",
+        "Name": "/env2_compose-merchant-webhook-sink-1",
+        "Image": "sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13",
+        "Created": "2026-09-08T00:52:24.480844261Z",
+        "StartedAt": "2026-09-08T00:52:24.679135467Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "a934a3ec3a7db7fb2c08861c09d8bc517e6d2c614e79bcb215f5acc0a1cbf4c6",
+        "Name": "/env2_compose-pricing-stub-1",
+        "Image": "sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05",
+        "Created": "2026-09-08T00:52:24.480547505Z",
+        "StartedAt": "2026-09-08T00:52:25.216666256Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "a934a3ec3a7db7fb2c08861c09d8bc517e6d2c614e79bcb215f5acc0a1cbf4c6",
+        "Name": "/env2_compose-pricing-stub-1",
+        "Image": "sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05",
+        "Created": "2026-09-08T00:52:24.480547505Z",
+        "StartedAt": "2026-09-08T00:52:25.216666256Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "cc7a0f351b82fefef09144e6a1cf5a87051ad5af5aabdffc343b743a9d781bdd",
+        "Name": "/env2_compose-postgres-ledger-1",
+        "Image": "sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b",
+        "Created": "2026-09-08T00:51:56.404318681Z",
+        "StartedAt": "2026-09-08T00:51:56.840981203Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "cc7a0f351b82fefef09144e6a1cf5a87051ad5af5aabdffc343b743a9d781bdd",
+        "Name": "/env2_compose-postgres-ledger-1",
+        "Image": "sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b",
+        "Created": "2026-09-08T00:51:56.404318681Z",
+        "StartedAt": "2026-09-08T00:51:56.840981203Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "bb37419a400ba7a2ed764d54c4e43927bfad2a23769d6dabfd699f4d69d3f587",
+        "Name": "/env2_compose-localstack-1",
+        "Image": "sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7",
+        "Created": "2026-09-08T00:51:56.401532456Z",
+        "StartedAt": "2026-09-08T00:51:57.533940474Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "bb37419a400ba7a2ed764d54c4e43927bfad2a23769d6dabfd699f4d69d3f587",
+        "Name": "/env2_compose-localstack-1",
+        "Image": "sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7",
+        "Created": "2026-09-08T00:51:56.401532456Z",
+        "StartedAt": "2026-09-08T00:51:57.533940474Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "8b9d1a4d06aa134d2ddd35d1f0a82962a54912d1f249c858d3df3ff9dbf230c2",
+        "Name": "/env2_compose-redis-1",
+        "Image": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+        "Created": "2026-09-08T00:51:56.401389661Z",
+        "StartedAt": "2026-09-08T00:51:56.719450711Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "8b9d1a4d06aa134d2ddd35d1f0a82962a54912d1f249c858d3df3ff9dbf230c2",
+        "Name": "/env2_compose-redis-1",
+        "Image": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+        "Created": "2026-09-08T00:51:56.401389661Z",
+        "StartedAt": "2026-09-08T00:51:56.719450711Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "e34c5e3e769a5a6635a44e9ad32e507cc17290e43f917aaf690aef42744b2b00",
+        "Name": "/env2_compose-mysql-fts-1",
+        "Image": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+        "Created": "2026-09-08T00:51:56.398895276Z",
+        "StartedAt": "2026-09-08T00:51:56.499576709Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "e34c5e3e769a5a6635a44e9ad32e507cc17290e43f917aaf690aef42744b2b00",
+        "Name": "/env2_compose-mysql-fts-1",
+        "Image": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+        "Created": "2026-09-08T00:51:56.398895276Z",
+        "StartedAt": "2026-09-08T00:51:56.499576709Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "b0e1b6bbe7375af3de2de9826ad86a271dfc46bbe2a886066ffa73a96f8f6a68",
+        "Name": "/env2_compose-mysql-xbalances-1",
+        "Image": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+        "Created": "2026-09-08T00:51:56.398554685Z",
+        "StartedAt": "2026-09-08T00:51:56.983393757Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "b0e1b6bbe7375af3de2de9826ad86a271dfc46bbe2a886066ffa73a96f8f6a68",
+        "Name": "/env2_compose-mysql-xbalances-1",
+        "Image": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+        "Created": "2026-09-08T00:51:56.398554685Z",
+        "StartedAt": "2026-09-08T00:51:56.983393757Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "47abb24f82e88483c5a3b32bea1775bdede778c63b00d80b699ca52cf0647b29",
+        "Name": "/env2_compose-mysql-apidb-stub-1",
+        "Image": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+        "Created": "2026-09-08T00:51:56.398528352Z",
+        "StartedAt": "2026-09-08T00:51:57.108516488Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "47abb24f82e88483c5a3b32bea1775bdede778c63b00d80b699ca52cf0647b29",
+        "Name": "/env2_compose-mysql-apidb-stub-1",
+        "Image": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+        "Created": "2026-09-08T00:51:56.398528352Z",
+        "StartedAt": "2026-09-08T00:51:57.108516488Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "3eaec977416c7a651e128d290d16fea76b9d06de075f098decb758da9187eba3",
+        "Name": "/env2_compose-mysql-payouts-1",
+        "Image": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+        "Created": "2026-09-08T00:51:56.398315847Z",
+        "StartedAt": "2026-09-08T00:51:56.623395541Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "3eaec977416c7a651e128d290d16fea76b9d06de075f098decb758da9187eba3",
+        "Name": "/env2_compose-mysql-payouts-1",
+        "Image": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+        "Created": "2026-09-08T00:51:56.398315847Z",
+        "StartedAt": "2026-09-08T00:51:56.623395541Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "db371db034f177aa6953970c7eb8e77ca9ad7ecb6a00b8bcab2f64925fc7ba78",
+        "Name": "/env2_compose-kafka-1",
+        "Image": "sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069",
+        "Created": "2026-09-08T00:51:56.397571915Z",
+        "StartedAt": "2026-09-08T00:51:57.305598843Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "db371db034f177aa6953970c7eb8e77ca9ad7ecb6a00b8bcab2f64925fc7ba78",
+        "Name": "/env2_compose-kafka-1",
+        "Image": "sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069",
+        "Created": "2026-09-08T00:51:56.397571915Z",
+        "StartedAt": "2026-09-08T00:51:57.305598843Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "78104e31b17d27a0d6d784a6fea2cf8f9caa78c4656f6f78abef1765569bbe30",
+        "Name": "/env2_compose-mongo-cfa-1",
+        "Image": "sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac",
+        "Created": "2026-09-08T00:51:56.397436662Z",
+        "StartedAt": "2026-09-08T00:51:56.55645752Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "78104e31b17d27a0d6d784a6fea2cf8f9caa78c4656f6f78abef1765569bbe30",
+        "Name": "/env2_compose-mongo-cfa-1",
+        "Image": "sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac",
+        "Created": "2026-09-08T00:51:56.397436662Z",
+        "StartedAt": "2026-09-08T00:51:56.55645752Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "eeab8e62ecda6b57e9764424d8130c4dccae205a38f520b2b9984eda87561f66",
+        "Name": "/s2p_corrected_final_verification-vp-source-1",
+        "Image": "sha256:71145b2a3d6cf60cd6399fda6cbb66fb66187595c6b0bc47cc9c8575fca7fca7",
+        "Created": "2026-09-07T22:18:42.959224893Z",
+        "StartedAt": "2026-09-07T22:18:49.955283536Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "eeab8e62ecda6b57e9764424d8130c4dccae205a38f520b2b9984eda87561f66",
+        "Name": "/s2p_corrected_final_verification-vp-source-1",
+        "Image": "sha256:71145b2a3d6cf60cd6399fda6cbb66fb66187595c6b0bc47cc9c8575fca7fca7",
+        "Created": "2026-09-07T22:18:42.959224893Z",
+        "StartedAt": "2026-09-07T22:18:49.955283536Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "85cfb883244b783516ec70e86188531a32b2ce0b6b5f32d45575f9b3742ed448",
+        "Name": "/s2p_corrected_final_verification-redis-1",
+        "Image": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+        "Created": "2026-09-07T22:18:42.914736751Z",
+        "StartedAt": "2026-09-07T22:18:42.99534633Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "85cfb883244b783516ec70e86188531a32b2ce0b6b5f32d45575f9b3742ed448",
+        "Name": "/s2p_corrected_final_verification-redis-1",
+        "Image": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+        "Created": "2026-09-07T22:18:42.914736751Z",
+        "StartedAt": "2026-09-07T22:18:42.99534633Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "609d31e8cfb56cf6d2f84610a6abec10bdf92244606b663dc861d8e4656d7098",
+        "Name": "/s2p_corrected_final_verification-mysql-1",
+        "Image": "sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+        "Created": "2026-09-07T22:18:42.910114309Z",
+        "StartedAt": "2026-09-07T22:18:43.321049445Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "609d31e8cfb56cf6d2f84610a6abec10bdf92244606b663dc861d8e4656d7098",
+        "Name": "/s2p_corrected_final_verification-mysql-1",
+        "Image": "sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+        "Created": "2026-09-07T22:18:42.910114309Z",
+        "StartedAt": "2026-09-07T22:18:43.321049445Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "b32f7b024da6bd43f35e686a98389de4675b93b325b98724110032d73bf13397",
+        "Name": "/s2p_corrected_final_verification-monolith-boundary-1",
+        "Image": "sha256:c4cc756650142df34e967060af365cb1aa7c9cc42d49ca8647dce5f62d3bb907",
+        "Created": "2026-09-07T22:18:42.905253405Z",
+        "StartedAt": "2026-09-07T22:18:43.148641167Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "b32f7b024da6bd43f35e686a98389de4675b93b325b98724110032d73bf13397",
+        "Name": "/s2p_corrected_final_verification-monolith-boundary-1",
+        "Image": "sha256:c4cc756650142df34e967060af365cb1aa7c9cc42d49ca8647dce5f62d3bb907",
+        "Created": "2026-09-07T22:18:42.905253405Z",
+        "StartedAt": "2026-09-07T22:18:43.148641167Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    },
+    {
+      "before": {
+        "Id": "0dc0dd05be22cbada0c41e14d5d20da3660291c0581bc65a67f156270dd02156",
+        "Name": "/s2p_corrected_final_verification-kafka-1",
+        "Image": "sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+        "Created": "2026-09-07T22:18:42.898973606Z",
+        "StartedAt": "2026-09-07T22:18:43.062243379Z",
+        "RestartCount": 0
+      },
+      "after": {
+        "Id": "0dc0dd05be22cbada0c41e14d5d20da3660291c0581bc65a67f156270dd02156",
+        "Name": "/s2p_corrected_final_verification-kafka-1",
+        "Image": "sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+        "Created": "2026-09-07T22:18:42.898973606Z",
+        "StartedAt": "2026-09-07T22:18:43.062243379Z",
+        "RestartCount": 0
+      },
+      "running": true,
+      "unchanged": true
+    }
+  ],
+  "protected_worktrees_unchanged": true,
+  "preexisting_containers_unchanged": false,
+  "limitation": "Concurrent external changes cannot be attributed by snapshot comparison."
+}
