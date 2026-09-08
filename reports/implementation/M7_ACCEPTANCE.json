@@ -1,8 +1,8 @@
 {
   "milestone": "M7",
   "accepted": true,
-  "evaluated_at": "2026-09-08T09:42:22.053097+00:00",
-  "head": "e9d1bfe59f4a1185bab16454f5ca43eeb7b76eee",
+  "evaluated_at": "2026-09-08T09:42:23.579552+00:00",
+  "head": "4f914d6b73b1ad91f0579558223c415f60358508",
   "branch": "milestone-7-shared-ingress-integration",
   "gates_passed": 22,
   "gates_total": 22,
@@ -19,7 +19,7 @@
       "description": "Canonical branch has documented ancestry (M6 tag + S2P closure tag are ancestors; merge commit recorded)",
       "passed": true,
       "status": "PASS",
-      "detail": "{'branch': 'milestone-7-shared-ingress-integration', 'head': 'e9d1bfe59f', 'merge_commit': '7505783fc6', 'parents': ['020480e683', '4505e62dce']}"
+      "detail": "{'branch': 'milestone-7-shared-ingress-integration', 'head': '4f914d6b73', 'merge_commit': '7505783fc6', 'parents': ['020480e683', '4505e62dce']}"
     },
     {
       "id": "M7-03",
@@ -164,6 +164,6 @@
   ],
   "canonical_snapshot_sha256": "d88a26342e10eea4c18971f2765ecc2e05364d7716cc113733f7d76233709651",
   "s2p_closure_final_commit": "d87591000f359f1a58fc805c9667d84dc1871d09",
-  "artifact_manifest_sha256": "bf0cb60e30ca1cca1a17857af760dcb0292db5240c00a83436dacb11037d9689",
+  "artifact_manifest_sha256": "f97e1b27e5c41f5417c7c34fa7eb6ee9f4cc6fd988348a02977c380f3f1b791f",
   "evaluation_scope": "22 hard gates over Git state, committed evidence and hash-bound runtime artifacts; runtime observations are replayed from the recorded evidence, not re-executed here (except the M6 acceptance re-evaluation and the docker network check)."
 }
