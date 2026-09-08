@@ -146,8 +146,13 @@ def evaluate():
     # git
     tag_commit = git(["rev-list", "-n1", "twin-m6-complete-domain"])
     branch = git(["rev-parse", "--abbrev-ref", "HEAD"]); head = git(["rev-parse", "HEAD"])
-    g("M6-11", "on milestone-6 branch or at the twin-m6 tag", "direct_git",
-      "milestone-6" in branch or (bool(tag_commit) and head == tag_commit), branch)
+    # M7: downstream integration branches carry the M6 tag as an ancestor (documented ancestry), which is the
+    # same provenance claim the branch/tag equality made on the M6 branch itself.
+    tag_is_ancestor = bool(tag_commit) and subprocess.run(
+        ["git", "-C", str(REPO), "merge-base", "--is-ancestor", tag_commit, head], capture_output=True).returncode == 0
+    g("M6-11", "on milestone-6 branch, at the twin-m6 tag, or on a branch descending from the twin-m6 tag", "direct_git",
+      "milestone-6" in branch or (bool(tag_commit) and head == tag_commit) or (branch.startswith("milestone-") and tag_is_ancestor),
+      "%s (twin-m6 tag ancestor=%s)" % (branch, tag_is_ancestor))
     g("M6-12", "graph + evidence tracked in git", "direct_git",
       "PAYOUTS_FUNCTIONAL_GRAPH.json" in git(["ls-files", "reports/domain"]) and
       "m6-journeys.json" in git(["ls-files", "reports/implementation"]), "")

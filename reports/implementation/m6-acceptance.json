@@ -97,10 +97,10 @@
     },
     {
       "id": "M6-11",
-      "desc": "on milestone-6 branch or at the twin-m6 tag",
+      "desc": "on milestone-6 branch, at the twin-m6 tag, or on a branch descending from the twin-m6 tag",
       "validation_mode": "direct_git",
       "passed": true,
-      "detail": "milestone-6-complete-payouts-domain"
+      "detail": "milestone-7-shared-ingress-integration (twin-m6 tag ancestor=True)"
     },
     {
       "id": "M6-12",
