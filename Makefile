@@ -84,3 +84,52 @@ m5-acceptance:     ## evaluate all M5 gates against committed evidence (dry-run 
 m5-full: m5-scenarios m5-benchmark m5-safety ## scenarios + benchmark integrity + safety, then acceptance
 	@python3 RED_LOOP/surface/m5_acceptance.py --dry-run || true
 	@echo "run 'make m5-campaign' for a fresh campaign, or m5-acceptance to verify canonical evidence"
+
+# ---- M6 snapshot / refresh ----
+# Domain snapshot, drift diff, blast-radius mapping, build recipes and the
+# daily/weekly refresh runbook. See scripts/snapshot/README.md.
+# Everything below is read-only unless you add --execute (ARGS=--execute).
+.PHONY: m6-snapshot m6-snapshot-diff m6-affected m6-recipes m6-refresh-daily m6-refresh-weekly m6-snapshot-test
+
+m6-snapshot:        ## capture reports/domain/snapshots/<UTC>.json (+ latest.json); runs without docker
+	@python3 scripts/snapshot/capture.py $(ARGS)
+
+m6-snapshot-diff:   ## diff two snapshots (ARGS="<old.json> <new.json>"); exit 3 == changed
+	@python3 scripts/snapshot/diff.py $(ARGS)
+
+m6-affected:        ## rebuild / rerun_journeys / regen_config for a diff (ARGS=<diff.json>)
+	@python3 scripts/snapshot/affected.py $(ARGS)
+
+m6-recipes:         ## write reports/domain/recipes/*.yaml + reports/domain/SNAPSHOT_MANIFEST.json
+	@python3 scripts/snapshot/recipes.py $(ARGS)
+
+m6-refresh-daily:   ## capture -> diff -> affected -> refresh plan (ARGS=--execute to run it)
+	@python3 scripts/snapshot/refresh.py daily $(ARGS)
+
+m6-refresh-weekly:  ## full re-pin plan: prepare-repos -> check-inputs -> build -> clean boot -> journeys -> acceptance (ARGS=--execute)
+	@python3 scripts/snapshot/refresh.py weekly $(ARGS)
+
+m6-snapshot-test:   ## unit tests for the snapshot / refresh tooling
+	@python3 -m unittest discover -s scripts/snapshot/tests
+
+# ---- M6 complete Payouts functional domain ----
+.PHONY: m6-inventory m6-graph m6-journeys m6-clean-boot m6-acceptance m6-full
+m6-inventory:      ## repository + deployment-artefact inventory and remaining-access manifest
+	@python3 scripts/domain/inventory.py
+
+m6-graph:          ## merge discovery parts (+ runtime overlay + executed journeys) into the functional graph
+	@python3 scripts/domain/runtime_overlay.py || true
+	@python3 scripts/domain/journeys_part.py || true
+	@python3 scripts/domain/build_graph.py --strict
+	@python3 scripts/domain/inventory.py
+
+m6-journeys:       ## run the M6 business-journey suite against the live arena (ARGS=--only id,id | --family f)
+	@python3 RED_LOOP/m6/journeys/run.py $(ARGS)
+
+m6-clean-boot:     ## down -> empty volumes -> fresh secrets/config/seeds -> up -> journeys (ARGS passed to clean_boot.py)
+	@python3 RED_LOOP/m6/clean_boot.py $(ARGS)
+
+m6-acceptance:     ## evaluate the M6 gates against committed evidence (clean-checkout safe)
+	@python3 RED_LOOP/surface/m6_acceptance.py
+
+m6-full: m6-clean-boot m6-graph m6-acceptance ## the weekly full rebuild chain (after images are built)

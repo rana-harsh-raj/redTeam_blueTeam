@@ -16,7 +16,13 @@
 [Server]
     ShutdownTimeout = 20
     [Server.ServerAddresses]
-        Grpc     = ":8080"
+        # M6: the grpc-gateway dials THIS address for its own backend
+        # (internal/server/http_handler.go:27-66 RegisterXHandlerFromEndpoint(ctx, mux, address, ...)).
+        # A hostless ":8080" target has no host for NO_PROXY to match, so grpc-go routed the loopback
+        # dial through HTTP_PROXY=127.0.0.1:9 (discard) -> every /v1/contacts|fund_accounts call 503
+        # (journey beneficiary-fund-accounts/cfa_api). "0.0.0.0:8080" listens on all interfaces exactly
+        # like ":8080" and gives the dial a host that NO_PROXY lists.
+        Grpc     = "0.0.0.0:8080"
         Http     = ":8081"
         Internal = ":8082"
 

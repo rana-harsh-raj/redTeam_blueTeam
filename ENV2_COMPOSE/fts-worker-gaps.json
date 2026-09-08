@@ -1,0 +1,530 @@
+{
+  "worker:fts/amazon_pay::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no amazon_pay channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no amazon_pay source-account credential row. The [queue.worker_queue_map] key and the [integration.api.amazon_pay] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/amazon_pay::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no amazon_pay channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no amazon_pay source-account credential row. The [queue.worker_queue_map] key and the [integration.api.amazon_pay] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/amazon_pay::wallet_transfer::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no amazon_pay channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no amazon_pay source-account credential row. The [queue.worker_queue_map] key and the [integration.api.amazon_pay] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::direct::upi::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::direct::upi::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::imps::hv::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::imps::hv::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::neft::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::neft::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::register_beneficiary": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::rtgs::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::rtgs::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::upi::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::upi::hv::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::upi::hv::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis::upi::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no axis channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no axis source-account credential row. The [queue.worker_queue_map] key and the [integration.api.axis] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/axis_file_based": {
+    "evidence": "ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md; ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only)",
+    "missing_dependency": "file/bulk lane: needs the S3 (LocalStack) bank-file drop plus fts bulk fixtures (transfer batches, attempt-bulk rows); batch-sim is inert until called and no bulk seed exists."
+  },
+  "worker:fts/batch::icici::neft::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no batch channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no batch source-account credential row. The [queue.worker_queue_map] key and the [integration.api.batch] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/batch::icici::neft::register_beneficiary": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no batch channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no batch source-account credential row. The [queue.worker_queue_map] key and the [integration.api.batch] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/check_recon_status": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:163",
+    "missing_dependency": "none at the config layer -- [queue.worker_queue_map] key \"check_recon_status\" exists (env.default.toml:163) and the worker would boot on the same image/entrypoint as the 26 running ones. Absent only because M6 lane I7 was scoped to the 15 P0 graph nodes; adding it costs one compose block (~45 MiB) and no config change."
+  },
+  "worker:fts/hdfc::check_bulk_transfer_status": {
+    "evidence": "ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md; ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only)",
+    "missing_dependency": "file/bulk lane: needs the S3 (LocalStack) bank-file drop plus fts bulk fixtures (transfer batches, attempt-bulk rows); batch-sim is inert until called and no bulk seed exists."
+  },
+  "worker:fts/hdfc::initiate_attempt_bulk": {
+    "evidence": "ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md; ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only)",
+    "missing_dependency": "file/bulk lane: needs the S3 (LocalStack) bank-file drop plus fts bulk fixtures (transfer batches, attempt-bulk rows); batch-sim is inert until called and no bulk seed exists."
+  },
+  "worker:fts/icici::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::direct::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::direct::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::imps::hv::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::imps::hv::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::neft::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::neft::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::register_beneficiary": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::rtgs::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::rtgs::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::upi::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::upi::hv::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::upi::hv::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/icici::upi::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no icici channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no icici source-account credential row. The [queue.worker_queue_map] key and the [integration.api.icici] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::direct::imps::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::direct::imps::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::direct::neft::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::direct::neft::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::direct::rtgs::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::direct::rtgs::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::direct::upi::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::direct::upi::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::imps::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::imps::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::imps::xp::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::imps::xp::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::neft::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::neft::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::neft::xp::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::neft::xp::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::rtgs::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::rtgs::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::rtgs::xp::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::rtgs::xp::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::upi::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::upi::hv::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::upi::hv::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::upi::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::upi::pool::hv::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/idfc::upi::pool::hv::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no idfc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no idfc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.idfc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/manual_action": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:263",
+    "missing_dependency": "none at the config layer -- [queue.worker_queue_map] key \"manual_action\" exists (env.default.toml:263) and the worker would boot on the same image/entrypoint as the 26 running ones. Absent only because M6 lane I7 was scoped to the 15 P0 graph nodes; adding it costs one compose block (~45 MiB) and no config change."
+  },
+  "worker:fts/mcs::init_and_check_status": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:159",
+    "missing_dependency": "none at the config layer -- [queue.worker_queue_map] key \"mcs::init_and_check_status\" exists (env.default.toml:159) and the worker would boot on the same image/entrypoint as the 26 running ones. Absent only because M6 lane I7 was scoped to the 15 P0 graph nodes; adding it costs one compose block (~45 MiB) and no config change."
+  },
+  "worker:fts/ocbc::duitnow::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no ocbc channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no ocbc source-account credential row. The [queue.worker_queue_map] key and the [integration.api.ocbc] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/one_off_db_processing": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:164",
+    "missing_dependency": "none at the config layer -- [queue.worker_queue_map] key \"one_off_db_processing\" exists (env.default.toml:164) and the worker would boot on the same image/entrypoint as the 26 running ones. Absent only because M6 lane I7 was scoped to the 15 P0 graph nodes; adding it costs one compose block (~45 MiB) and no config change."
+  },
+  "worker:fts/process_attempt": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:157",
+    "missing_dependency": "none at the config layer -- [queue.worker_queue_map] key \"process_attempt\" exists (env.default.toml:157) and the worker would boot on the same image/entrypoint as the 26 running ones. Absent only because M6 lane I7 was scoped to the 15 P0 graph nodes; adding it costs one compose block (~45 MiB) and no config change."
+  },
+  "worker:fts/process_attempt_update": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:262",
+    "missing_dependency": "none at the config layer -- [queue.worker_queue_map] key \"process_attempt_update\" exists (env.default.toml:262) and the worker would boot on the same image/entrypoint as the 26 running ones. Absent only because M6 lane I7 was scoped to the 15 P0 graph nodes; adding it costs one compose block (~45 MiB) and no config change."
+  },
+  "worker:fts/rbl::v4::init_and_check_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only)",
+    "missing_dependency": "RBL v4 init-and-check lane: queue-map key exists, but no source_accounts row with mozart_identifier='v4' is seeded, so nothing routes to it."
+  },
+  "worker:fts/rbl::v5::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:113 (fallback rule) and :106-289 (no rbl::v5 key); kube-manifests/templates/fts/templates/fts-live-worker-rbl-v5-initiate-transfer-deployment.yaml:100-104 (configMap fts-app-config, undefined in kube-manifests)",
+    "missing_dependency": "[queue.worker_queue_map] key \"rbl::v5::check_transfer_status\" does not exist in the FTS repo config (neither in the cloned fts/config/env.default.toml nor in the twin's byte-identical copy). Per the map's own contract an unmapped -command falls back to DEFAULT_QUEUE=\"default\", so adding this worker would put a second consumer on the shared `default` queue and silently steal tasks from fts-worker-default -- a topology REGRESSION, not a gain. Prod gets the mapping from the out-of-band `fts-app-config` ConfigMap, which is mounted by every fts Deployment but is not defined anywhere in kube-manifests, so there is no real value to copy. Needs: the real rbl_v5_* queue-name pair from the external fts config source."
+  },
+  "worker:fts/rbl::v5::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:113 (fallback rule) and :106-289 (no rbl::v5 key); kube-manifests/templates/fts/templates/fts-live-worker-rbl-v5-initiate-transfer-deployment.yaml:100-104 (configMap fts-app-config, undefined in kube-manifests)",
+    "missing_dependency": "[queue.worker_queue_map] key \"rbl::v5::initiate_transfer\" does not exist in the FTS repo config (neither in the cloned fts/config/env.default.toml nor in the twin's byte-identical copy). Per the map's own contract an unmapped -command falls back to DEFAULT_QUEUE=\"default\", so adding this worker would put a second consumer on the shared `default` queue and silently steal tasks from fts-worker-default -- a topology REGRESSION, not a gain. Prod gets the mapping from the out-of-band `fts-app-config` ConfigMap, which is mounted by every fts Deployment but is not defined anywhere in kube-manifests, so there is no real value to copy. Needs: the real rbl_v5_* queue-name pair from the external fts config source."
+  },
+  "worker:fts/rbl_check_bulk_transfer_status": {
+    "evidence": "ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md; ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only)",
+    "missing_dependency": "file/bulk lane: needs the S3 (LocalStack) bank-file drop plus fts bulk fixtures (transfer batches, attempt-bulk rows); batch-sim is inert until called and no bulk seed exists."
+  },
+  "worker:fts/rbl_initiate_attempt_bulk": {
+    "evidence": "ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md; ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only)",
+    "missing_dependency": "file/bulk lane: needs the S3 (LocalStack) bank-file drop plus fts bulk fixtures (transfer batches, attempt-bulk rows); batch-sim is inert until called and no bulk seed exists."
+  },
+  "worker:fts/rbl_process_attempt_bulk": {
+    "evidence": "ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md; ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only)",
+    "missing_dependency": "file/bulk lane: needs the S3 (LocalStack) bank-file drop plus fts bulk fixtures (transfer batches, attempt-bulk rows); batch-sim is inert until called and no bulk seed exists."
+  },
+  "worker:fts/register_beneficiary": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:129",
+    "missing_dependency": "none at the config layer -- [queue.worker_queue_map] key \"register_beneficiary\" exists (env.default.toml:129) and the worker would boot on the same image/entrypoint as the 26 running ones. Absent only because M6 lane I7 was scoped to the 15 P0 graph nodes; adding it costs one compose block (~45 MiB) and no config change."
+  },
+  "worker:fts/retry_preprocessor_status_update": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:155",
+    "missing_dependency": "none at the config layer -- [queue.worker_queue_map] key \"retry_preprocessor_status_update\" exists (env.default.toml:155) and the worker would boot on the same image/entrypoint as the 26 running ones. Absent only because M6 lane I7 was scoped to the 15 P0 graph nodes; adding it costs one compose block (~45 MiB) and no config change."
+  },
+  "worker:fts/slice::direct::imps::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::direct::imps::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::direct::neft::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::direct::neft::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::direct::rtgs::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::direct::rtgs::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::direct::upi::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::direct::upi::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::imps::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::imps::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::neft::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::neft::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::rtgs::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::rtgs::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::upi::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::upi::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::v1::imps::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::v1::imps::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::v1::upi::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/slice::v1::upi::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no slice channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no slice source-account credential row. The [queue.worker_queue_map] key and the [integration.api.slice] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/test_transactions": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:113",
+    "missing_dependency": "[queue.worker_queue_map] key \"test_transactions\" is absent from the FTS repo config, so -command would fall back to DEFAULT_QUEUE=\"default\" and contend with fts-worker-default. Needs the real queue-name mapping from the external `fts-app-config` ConfigMap."
+  },
+  "worker:fts/verify_beneficiary": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:128",
+    "missing_dependency": "none at the config layer -- [queue.worker_queue_map] key \"verify_beneficiary\" exists (env.default.toml:128) and the worker would boot on the same image/entrypoint as the 26 running ones. Absent only because M6 lane I7 was scoped to the 15 P0 graph nodes; adding it costs one compose block (~45 MiB) and no config change."
+  },
+  "worker:fts/yesbank::direct::upi::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::direct::upi::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::ift::check_transfer_status::dummy": {
+    "evidence": "ENV2_COMPOSE/config/templates/base/fts/env.default.toml:113",
+    "missing_dependency": "[queue.worker_queue_map] key \"yesbank::ift::check_transfer_status::dummy\" is absent from the FTS repo config, so -command would fall back to DEFAULT_QUEUE=\"default\" and contend with fts-worker-default. Needs the real queue-name mapping from the external `fts-app-config` ConfigMap."
+  },
+  "worker:fts/yesbank::imps::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::imps::hv::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::imps::hv::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::neft::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::neft::hv::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::neft::hv::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::neft::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::neft::lv::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::neft::lv::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::rtgs::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::rtgs::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::rx_wallet::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::rx_wallet::imps::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::rx_wallet::imps::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::rx_wallet::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::upi::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::upi::hv::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::upi::hv::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::upi::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::v2::imps::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::v2::imps::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::v3::imps::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::v3::imps::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::v3::neft::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::v3::neft::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::v3::rtgs::check_transfer_status": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  },
+  "worker:fts/yesbank::v3::rtgs::initiate_transfer": {
+    "evidence": "ENV2_COMPOSE/seeds/generated/s4/fts.sql:57-69 (channel_information_status: RBL / mozart_identifier v1 / IMPS+NEFT only); ENV2_COMPOSE/substitutes/mozart-sim/server.py:496-506",
+    "missing_dependency": "no yesbank channel in the arena: fts source_accounts/source_account_mappings/channel_information_status are seeded for channel RBL, mozart_identifier v1, modes IMPS+NEFT only, and there is no yesbank source-account credential row. The [queue.worker_queue_map] key and the [integration.api.yesbank] gateway config both exist, so this is a SEED gap, not a config or Mozart gap (mozart-sim dispatches on {action} and ignores {namespace}/{gateway}/{version})."
+  }
+}

@@ -355,13 +355,39 @@ def provision_direct_merchant(campaign_id, role="direct", opening=10_000_000, ch
                % (mid, CH, fts, mode, ts, ts))
 
     # ---- 5 ledger (no merchant journal is ever posted for Direct) ------------
+    # ids_for_direct derives ledger_prefix from the FULL num % 10**7 (see its
+    # docstring), so unlike the Shared recipe's old two-digit prefix it is already
+    # injective and cannot collide. The ownership re-read below is the same
+    # fail-closed guard the Shared recipe now carries (M6 I5): a pre-existing
+    # `LIKE lp||'AC%'` row is only "already provisioned" if the four MERCHANT
+    # sub-accounts (AC03..AC06) actually belong to this merchant.
     lp = ids["ledger_prefix"]
+
+    def ledger_owned(step_name, table, wanted, existed):
+        idlist = ",".join("'%s'" % x for x in wanted)
+        rc_, out_, err_ = _psql(pw_led, "SELECT count(*) FROM %s WHERE id IN (%s) AND "
+                                        "merchant_id='%s'" % (table, idlist, mid))
+        if rc_ != 0:
+            return step(step_name, rc_, err_, existed=existed)
+        n = int((out_ or "0").strip() or 0)
+        if n == len(wanted):
+            return step(step_name, 0, None, existed=existed)
+        _, owners, _ = _psql(pw_led, "SELECT DISTINCT merchant_id FROM %s WHERE id IN (%s)"
+                                     % (table, idlist))
+        return step(step_name, 1,
+                    "ledger id namespace collision: only %d/%d %s rows belong to %s (prefix %s; "
+                    "owned by %r)" % (n, len(wanted), table, mid, lp,
+                                      [o.strip() for o in (owners or "").splitlines() if o.strip()]),
+                    existed=existed)
+
+    _mine_acc = ["%sAC%s" % (lp, i) for i in ("03", "04", "05", "06")]
+    _mine_det = ["%sDT%s" % (lp, i) for i in ("03", "04", "05", "06")]
     rc, out, err = _psql(pw_led, "SELECT count(*) FROM accounts WHERE id LIKE '%sAC%%'" % lp)
     if rc != 0:
         step("ledger.accounts", 1, err)
     elif out.strip() not in ("", "0"):
-        step("ledger.accounts", 0, None, existed=True)
-        step("ledger.account_details", 0, None, existed=True)
+        ledger_owned("ledger.accounts", "accounts", _mine_acc, True)
+        ledger_owned("ledger.account_details", "account_details", _mine_det, True)
     else:
         bacc = "bacc_" + ids["banking_account"]
         accs = [
@@ -384,14 +410,20 @@ def provision_direct_merchant(campaign_id, role="direct", opening=10_000_000, ch
                         for i, owner, bal, _, _, _, _ in accs)
         rc, _, err = _psql(pw_led, "INSERT INTO accounts (id,merchant_id,status,balance,min_balance,negative_balance,"
                            "created_at,updated_at,deleted_at) VALUES %s ON CONFLICT (id) DO NOTHING;" % rows)
-        step("ledger.accounts", rc, err, existed=False)
+        if rc != 0:
+            step("ledger.accounts", rc, err, existed=False)
+        else:
+            ledger_owned("ledger.accounts", "accounts", _mine_acc, False)
         det = ",".join("('%sDT%s','%sAC%s','%s','%s','%s','INR','%s','real','%s','Direct %s current account (m4)',%d,%d,NULL,'X',0)"
                        % (lp, i, lp, i, name, owner, parent, cat, ent, CH, ts, ts)
                        for i, owner, _, parent, name, cat, ent in accs)
         rc, _, err = _psql(pw_led, "INSERT INTO account_details (id,account_id,account_name,merchant_id,parent_account_id,"
                            "currency,account_category,business_category,entities,description,created_at,updated_at,"
                            "deleted_at,tenant,use_split_accounts) VALUES %s ON CONFLICT (id) DO NOTHING;" % det)
-        step("ledger.account_details", rc, err, existed=False)
+        if rc != 0:
+            step("ledger.account_details", rc, err, existed=False)
+        else:
+            ledger_owned("ledger.account_details", "account_details", _mine_det, False)
 
     # ---- 6 CFA -----------------------------------------------------------------
     fa_hash = hashlib.sha256((mid + ids["fa_account_id"]).encode()).hexdigest()

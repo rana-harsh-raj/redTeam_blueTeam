@@ -21,7 +21,15 @@ CONFIG_GROUPS = ('payouts', 'ledger', 'fts', 'cfa', 'xbalances', 'mozart-mock')
 _ARENA_SUFFIX = os.environ.get('ARENA_SUFFIX', '')  # M3.1: honour disposable-instance namespacing
 VOLUMES = {**{'config-' + group: 'rzp-arena-config-' + group + _ARENA_SUFFIX for group in CONFIG_GROUPS},
            'secrets-kong': 'rzp-arena-secrets-kong' + _ARENA_SUFFIX,
-           'secrets-monolith': 'rzp-arena-secrets-monolith' + _ARENA_SUFFIX}
+           'secrets-monolith': 'rzp-arena-secrets-monolith' + _ARENA_SUFFIX,
+           # M6: the two Workflow-engine substitutes run as uid 10001 and so
+           # cannot read compose file-based secrets (host files stay 0600 and
+           # are owned by the host user, which is how the root-running
+           # cron-driver/verifier consume theirs). They get their own narrow
+           # materialized volume instead -- deliberately NOT secrets-kong, so
+           # the engine's admin-plane token never lands on the ingress
+           # container's filesystem.
+           'secrets-workflow': 'rzp-arena-secrets-workflow' + _ARENA_SUFFIX}
 OWNER_LABEL = 'io.rzp-arena.generated'
 
 INSTALL = '''import base64,hashlib,json,os,pathlib,shutil,sys
@@ -109,11 +117,22 @@ def source_groups():
         raise ValueError('No generated merchant secrets')
     groups['secrets-kong']={**merchant_files,
         'passport_private_key':read_source(ROOT/'secrets/passport_private_key.txt'),
-        'auth_api_payouts':read_source(ROOT/'secrets/auth_api_payouts.txt')}
+        'auth_api_payouts':read_source(ROOT/'secrets/auth_api_payouts.txt'),
+        # M6: batch-sim mounts secrets-kong and needs cred.Workflow
+        # (payouts [auth.workflow], username rzp_live) to drive the REAL
+        # payouts_internal/{id}/approve|reject routes -- see
+        # substitutes/batch-sim/CONTRACT.md 5. The workflow-engine ADMIN token
+        # is deliberately NOT here; it lives only in secrets-workflow.
+        'auth_workflow_payouts':read_source(ROOT/'secrets/auth_workflow_payouts.txt')}
     groups['secrets-monolith']={
         'monolith_basic_auth':read_source(ROOT/'secrets/verifier-bridge/monolith'),
         **{name:read_source(ROOT/'secrets'/(name+'.txt')) for name in
            ('auth_api_payouts','auth_payouts_ledger','auth_monolith_payouts_db','auth_monolith_balance_db')}}
+    # M6: workflow-engine + workflow-sim. auth_workflow_payouts is the shared
+    # payouts [auth.workflow] password used on the approve/reject callback;
+    # wfe_admin_token guards workflow-engine's admin plane only.
+    groups['secrets-workflow']={name:read_source(ROOT/'secrets'/(name+'.txt')) for name in
+        ('auth_workflow_payouts','wfe_admin_token')}
     return groups
 
 
@@ -180,7 +199,7 @@ def main():
     output.parent.mkdir(exist_ok=True,mode=0o700)
     output.write_text(json.dumps({'schema_version':1,'status':'passed','groups':results},indent=2)+'\n')
     output.chmod(0o600)
-    print('Synthetic runtime materialization: 8 groups verified as UID 10001; host modes unchanged')
+    print('Synthetic runtime materialization: %d groups verified as UID 10001; host modes unchanged' % len(results))
 
 
 def destroy():

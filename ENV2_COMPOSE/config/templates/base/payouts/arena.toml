@@ -297,9 +297,14 @@
         timeout = "2000ms"
 
 [workflow]
-    # M2: {{WORKFLOW_HOST}} defaults to the frozen dead address (http://127.0.0.1:1);
-    # set ARENA_WORKFLOW_HOST to point at the workflow-sim substitute.
+    # {{WORKFLOW_HOST}} <- ARENA_WORKFLOW_HOST (.env.arena, loaded by
+    # scripts/up.sh; config/generate.py falls back to the frozen dead address
+    # http://127.0.0.1:1 if unset). M6 default: http://workflow-engine:8093.
     host = "{{WORKFLOW_HOST}}"
+    # M6 note: 100ms is the REAL prod value and is kept. workflow-engine answers
+    # Create from local SQLite in single-digit ms, so this is not a problem --
+    # but it IS the reason a slow/cold engine surfaces as a payout create
+    # failure rather than a hang, which is faithful to prod.
     timeout = "100ms"
     httpClientName = "api"
     httpretryattempts = 3

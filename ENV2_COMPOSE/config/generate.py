@@ -226,11 +226,20 @@ def build_token_map(arena, secrets):
     tokens["MOZART.port"] = tokens.get("%s.port" % mozart_key, "")
     tokens["MOZART.url"] = tokens.get("%s.url" % mozart_key, "")
 
-    # M2 (RED_LOOP) additive surface: the Workflow/Cadence approval-engine
-    # substitute. Default preserves the FROZEN dead address (workflow-applicable
-    # payouts fail to reach pending, exactly as in twin-v1.0, so this token is
-    # behaviour-neutral by default); set ARENA_WORKFLOW_HOST=http://workflow-sim:8092
-    # to activate workflow-sim. scripts/up.sh sources .env.arena before this runs.
+    # The Workflow/Cadence approval-engine substitute (payouts [workflow].host).
+    #
+    # M2 introduced this token with the FROZEN dead address http://127.0.0.1:1
+    # as its default, so workflow-applicable payouts failed to reach `pending`
+    # exactly as in twin-v1.0.
+    # M6 (I3): .env.arena now SETS ARENA_WORKFLOW_HOST=http://workflow-engine:8093
+    # (the durable maker/checker engine, substitutes/workflow-engine), making the
+    # approval family live by default. The dead address remains the fallback here
+    # for anyone invoking generate.py with an empty environment, and .env.arena
+    # documents how to revert or to select the thinner workflow-sim instead.
+    #
+    # scripts/up.sh loads .env.arena into its own environment before invoking
+    # this script (it did NOT until M6 -- `docker compose --env-file` only feeds
+    # compose's ${VAR} interpolation, never this process).
     tokens["WORKFLOW_HOST"] = os.environ.get("ARENA_WORKFLOW_HOST", "http://127.0.0.1:1")
 
     # M4 (T10): merchant whitelist for payouts [configs.account_statement_source_event] (the REAL
@@ -238,6 +247,7 @@ def build_token_map(arena, secrets):
     # enabled + empty whitelist => all), so a provisioner only needs to set this when it wants to RESTRICT
     # the producer to specific merchants. Comma-separated 14-char merchant ids.
     tokens["XAS_SOURCE_EVENT_WHITELIST"] = os.environ.get("ARENA_XAS_SOURCE_EVENT_WHITELIST", "")
+
 
     tokens["ARENA.NAME"] = arena.get("arena_name", "env2")
 
@@ -348,6 +358,11 @@ def build_env_overrides(svc, tokens):
             "LEDGER_AUTH_SECRET": tokens["SECRET.auth_fts_ledger"],
             "TELEMETRY_EXPORTERHOST": "127.0.0.1",
             "JAEGER_HOSTNAME": "127.0.0.1",
+            # M6: the machinery retry queue ([queue.redis] in env.default.toml is env|REDIS_QUEUE_HOST/PORT).
+            # Left as a dummy, the env var wins over the arena TOML overlay and fts-worker-retry-transfer*
+            # never dequeues a retryable attempt (M6 journey idempotency-retries/retry). Point it at the arena redis.
+            "REDIS_QUEUE_HOST": tokens["SVC.redis.host"],
+            "REDIS_QUEUE_PORT": str(tokens["SVC.redis.port"]),
         }
     if svc == "ledger":
         return {

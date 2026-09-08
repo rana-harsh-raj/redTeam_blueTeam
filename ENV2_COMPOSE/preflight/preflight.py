@@ -193,7 +193,11 @@ def scan():
     ])
     mounted_paths.update([
         "config-<svc> named volumes -> /app/config:ro (or /app/conf:ro for mozart-mock); UID 10001 files 0400, directories 0500",
-        "secrets-kong and secrets-monolith named volumes -> each sole consumer's /run/secrets:ro; exact generated credentials only",
+        # M6 (I3): secrets-workflow is a third such volume (workflow-engine +
+        # workflow-sim; auth_workflow_payouts + wfe_admin_token). It is separate
+        # from secrets-kong on purpose -- the engine's admin-plane token must not
+        # land on the ingress container's filesystem.
+        "secrets-kong, secrets-monolith and secrets-workflow named volumes -> each consumer group's /run/secrets:ro; exact generated credentials only",
         "Compose file-based secrets mount individual host-generated files read-only for root bootstrap/cron/verifier; not claimed tmpfs-backed",
         "Host generated credential files stay 0600; generated runtime volumes are removed by down -v and secrets/destroy.sh",
     ])

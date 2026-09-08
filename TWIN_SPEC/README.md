@@ -26,6 +26,21 @@ CONFIG_PROVENANCE.md, SYNTHETIC_DATA_PROVENANCE.md, REMAINING_INFORMATION_REQUES
 
 Fidelity tiers used everywhere: **REAL**, **CONTRACT-FAITHFUL SUBSTITUTE**, **REPRESENTATIVE SUBSTITUTE**, **UNKNOWN-BLOCKED** (+ **INCORRECT**/**MISSING** for the current twin).
 
+## Source-faithful behaviours that look like gaps
+
+Behaviours the twin reproduces **because the pinned source does them**, and which are repeatedly mistaken for missing
+twin functionality. They are not failures, so they are not in `expected-failures.yaml` (whose entries are, by its own
+header, "route outcomes that the twin is REQUIRED to reproduce as **failures**" and whose `predicted_state` is compared
+against an observed failing run). Do not "fix" any of these; assert them.
+
+| Behaviour | Why it is correct | Pinned source |
+|---|---|---|
+| **There is no `payout.cancelled` webhook.** A cancelled payout emits no merchant webhook of any kind; the merchant learns about a cancellation only by fetching the payout. | `sm.State(StateCancelled).Enter(...)` is the only state handler that returns without calling `FireWebhookEventAsyncForPayout`, and `StatusToWebhookEventMap` has no `CANCELLED` key — the constant `payout.cancelled` does not exist anywhere in the source. `status.go:85` looks the status up in that map and finds nothing, so nothing is fired. | payouts `internal/app/payouts/state_machine.go:83-86`; `internal/app/common/appConstants/webhooks.go:3-24`; `internal/app/payouts/status.go:85` (payouts 4bf3dbf9) |
+
+Asserted live by `journey:failure-reversal-cancellation/webhook`
+(`no_payout.cancelled_delivery(source-faithful)`, `no_payout.cancelled_event_at_stork(source-faithful)`) and by
+`journey:scheduled-payouts/cancel_via_dashboard`.
+
 ## Milestone 4 update (2026-09-07)
 
 The Direct / current-account, statement-ingestion, reconciliation and Direct-Ledger sections were re-derived from source by

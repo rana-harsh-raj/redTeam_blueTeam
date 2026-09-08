@@ -207,9 +207,65 @@ def _psql(pw, sql):
     return out.returncode, out.stdout, out.stderr[:400]
 
 
+_B36 = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"
+
+# Ledger id geometry. ledger.accounts.id and ledger.account_details.id are both
+# CHAR(14) (ledger internal/database/rx_migrations/20201001011117_create_accounts.go
+# and 20201022184734_create_account_details.go). This recipe appends a 4-char
+# discriminator ("AC%02d" / "DT%02d", the same convention provisioner_direct.py
+# ids_for_direct already uses), so the prefix is exactly 10 characters.
+LEDGER_PREFIX_LEN = 10
+LEDGER_ID_LEN = 14
+
+
+def _ledger_acc_prefix(num):
+    """Collision-free ledger account-id prefix for a fresh Shared merchant.
+
+    DEFECT FIXED (M6 I5): the previous scheme was
+    ``("ARENA" + str(num)[-2:])[:7].ljust(7, "0")`` -- only the LAST TWO DIGITS of
+    the merchant number, i.e. 100 namespaces for a 9,000,000-wide `num` range.
+    Two campaigns collided constantly, and because provision_funded_merchant
+    inserts with ``ON CONFLICT (id) DO NOTHING`` and recorded the step ok anyway,
+    the second merchant silently ended up with ZERO ledger accounts while the
+    descriptor still said verified.
+
+    New scheme -- injective in `num`, 10 characters:
+
+      n7  = num % 10**7            (unique per num: _ids_for draws num from
+                                    90000000..98999999, so n7 == num - 90000000)
+      hi  = n7 // 36**4            (0..5, since n7 <= 8_999_999 < 6*36**4)
+      lo  = n7 %  36**4            (base36, zero-padded to 4)
+      prefix = "ARENA" + chr(ord("G") + hi) + base36_4(lo)
+
+    Distinct `num` -> distinct (hi, lo) -> distinct prefix, with no truncation.
+
+    The marker character at index 5 is always one of G,H,I,J,K,L -- deliberately
+    OUTSIDE the hex alphabet. That is what keeps the resulting 14-char ids out of
+    the fixture id space: ENV2_COMPOSE/seeds/generator/generate.py `synthetic_id`
+    mints "ARENA" + 9 uppercase HEX characters, and the retained baseline ids are
+    ARENAPRACC*, ARENAM1ACC*, ARENAM2NODAC*, ARENAM3ACC*, ARENAPOOLACC* -- none of
+    which carries a G..L at index 5. tests/test_ledger_ids.py proves both
+    properties over 10,000 campaigns against the real seed file.
+    """
+    # Injectivity holds only inside the 10**7-wide window _ids_for draws from
+    # (90000000..98999999, the Shared range; provisioner_direct uses 8xxxxxxx).
+    # Fail loudly rather than fold two merchants onto one prefix if that changes.
+    if not 90000000 <= num <= 99999999:
+        raise ValueError("merchant number %r is outside the Shared ledger-prefix "
+                         "range 90000000..99999999" % num)
+    n7 = num % 10 ** 7
+    hi, lo = divmod(n7, 36 ** 4)      # hi in 0..5: max n7 (9_999_999) < 6 * 36**4
+    tail = ""
+    for _ in range(4):
+        lo, r = divmod(lo, 36)
+        tail = _B36[r] + tail
+    prefix = "ARENA" + chr(ord("G") + hi) + tail
+    assert len(prefix) == LEDGER_PREFIX_LEN, prefix
+    return prefix
+
+
 def _ids_for(campaign_id, role):
     num = 90000000 + (int(hashlib.sha256((campaign_id + role).encode()).hexdigest(), 16) % 9000000)
-    mtok = str(num)[-2:]
     return {
         "merchant_id": "ARENAM%08d" % num,
         "balance_id": "ARENABAL%06d" % (num % 1000000),
@@ -219,9 +275,19 @@ def _ids_for(campaign_id, role):
         "fa_account_id": "ARENAFAX%06d" % (num % 1000000),
         "bank_account": "ARENABK%07d" % (num % 10000000),
         "purpose": "ARENAPP%07d" % (num % 10000000),
-        "acc_prefix": ("ARENA" + mtok)[:7].ljust(7, "0"),
+        "acc_prefix": _ledger_acc_prefix(num),
         "num": num,
     }
+
+
+def ledger_account_ids(acc_prefix):
+    """The four ledger accounts.id values this recipe mints for one merchant."""
+    return ["%sAC%02d" % (acc_prefix, i) for i in (1, 2, 3, 4)]
+
+
+def ledger_account_detail_ids(acc_prefix):
+    """The four ledger account_details.id values this recipe mints for one merchant."""
+    return ["%sDT%02d" % (acc_prefix, i) for i in (1, 2, 3, 4)]
 
 
 def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
@@ -290,13 +356,43 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
 
     # 4 ledger (4 sub-accounts; fund the merchant-va one)
     acc = ids["acc_prefix"]
+
+    def ledger_owned(step_name, table, wanted, inserted):
+        """Fail CLOSED on a ledger account-id namespace collision.
+
+        `INSERT ... ON CONFLICT (id) DO NOTHING` succeeds (rc 0) whether it wrote
+        the rows or silently skipped them, so the step used to be recorded ok
+        while the merchant ended up with no ledger accounts at all. Re-read the
+        ids and require that every one of them belongs to THIS merchant; anything
+        else is a collision and must fail the provisioning run rather than hand
+        back a descriptor that claims verified."""
+        idlist = ",".join("'%s'" % x for x in wanted)
+        rc_, out_, err_ = _psql(pw_led, "SELECT count(*) FROM %s WHERE id IN (%s) AND "
+                                        "merchant_id='%s';" % (table, idlist, mid))
+        if rc_ != 0:
+            return step(step_name, rc_, err_)
+        n = int((out_ or "0").strip() or 0)
+        if n == len(wanted):
+            return step(step_name, 0, None)
+        _, owners, _ = _psql(pw_led, "SELECT DISTINCT merchant_id FROM %s WHERE id IN (%s);"
+                                     % (table, idlist))
+        return step(step_name, 1,
+                    "ledger id namespace collision: only %d/%d %s rows belong to %s "
+                    "(prefix %s; INSERT ... RETURNING id wrote %d row(s); ids currently owned "
+                    "by %r)" % (n, len(wanted), table, mid, acc,
+                                len([x for x in (inserted or "").split() if x.strip()]),
+                                [o.strip() for o in (owners or "").splitlines() if o.strip()]))
+
+    acc_ids = ledger_account_ids(acc)
     rows = []
     for i, bal in ((1, opening), (2, 0), (3, 0), (4, 0)):
-        rows.append("('%sAC%04d','%s','ACTIVATED',%d,0,NULL,%d,%d,NULL)" % (acc, i, mid, bal, ts, ts))
-    rc, _, e = _psql(pw_led,
+        rows.append("('%sAC%02d','%s','ACTIVATED',%d,0,NULL,%d,%d,NULL)" % (acc, i, mid, bal, ts, ts))
+    rc, ins, e = _psql(pw_led,
         "INSERT INTO accounts (id,merchant_id,status,balance,min_balance,negative_balance,created_at,"
-        "updated_at,deleted_at) VALUES %s ON CONFLICT (id) DO NOTHING;" % ",".join(rows))
+        "updated_at,deleted_at) VALUES %s ON CONFLICT (id) DO NOTHING RETURNING id;" % ",".join(rows))
     step("ledger.accounts", rc, e)
+    if rc == 0:
+        ledger_owned("ledger.accounts.owned", "accounts", acc_ids, ins)
     # All four sub-account roles, matching the working M1 fixture (merchant_va,
     # merchant_va_vendor, commission/cash, va_gst). Every detail row carries the
     # banking_account_id entity key the way M1 does; without the vendor/commission/
@@ -313,13 +409,16 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
         ent = ('{"account_type":["%s"],"fund_account_type":["%s"],"banking_account_id":["%s"]}'
                % (atype, ftype, bacc))
         det_rows.append(
-            "('%sDT%02d','%sAC%04d','%s - %s','%s','ARENAPRACC%04d','INR','%s','real','%s',NULL,%d,%d,NULL,'X',0)"
+            "('%sDT%02d','%sAC%02d','%s - %s','%s','ARENAPRACC%04d','INR','%s','real','%s',NULL,%d,%d,NULL,'X',0)"
             % (acc, i, acc, i, label, mid, mid, i, cat, ent, ts, ts))
     det = ("INSERT INTO account_details (id,account_id,account_name,merchant_id,parent_account_id,currency,"
            "account_category,business_category,entities,description,created_at,updated_at,deleted_at,tenant,"
-           "use_split_accounts) VALUES %s ON CONFLICT (id) DO NOTHING;" % ",".join(det_rows))
-    rc, _, e = _psql(pw_led, det)
+           "use_split_accounts) VALUES %s ON CONFLICT (id) DO NOTHING RETURNING id;" % ",".join(det_rows))
+    rc, ins, e = _psql(pw_led, det)
     step("ledger.account_details", rc, e)
+    if rc == 0:
+        ledger_owned("ledger.account_details.owned", "account_details",
+                     ledger_account_detail_ids(acc), ins)
 
     # 6 fts merchant->pool mapping (source_account_mappings + account_type_mappings)
     pw_fts = _pw("mysql_fts_root_password.txt")

@@ -108,7 +108,12 @@ def _get_merchant(handler, body):
     rec = MERCHANTS.get(mid)
     if rec is None:
         return 404, {"error": {"code": "BAD_REQUEST_ERROR", "description": "merchant not found"}}
-    return 200, {"merchant":rec.get("merchant",{}), "merchant_detail":rec.get("merchant_detail",{})}
+    # M6 fix: apply runtime feature overrides (POST /_arena/merchant_features) to the merchant
+    # record PS actually parses (merchant.feature list), so IsFeatureEnabled(payouts_on_hold, ...)
+    # can observe them. Before, overrides only reached the DA-ledger emitter (_merchant_features).
+    merchant = dict(rec.get("merchant", {}))
+    merchant["feature"] = sorted(f for f, on in _merchant_features(mid).items() if on)
+    return 200, {"merchant": merchant, "merchant_detail": rec.get("merchant_detail", {})}
 
 
 # --- POST /payouts_service/fetch_pricing_info ---

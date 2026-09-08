@@ -26,6 +26,11 @@ IO_TIMEOUT = 10
 START_TIMEOUT = 10
 STOP_TIMEOUT = 5
 MAX_BODY = 1048576
+# Request headers the loopback bridge forwards to kong-lite. The four original ones plus the
+# M6 kong-lite ARENA-CONTROL headers (dashboard/proxy passport opt-in, see
+# substitutes/kong-lite/CONTRACT.md); kong-lite strips the X-Arena-* headers before upstream.
+FORWARDED_HEADERS=('authorization','content-type','x-payout-idempotency','x-request-id',
+                   'x-arena-passport-consumer-type','x-arena-user-id','x-dashboard-user-role')
 PROXY = '''import sys,json,base64,urllib.request,urllib.error
 class NoRedirect(urllib.request.HTTPRedirectHandler):
  def redirect_request(self,*args,**kwargs): return None
@@ -99,7 +104,7 @@ class Handler(BaseHTTPRequestHandler):
         if len(body) != length:
             self.send_error(400,'incomplete request body');return
         request={'path':self.path,'method':self.command,'body':base64.b64encode(body).decode(),
-            'headers':{k:v for k,v in self.headers.items() if k.lower() in ('authorization','content-type','x-payout-idempotency','x-request-id')}}
+            'headers':{k:v for k,v in self.headers.items() if k.lower() in FORWARDED_HEADERS}}
         try:
             res=subprocess.run(COMPOSE+['exec','-T','kong-lite','python3','-c',PROXY],input=json.dumps(request),text=True,capture_output=True,timeout=30,check=True)
             response=json.loads(res.stdout); raw=base64.b64decode(response['body'],validate=True)

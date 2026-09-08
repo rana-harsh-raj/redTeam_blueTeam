@@ -16,6 +16,7 @@ logging/health conventions.
 import base64
 import json
 import os
+import re
 import sys
 import time
 import urllib.error
@@ -58,6 +59,33 @@ PASSPORT_TTL_SEC = int(os.environ.get("PASSPORT_TTL_SEC", "300"))  # real edge d
 # cred.Workflow)` accepts on the /v1/payouts route group (payout_routes.go).
 PS_API_AUTH_USER = os.environ.get("PS_API_AUTH_USER", "api")
 PS_API_AUTH_PASS_FILE = os.environ.get("PS_API_AUTH_PASS_FILE", "/run/secrets/auth_api_payouts")
+
+# --- ARENA CONTROL: opt-in dashboard/proxy passport shape -------------------
+# NOT a production behaviour. In production the dashboard/proxy passport is
+# minted by the monolith's BasicAuth (api/app/Http/BasicAuth/BasicAuth.php:1246
+# setPassportImpersonationClaims(PASSPORT_IMPERSONATION_TYPE_USER_MERCHANT,
+# merchantId), constant at :143) and serialised by
+# edge/kong-plugins/kong-plugin-upstream-jwt/kong/plugins/upstream-jwt/access.lua
+# :135-152; there is no session/user store in the arena to derive it from.
+#
+# These request headers let a caller that has ALREADY authenticated with the
+# merchant's own API key ask kong-lite for that claim shape. The merchant
+# identity still comes from the verified credential -- the headers only choose
+# the consumer/impersonation *shape* and name the dashboard user -- so no
+# cross-merchant identity can be asserted. They are consumed here and never
+# forwarded upstream. Default behaviour (no headers) is byte-identical to before.
+ARENA_CONSUMER_TYPE_HEADER = "X-Arena-Passport-Consumer-Type"
+ARENA_USER_ID_HEADER = "X-Arena-User-Id"
+ARENA_USER_ROLE_HEADER = "X-Dashboard-User-Role"
+ARENA_CONTROL_HEADERS = {ARENA_CONSUMER_TYPE_HEADER.lower(), ARENA_USER_ID_HEADER.lower(),
+                         ARENA_USER_ROLE_HEADER.lower()}
+# goutils/passport helpers.go:32 impersonationTypeUserMerchant; the same literal
+# the monolith constant PASSPORT_IMPERSONATION_TYPE_USER_MERCHANT carries.
+PASSPORT_IMPERSONATION_TYPE_USER_MERCHANT = "user_merchant"
+# goutils/passport helpers.go:14-18 ConsumerTypeUser / ConsumerTypeMerchant.
+PASSPORT_CONSUMER_TYPE_USER = "user"
+PASSPORT_CONSUMER_TYPE_MERCHANT = "merchant"
+_ARENA_ID_RE = re.compile(r"^[A-Za-z0-9_.\-]{1,40}$")
 
 
 def _log(msg):
@@ -149,11 +177,30 @@ def _match_upstream(path):
     return best[1] if best else None
 
 
-def _mint_passport_jwt(merchant_id, mode, roles):
-    if _PASSPORT_N is None:
-        return None
-    now = int(time.time())
-    header = {"typ": "JWT", "alg": "RS256", "kid": PASSPORT_IDENTIFIER}
+def _passport_claims(merchant_id, mode, roles, dashboard_user_id=None, now=None):
+    """The passport payload. Split out of _mint_passport_jwt so the claim shape can
+    be asserted offline without a signing key (tests/test_passport_claims.py).
+
+    Default (dashboard_user_id is None) -- merchant API-key private auth,
+    findings/21 §2.2(a): consumer {id: <merchant>, type: "merchant"}. goutils
+    passport helpers.go:207 GetLegacyAuthType maps that to LegacyAuthTypePrivate.
+
+    Dashboard/proxy shape (dashboard_user_id set) -- what payouts'
+    internal/app/payouts/validation.go ValidateCancel requires before it will
+    cancel a SCHEDULED payout (`authType != passportSdk.LegacyAuthTypeProxy` ->
+    CancelScheduledPayoutInvalidAuth). helpers.go:212 returns
+    LegacyAuthTypeProxy only for
+    consumer.Type == ConsumerTypeUser AND impersonation != nil AND
+    impersonation.Type == "user_merchant"; internal/auth/authHelper.go
+    getMerchantIdFromPassport then reads the merchant from
+    impersonation.Consumer (not from consumer), which is why the merchant id
+    moves into the impersonation block. Wire field names follow access.lua
+    :146-152 (`impersonation.type`, `impersonation.consumer.{id,type}`); the Go
+    ImpersonationClaims struct has no json tags, and encoding/json matches field
+    names case-insensitively, so the lowercase keys the edge emits bind to
+    Type/Consumer.
+    """
+    now = int(time.time()) if now is None else int(now)
     payload = {
         "iss": PASSPORT_ISS,
         "sub": PASSPORT_SUB,
@@ -166,14 +213,52 @@ def _mint_passport_jwt(merchant_id, mode, roles):
         "mode": mode,
         "org": PASSPORT_ORG,
         "product": PASSPORT_PRODUCT,
-        "consumer": {"id": merchant_id, "type": "merchant"},
+        "consumer": {"id": merchant_id, "type": PASSPORT_CONSUMER_TYPE_MERCHANT},
     }
+    if dashboard_user_id:
+        payload["consumer"] = {"id": dashboard_user_id, "type": PASSPORT_CONSUMER_TYPE_USER}
+        payload["impersonation"] = {
+            "type": PASSPORT_IMPERSONATION_TYPE_USER_MERCHANT,
+            "consumer": {"id": merchant_id, "type": PASSPORT_CONSUMER_TYPE_MERCHANT},
+        }
     if roles:
-        payload["roles"] = roles
+        payload["roles"] = list(roles)
+    return payload
+
+
+def _mint_passport_jwt(merchant_id, mode, roles, dashboard_user_id=None):
+    if _PASSPORT_N is None:
+        return None
+    header = {"typ": "JWT", "alg": "RS256", "kid": PASSPORT_IDENTIFIER}
+    payload = _passport_claims(merchant_id, mode, roles, dashboard_user_id)
     signing_input = (b64url(json.dumps(header, separators=(",", ":")).encode()) + "." +
                       b64url(json.dumps(payload, separators=(",", ":")).encode())).encode()
     sig = rsa_sign_pkcs1v15_sha256(signing_input, _PASSPORT_N, _PASSPORT_D, _PASSPORT_KEY_SIZE)
     return signing_input.decode() + "." + b64url(sig)
+
+
+def _dashboard_override(headers):
+    """ARENA CONTROL. Read the opt-in dashboard/proxy passport request headers.
+
+    Returns (dashboard_user_id, extra_roles). (None, []) means "mint the normal
+    merchant passport" -- i.e. absent or unusable headers change nothing, and a
+    request that never sends them is handled exactly as before.
+
+    Only ever called AFTER the merchant credential has been verified, so the
+    caller can pick the passport shape and the dashboard user id but never the
+    merchant: that still comes from the API key.
+    """
+    want = (headers.get(ARENA_CONSUMER_TYPE_HEADER) or "").strip().lower()
+    if want != PASSPORT_CONSUMER_TYPE_USER:
+        return None, []
+    uid = (headers.get(ARENA_USER_ID_HEADER) or "").strip()
+    if not uid or not _ARENA_ID_RE.match(uid):
+        _log("ignoring %s: %s missing or malformed" % (ARENA_CONSUMER_TYPE_HEADER,
+                                                       ARENA_USER_ID_HEADER))
+        return None, []
+    role = (headers.get(ARENA_USER_ROLE_HEADER) or "").strip()
+    roles = [role] if role and _ARENA_ID_RE.match(role) else []
+    return uid, roles
 
 
 def _authenticate(handler):
@@ -223,7 +308,13 @@ class ProxyHandler(BaseHTTPRequestHandler):
         merchant_id = str((req.get("consumer") or {}).get("id") or "")
         if not merchant_id.startswith("ARENA"):
             return self._json(403, {"error": "non_arena_merchant_id"})
-        jwt = _mint_passport_jwt(merchant_id, req.get("mode") or "live", req.get("roles") or [])
+        # ARENA CONTROL (same opt-in as the proxy path's headers): an optional
+        # "user": {"id": "..."} asks for the dashboard/proxy claim shape.
+        user_id = str((req.get("user") or {}).get("id") or "") or None
+        if user_id and not _ARENA_ID_RE.match(user_id):
+            return self._json(400, {"error": "bad_user_id"})
+        jwt = _mint_passport_jwt(merchant_id, req.get("mode") or "live", req.get("roles") or [],
+                                 dashboard_user_id=user_id)
         if jwt is None:
             return self._json(500, {"error": "passport_signing_key_unavailable"})
         return self._json(200, {"token": jwt})
@@ -269,14 +360,21 @@ class ProxyHandler(BaseHTTPRequestHandler):
         # credential is Kong-lite's own concern, never forwarded upstream)
         # and every other hop-by-hop header; add the passport + service
         # Basic-Auth headers a real Kong/edge would add.
-        _drop = {"host", "content-length", "authorization"}
+        # ARENA CONTROL headers are consumed here and never reach the upstream.
+        _drop = {"host", "content-length", "authorization"} | ARENA_CONTROL_HEADERS
         if ENFORCE_ROUTE_POLICY:
             # The edge mints identity; a client cannot supply it. cred.API used to
             # be injected across the whole prefix — now only for routes that need it.
             _drop |= _STRIP_IDENTITY_HEADERS
         headers = {k: v for k, v in self.headers.items() if k.lower() not in _drop}
 
-        jwt = _mint_passport_jwt(merchant_id, mode, roles)
+        dash_user, dash_roles = _dashboard_override(self.headers)
+        if dash_roles:
+            roles = list(roles) + [r for r in dash_roles if r not in roles]
+        if dash_user:
+            _log("arena control: minting a dashboard/proxy passport for merchant %s "
+                 "(user %s, roles %r)" % (merchant_id, dash_user, roles))
+        jwt = _mint_passport_jwt(merchant_id, mode, roles, dashboard_user_id=dash_user)
         if jwt is None:
             self._json(500, {"error": "passport_signing_key_unavailable"})
             return

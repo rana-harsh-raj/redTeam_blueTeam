@@ -1,0 +1,84 @@
+# batch-sim — service block for ENV2_COMPOSE/docker-compose.yml.
+#
+# This lane does NOT edit docker-compose.yml. Paste the `batch-sim:` block below
+# under `services:` (next to workflow-sim, docker-compose.yml:1965) and add the
+# named volume from the `volumes:` fragment at the end under the top-level
+# `volumes:` key (docker-compose.yml:94).
+#
+# Anchored on the existing workflow-sim block (docker-compose.yml:1965-1994) and
+# the kong-lite block (:1600-1632): same shared substitutes/Dockerfile, same
+# secrets-kong mount, same *runtime-security / *healthcheck-defaults anchors.
+#
+# NO NEW SECRET IS REQUIRED. batch-sim reuses three credentials that already
+# exist in the secrets-kong volume (see substitutes/batch-sim/CONTRACT.md §5):
+#   /run/secrets/auth_api_payouts      -> cred.API, username "api"  (same pair
+#                                          kong-lite injects, :1622-1624)
+#   /run/secrets/auth_workflow_payouts -> cred.Workflow, username "rzp_live"
+#                                          (same pair workflow-sim uses, :1989-1990)
+#   /run/secrets/passport_private_key  -> the arena passport signer (:1619)
+
+  batch-sim:
+    # M6 additive: HIGH-FIDELITY REPLACEMENT for razorpay/batch's payout batch
+    # types (payout, payout_approval, payouts_*_bene_*_process). Serves a
+    # Batch-compatible API and drives the REAL payouts-api bulk create
+    # (POST /v1/payouts/bulk) and per-row approve/reject
+    # (POST /v1/payouts/payouts_internal/{id}/{approve,reject}).
+    # The monolith hop is collapsed: batch-sim emits the request the monolith
+    # would have forwarded. See substitutes/batch-sim/CONTRACT.md.
+    # Inert unless something calls it — nothing in the arena depends on it.
+    build:
+      context: ./substitutes
+      # NOT the shared substitutes/Dockerfile: batch-sim is the first stateful
+      # stub and needs /data pre-created as `stub` so its named volume is
+      # writable by uid 10001. See substitutes/batch-sim/Dockerfile — it is the
+      # shared file plus exactly one RUN line, and its header describes the
+      # one-line change to substitutes/Dockerfile that would let this go back to
+      # `dockerfile: Dockerfile`.
+      dockerfile: batch-sim/Dockerfile
+      args:
+        STUB_DIR: batch-sim
+        STUB_NAME: batch-sim
+        STUB_PORT: "8094"
+    image: rzp-arena/batch-sim:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - secrets-kong:/run/secrets:ro
+      - batch-sim-data:/data
+    environment:
+      STUB_PORT: "8094"
+      BATCH_SIM_DATA_DIR: /data
+      PS_API_URL: "http://payouts-api:9400"
+      # cred.API on POST /v1/payouts/bulk
+      # (payout_internal_routes_with_passport.go:16)
+      PS_API_AUTH_USER: "api"
+      PS_API_AUTH_PASS_FILE: /run/secrets/auth_api_payouts
+      # X-Passport-JWT-V1 — same signer + claim shape as kong-lite
+      PASSPORT_PRIVATE_KEY_FILE: /run/secrets/passport_private_key
+      PASSPORT_IDENTIFIER: "arena-passport-1"
+      PASSPORT_ISS: "https://identity.arena.invalid"
+      # cred.Workflow on payouts_internal/{id}/approve — same pair as workflow-sim
+      WORKFLOW_CALLBACK_USER: "rzp_live"
+      WORKFLOW_CALLBACK_PASS_FILE: /run/secrets/auth_workflow_payouts
+      # BATCH application.properties:201-202 (max-attempts 5, back-off 5000ms)
+      BATCH_SIM_MAX_ATTEMPTS: "5"
+      BATCH_SIM_BACKOFF_MS: "5000"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8094/_arena/health"]
+      <<: *healthcheck-defaults
+
+# ---------------------------------------------------------------------------
+# Add to the top-level `volumes:` map (docker-compose.yml:94-120).
+# batch-sim's SQLite store must survive a container restart so the restart-
+# persistence path (in-flight batches re-queued with their original idempotency
+# keys) is real rather than simulated.
+# ---------------------------------------------------------------------------
+# volumes:
+#   batch-sim-data:
+#     name: "rzp-arena-batch-sim-data${ARENA_SUFFIX:-}"
+#
+# NOTE on `<<: *runtime-security` (docker-compose.yml:41-51): it sets
+# `read_only: true` + `tmpfs: [/tmp]`. Docker's read-only root filesystem does
+# NOT apply to volume mounts, so batch-sim's SQLite store at /data (a named
+# volume) stays writable. No override is needed and none is requested.

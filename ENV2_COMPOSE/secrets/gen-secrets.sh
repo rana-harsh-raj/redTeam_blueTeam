@@ -65,7 +65,12 @@ write_secret auth_splitz_payouts    "$(rand_password)"   # username payouts
 write_secret auth_shield_payouts    "$(rand_password)"   # username payouts
 write_secret auth_mozart_shared     "$(rand_password)"   # username payouts (fts/xbalances/payouts all share -- see generate.py MOZART.* tokens)
 write_secret auth_asv_shared        "$(rand_password)"   # username payouts / xBalances
-write_secret auth_workflow_payouts  "$(rand_password)"   # username workflow (rendered for completeness; no Workflow Service substitute in Env 2's substitutes profile)
+write_secret auth_workflow_payouts  "$(rand_password)"   # username rzp_live -- payouts [auth.workflow]; the credential the Workflow substitute (workflow-engine / workflow-sim) presents on the approve/reject callback into payouts. M6: materialized into the secrets-workflow volume so those two containers can actually read it (see secrets/materialize.py).
+# M6: admin-plane token for substitutes/workflow-engine (POST /admin/orgs|actors|policies,
+# GET /admin/workflows). NEVER handed to a campaign/attacker worker -- that separation is
+# the whole point of the M5 engine's two auth planes, which is why this lives in its own
+# narrow secrets-workflow volume and not in secrets-kong.
+write_secret wfe_admin_token        "$(rand_password)"   # bearer token, workflow-engine admin plane only
 write_secret auth_stork_payouts     "$(rand_password)"   # username payouts
 write_secret auth_vault_payouts     "$(rand_password)"   # username payouts_user ([hvault]/[vault] Mock -- see templates' TODO on this section)
 write_secret auth_cfa_payouts       "$(rand_password)"   # username payouts

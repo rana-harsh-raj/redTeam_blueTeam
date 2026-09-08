@@ -72,6 +72,18 @@ services:
   # which impl is running.
   mozart_mock: {host: mozart-mock, port: 8085}
   mozart_sim: {host: mozart-sim, port: 8085}
+  # M6 (I3): the Workflow/Cadence approval-engine substitutes. workflow_engine
+  # is the default target of payouts' [workflow].host -- but that host comes
+  # from ARENA_WORKFLOW_HOST (.env.arena), NOT from a {{SVC.*}} token, because
+  # it must be switchable between the two implementations and the frozen dead
+  # address without re-rendering topology. These entries exist so RED_LOOP
+  # journeys and the verifier resolve the address from arena.yaml rather than
+  # hard-coding it. See substitutes/workflow-engine/ARENA.md.
+  workflow_engine: {host: workflow-engine, port: 8093}
+  workflow_sim: {host: workflow-sim, port: 8092}
+  # M6: batch-sim (lane I2) -- per substitutes/batch-sim/arena-yaml-snippet.txt.
+  # A CALLER of payouts-api, never a callee: no config template references it.
+  batch_sim: {host: batch-sim, port: 8094}
 
 # ---------------------------------------------------------------------
 # Synthetic merchants (BOM §1 "Synthetic entities" row). IDs prefixed

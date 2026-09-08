@@ -30,7 +30,7 @@ not a real Kong install — "lite" is literal.
 | `/twirp/cfa` | `cfa-server:8081` | cfa cmd/server HTTP |
 | `/v1/balances` | `xbalances-server:8080` | x-balances cmd/server |
 | `/health`, `/_arena/health` | answered locally, no auth | kong-lite self |
-| `POST /_arena/mint` | arena-only passport minting for the verifier (`{"consumer":{"id":"ARENA…"},"mode","roles"}` → `{"token"}`); refuses non-`ARENA*` ids | kong-lite self |
+| `POST /_arena/mint` | arena-only passport minting for the verifier (`{"consumer":{"id":"ARENA…"},"mode","roles"}`, plus the optional arena-control `"user":{"id":…}` described below → `{"token"}`); refuses non-`ARENA*` ids | kong-lite self |
 
 ## Auth pipeline (per request, in order)
 
@@ -62,6 +62,9 @@ not a real Kong install — "lite" is literal.
    exactly, so payouts' real passport v3 handler (static per-`kid` public
    key) resolves the right key. Header name: `X-Passport-JWT-V1`
    (`goutils/passport.HeaderKeyPassportJWTV1`).
+   An already-authenticated caller may opt in to the **dashboard/proxy** claim
+   shape instead — see "ARENA CONTROL" below; without those headers this step is
+   unchanged.
 6. **Header rewrite** — strips the client's own inbound `Authorization`
    (the merchant API-key credential is kong-lite's concern, never
    forwarded upstream, matching real Kong not leaking the client secret to
@@ -77,6 +80,82 @@ not a real Kong install — "lite" is literal.
    against a real value).
 7. **Forward** — proxies method/body/remaining headers to the matched
    upstream, streams the response back verbatim.
+
+## ARENA CONTROL (not a production behaviour): dashboard/proxy passport shape
+
+> **This section documents an arena control surface, not something Kong or the
+> real edge does.** In production this passport is minted by the monolith
+> (`api/app/Http/BasicAuth/BasicAuth.php:1246-1248`
+> `setPassportImpersonationClaims(PASSPORT_IMPERSONATION_TYPE_USER_MERCHANT, $merchantId)`,
+> constant at `:143`) off a dashboard **session**, and serialised by
+> `edge/kong-plugins/kong-plugin-upstream-jwt/kong/plugins/upstream-jwt/access.lua:135-152`.
+> The arena has no session/user store, so the shape is requested explicitly.
+
+### Why it exists
+
+`_mint_passport_jwt` used to hard-code `consumer.type = "merchant"`. goutils
+`passport/helpers.go:207` maps that to `LegacyAuthTypePrivate`, and
+`payouts/internal/app/payouts/validation.go` `ValidateCancel` refuses to cancel a
+**scheduled** payout unless `GetLegacyAuthType` returns `LegacyAuthTypeProxy`
+(`CancelScheduledPayoutInvalidAuth`, "Scheduled Payouts can only be cancelled via
+dashboard"). `helpers.go:212-213` returns `proxy` only for
+`consumer.Type == ConsumerTypeUser` **and** a non-nil `impersonation` whose
+`Type == "user_merchant"`. Without a way to mint that, the whole dashboard cancel
+path was unreachable in the twin (`journey:scheduled-payouts/cancel_via_dashboard`
+was BLOCKED).
+
+### How to ask for it
+
+Opt-in, per request, on the normal proxy path. Send **in addition to** the
+merchant's Basic-Auth API key:
+
+| Request header | Value | Required |
+|---|---|---|
+| `X-Arena-Passport-Consumer-Type` | `user` (case-insensitive) | yes |
+| `X-Arena-User-Id` | dashboard user id, `[A-Za-z0-9_.-]{1,40}` | yes |
+| `X-Dashboard-User-Role` | a role string appended to `roles`, same charset | no |
+
+`POST /_arena/mint` accepts the same opt-in as a body field: `"user": {"id": …}`.
+
+**Safety properties**
+
+* Honoured **only after** the merchant credential has been verified — the
+  merchant identity always comes from the API key, never from a header, so no
+  caller can assert an identity for a merchant it cannot already authenticate as.
+* Absent, malformed or non-`user` headers change nothing: the passport is minted
+  exactly as before. Default behaviour is byte-identical.
+* The three headers are consumed by kong-lite and **stripped before forwarding**
+  (added to the same drop-set as the client `Authorization`), so no upstream ever
+  sees them.
+
+### Claim shape minted
+
+Default (unchanged, merchant API-key private auth):
+
+```json
+"consumer": {"id": "<merchant_id>", "type": "merchant"}
+```
+
+With the opt-in headers (dashboard/proxy):
+
+```json
+"consumer":      {"id": "<X-Arena-User-Id>", "type": "user"},
+"impersonation": {"type": "user_merchant",
+                  "consumer": {"id": "<merchant_id from the API key>", "type": "merchant"}}
+```
+
+Everything else (`iss/sub/jti/iat/nbf/exp`, `identified`, `authenticated`,
+`mode`, `org`, `product`, `roles`, the RS256 header/`kid`) is unchanged. Field
+names follow `access.lua:146-152` verbatim; goutils' `ImpersonationClaims` struct
+(`passport/passport.go:56-59`) carries no json tags and Go's `encoding/json`
+matches field names case-insensitively, so the lowercase keys the edge emits bind
+to `Type`/`Consumer`. `internal/auth/authHelper.go` `getMerchantIdFromPassport`
+then reads the merchant from `impersonation.Consumer` for every non-`private`
+auth type — which is why the merchant id moves out of `consumer`.
+
+Offline cover: `RED_LOOP/tests/test_kong_passport.py` (claim shapes, header
+handling, and a signed-JWT decode + signature verify against a throwaway key,
+asserted through a port of `helpers.go` `GetLegacyAuthType`).
 
 ## RS256 signer — pure stdlib, no `cryptography`/`pyjwt`
 

@@ -408,3 +408,86 @@ expected_failures:
       a direct POST /v1/notify/health/update with payload
       {account_type:'direct', channel:'rbl', mode:'IMPS', status:'downtime'}
       (T05 Finding 7). Cross-ref m4-known-limits L-010.
+
+  - id: EF-009
+    title: Free-payout counter revert is lost whenever the decrement would empty the counter (1 -> 0)
+    scope:
+      profile: shared
+      cases:
+        - pricing-free-payouts/cancel_or_reverse
+        - free_payout_revert_to_zero
+    predicted_state:
+      payout_status: reversed
+      fts_status: null
+      journals: null
+      webhooks: null
+      free_payout_counter:
+        # counters.free_payouts_consumed after the reversal of a free payout
+        decrement_to_zero_persisted: false      # 1 -> 0 : the row keeps 1
+        decrement_to_nonzero_persisted: true    # 2 -> 1 : the row becomes 1
+        counter_transaction_row_written: true   # 'decrement' row is written either way
+        payout_fee_type_cleared: true
+    source_refs:
+      - payouts internal/app/freePayout/core.go:1007-1029
+      - payouts internal/app/counters/core.go:355-376
+      - payouts internal/app/counters/core.go:442-494
+      - payouts internal/app/counters/core.go:455-465
+      - payouts internal/app/counters/core.go:466
+      - payouts internal/app/counters/core.go:468
+      - payouts internal/app/counters/model.go:12
+      - goutils spine/repository.go:97-102
+      - goutils spine/repository.go:212-247
+      - goutils spine/repository.go:235
+    mechanism: >-
+      On a reversal or failure of a free payout,
+      freePayout/core.go:1009 DecreaseFreePayoutsConsumedIfApplicable dispatches
+      (criteria ReversalOrFailure, :1025-1029) to counters/core.go:355
+      DecrementCounterIfApplicable, which at :372 calls decrementFreePayoutsConsumed
+      (:442). Inside one repo.Transaction that function first writes the
+      `decrement` counter_transaction row (:455-465), then sets the new value with
+      counter.SetFreePayoutsConsumed(GetFreePayoutsConsumed() - 1) (:466) and
+      persists it with the spine repository's c.repo.Update (:468).
+      goutils spine/repository.go:97-102 Update -> :212 updateSelective is called
+      with an EMPTY selectiveList, so it reaches :235 `q = q.Updates(receiver)` --
+      gorm's struct form of Updates, which SKIPS zero-valued fields.
+      counters/model.go:12 declares FreePayoutsConsumed as a plain `int`, so the
+      new value 0 is the type's zero value and is omitted from the UPDATE
+      statement. `updated_at` is still non-zero, so RowsAffected is 1, the
+      NoRowAffected guard at repository.go:245-247 does not fire, no error is
+      returned, and the transaction commits: the counter_transaction row and the
+      cleared payout fee_type persist while counters.free_payouts_consumed does
+      not move. Any decrement whose RESULT is non-zero (2 -> 1) persists normally,
+      which is exactly the differential the journey observes.
+    deployed_status: >-
+      Both files are at the pinned HEADs (payouts 4bf3dbf9; goutils spine as
+      vendored by that commit). The code path is unconditional for a reversed or
+      failed payout whose fee_type is `free_payout`, so any production merchant on
+      a free-payout allowance who reverses their LAST counted free payout in a
+      billing month is affected. Prevalence in production is NOT DETERMINABLE from
+      this repository set.
+    classification: production-source defect, reproduced faithfully
+    disposition: preserve
+    notes: >-
+      CONFIDENCE. Observations: HIGH -- direct, differential, reproduced live.
+      The journey parks the counter at 0, drives a free payout to `reversed` and
+      reads the counter back (leg A: 1 -> 1, expected 0), then repeats with the
+      counter parked at 1 (leg B: 2 -> 1, expected 1); both legs recorded a
+      `decrement` counter_transaction row and an emptied payout fee_type.
+      Explanation: MEDIUM -- the gorm zero-value-skip mechanism above is INFERRED
+      by reading the pinned call chain; it was not isolated by instrumenting gorm
+      or by capturing the emitted UPDATE statement. It is the only reading
+      consistent with the differential (a decrement to a non-zero value persists,
+      a decrement to zero does not, and neither errors), but an alternative cause
+      inside spine's auditor branch (repository.go:227-238, taken only when
+      IsAuditApplicable(counters) is true) has not been ruled out by observation.
+      Evidence: reports/implementation/m6-journey-coverage.md row
+      `journey:pricing-free-payouts/cancel_or_reverse`; raw bundle
+      RED_LOOP/runs/m6-journeys-20260907T205614Z/evidence/
+      journey-pricing-free-payouts-cancel-or-reverse.json
+      (`leg_A_zero_target`, `leg_B_nonzero_target`, `differential`). Driver:
+      RED_LOOP/m6/journeys/j_pricing.py pricing_free_payout_revert.
+      Merchant impact: one free payout permanently consumed per reversal that
+      would have emptied the counter, and counters.free_payouts_consumed
+      permanently disagrees with the counter_transaction ledger.
+      The twin MUST NOT "fix" this: a run that observes 1 -> 0 failing to persist
+      while 2 -> 1 persists matches this entry and is a route_fidelity PASS.

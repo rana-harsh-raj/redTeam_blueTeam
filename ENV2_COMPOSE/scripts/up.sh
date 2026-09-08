@@ -18,6 +18,27 @@ compose() {
   docker compose --env-file .env.arena -f docker-compose.yml "$@"
 }
 
+# M6 (I3) FIX: `docker compose --env-file .env.arena` injects those variables
+# into compose's own ${VAR} interpolation ONLY -- never into this shell. But
+# config/generate.py reads ARENA_WORKFLOW_HOST / ARENA_MOZART_IMPL /
+# ARENA_XAS_SOURCE_EVENT_WHITELIST from the PROCESS environment (and its
+# comments always claimed up.sh sourced the file, which it did not), so an
+# ARENA_* switch set in .env.arena silently had no effect on rendered config.
+# Load it here with compose's own precedence: a value already exported in the
+# caller's shell wins over the file, so `ARENA_WORKFLOW_HOST=... bash up.sh`
+# still overrides.
+while IFS= read -r _env_line || [ -n "$_env_line" ]; do
+  case "$_env_line" in ''|'#'*) continue;; esac
+  case "$_env_line" in *=*) ;; *) continue;; esac
+  _env_key="${_env_line%%=*}"
+  _env_val="${_env_line#*=}"
+  case "$_env_key" in ''|*[!A-Za-z0-9_]*) continue;; esac
+  eval "_env_cur=\${$_env_key+set}"
+  if [ -z "${_env_cur:-}" ]; then export "$_env_key=$_env_val"; fi
+done < .env.arena
+unset _env_line _env_key _env_val _env_cur
+echo "ARENA_WORKFLOW_HOST=${ARENA_WORKFLOW_HOST:-<unset -> generate.py default>}  ARENA_MOZART_IMPL=${ARENA_MOZART_IMPL:-<unset>}"
+
 generator_args=()
 if [ -n "${ARENA_SOURCE_REPOS_ROOT:-}" ]; then generator_args=(--repos-root "$ARENA_SOURCE_REPOS_ROOT"); fi
 python3 seeds/generator/generate.py --epoch "${ARENA_SEED_EPOCH:-$(date +%s)}" ${generator_args[@]+"${generator_args[@]}"}
@@ -107,8 +128,14 @@ if [ "${ARENA_SKIP_BUILD:-0}" != "1" ]; then
   compose --profile datastores --profile substitutes build
 fi
 compose --profile datastores --profile substitutes up -d
+# M6 (I3): workflow-engine and batch-sim are additions. workflow-engine is now
+# on the payout create path (payouts [workflow].host -> ARENA_WORKFLOW_HOST), so
+# a boot that leaves it unhealthy must fail here rather than surface later as
+# workflow-applicable payout creates failing. batch-sim is inert until called
+# but is health-gated for the same reason every other substitute is.
 ./scripts/healthcheck.sh kong-lite monolith-stub dcs-stub splitz-stub shield-stub \
-  pricing-stub asv-stub stork-capture merchant-webhook-sink xas-sim --timeout 120
+  pricing-stub asv-stub stork-capture merchant-webhook-sink xas-sim \
+  workflow-engine batch-sim --timeout 120
 
 MOZART_IMPL="${ARENA_MOZART_IMPL:-mozart-mock}"
 if [ "$MOZART_IMPL" = "mozart-mock" ]; then
