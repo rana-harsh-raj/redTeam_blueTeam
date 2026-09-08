@@ -18,7 +18,7 @@ def cmd(*a):
 def digest(b):
     return hashlib.sha256(b).hexdigest()
 
-def worktrees(repo):
+def worktrees(repo, exclude=()):
     out = []
     listing = cmd('git', '-C', repo, 'worktree', 'list', '--porcelain')
     for block in listing.split('\n\n'):
@@ -26,6 +26,8 @@ def worktrees(repo):
         if not lines or not lines[0].startswith('worktree '):
             continue
         path = lines[0][len('worktree '):]
+        if path in exclude:
+            continue   # the checkout(s) executing the closure runs are NOT protected; everything else is
         files = {}
         for name in cmd('git', '-C', path, 'ls-files', '--cached', '--others', '--exclude-standard').splitlines():
             target = pathlib.Path(path) / name
@@ -37,7 +39,10 @@ def worktrees(repo):
     return listing, out
 
 def containers():
-    ids = cmd('docker', 'ps', '-aq').split()
+    # RUNNING containers only: scripts/isolation.py accepts a pre-existing container only while it is still running,
+    # so a one-shot container that had already exited before capture (the arena's ledger-scheduler) can never
+    # satisfy the gate and must not be part of the protected set. Matches the historical 2026-09-07 capture.
+    ids = cmd('docker', 'ps', '-q').split()
     if not ids:
         return []
     out = []
@@ -48,15 +53,15 @@ def containers():
     return out
 
 def main():
-    ap = argparse.ArgumentParser(); ap.add_argument('--repo', required=True); ap.add_argument('--out', required=True)
+    ap = argparse.ArgumentParser(); ap.add_argument('--repo', required=True); ap.add_argument('--out', required=True); ap.add_argument('--exclude', action='append', default=[], help='worktree path executing the runs (not protected)')
     a = ap.parse_args()
-    listing, wts = worktrees(a.repo)
+    listing, wts = worktrees(a.repo, tuple(a.exclude))
     baseline = {'captured_at': datetime.now(timezone.utc).isoformat(), 'worktree_list': listing, 'worktrees': wts,
                 'containers': containers(),
                 'networks': cmd('docker', 'network', 'ls', '--format', '{{json .}}'),
                 'volumes': cmd('docker', 'volume', 'ls', '--format', '{{json .}}'),
-                'capture_tool': 'scripts/m7/isolation_baseline.py',
-                'note': 'Captured BEFORE the closure checkouts were created; not recaptured afterwards.'}
+                'capture_tool': 'scripts/m7/isolation_baseline.py', 'excluded_executing_worktrees': a.exclude,
+                'note': 'Captured BEFORE the runs it protects; running containers only (verifier semantics).'}
     pathlib.Path(a.out).write_text(json.dumps(baseline, indent=2) + '\n')
     print(json.dumps({'worktrees': [(w['path'], w['head'][:8], len(w['files']), bool(w['status'])) for w in wts],
                       'containers': len(baseline['containers']), 'out': a.out}, indent=1))
