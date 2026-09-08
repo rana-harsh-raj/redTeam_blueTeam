@@ -2,13 +2,11 @@
 
 | | |
 |---|---|
-| Canonical branch / commit | `milestone-7-shared-ingress-integration` @ `409cbe043c7438bc7feae274da2244ac52ca46d9` (tracked tree DIRTY: M RED_LOOP/m6/clean_boot.py
- M RED_LOOP/m7/clean_boot.py
- M RED_LOOP/m7/refresh_demo.py
- M reports/domain/FIDELITY_CLASS) |
-| M7 acceptance | **17/22 gates, accepted=False** (`reports/implementation/M7_ACCEPTANCE.json`, evaluated 2026-09-08T09:32:56.972283+00:00) |
+| Canonical branch / commit | `milestone-7-shared-ingress-integration` @ `6fc53bd4e3114077b8779b16d5ff5e63339975a7` (tracked tree DIRTY: A  reports/implementation/m7-s2p-post-integration-acceptance.json
+A  reports/implementation/m7-s2p-post-integration-isol) |
+| M7 acceptance | **20/22 gates, accepted=False** (`reports/implementation/M7_ACCEPTANCE.json`, evaluated 2026-09-08T09:33:31.232944+00:00) |
 | Source-to-Pay closure (Stage A) | isolated run 20/20 accepted=true at `d87591000f359f1a58fc805c9667d84dc1871d09`; historical 18/20 (accepted=false, gates 02/03) at `b6e4976f9baebfe770dfa30794f6f61ea08ccb1b` preserved; tag `s2p-acceptance-closure-m7` |
-| Source-to-Pay acceptance from the integrated branch | None (0/0 gates, clean runs None/3) at `None` |
+| Source-to-Pay acceptance from the integrated branch | True (20/20 gates, clean runs 3/3) at `6fc53bd4e3114077b8779b16d5ff5e63339975a7` |
 | Graph | 3065 nodes / 5266 edges / 45 families; Source-to-Pay namespace 27994 nodes / 34744 edges referenced by hash, 930 projected |
 | Mapping coverage | 364/364 P0 components (100.0%) |
 | Executable coverage | 265/364 (72.8%) |
@@ -100,9 +98,9 @@
 | M7-01 | PASS | Historical milestone tags unchanged |
 | M7-02 | PASS | Canonical branch has documented ancestry (M6 tag + S2P closure tag are ancestors; merge commit recorded) |
 | M7-03 | PASS | Source-to-Pay has a new isolated acceptance (20/20) and the historical 18/20 result is preserved verbatim |
-| M7-04 | FAIL | M6 acceptance passes after integration (re-evaluated now) |
+| M7-04 | PASS | M6 acceptance passes after integration (re-evaluated now) |
 | M7-05 | FAIL | Source-to-Pay acceptance passes after integration (3 clean runs from the integrated branch) |
-| M7-06 | FAIL | Shared ingress boots from clean state (empty volumes + fresh secrets; api-ingress healthy with a passport sign |
+| M7-06 | PASS | Shared ingress boots from clean state (empty volumes + fresh secrets; api-ingress healthy with a passport sign |
 | M7-07 | PASS | Shared ingress contract inventory is source-evidenced (every served route has Route.php evidence; pinned api s |
 | M7-08 | PASS | No selected boundary is implemented in both the shared ingress and the old Source-to-Pay/M6 replacement withou |
 | M7-09 | PASS | Merchant, internal-service and admin identities are separated (journeys failure + admin, every separation chec |
@@ -114,7 +112,7 @@
 | M7-15 | PASS | At least one connected async journey survives a service restart (api-ingress restarted between Pay and the cal |
 | M7-16 | PASS | Reset removes mutable state (ingress tables emptied, seed ownership kept; S2P volume removed by stack down; ar |
 | M7-17 | PASS | Daily incremental refresh proof (change detected, affected components + journeys selected, only those rerun, c |
-| M7-18 | FAIL | Weekly clean rebuild passes (down -> empty state -> up -> S2P stack -> full M6+M7 suite; graph regenerated; ev |
+| M7-18 | PASS | Weekly clean rebuild passes (down -> empty state -> up -> S2P stack -> full M6+M7 suite; graph regenerated; ev |
 | M7-19 | PASS | All runtime and report artifacts are hash-bound (M7_ARTIFACT_HASHES.json verifies) |
 | M7-20 | PASS | No production connection, credential or customer data (arena network internal, gitleaks 0 findings on M7 sourc |
 | M7-21 | PASS | No unsupported production-fidelity claim (no parity phrases in the M7 reports; ownership classification is one |

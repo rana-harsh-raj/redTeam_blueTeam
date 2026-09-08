@@ -1,0 +1,35 @@
+{
+  "schema_version": 1,
+  "started_at": "2026-09-08T09:34:05.777104+00:00",
+  "integrated_commit": "d0e8144874e2fba9bdce7e517d9f9759a361c1df",
+  "branch": "m7-s2p-post-d0e8144",
+  "worktrees": [
+    "/Users/rana.singh/rzp-m7-s2p-post",
+    "/Users/rana.singh/rzp-m7-s2p-post-final"
+  ],
+  "evaluated_commit": "6fc53bd4e3114077b8779b16d5ff5e63339975a7",
+  "runs": [
+    {
+      "run_id": "m7post-1",
+      "rc": 0,
+      "tail": "{\"passed\": true, \"run\": \"/Users/rana.singh/rzp-m7-s2p-post/DOMAIN_REPLICAS/source_to_pay/artifacts/clean-runs/m7post-1\", \"durations\": {\"reset\": 0.176061, \"bootstrap\": 3.933761, \"build\": 98.273833, \"build-runtime\": 14.795575, \"boot\": 17.611751, \"health\": 0.47427, \"journey\": 4.174989, \"independent-verification\": 0.033648, \"contracts\": 0.179782, \"verifier-tamper-tests\": 0.049398}, \"error\": null}\n"
+    },
+    {
+      "run_id": "m7post-2",
+      "rc": 0,
+      "tail": "{\"passed\": true, \"run\": \"/Users/rana.singh/rzp-m7-s2p-post/DOMAIN_REPLICAS/source_to_pay/artifacts/clean-runs/m7post-2\", \"durations\": {\"reset\": 10.834359, \"bootstrap\": 4.054722, \"build\": 92.224757, \"build-runtime\": 12.517261, \"boot\": 11.941169, \"health\": 0.421369, \"journey\": 3.421524, \"independent-verification\": 0.03122, \"contracts\": 0.169915, \"verifier-tamper-tests\": 0.045153}, \"error\": null}\n"
+    },
+    {
+      "run_id": "m7post-3",
+      "rc": 0,
+      "tail": "assed\": true, \"run\": \"/Users/rana.singh/rzp-m7-s2p-post-final/DOMAIN_REPLICAS/source_to_pay/artifacts/clean-runs/m7post-3\", \"durations\": {\"reset\": 0.098286, \"bootstrap\": 3.196421, \"build\": 84.492065, \"build-runtime\": 12.389025, \"boot\": 11.928645, \"health\": 0.403848, \"journey\": 3.513428, \"independent-verification\": 0.025434, \"contracts\": 0.222872, \"verifier-tamper-tests\": 0.052176}, \"error\": null}\n"
+    }
+  ],
+  "scan": "{\"exit_code\": 0, \"findings\": 0, \"scope\": \"authored domain, inventory, fixed runtime proofs and reports; generated mutable observations/build caches excluded\"}\n",
+  "acceptance_rc": 0,
+  "acceptance_stdout": "{\"protected_worktrees_unchanged\": true, \"preexisting_containers_unchanged\": true}\n{\"files\": 201, \"manifest_sha256\": \"7cc6daafe10819db9e94d297b0c7edbaf3668ab061db6d6320163c1758eb639e\"}\n{\"passed\": true, \"changed_or_missing\": [], \"unbound\": [], \"manifest_sha256\": \"7cc6daafe10819db9e94d297b0c7edbaf3668ab061db6d6320163c1758eb639e\"}\n{\"accepted\": true, \"coverage\": 100.0, \"clean_runs\": {\"attempts\": 3, \"successes\": 3, \"fresh_final_checkout_verified\": true}, \"failed_gates\": []}\n",
+  "accepted": true,
+  "failed_gates": [],
+  "seconds": 444.9,
+  "finished_at": "2026-09-08T09:41:35.608047+00:00"
+}

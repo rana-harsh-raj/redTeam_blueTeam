@@ -1,6 +1,6 @@
 {
   "algorithm": "sha256",
-  "generated_at": "2026-09-08T09:33:30.723754+00:00",
+  "generated_at": "2026-09-08T09:42:21.105372+00:00",
   "self_excluded": "reports/implementation/M7_ARTIFACT_HASHES.json",
   "files": {
     "ENV2_COMPOSE/docker-compose.s2p.yml": "b68b23c17ddb7c76da644d7f6f11b4595a86323bd95294d605967373310173df",
@@ -128,7 +128,7 @@
     "reports/domain/parts/m7-ingress.json": "5933ac70295edf8ee5dbb3a8fa780cbd02e54441087d4136a11e322f585c1da8",
     "reports/domain/parts/zz-s2p-namespace.json": "d5309e59f0a069b3a41a06e28d8eedbd636de8013b88efd96493e4242059a265",
     "reports/implementation/M7_FIDELITY_MATRIX.md": "4f3c9e814d48a27b8036935e67c995dda7df557a7023a0de32e783a2b8f71aa4",
-    "reports/implementation/M7_FINAL_REPORT.md": "68fad0b39942a40c65a97fd56c1082fdf70464f9398424f82333c09e034aacf7",
+    "reports/implementation/M7_FINAL_REPORT.md": "af585146feaef82ab0ad9a462d14af6f664fda20b067d1f628607eabe0d916a5",
     "reports/implementation/M7_INTEGRATION_TOPOLOGY.md": "924a38ae83b3fcab662d9c38b3dc392025b5b638582542819535c2f721da6653",
     "reports/implementation/M7_OWNERSHIP_INVESTIGATION.md": "e4508beaa1da1c01d2830de6bc1281254b16d22f2522ec781859174ae68f9c90",
     "reports/implementation/M7_PRODUCTION_UNKNOWNS.md": "cade684ac31c8c28084ad1fc5ea9c0c83321bcd7472a4004c03faa52d42bdf07",
@@ -139,6 +139,7 @@
     "reports/implementation/m6-journeys.json": "0dab25721ba60e72e82f10eaafea7bbe90e76e4b15d78a494e46ec979dbdbf20",
     "reports/implementation/m7-clean-boot.json": "eb91b972f773cf05020c0c57fbb0db7a134c78a82c4292c5d30dc6b112313fd8",
     "reports/implementation/m7-refresh-demo.json": "7605fd77d124039097585d1e7812578fe9fe440ee71f2600bd2ee1d792d202b6",
+    "reports/implementation/m7-s2p-post-integration-acceptance.json": "a1dd9b0268c5ad153310edeb9791ca59bbd7c147b3e8af722b0dad4bfafc38ef",
     "reports/implementation/m7-weekly-rebuild.json": "d80b7b489cc74492c8ced03f1ec6bbcc4fbb05f4f76d5af8b51c098f1f1ef3f8",
     "reports/implementation/m7/starting-audit/M7_ACCEPTANCE.json": "220ed8a24dcd776c9186e66baf06c5b9cf0025fab76b889d7e6d6fb6dbf8822c",
     "reports/implementation/m7/starting-audit/M7_FINAL_REPORT.md": "9c9f4d727242715f5afcb4981ea15c7b344b1e6d8df194bbd1aa5d611779af00",
@@ -146,8 +147,6 @@
     "reports/source-to-pay-replica/closure-m7/artifacts/acceptance.json": "b3320ca96dfa974a6c0939c457a126969ec234a1a4afa89cde0d4caa2443d7db",
     "reports/source-to-pay-replica/historical-b6e4976/artifacts/acceptance-18of20.json": "6deede3e9da9a4eb09ca0390cdb3914f1cacc278eeca2017af53d821e89b480e"
   },
-  "missing_at_build": [
-    "reports/implementation/m7-s2p-post-integration-acceptance.json"
-  ],
-  "count": 142
+  "missing_at_build": [],
+  "count": 143
 }
