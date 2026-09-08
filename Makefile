@@ -166,3 +166,26 @@ m7-acceptance:     ## evaluate the 22 M7 hard gates against committed evidence
 	@python3 scripts/m7/acceptance.py
 m7-hashes:         ## bind every M7 runtime/report artifact into reports/implementation/M7_ARTIFACT_HASHES.json
 	@python3 scripts/m7/hashes.py
+
+# ---- M8: immutable architecture snapshot + query service (archkit; no docker) ----
+.PHONY: m8-build m8-compile m8-recipes m8-import m8-verify m8-test m8-serve m8-bench m8-hashes m8-acceptance
+m8-build:          ## compile snapshot + recipes + M7 import, set current (reports/architecture/snapshots/<id>)
+	@python3 -m archkit build
+m8-compile:        ## compile the ArchitectureSnapshot only
+	@python3 -m archkit compile
+m8-recipes:        ## normalized recipes for the 98 canonical services (current snapshot)
+	@python3 -m archkit recipes
+m8-import:         ## import the accepted M7 milestone into the current snapshot (projection, runtime, evidence, acceptance)
+	@python3 -m archkit import-m7
+m8-verify:         ## recompute the snapshot id and manifest hashes
+	@python3 -m archkit verify
+m8-test:           ## archkit unit tests (offline)
+	@python3 -m unittest archkit.tests.test_archkit
+m8-serve:          ## read-only loopback query service (ARGS=--port N)
+	@python3 -m archkit serve $(ARGS)
+m8-bench:          ## timing/memory measurements -> reports/implementation/m8-bench.json
+	@python3 -m archkit bench > reports/implementation/m8-bench.json && cat reports/implementation/m8-bench.json
+m8-hashes:         ## bind snapshot store + archkit + reports into reports/implementation/M8_ARTIFACT_HASHES.json
+	@python3 -c "from archkit.acceptance import build_hashes; from archkit.store import SnapshotStore; s=SnapshotStore(); print(build_hashes(s, s.resolve('current'))['count'])"
+m8-acceptance:     ## evaluate the 20 M8 gates -> reports/implementation/M8_ACCEPTANCE.json
+	@python3 -m archkit acceptance

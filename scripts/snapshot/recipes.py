@@ -651,11 +651,13 @@ def _fidelity_counts(recipes: dict) -> dict:
 def main(argv=None) -> int:
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument('--out', type=Path, default=C.RECIPES_DIR, help='recipe output directory')
-    ap.add_argument('--manifest', type=Path, default=C.MANIFEST_PATH)
+    ap.add_argument('--manifest', type=Path, default=None, help='manifest path (default: SNAPSHOT_MANIFEST.json next to the tracked recipes, or inside --out when --out is given)')
     ap.add_argument('--no-manifest', action='store_true')
     ap.add_argument('--no-docker', action='store_true', help='do not inspect images for the manifest')
     ap.add_argument('--list', action='store_true')
     args = ap.parse_args(argv)
+    if args.manifest is None:  # M8: --out must never overwrite the tracked manifest
+        args.manifest = C.MANIFEST_PATH if Path(args.out).resolve() == C.RECIPES_DIR.resolve() else Path(args.out) / 'SNAPSHOT_MANIFEST.json'
     ctx = build_context()
     recipes = all_recipes(ctx)
     if args.list:
