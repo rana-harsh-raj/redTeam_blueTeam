@@ -16,7 +16,8 @@ from pathlib import Path
 REPO = Path(__file__).resolve().parents[2]
 OUT = REPO / "reports/implementation/M7_ARTIFACT_HASHES.json"
 TRACKED = [
-    "reports/implementation/M7_FINAL_REPORT.md", "reports/implementation/M7_ACCEPTANCE.json", "reports/implementation/M7_RUNBOOK.md",
+    # M7_ACCEPTANCE.json is deliberately NOT listed: it binds this manifest (artifact_manifest_sha256), not the reverse.
+    "reports/implementation/M7_FINAL_REPORT.md", "reports/implementation/M7_RUNBOOK.md",
     "reports/implementation/M7_FIDELITY_MATRIX.md", "reports/implementation/M7_OWNERSHIP_INVESTIGATION.md",
     "reports/implementation/M7_INTEGRATION_TOPOLOGY.md", "reports/implementation/M7_PRODUCTION_UNKNOWNS.md",
     "reports/implementation/m7-clean-boot.json", "reports/implementation/m6-clean-boot.json", "reports/implementation/m6-journeys.json",

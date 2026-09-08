@@ -37,7 +37,9 @@ def main():
     rep = {"started_at": datetime.now(timezone.utc).isoformat()}
     st, before = call("GET", "/_ingress/health")
     rep["tables_before"] = before.get("tables")
-    mutable = ("sessions", "otps", "idempotency", "audit", "payout_details", "internal_payouts", "callbacks")
+    # mutable STATE tables; the audit table is an append-only request log that live pass-through traffic
+    # (payouts -> api callbacks) keeps writing to after the reset, so it is reported separately with timestamps.
+    mutable = ("sessions", "otps", "idempotency", "payout_details", "internal_payouts", "callbacks")
     rep["ingress_mutable_rows_before"] = sum((before.get("tables") or {}).get(t, 0) for t in mutable)
     # a merchant key from the live seeds: replay control across the reset
     merchants = json.loads((ENV2 / "seeds/generated/merchants.json").read_text())["merchants"]
@@ -56,7 +58,10 @@ def main():
     st, reg = call("GET", "/_ingress/registry/fund_accounts?limit=1", basic=admin)
     rep["seed_ownership_kept"] = (after.get("tables") or {}).get("resources", 0) >= len(fas) and st == 200
     st2, ev = call("GET", "/_ingress/evidence", basic=admin)
-    rep["evidence_after_reset_empty"] = all(not ev.get(k) for k in ("audit", "callbacks", "payout_details", "internal_payouts", "idempotency")) if st2 == 200 else None
+    rep["evidence_after_reset_empty"] = all(not ev.get(k) for k in ("callbacks", "payout_details", "internal_payouts", "idempotency")) if st2 == 200 else None
+    reset_at = (rst or {}).get("at") or 0
+    rep["audit_rows_after_reset"] = [{"ts": a.get("ts"), "route": a.get("route"), "identity": a.get("identity_id")} for a in (ev.get("audit") or [])]
+    rep["audit_rows_after_reset_all_newer_than_reset"] = all((a.get("ts") or 0) >= reset_at for a in (ev.get("audit") or []))
     st3, r3 = call("POST", "/v1/payouts", {"amount": 1, "currency": "INR"}, basic="%s:%s" % (rec["key_id_live"], secret), headers={"X-Payout-Idempotency": key})
     st4, ev2 = call("GET", "/_ingress/evidence", basic=admin)
     replays = [a for a in (ev2.get("audit") or []) if a.get("decision") == "idempotent_replay"]
@@ -69,13 +74,18 @@ def main():
     rep["s2p_volume_removed"] = ls == ""
     up = subprocess.run([sys.executable, "RED_LOOP/m7/s2p_stack.py", "up"], cwd=REPO, capture_output=True, text=True)
     rep["s2p_up_rc"] = up.returncode
-    rows = subprocess.run(["docker", "exec", "env2_compose-s2p-mysql-1", "env", "MYSQL_PWD=s2p", "mysql", "-Nse", "SELECT count(*) FROM tax_payments", "vendor_payments"], capture_output=True, text=True)
-    rep["s2p_tax_payments_after_fresh_up"] = rows.stdout.strip()
+    rows = None
+    for _ in range(20):
+        rows = subprocess.run(["docker", "exec", "env2_compose-s2p-mysql-1", "env", "MYSQL_PWD=s2p", "mysql", "-Nse", "SELECT count(*) FROM tax_payments", "vendor_payments"], capture_output=True, text=True)
+        if rows.returncode == 0 and rows.stdout.strip():
+            break
+        time.sleep(3)
+    rep["s2p_tax_payments_after_fresh_up"] = rows.stdout.strip() if rows else None
     rep["arena_down_removes_volumes"] = "compose ... down -v (ENV2_COMPOSE/scripts/down.sh) -- proven by m6-clean-boot.json from_empty_state"
     rep["finished_at"] = datetime.now(timezone.utc).isoformat()
     (IMPL / "m7-reset-proof.json").write_text(json.dumps(rep, indent=2))
     print(json.dumps({k: rep.get(k) for k in ("ingress_mutable_rows_before", "ingress_mutable_rows_after_reset", "seed_ownership_kept", "evidence_after_reset_empty", "ingress_replay_after_reset_is_new", "s2p_volume_removed", "s2p_up_rc", "s2p_tax_payments_after_fresh_up")}))
-    return 0 if rep["ingress_mutable_rows_after_reset"] == 0 and rep["seed_ownership_kept"] and rep["s2p_volume_removed"] and rep["ingress_replay_after_reset_is_new"] and up.returncode == 0 else 1
+    return 0 if rep["ingress_mutable_rows_after_reset"] == 0 and rep["seed_ownership_kept"] and rep["s2p_volume_removed"] and rep["ingress_replay_after_reset_is_new"] and rep["audit_rows_after_reset_all_newer_than_reset"] and up.returncode == 0 else 1
 
 
 if __name__ == "__main__":

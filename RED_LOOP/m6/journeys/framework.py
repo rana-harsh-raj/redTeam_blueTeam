@@ -837,16 +837,29 @@ return n
         """Which REAL payouts/ledger worker containers logged this identifier.
         Evidence that an `async_state` variant completed through a worker, not inline."""
         hits = {}
-        for svc in (services or self.WORKER_SERVICES):
-            try:
-                out = subprocess.run(["docker", "logs", "--since", since,
-                                      "%s-%s-1" % (P.compose_project(), svc)],
-                                     capture_output=True, text=True, timeout=45)
-                n = sum(1 for l in (out.stdout + out.stderr).splitlines() if needle in l)
-                if n:
-                    hits[svc] = n
-            except Exception:  # noqa: BLE001
-                continue
+        errors = {}
+        # M7: the grep is an observation, not a state transition. Under full-suite load a single `docker logs`
+        # can exceed its timeout or race the worker's own log flush (seen 2026-09-08: the fts-async-processing
+        # worker had logged the payout 10 times, the one-shot grep recorded {}). Retry a few times and record
+        # errors instead of swallowing them, so an empty result is an observed absence, not a tooling gap.
+        for attempt in range(3):
+            for svc in (services or self.WORKER_SERVICES):
+                if svc in hits:
+                    continue
+                try:
+                    out = subprocess.run(["docker", "logs", "--since", since,
+                                          "%s-%s-1" % (P.compose_project(), svc)],
+                                         capture_output=True, text=True, timeout=90)
+                    n = sum(1 for l in (out.stdout + out.stderr).splitlines() if needle in l)
+                    if n:
+                        hits[svc] = n
+                except Exception as exc:  # noqa: BLE001
+                    errors[svc] = repr(exc)[:120]
+            if hits:
+                break
+            time.sleep(5)
+        if errors:
+            self._rec("db", {"store": "docker logs", "sql": "errors while grepping %r" % needle, "rows": errors})
         self._rec("db", {"store": "docker logs", "sql": "grep %r in worker containers" % needle,
                          "rows": hits, "note": "async worker attribution"})
         return hits

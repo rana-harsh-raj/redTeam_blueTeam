@@ -254,10 +254,14 @@ def s2p_failure(ctx):
     ctx.ck("the_other_merchant_has_no_tax_contact", st == 200 and (before or {}).get("count") == 0, before)
     # an accrual for the other merchant (the tag-back target is an id-only update in the pinned source, so a synthetic
     # originating payout id is enough here), then the month boundary, then Pay with NO rzp_tax_pay contact registered
+    ctx.a.mozart(other["merchant_id"], "success")
+    st0, r0, _ = I.ing(ctx, "POST", "/v1/payouts", I.create_body(other, 42000, "s2p-neg-origin"), basic=I.merchant_basic(other), headers={"X-Payout-Idempotency": "m7n-" + uuid.uuid4().hex[:10]}, note="originating payout of the other merchant")
+    origin2 = F.bare((r0 or {}).get("id") or "")
+    ctx.ck("other_merchant_originating_payout_created", st0 == 200 and bool(origin2), {"status": st0, "body": r0})
     committed = kafka_committed(ctx)
-    s2p_publish(ctx, tds_entry(other, "pout_ARENA000NOCON1", amount=4200), "m7neg-" + other["merchant_id"].lower())
-    wait_for(lambda: kafka_committed(ctx) >= committed + 1, timeout=60)
-    rows = wait_for(lambda: s2p_sql(ctx, "SELECT id FROM tax_payments WHERE merchant_id='%s'" % other["merchant_id"]) or None, timeout=30) or []
+    s2p_publish(ctx, tds_entry(other, "pout_" + (origin2 or "ARENA000NOCON1"), amount=4200), "m7neg-" + other["merchant_id"].lower())
+    wait_for(lambda: kafka_committed(ctx) >= committed + 1, timeout=90)
+    rows = wait_for(lambda: s2p_sql(ctx, "SELECT id FROM tax_payments WHERE merchant_id='%s'" % other["merchant_id"]) or None, timeout=60, interval=2) or []
     ctx.ck("other_merchant_has_a_tax_payment_to_remit", len(rows) == 1, rows)
     advance_to_next_month(ctx)
     pay = pay_request(other, rows[0]["id"] if rows else "txpy_00000000000000", uid, otp.get("otp", ""), otp.get("token", ""))

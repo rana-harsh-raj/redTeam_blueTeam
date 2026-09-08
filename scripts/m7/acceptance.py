@@ -200,6 +200,7 @@ def main():
     doc = {"milestone": "M7", "accepted": accepted, "evaluated_at": datetime.now(timezone.utc).isoformat(), "head": head, "branch": branch,
            "gates_passed": sum(x["passed"] for x in gates), "gates_total": len(gates), "gates": gates,
            "canonical_snapshot_sha256": snap.get("snapshot_sha256"), "s2p_closure_final_commit": closure.get("final_commit"),
+           "artifact_manifest_sha256": __import__("hashlib").sha256((IMPL / "M7_ARTIFACT_HASHES.json").read_bytes()).hexdigest() if (IMPL / "M7_ARTIFACT_HASHES.json").is_file() else None,
            "evaluation_scope": "22 hard gates over Git state, committed evidence and hash-bound runtime artifacts; runtime observations are replayed from the recorded evidence, not re-executed here (except the M6 acceptance re-evaluation and the docker network check)."}
     OUT.write_text(json.dumps(doc, indent=2) + "\n")
     for x in gates:
