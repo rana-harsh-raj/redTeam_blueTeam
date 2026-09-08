@@ -55,6 +55,7 @@ services:
   localstack: {host: localstack, port: 4566}
   kafka: {host: kafka, port: 9092}
   kong_lite: {host: kong-lite, port: 8080}
+  api_ingress: {host: api-ingress, port: 8080}
   monolith_stub: {host: monolith-stub, port: 8080}
   dcs_stub: {host: dcs-stub, port: 8080}
   splitz_stub: {host: splitz-stub, port: 8080}

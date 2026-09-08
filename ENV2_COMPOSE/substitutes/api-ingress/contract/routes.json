@@ -1,0 +1,906 @@
+{
+  "derivation": "scripts/m7/derive_contract.py (mechanical: api Route.php arrays, payouts router files, vendor-payments path literals)",
+  "evidence_missing": [],
+  "generated_at": "2026-09-08T07:08:34.198863+00:00",
+  "routes": {
+    "admin_get_free_payouts_attributes": {
+      "controller": "PayoutController@getFreePayoutsAttributes",
+      "groups": {
+        "admin": 9890
+      },
+      "ingress_role": "admin",
+      "internal_apps": [
+        "admin_dashboard",
+        "razorassist"
+      ],
+      "method": "GET",
+      "note": "admin passport",
+      "path": "/v1/admin/payouts/{balance_id}/free_payout",
+      "ps_upstream": "GET /v1/admin/payouts/:balance_id/free_payout",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API",
+            "middleware": "BasicAuth"
+          },
+          {
+            "args": "[]string{passportSdk.LegacyAuthTypeAdmin}",
+            "middleware": "PassportAuthentication"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_admin_routes.go",
+        "line": 40
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:4359",
+        "api/app/Http/Route.php:9890",
+        "api/app/Http/Route.php:15130",
+        "api/app/Http/Route.php:20027"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "banking_accounts_list_internal": {
+      "controller": "BankingAccountController@list",
+      "groups": {
+        "internal": 6725
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "vendor_payments",
+        "payout_links",
+        "xpayroll"
+      ],
+      "method": "GET",
+      "note": "merchant-scoped",
+      "path": "/v1/banking_accounts_internal",
+      "ps_upstream": null,
+      "source_refs": [
+        "api/app/Http/Route.php:4152",
+        "api/app/Http/Route.php:6725",
+        "api/app/Http/Route.php:13175",
+        "api/app/Http/Route.php:17709",
+        "api/app/Http/Route.php:18634"
+      ],
+      "vendor_payments_call_sites": {
+        "v1/banking_accounts_internal": [
+          "vendor-payments/internal/bankingaccount/apicaller.go:12"
+        ],
+        "v1/banking_accounts_internal/": [
+          "vendor-payments/internal/taxpayments/apicaller.go:20"
+        ]
+      }
+    },
+    "contact_create_internal": {
+      "controller": "ContactController@create",
+      "groups": {
+        "internal": 6588
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "vendor_experience",
+        "accounting_integrations",
+        "vendor_payments",
+        "payout_links",
+        "capital_collections_client",
+        "capital_early_settlements",
+        "xpayroll",
+        "payouts_service",
+        "charge_collections_internal"
+      ],
+      "method": "POST",
+      "note": "merchant-owned record",
+      "path": "/v1/contacts_internal",
+      "ps_upstream": null,
+      "source_refs": [
+        "api/app/Http/Route.php:3951",
+        "api/app/Http/Route.php:6588",
+        "api/app/Http/Route.php:13057",
+        "api/app/Http/Route.php:13110",
+        "api/app/Http/Route.php:13154",
+        "api/app/Http/Route.php:17695",
+        "api/app/Http/Route.php:18492",
+        "api/app/Http/Route.php:18518",
+        "api/app/Http/Route.php:18632",
+        "api/app/Http/Route.php:19411",
+        "api/app/Http/Route.php:19487"
+      ],
+      "vendor_payments_call_sites": {
+        "v1/contacts_internal/": [
+          "vendor-payments/internal/contact/apicaller.go:16"
+        ]
+      }
+    },
+    "contact_get_internal": {
+      "controller": "ContactController@get",
+      "groups": {
+        "internal": 6586
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "user_service",
+        "xperience",
+        "vendor_experience",
+        "accounts_receivable",
+        "accounting_integrations",
+        "vendor_payments",
+        "payout_links"
+      ],
+      "method": "GET",
+      "note": "merchant-scoped",
+      "path": "/v1/contacts_internal/{id}",
+      "ps_upstream": null,
+      "source_refs": [
+        "api/app/Http/Route.php:3945",
+        "api/app/Http/Route.php:6586",
+        "api/app/Http/Route.php:12941",
+        "api/app/Http/Route.php:13029",
+        "api/app/Http/Route.php:13064",
+        "api/app/Http/Route.php:13089",
+        "api/app/Http/Route.php:13109",
+        "api/app/Http/Route.php:13151",
+        "api/app/Http/Route.php:17694"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "contact_list_internal": {
+      "controller": "ContactController@list",
+      "groups": {
+        "internal": 6280
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "vendor_experience",
+        "accounts_receivable",
+        "accounting_integrations",
+        "vendor_payments"
+      ],
+      "method": "GET",
+      "note": "merchant-scoped",
+      "path": "/v1/contacts_internal",
+      "ps_upstream": null,
+      "source_refs": [
+        "api/app/Http/Route.php:3947",
+        "api/app/Http/Route.php:6280",
+        "api/app/Http/Route.php:13063",
+        "api/app/Http/Route.php:13090",
+        "api/app/Http/Route.php:13111",
+        "api/app/Http/Route.php:13152"
+      ],
+      "vendor_payments_call_sites": {
+        "v1/contacts_internal/": [
+          "vendor-payments/internal/contact/apicaller.go:16"
+        ]
+      }
+    },
+    "fund_account_create_internal": {
+      "controller": "FundAccountController@create",
+      "groups": {
+        "internal": 6589
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "vendor_experience",
+        "accounting_integrations",
+        "vendor_payments",
+        "payout_links",
+        "capital_collections_client",
+        "capital_early_settlements",
+        "xpayroll",
+        "payouts_service",
+        "charge_collections_internal"
+      ],
+      "method": "POST",
+      "note": "merchant-owned record",
+      "path": "/v1/fund_accounts_internal",
+      "ps_upstream": null,
+      "source_refs": [
+        "api/app/Http/Route.php:3987",
+        "api/app/Http/Route.php:6589",
+        "api/app/Http/Route.php:13058",
+        "api/app/Http/Route.php:13114",
+        "api/app/Http/Route.php:13169",
+        "api/app/Http/Route.php:17696",
+        "api/app/Http/Route.php:18493",
+        "api/app/Http/Route.php:18519",
+        "api/app/Http/Route.php:18633",
+        "api/app/Http/Route.php:19412",
+        "api/app/Http/Route.php:19486"
+      ],
+      "vendor_payments_call_sites": {
+        "v1/fund_accounts_internal/": [
+          "vendor-payments/internal/fundaccount/core.go:35"
+        ]
+      }
+    },
+    "fund_account_get_internal": {
+      "controller": "FundAccountController@get",
+      "groups": {
+        "internal": 6591
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "xperience",
+        "vendor_experience",
+        "accounting_integrations",
+        "vendor_payments",
+        "payout_links",
+        "payouts_service"
+      ],
+      "method": "GET",
+      "note": "FundAccount/Service.php fetch: findByPublicIdAndMerchant (merchant-scoped)",
+      "path": "/v1/fund_accounts_internal/{id}",
+      "ps_upstream": null,
+      "source_refs": [
+        "api/app/Http/Route.php:3983",
+        "api/app/Http/Route.php:6591",
+        "api/app/Http/Route.php:13030",
+        "api/app/Http/Route.php:13065",
+        "api/app/Http/Route.php:13113",
+        "api/app/Http/Route.php:13155",
+        "api/app/Http/Route.php:17697",
+        "api/app/Http/Route.php:19386"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "fund_account_list_internal": {
+      "controller": "FundAccountController@list",
+      "groups": {
+        "internal": 6592
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "vendor_experience",
+        "vendor_payments",
+        "payout_links"
+      ],
+      "method": "GET",
+      "note": "merchant-scoped",
+      "path": "/v1/fund_accounts_internal",
+      "ps_upstream": null,
+      "source_refs": [
+        "api/app/Http/Route.php:3985",
+        "api/app/Http/Route.php:6592",
+        "api/app/Http/Route.php:13062",
+        "api/app/Http/Route.php:13156",
+        "api/app/Http/Route.php:17698"
+      ],
+      "vendor_payments_call_sites": {
+        "v1/fund_accounts_internal/": [
+          "vendor-payments/internal/fundaccount/core.go:35"
+        ]
+      }
+    },
+    "payout_approve": {
+      "controller": "PayoutController@postApproveFundAccountPayout",
+      "groups": {
+        "private": 5594,
+        "proxy": 8018,
+        "userWhitelist": 7360
+      },
+      "ingress_role": "dashboard",
+      "internal_apps": [
+        "merchant_dashboard",
+        "admin_dashboard"
+      ],
+      "method": "POST",
+      "note": "Workflow.php WORKFLOW_PAYOUT_SERVICE_URI",
+      "path": "/v1/payouts/{id}/approve",
+      "ps_upstream": "POST /v1/payouts/payouts_internal/:payout_id/approve",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow, cred.Xperience, cred.FTS, cred.VendorPayments, cred.Settlements, cred.Irctc",
+            "middleware": "BasicAuth"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_internal_routes.go",
+        "line": 70
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2330",
+        "api/app/Http/Route.php:5594",
+        "api/app/Http/Route.php:8018",
+        "api/app/Http/Route.php:7360",
+        "api/app/Http/Route.php:14130",
+        "api/app/Http/Route.php:16438"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_approve_internal": {
+      "controller": "PayoutController@postApproveFundAccountPayoutInternal",
+      "groups": {
+        "internal": 6632
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "workflows"
+      ],
+      "method": "POST",
+      "note": "workflows app",
+      "path": "/v1/payouts_internal/{id}/approve",
+      "ps_upstream": "POST /v1/payouts/payouts_internal/:payout_id/approve",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow, cred.Xperience, cred.FTS, cred.VendorPayments, cred.Settlements, cred.Irctc",
+            "middleware": "BasicAuth"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_internal_routes.go",
+        "line": 70
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2420",
+        "api/app/Http/Route.php:6632",
+        "api/app/Http/Route.php:19098"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_bulk_create": {
+      "controller": "PayoutController@createPayoutBulk",
+      "groups": {
+        "proxy": 8034
+      },
+      "ingress_role": "batch",
+      "internal_apps": [
+        "merchant_dashboard",
+        "admin_dashboard",
+        "batch"
+      ],
+      "method": "POST",
+      "note": "Batch service via proxy auth; X-Entity-Id merchant",
+      "path": "/v1/payouts/bulk",
+      "ps_upstream": "POST /v1/payouts/bulk",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow",
+            "middleware": "BasicAuth"
+          },
+          {
+            "args": "[]string{}",
+            "middleware": "PassportAuthentication"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_internal_routes_with_passport.go",
+        "line": 23
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2318",
+        "api/app/Http/Route.php:8034",
+        "api/app/Http/Route.php:14134",
+        "api/app/Http/Route.php:16441",
+        "api/app/Http/Route.php:18748"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_cancel": {
+      "controller": "PayoutController@cancelPayout",
+      "groups": {
+        "private": 5783
+      },
+      "ingress_role": "merchant",
+      "internal_apps": [
+        "merchant_dashboard",
+        "admin_dashboard"
+      ],
+      "method": "POST",
+      "note": "",
+      "path": "/v1/payouts/{id}/cancel",
+      "ps_upstream": "POST /v1/payouts/cancel_payout/:payout_id",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow",
+            "middleware": "BasicAuth"
+          },
+          {
+            "args": "[]string{passportSdk.LegacyAuthTypePrivate,\n\t\t\tpassportSdk.LegacyAuthTypeProxy,\n\t\t\tpassportSdk.LegacyAuthTypePrivilege}",
+            "middleware": "PassportAuthentication"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_routes.go",
+        "line": 70
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2769",
+        "api/app/Http/Route.php:5783",
+        "api/app/Http/Route.php:14135",
+        "api/app/Http/Route.php:16442"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_cancel_internal": {
+      "controller": "PayoutController@cancelPayout",
+      "groups": {
+        "internal": 6716
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "vendor_payments"
+      ],
+      "method": "POST",
+      "note": "",
+      "path": "/v1/payouts_internal/{id}/cancel",
+      "ps_upstream": "POST /v1/payouts/cancel_payout/:payout_id",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow",
+            "middleware": "BasicAuth"
+          },
+          {
+            "args": "[]string{passportSdk.LegacyAuthTypePrivate,\n\t\t\tpassportSdk.LegacyAuthTypeProxy,\n\t\t\tpassportSdk.LegacyAuthTypePrivilege}",
+            "middleware": "PassportAuthentication"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_routes.go",
+        "line": 70
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2770",
+        "api/app/Http/Route.php:6716",
+        "api/app/Http/Route.php:13173"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_create": {
+      "controller": "PayoutController@postFundAccountPayout",
+      "groups": {
+        "idempotentRoutesConfig": 20528,
+        "private": 5780
+      },
+      "ingress_role": "merchant",
+      "internal_apps": [
+        "merchant_dashboard",
+        "admin_dashboard"
+      ],
+      "method": "POST",
+      "note": "classic + Direct/current-account create; PS resolves account_number ownership",
+      "path": "/v1/payouts",
+      "ps_upstream": "POST /v1/payouts",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow",
+            "middleware": "BasicAuth"
+          },
+          {
+            "args": "[]string{passportSdk.LegacyAuthTypePrivate,\n\t\t\tpassportSdk.LegacyAuthTypeProxy,\n\t\t\tpassportSdk.LegacyAuthTypePrivilege}",
+            "middleware": "PassportAuthentication"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_routes.go",
+        "line": 40
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2311",
+        "api/app/Http/Route.php:5780",
+        "api/app/Http/Route.php:20528",
+        "api/app/Http/Route.php:14136",
+        "api/app/Http/Route.php:16443"
+      ],
+      "vendor_payments_call_sites": {
+        "v1/payouts_internal/": [
+          "vendor-payments/internal/payout/core.go:83"
+        ]
+      }
+    },
+    "payout_create_internal": {
+      "controller": "PayoutController@postFundAccountPayout",
+      "groups": {
+        "idempotentRoutesConfig": 20539,
+        "internal": 6593
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "cross_border_import_service",
+        "accounts_receivable",
+        "vendor_payments",
+        "payout_links",
+        "capital_early_settlements",
+        "scrooge",
+        "xpayroll",
+        "fts",
+        "settlements_service"
+      ],
+      "method": "POST",
+      "note": "Create.php CREATE_PAYOUT_INTERNAL_SERVICE_URI",
+      "path": "/v1/payouts_internal",
+      "ps_upstream": "POST /v1/payouts/payouts_internal",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow",
+            "middleware": "BasicAuth"
+          },
+          {
+            "args": "[]string{passportSdk.LegacyAuthTypePrivate,\n\t\t\tpassportSdk.LegacyAuthTypeProxy,\n\t\t\tpassportSdk.LegacyAuthTypePrivilege}",
+            "middleware": "PassportAuthentication"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_routes.go",
+        "line": 55
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2313",
+        "api/app/Http/Route.php:6593",
+        "api/app/Http/Route.php:20539",
+        "api/app/Http/Route.php:12967",
+        "api/app/Http/Route.php:13096",
+        "api/app/Http/Route.php:13158",
+        "api/app/Http/Route.php:17699",
+        "api/app/Http/Route.php:18521",
+        "api/app/Http/Route.php:18581",
+        "api/app/Http/Route.php:18629",
+        "api/app/Http/Route.php:18719",
+        "api/app/Http/Route.php:18875"
+      ],
+      "vendor_payments_call_sites": {
+        "v1/payouts_internal/": [
+          "vendor-payments/internal/payout/core.go:83"
+        ]
+      }
+    },
+    "payout_create_on_internal_contact": {
+      "controller": "PayoutController@postFundAccountOnInternalContact",
+      "groups": {
+        "idempotentRoutesConfig": 20561,
+        "internal": 6713
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "vendor_payments",
+        "capital_collections_client",
+        "xpayroll",
+        "charge_collections_internal"
+      ],
+      "method": "POST",
+      "note": "Create.php CREATE_INTERNAL_CONTACT_PAYOUT_SERVICE_URI",
+      "path": "/v1/internalContactPayout",
+      "ps_upstream": "POST /v1/payouts/internal_contact_payout",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow",
+            "middleware": "BasicAuth"
+          },
+          {
+            "args": "[]string{passportSdk.LegacyAuthTypePrivate,\n\t\t\tpassportSdk.LegacyAuthTypeProxy,\n\t\t\tpassportSdk.LegacyAuthTypePrivilege}",
+            "middleware": "PassportAuthentication"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_routes.go",
+        "line": 49
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2315",
+        "api/app/Http/Route.php:6713",
+        "api/app/Http/Route.php:20561",
+        "api/app/Http/Route.php:13171",
+        "api/app/Http/Route.php:18494",
+        "api/app/Http/Route.php:18630",
+        "api/app/Http/Route.php:19485"
+      ],
+      "vendor_payments_call_sites": {
+        "v1/internalContactPayout/": [
+          "vendor-payments/internal/payout/core.go:84"
+        ]
+      }
+    },
+    "payout_create_with_otp": {
+      "controller": "PayoutController@postFundAccountPayoutWithOtp",
+      "groups": {
+        "idempotentRoutesConfig": 20534,
+        "private": 5595,
+        "proxy": 8002,
+        "userWhitelist": 7350
+      },
+      "ingress_role": "dashboard",
+      "internal_apps": [
+        "merchant_dashboard",
+        "admin_dashboard"
+      ],
+      "method": "POST",
+      "note": "proxy auth + OTP, PS proxy passport",
+      "path": "/v1/payouts_with_otp",
+      "ps_upstream": "POST /v1/payouts",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow",
+            "middleware": "BasicAuth"
+          },
+          {
+            "args": "[]string{passportSdk.LegacyAuthTypePrivate,\n\t\t\tpassportSdk.LegacyAuthTypeProxy,\n\t\t\tpassportSdk.LegacyAuthTypePrivilege}",
+            "middleware": "PassportAuthentication"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_routes.go",
+        "line": 40
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2320",
+        "api/app/Http/Route.php:5595",
+        "api/app/Http/Route.php:8002",
+        "api/app/Http/Route.php:7350",
+        "api/app/Http/Route.php:20534",
+        "api/app/Http/Route.php:14141",
+        "api/app/Http/Route.php:16448"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_fetch_by_id": {
+      "controller": "PayoutController@getPayout",
+      "groups": {
+        "private": 5778
+      },
+      "ingress_role": "merchant",
+      "internal_apps": [
+        "merchant_dashboard",
+        "admin_dashboard"
+      ],
+      "method": "GET",
+      "note": "",
+      "path": "/v1/payouts/{id}",
+      "ps_upstream": "GET /v1/payouts/:id",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow",
+            "middleware": "BasicAuth"
+          },
+          {
+            "args": "[]string{passportSdk.LegacyAuthTypePrivate,\n\t\t\tpassportSdk.LegacyAuthTypeProxy,\n\t\t\tpassportSdk.LegacyAuthTypePrivilege}",
+            "middleware": "PassportAuthentication"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_routes.go",
+        "line": 31
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2351",
+        "api/app/Http/Route.php:5778",
+        "api/app/Http/Route.php:14155",
+        "api/app/Http/Route.php:16453"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_fetch_by_id_internal": {
+      "controller": "PayoutController@getPayout",
+      "groups": {
+        "internal": 6283
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "accounting_integrations",
+        "vendor_payments",
+        "payout_links",
+        "settlements_service",
+        "payouts_service"
+      ],
+      "method": "GET",
+      "note": "",
+      "path": "/v1/payouts_internal/{id}",
+      "ps_upstream": "GET /v1/payouts/payouts_internal/:payout_id",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow, cred.Xperience, cred.FTS, cred.VendorPayments, cred.Settlements, cred.Irctc",
+            "middleware": "BasicAuth"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_internal_routes.go",
+        "line": 178
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2352",
+        "api/app/Http/Route.php:6283",
+        "api/app/Http/Route.php:13108",
+        "api/app/Http/Route.php:13157",
+        "api/app/Http/Route.php:17702",
+        "api/app/Http/Route.php:18877",
+        "api/app/Http/Route.php:19383"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_fetch_multiple": {
+      "controller": "PayoutController@getPayouts",
+      "groups": {
+        "private": 5779
+      },
+      "ingress_role": "merchant",
+      "internal_apps": [
+        "merchant_dashboard",
+        "admin_dashboard",
+        "mes"
+      ],
+      "method": "GET",
+      "note": "",
+      "path": "/v1/payouts",
+      "ps_upstream": "GET /v1/payouts",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow",
+            "middleware": "BasicAuth"
+          },
+          {
+            "args": "[]string{passportSdk.LegacyAuthTypePrivate,\n\t\t\tpassportSdk.LegacyAuthTypeProxy,\n\t\t\tpassportSdk.LegacyAuthTypePrivilege}",
+            "middleware": "PassportAuthentication"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_routes.go",
+        "line": 61
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2354",
+        "api/app/Http/Route.php:5779",
+        "api/app/Http/Route.php:14156",
+        "api/app/Http/Route.php:16454",
+        "api/app/Http/Route.php:18371"
+      ],
+      "vendor_payments_call_sites": {
+        "v1/payouts_internal/": [
+          "vendor-payments/internal/payout/core.go:83"
+        ]
+      }
+    },
+    "payout_reject": {
+      "controller": "PayoutController@postRejectFundAccountPayout",
+      "groups": {
+        "private": 5593,
+        "proxy": 8020,
+        "userWhitelist": 7362
+      },
+      "ingress_role": "dashboard",
+      "internal_apps": [
+        "merchant_dashboard",
+        "admin_dashboard"
+      ],
+      "method": "POST",
+      "note": "Workflow.php WORKFLOW_PAYOUT_SERVICE_URI",
+      "path": "/v1/payouts/{id}/reject",
+      "ps_upstream": "POST /v1/payouts/payouts_internal/:payout_id/reject",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow, cred.Xperience, cred.FTS, cred.VendorPayments, cred.Settlements, cred.Irctc",
+            "middleware": "BasicAuth"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_internal_routes.go",
+        "line": 76
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2332",
+        "api/app/Http/Route.php:5593",
+        "api/app/Http/Route.php:8020",
+        "api/app/Http/Route.php:7362",
+        "api/app/Http/Route.php:14199",
+        "api/app/Http/Route.php:16493"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_reject_admin_bulk": {
+      "controller": "PayoutController@bulkRejectFundAccountPayouts",
+      "groups": {
+        "admin": 8889
+      },
+      "ingress_role": "admin",
+      "internal_apps": [
+        "admin_dashboard"
+      ],
+      "method": "POST",
+      "note": "bulkRejectFundAccountPayout -> per-payout reject",
+      "path": "/v1/admin/payouts/cancel",
+      "ps_upstream": "POST /v1/payouts/payouts_internal/:payout_id/reject",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow, cred.Xperience, cred.FTS, cred.VendorPayments, cred.Settlements, cred.Irctc",
+            "middleware": "BasicAuth"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_internal_routes.go",
+        "line": 76
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2342",
+        "api/app/Http/Route.php:8889",
+        "api/app/Http/Route.php:16494"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_reject_internal": {
+      "controller": "PayoutController@postRejectFundAccountPayoutInternal",
+      "groups": {
+        "internal": 6633
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "workflows"
+      ],
+      "method": "POST",
+      "note": "workflows app",
+      "path": "/v1/payouts_internal/{id}/reject",
+      "ps_upstream": "POST /v1/payouts/payouts_internal/:payout_id/reject",
+      "ps_upstream_evidence": {
+        "auth": [
+          {
+            "args": "cred.API, cred.Workflow, cred.Xperience, cred.FTS, cred.VendorPayments, cred.Settlements, cred.Irctc",
+            "middleware": "BasicAuth"
+          }
+        ],
+        "file": "payouts/internal/routing/router/payout_internal_routes.go",
+        "line": 76
+      },
+      "source_refs": [
+        "api/app/Http/Route.php:2421",
+        "api/app/Http/Route.php:6633",
+        "api/app/Http/Route.php:19099"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "payout_update_tax_payment_id": {
+      "controller": "PayoutController@updateTaxPayment",
+      "groups": {
+        "internal": 7085
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "vendor_payments"
+      ],
+      "method": "PATCH",
+      "note": "PayoutsDetails/Core.php updateTaxPayment: id-only update, no merchant scoping in pinned source",
+      "path": "/v1/payouts_internal/{id}/tax-payment-id",
+      "ps_upstream": null,
+      "source_refs": [
+        "api/app/Http/Route.php:2339",
+        "api/app/Http/Route.php:7085",
+        "api/app/Http/Route.php:13182"
+      ],
+      "vendor_payments_call_sites": {}
+    },
+    "vendor_payment_verify_otp": {
+      "controller": "VendorPaymentController@verifyOtp",
+      "groups": {
+        "internal": 6282
+      },
+      "ingress_role": "internal",
+      "internal_apps": [
+        "vendor_payments"
+      ],
+      "method": "POST",
+      "note": "VendorPaymentController@verifyOtp -> UserCore verifyOtp (Raven); synthetic OTP store",
+      "path": "/v1/vendor-payments/verify-otp",
+      "ps_upstream": null,
+      "source_refs": [
+        "api/app/Http/Route.php:2492",
+        "api/app/Http/Route.php:6282",
+        "api/app/Http/Route.php:13162"
+      ],
+      "vendor_payments_call_sites": {
+        "v1/vendor-payments/verify-otp": [
+          "vendor-payments/internal/otp/apicaller.go:16"
+        ]
+      }
+    }
+  },
+  "schema_version": 1,
+  "sources": {
+    "api": {
+      "path": "/Users/rana.singh/rzp-payouts-clones/api",
+      "route_php_sha256": "0677af855581552a44209e6b07c95079e7b1aec00fb4106e798a9a0a78c9d657",
+      "sha": "2d665f918b60e917ec92be648fb5816d247f72b1"
+    },
+    "payouts": {
+      "path": "/Users/rana.singh/rzp-payouts-clones/payouts",
+      "sha": "4bf3dbf9239feadea6d65ca90c893a988e116173"
+    },
+    "vendor-payments": {
+      "path": "/Users/rana.singh/rzp-payouts-clones/vendor-payments",
+      "sha": "20c4f4d59970471067388afea8b1d65ac39ee126"
+    }
+  }
+}

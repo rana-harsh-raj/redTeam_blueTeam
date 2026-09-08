@@ -82,11 +82,14 @@ FAMILIES = {
     "source-updates": "family:source-updates",
     "async-workers": "family:async-workers",
     "beneficiary-fund-accounts": "family:beneficiary-fund-accounts",
+    # M7
+    "shared-ingress": "family:shared-ingress",
+    "cross-domain-s2p": "family:cross-domain-s2p",
 }
 P0_FAMILIES = ("shared-payouts", "direct-payouts", "queued-low-balance", "scheduled-payouts",
                "failure-reversal-cancellation", "webhooks", "idempotency-retries", "accounting",
                "approval-workflow", "fetch-list", "source-updates", "async-workers",
-               "beneficiary-fund-accounts")
+               "beneficiary-fund-accounts", "shared-ingress", "cross-domain-s2p")
 REQUIRED_P0_VARIANTS = ("success", "failure", "idempotency", "async_state")
 
 PASS, FAIL, EXPECTED_FAILURE, BLOCKED = "PASS", "FAIL", "EXPECTED_FAILURE", "BLOCKED"
@@ -741,7 +744,8 @@ return n
     # -- containers ----------------------------------------------------------
     # The ONLY containers this lane may restart, and only inside
     # journey:shared-payouts/restart with M6_ALLOW_RESTART=1.
-    RESTARTABLE = ("payouts-worker-fts-async-processing", "payouts-worker-webhook-event",
+    RESTARTABLE = ("api-ingress",   # M7: the shared ingress (state on the ingress-data volume)
+                   "payouts-worker-fts-async-processing", "payouts-worker-webhook-event",
                    "fts-worker-fire-transfer-status-webhook")
 
     def container_state(self, service):

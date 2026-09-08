@@ -73,6 +73,9 @@ def main():
     ap.add_argument("--no-journeys", action="store_true")
     ap.add_argument("--journeys-args", default="")
     ap.add_argument("--repos-root", default=None)
+    ap.add_argument("--post-up", action="append", default=[],
+                    help="M7: command(s) run after the health wait and before the journeys (e.g. the Source-to-Pay "
+                         "stack: 'python3 RED_LOOP/m7/s2p_stack.py up'); recorded in the command log, a non-zero rc fails the boot")
     ap.add_argument("--attach", action="store_true",
                     help="the down/up already ran (e.g. the orchestrator was killed after boot): prove the empty-state "
                          "boot from docker volume/container creation times + regenerated secrets, then run the suite")
@@ -160,6 +163,14 @@ def main():
     rep["unhealthy"] = [c["name"] for c in cs if c["running"] and not c["healthy"]]
     print(f"   containers={rep['container_count']} running={rep['running']} healthy={rep['healthy']} unhealthy={rep['unhealthy']}")
 
+    rep["post_up"] = []
+    for cmd in a.post_up:
+        print("== 3b/5 post-up:", cmd)
+        p = sh(cmd.split(), log=log, timeout=1800)
+        rep["post_up"].append({"cmd": cmd, "rc": p.returncode, "stdout_tail": p.stdout[-1500:], "stderr_tail": p.stderr[-800:]})
+        if p.returncode != 0:
+            rep["up_rc"] = rep.get("up_rc") or p.returncode
+            print("   post-up FAILED rc=%d" % p.returncode)
     if not a.no_journeys:
         print("== 4/5 journeys (fresh merchants)")
         cmd = [sys.executable, "RED_LOOP/m6/journeys/run.py"] + (a.journeys_args.split() if a.journeys_args else [])

@@ -181,7 +181,7 @@ class Contracts(unittest.TestCase):
         fixture={"merchant":{"id":"M1"},"merchant_detail":{},"account_type":"shared","fts_fund_account_id":1}
         with patch.object(monolith,"MERCHANTS",{"M1":fixture}):
             self.assertEqual(monolith._get_merchant(SimpleNamespace(path="/internal/merchants/M1"),b"")[1],
-                             {"merchant":{"id":"M1"},"merchant_detail":{}})
+                             {"merchant":{"id":"M1","feature":[]},"merchant_detail":{}})   # M6 applies runtime feature overrides to the record PS parses
 
     def test_status_details_returns_types_not_source_ids(self):
         request={"source_details":[{"source_id":"WF00001","source_type":"workflow"},{"source_id":"WH00001","source_type":"webhook"}]}

@@ -93,6 +93,14 @@ LISTEN_PORT = int(os.environ.get("STUB_PORT", "8094"))
 DATA_DIR = os.environ.get("BATCH_SIM_DATA_DIR", "/data")
 
 PS_API_URL = os.environ.get("PS_API_URL", "http://payouts-api:9400").rstrip("/")
+# M7: "monolith" = bulk create goes to the shared API-monolith ingress as the `batch` internal application
+# (Route.php payout_bulk_create, Route::$proxy, X-Entity-Id merchant) which mints the passport and forwards to
+# PS; "direct" = the M6 collapsed hop (cred.API + self-minted passport straight to PS). Approve/reject always
+# use PS_DIRECT_URL (the monolith bulk_approve route is outside the selected ingress surface).
+UPSTREAM_MODE = os.environ.get("BATCH_SIM_UPSTREAM_MODE", "direct")
+PS_DIRECT_URL = os.environ.get("PS_DIRECT_URL", PS_API_URL).rstrip("/")
+BATCH_APP_AUTH_PASS_FILE = os.environ.get("BATCH_APP_AUTH_PASS_FILE", "/run/secrets/app_batch")
+BATCH_APP_AUTH_PASS = os.environ.get("BATCH_APP_AUTH_PASS", "")  # test-only override
 
 # cred.API -- payout_internal_routes_with_passport.go:16. Same pair kong-lite
 # injects for PS calls (docker-compose.yml PS_API_AUTH_USER/PS_API_AUTH_PASS_FILE).
@@ -690,9 +698,30 @@ def _recount(batch_id):
       commit=True)
 
 
+def _batch_app_password():
+    if BATCH_APP_AUTH_PASS:
+        return BATCH_APP_AUTH_PASS
+    try:
+        with open(BATCH_APP_AUTH_PASS_FILE) as f:
+            return f.read().strip()
+    except OSError:
+        return ""
+
+
 def _create_headers(batch, passport):
     """CONTRACT.md section 3.1. RestCallUtils.java:38-53 header names;
-    PS constants/headers.go:18,20,37,38 reader side."""
+    PS constants/headers.go:18,20,37,38 reader side. M7 monolith mode: the Batch service's own
+    internal-application credential (rzp_live + app secret, BasicAuth::appAuth) and no passport --
+    the shared ingress mints the proxy passport for the X-Entity-Id merchant."""
+    if UPSTREAM_MODE == "monolith":
+        return {
+            "Content-Type": "application/json",
+            "Authorization": _basic("rzp_live", _batch_app_password()),
+            "x-batch-id": batch["id"],
+            "X-Entity-Id": batch["entity_id"] or "",
+            "x-creator-id": batch["creator_id"] or "",
+            "x-creator-type": batch["creator_type"] or "user",
+        }
     headers = {
         "Content-Type": "application/json",
         "Authorization": _basic(PS_API_AUTH_USER, _PS_API_PASSWORD),
@@ -828,7 +857,7 @@ def _process_approve_row(batch, entry, settings):
                                         "description": "missing payout_id"}}})
         return True
 
-    url = "%s/v1/payouts/payouts_internal/%s/%s" % (PS_API_URL, payout_id, action)
+    url = "%s/v1/payouts/payouts_internal/%s/%s" % (PS_DIRECT_URL, payout_id, action)
     body = {"queue_if_low_balance": bool(approval["queue_if_low_balance"])} \
         if action == "approve" else {}
     outcome, attempts = post_with_retry(url, _approve_headers(batch), body, "approve")
@@ -1206,7 +1235,9 @@ class BatchSimHandler(BaseHTTPRequestHandler):
         return {"status": "ok", "service": SERVICE_NAME, "batches": n, "queued": queued,
                 "worker_alive": WORKER_STARTED[0],
                 "passport": "ready" if _PASSPORT_N is not None else "unavailable",
-                "batch_types": sorted(BATCH_TYPES)}
+                "batch_types": sorted(BATCH_TYPES),
+                # M7: where bulk creates go (monolith = shared ingress as the batch app; direct = PS)
+                "upstream_mode": UPSTREAM_MODE, "ps_api_url": PS_API_URL, "ps_direct_url": PS_DIRECT_URL}
 
     def _route_get(self, path, params):
         path = self._canonical(path)

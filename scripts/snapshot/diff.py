@@ -67,7 +67,9 @@ def diff_contracts(old: dict, new: dict) -> dict:
         modules = _map_diff({m: m for m in o.get('modules', [])}, {m: m for m in n.get('modules', [])})
         if _any(d) or _any(modules):
             out['proto'][svc] = {'files': d, 'modules': modules}
-    out['changed'] = bool(out['proto']) or _any(out['substitutes']) or _any(out['batch_types'])
+    out['ingress'] = _map_diff(old.get('ingress'), new.get('ingress'))
+    out['s2p'] = _map_diff(old.get('s2p'), new.get('s2p'))
+    out['changed'] = bool(out['proto']) or _any(out['substitutes']) or _any(out['batch_types']) or _any(out['ingress']) or _any(out['s2p'])
     return out
 
 

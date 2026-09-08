@@ -323,6 +323,13 @@ def compile_dataset(epoch=DEFAULT_EPOCH, repos_root=None, verify_evidence=False,
             fa['contact_id'] = 'cont_' + cid
             fa['contact']['id'] = 'cont_' + cid
             fa['contact']['contact'] = ''
+    # M7: explicit ownership -- the monolith's fund_accounts table carries merchant_id (api FundAccount/Entity),
+    # and the shared ingress resolves fund accounts merchant-scoped (findByPublicIdAndMerchant), so every
+    # generated record names its owner exactly as the CFA seed does through owner_map.
+    for faid, owner in owner_map.items():
+        fa = result['monolith/fund_accounts.json']['fund_accounts'].get(faid)
+        if fa is not None:
+            fa['merchant_id'] = owner
     result['splitz/experiments.json']['experiments'].update(
         _route_module.route_experiments(route_profile, sorted(result['merchants.json']['merchants'])))
     cfa = build_cfa(result['monolith/fund_accounts.json']['fund_accounts'], owner_map, epoch)

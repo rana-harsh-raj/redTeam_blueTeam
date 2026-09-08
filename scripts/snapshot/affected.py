@@ -237,6 +237,21 @@ class Plan:
             nodes, journeys = self.journeys_for_sub(sub)
             self.add('substitute contract %s/CONTRACT.md changed' % sub, nodes, rebuild=[sub] if sub in self.compose_services or not self.compose_services else [],
                      journeys=journeys, subs=[sub])
+        ing = part.get('ingress') or {}
+        ing_changed = ing.get('modified', []) + ing.get('added', []) + ing.get('removed', [])
+        if ing_changed:
+            nodes, journeys = self.journeys_for_sub('api-ingress')
+            self.add('shared ingress contract changed (%s)' % ', '.join(ing_changed[:4]), nodes,
+                     rebuild=['api-ingress'] if 'api-ingress' in self.compose_services or not self.compose_services else [], journeys=journeys, subs=['api-ingress'])
+        s2p = part.get('s2p') or {}
+        s2p_changed = s2p.get('modified', []) + s2p.get('added', []) + s2p.get('removed', [])
+        if s2p_changed:
+            nodes = [n for n in self.nodes.values() if str(n.get('id', '')).startswith(('svc:s2p/', 'sub:s2p-')) and n.get('kind') in ('service', 'substitute')]
+            journeys = self.journeys_for_nodes(nodes) if nodes else set()
+            journeys |= {j for j, n in self.nodes.items() if n.get('kind') == 'journey' and n.get('family') == 'family:cross-domain-s2p'}
+            runtime = [x for x in s2p_changed if x.startswith(('runtime/', 'docker-compose', 'ENV2_COMPOSE/', 'source-lock', 'fixtures/'))]
+            self.add('Source-to-Pay inputs changed (%s)' % ', '.join(s2p_changed[:4]), nodes,
+                     rebuild=['s2p-vp-source'] if runtime else [], journeys=journeys, subs=['s2p-source-driver'])
         bt = part.get('batch_types') or {}
         if any(bt.get(k) for k in ('added', 'removed', 'modified')):
             nodes, journeys = self.journeys_for_repo('batch')

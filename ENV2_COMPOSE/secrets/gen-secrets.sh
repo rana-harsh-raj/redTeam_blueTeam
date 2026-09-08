@@ -65,6 +65,17 @@ write_secret auth_splitz_payouts    "$(rand_password)"   # username payouts
 write_secret auth_shield_payouts    "$(rand_password)"   # username payouts
 write_secret auth_mozart_shared     "$(rand_password)"   # username payouts (fts/xbalances/payouts all share -- see generate.py MOZART.* tokens)
 write_secret auth_asv_shared        "$(rand_password)"   # username payouts / xBalances
+# M7: shared API-monolith ingress identities (substitutes/api-ingress). Internal-application secrets
+# (username rzp_live, key blank: BasicAuth::appAuth) and the synthetic administrator token. Every value
+# is fresh random EXCEPT app_vendor_payments: the pinned Source-to-Pay runtime driver
+# (DOMAIN_REPLICAS/source_to_pay/runtime/source-driver/boot.go) fixes its synthetic rxclient secret in
+# code, so the ingress must recognise that same synthetic constant (declared deviation D-SYNTHETIC-IDENTITY).
+write_secret app_vendor_payments    "local-vendor-payments-secret"
+write_secret app_xpayroll           "$(rand_password)"
+write_secret app_batch              "$(rand_password)"
+write_secret app_workflows          "$(rand_password)"
+write_secret app_merchant_dashboard "$(rand_password)"
+write_secret ingress_admin_token    "$(rand_password)"
 write_secret auth_workflow_payouts  "$(rand_password)"   # username rzp_live -- payouts [auth.workflow]; the credential the Workflow substitute (workflow-engine / workflow-sim) presents on the approve/reject callback into payouts. M6: materialized into the secrets-workflow volume so those two containers can actually read it (see secrets/materialize.py).
 # M6: admin-plane token for substitutes/workflow-engine (POST /admin/orgs|actors|policies,
 # GET /admin/workflows). NEVER handed to a campaign/attacker worker -- that separation is

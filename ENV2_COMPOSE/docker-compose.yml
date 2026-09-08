@@ -80,7 +80,7 @@ x-proxy-env: &proxy-env
   APP_ENV: arena
   HTTP_PROXY: "http://127.0.0.1:9"
   HTTPS_PROXY: "http://127.0.0.1:9"
-  NO_PROXY: "localhost,127.0.0.1,0.0.0.0,ledger-gate,payouts-api,payouts-worker-webhook-event,payouts-worker-queued-payout,payouts-worker-schedule-payout,payouts-worker-on-hold-payout,payouts-worker-fts-async-processing,payouts-worker-fts-async-hv-processing,payouts-worker-payout-create-failure-handling,payouts-worker-payout-update-failure-handling,payouts-worker-transaction-create,payouts-worker-generic-processing,payouts-worker-async-dual-write,payouts-worker-x-balances-balance-refresh,payouts-worker-payout-source-updater,payouts-worker-partner-bank-hold-payouts,payouts-worker-bulk-payouts,payouts-worker-batch-submitted-merchants,payouts-worker-data-consistency-checker,payouts-worker-data-consistency-event,payouts-worker-fund-management-payout-check,payouts-worker-fund-management-payout-initiate,payouts-worker-payout-usage-event-processing,payouts-worker-x-account-statement-source-event,payouts-worker-x-balance-payouts-event,payouts-worker-api-queue-for-async-dual-write-direct-push,payouts-kafka-fts-status-updates-consumer,payouts-kafka-fts-status-updates-retry-consumer,ledger-api,ledger-worker,ledger-scheduler,fts-web,fts-worker-default,fts-worker-initiate-transfer,fts-worker-check-transfer-status,fts-worker-fire-transfer-status-webhook,fts-worker-retry-transfer,fts-worker-retry-transfer-preprocessor,fts-worker-retry-transfer-source-update,fts-worker-rbl-initiate-transfer,fts-worker-rbl-check-transfer-status,fts-worker-rbl-imps-initiate-transfer,fts-worker-rbl-imps-check-transfer-status,fts-worker-rbl-direct-imps-initiate-transfer,fts-worker-rbl-direct-imps-check-transfer-status,fts-worker-hv-fire-transfer-status-webhook,fts-worker-hv-initiate-transfer,fts-worker-slow-lane-initiate-transfer,fts-worker-rbl-upi-initiate-transfer,fts-worker-rbl-upi-check-transfer-status,fts-worker-rbl-upi-hv-initiate-transfer,fts-worker-rbl-upi-hv-check-transfer-status,fts-worker-rbl-direct-initiate-transfer,fts-worker-rbl-direct-check-transfer-status,fts-worker-rbl-direct-upi-initiate-transfer,fts-worker-rbl-direct-upi-check-transfer-status,fts-worker-rbl-direct-imps-hv-initiate-transfer,fts-worker-rbl-direct-slow-lane-initiate-transfer,cfa-server,cfa-worker-contact,cfa-worker-fa,xbalances-server,xbalances-worker,kong-lite,monolith-stub,dcs-stub,splitz-stub,shield-stub,pricing-stub,asv-stub,bankingaccounts-stub,stork-capture,merchant-webhook-sink,xas-sim,mozart-mock,mozart-sim,workflow-sim,workflow-engine,batch-sim,mysql-payouts,mysql-fts,mysql-xbalances,mysql-apidb-stub,postgres-ledger,mongo-cfa,redis,localstack,kafka"
+  NO_PROXY: "localhost,127.0.0.1,0.0.0.0,ledger-gate,payouts-api,payouts-worker-webhook-event,payouts-worker-queued-payout,payouts-worker-schedule-payout,payouts-worker-on-hold-payout,payouts-worker-fts-async-processing,payouts-worker-fts-async-hv-processing,payouts-worker-payout-create-failure-handling,payouts-worker-payout-update-failure-handling,payouts-worker-transaction-create,payouts-worker-generic-processing,payouts-worker-async-dual-write,payouts-worker-x-balances-balance-refresh,payouts-worker-payout-source-updater,payouts-worker-partner-bank-hold-payouts,payouts-worker-bulk-payouts,payouts-worker-batch-submitted-merchants,payouts-worker-data-consistency-checker,payouts-worker-data-consistency-event,payouts-worker-fund-management-payout-check,payouts-worker-fund-management-payout-initiate,payouts-worker-payout-usage-event-processing,payouts-worker-x-account-statement-source-event,payouts-worker-x-balance-payouts-event,payouts-worker-api-queue-for-async-dual-write-direct-push,payouts-kafka-fts-status-updates-consumer,payouts-kafka-fts-status-updates-retry-consumer,ledger-api,ledger-worker,ledger-scheduler,fts-web,fts-worker-default,fts-worker-initiate-transfer,fts-worker-check-transfer-status,fts-worker-fire-transfer-status-webhook,fts-worker-retry-transfer,fts-worker-retry-transfer-preprocessor,fts-worker-retry-transfer-source-update,fts-worker-rbl-initiate-transfer,fts-worker-rbl-check-transfer-status,fts-worker-rbl-imps-initiate-transfer,fts-worker-rbl-imps-check-transfer-status,fts-worker-rbl-direct-imps-initiate-transfer,fts-worker-rbl-direct-imps-check-transfer-status,fts-worker-hv-fire-transfer-status-webhook,fts-worker-hv-initiate-transfer,fts-worker-slow-lane-initiate-transfer,fts-worker-rbl-upi-initiate-transfer,fts-worker-rbl-upi-check-transfer-status,fts-worker-rbl-upi-hv-initiate-transfer,fts-worker-rbl-upi-hv-check-transfer-status,fts-worker-rbl-direct-initiate-transfer,fts-worker-rbl-direct-check-transfer-status,fts-worker-rbl-direct-upi-initiate-transfer,fts-worker-rbl-direct-upi-check-transfer-status,fts-worker-rbl-direct-imps-hv-initiate-transfer,fts-worker-rbl-direct-slow-lane-initiate-transfer,cfa-server,cfa-worker-contact,cfa-worker-fa,xbalances-server,xbalances-worker,api-ingress,kong-lite,monolith-stub,dcs-stub,splitz-stub,shield-stub,pricing-stub,asv-stub,bankingaccounts-stub,stork-capture,merchant-webhook-sink,xas-sim,mozart-mock,mozart-sim,workflow-sim,workflow-engine,batch-sim,mysql-payouts,mysql-fts,mysql-xbalances,mysql-apidb-stub,postgres-ledger,mongo-cfa,redis,localstack,kafka"
 
 networks:
   rzp-arena:
@@ -127,6 +127,12 @@ volumes:
   # never on the ingress container's filesystem.
   secrets-workflow:
     name: "rzp-arena-secrets-workflow${ARENA_SUFFIX:-}"
+  # M7: shared API-monolith ingress -- app/admin identities + stub credential (never merchant keys, which
+  # stay in secrets-kong and are mounted read-only alongside), and its persistent SQLite state.
+  secrets-ingress:
+    name: "rzp-arena-secrets-ingress${ARENA_SUFFIX:-}"
+  ingress-data:
+    name: "rzp-arena-ingress-data${ARENA_SUFFIX:-}"
   mysql-payouts-data:
   mysql-fts-data:
   mysql-xbalances-data:
@@ -2359,6 +2365,42 @@ services:
       test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
       <<: *healthcheck-defaults
 
+  api-ingress:
+    # M7: the shared API-monolith INGRESS (CONTRACT_FAITHFUL_REPLACEMENT of the monolith's ingress
+    # responsibilities for the selected merchant/dashboard/internal-app/admin surface). payouts'
+    # [api] host points here; fund_accounts_internal / contacts_internal / banking_accounts_internal
+    # are served from explicit merchant-owned records; everything in the payouts-service callback group
+    # is passed through to monolith-stub. See substitutes/api-ingress/CONTRACT.md and contract/routes.json.
+    build:
+      context: ./substitutes
+      dockerfile: api-ingress/Dockerfile
+    image: rzp-arena/api-ingress:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - ./seeds/generated/merchants.json:/app/seed/merchants.json:ro
+      - ./seeds/generated/monolith/merchants.json:/app/seed/monolith_merchants.json:ro
+      - ./seeds/generated/monolith/fund_accounts.json:/app/seed/fund_accounts.json:ro
+      - secrets-kong:/run/secrets/kong:ro
+      - secrets-ingress:/run/secrets/ingress:ro
+      - ingress-data:/data
+    environment:
+      STUB_PORT: "8080"
+      INGRESS_DB: /data/ingress.sqlite
+      PS_API_URL: "http://payouts-api:9400"
+      MONOLITH_STUB_URL: "http://monolith-stub:8080"
+      KONG_MERCHANTS_FILE: /app/seed/merchants.json
+      MONOLITH_MERCHANTS_FILE: /app/seed/monolith_merchants.json
+      MONOLITH_FUND_ACCOUNTS_FILE: /app/seed/fund_accounts.json
+      SECRETS_KONG_DIR: /run/secrets/kong
+      SECRETS_INGRESS_DIR: /run/secrets/ingress
+      PASSPORT_IDENTIFIER: "arena-passport-1"
+      PASSPORT_ISS: "https://identity.arena.invalid"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
   monolith-stub:
     build:
       context: ./substitutes
@@ -2805,7 +2847,14 @@ services:
     environment:
       STUB_PORT: "8094"
       BATCH_SIM_DATA_DIR: /data
-      PS_API_URL: "http://payouts-api:9400"
+      # M7: bulk CREATE goes Batch -> shared ingress (monolith payouts/bulk, Route::$proxy, app `batch`
+      # + X-Entity-Id) -> real PS /v1/payouts/bulk. ARENA_BATCH_UPSTREAM=direct restores the M6
+      # collapsed hop. Per-row approve/reject keep the collapsed hop (PS_DIRECT_URL): the monolith's
+      # bulk_approve route is outside the selected ingress surface (M7_INTEGRATION_TOPOLOGY.md).
+      PS_API_URL: "http://api-ingress:8080"
+      PS_DIRECT_URL: "http://payouts-api:9400"
+      BATCH_SIM_UPSTREAM_MODE: "${ARENA_BATCH_UPSTREAM:-monolith}"
+      BATCH_APP_AUTH_PASS_FILE: /run/secrets/app_batch
       # cred.API on POST /v1/payouts/bulk
       # (payout_internal_routes_with_passport.go:16)
       PS_API_AUTH_USER: "api"

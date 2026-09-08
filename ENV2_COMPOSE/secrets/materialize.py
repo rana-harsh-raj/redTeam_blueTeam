@@ -29,7 +29,9 @@ VOLUMES = {**{'config-' + group: 'rzp-arena-config-' + group + _ARENA_SUFFIX for
            # materialized volume instead -- deliberately NOT secrets-kong, so
            # the engine's admin-plane token never lands on the ingress
            # container's filesystem.
-           'secrets-workflow': 'rzp-arena-secrets-workflow' + _ARENA_SUFFIX}
+           'secrets-workflow': 'rzp-arena-secrets-workflow' + _ARENA_SUFFIX,
+           # M7: api-ingress app/admin identities + its monolith-stub credential (merchant keys stay in secrets-kong)
+           'secrets-ingress': 'rzp-arena-secrets-ingress' + _ARENA_SUFFIX}
 OWNER_LABEL = 'io.rzp-arena.generated'
 
 INSTALL = '''import base64,hashlib,json,os,pathlib,shutil,sys
@@ -123,7 +125,15 @@ def source_groups():
         # payouts_internal/{id}/approve|reject routes -- see
         # substitutes/batch-sim/CONTRACT.md 5. The workflow-engine ADMIN token
         # is deliberately NOT here; it lives only in secrets-workflow.
-        'auth_workflow_payouts':read_source(ROOT/'secrets/auth_workflow_payouts.txt')}
+        'auth_workflow_payouts':read_source(ROOT/'secrets/auth_workflow_payouts.txt'),
+        # M7: batch-sim presents the `batch` internal-application secret to the shared ingress
+        'app_batch':read_source(ROOT/'secrets/app_batch.txt')}
+    groups['secrets-ingress']={
+        'monolith_basic_auth':read_source(ROOT/'secrets/verifier-bridge/monolith'),
+        'auth_monolith_shared':read_source(ROOT/'secrets/auth_monolith_shared.txt'),
+        'admin_token':read_source(ROOT/'secrets/ingress_admin_token.txt'),
+        **{name:read_source(ROOT/'secrets'/(name+'.txt')) for name in
+           ('app_vendor_payments','app_xpayroll','app_batch','app_workflows','app_merchant_dashboard')}}
     groups['secrets-monolith']={
         'monolith_basic_auth':read_source(ROOT/'secrets/verifier-bridge/monolith'),
         **{name:read_source(ROOT/'secrets'/(name+'.txt')) for name in

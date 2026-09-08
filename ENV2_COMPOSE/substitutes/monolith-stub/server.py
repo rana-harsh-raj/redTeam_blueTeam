@@ -1099,7 +1099,9 @@ ROUTES = {
     ("POST", "/payouts_service/mail_and_sms"): _mail_and_sms,
     ("POST", "/payouts_service/dual_write"): _dual_write,
     ("POST", "/payouts_service/decrement_free_payouts"): _decrement_free_payouts,
-    ("GET", "/fund_accounts_internal/"): _get_fund_account,
+    # M7: GET /fund_accounts_internal/{id} is served by the shared ingress (substitutes/api-ingress) from explicit
+    # merchant-owned records; payouts' [api] host now points at the ingress, so this route is retired here.
+    # The owner-less record this handler used to return was the mechanism behind the M6 D-7 cross-tenant use.
     ("POST", "/merchant/on_hold_slas_internal"): _on_hold_slas,
     ("GET", "/actor_info_internal/"): _actor_info,
     ("POST", "/users_internal"): _users_internal,

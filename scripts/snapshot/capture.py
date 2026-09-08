@@ -117,10 +117,32 @@ def snapshot_contracts(ctx: dict) -> dict:
     if batch and (batch / 'src/main/resources').is_dir():
         for p in sorted((batch / 'src/main/resources').rglob('payout*.json')):
             batch_types[p.relative_to(batch).as_posix()] = C.sha256_file(p)
+    # M7: the shared ingress contract (route inventory derived from Route.php + CONTRACT.md + ownership schema) and the
+    # Source-to-Pay inputs (boundary contract, spec, source lock, deterministic graph patch, source-driver, fixtures)
+    ingress_dir = ctx['env2'] / 'substitutes' / 'api-ingress'
+    ingress = {}
+    for rel in ('contract/routes.json', 'CONTRACT.md', 'server.py'):
+        if (ingress_dir / rel).is_file():
+            ingress[rel] = C.sha256_file(ingress_dir / rel)
+    if (ingress_dir / 'server.py').is_file():
+        import re as _re
+        m = _re.search(r'SCHEMA_VERSION\s*=\s*(\d+)', (ingress_dir / 'server.py').read_text())
+        ingress['ownership_schema_version'] = int(m.group(1)) if m else None
+    s2p_root = C.ROOT / 'DOMAIN_REPLICAS' / 'source_to_pay'
+    s2p = {}
+    if s2p_root.is_dir():
+        for rel in ('integration/payouts-boundary-contract.yaml', 'integration/unified-graph-patch.json', 'source-lock.json',
+                    'runtime/source-driver/main.go', 'runtime/source-driver/boot.go', 'docker-compose.yml',
+                    'fixtures/tds-entry.json', 'spec/interfaces.yaml', 'spec/runtime-fidelity.json', 'spec/declared-deviations.yaml'):
+            if (s2p_root / rel).is_file():
+                s2p[rel] = C.sha256_file(s2p_root / rel)
+        overlay = C.ROOT / 'ENV2_COMPOSE' / 'docker-compose.s2p.yml'
+        if overlay.is_file():
+            s2p['ENV2_COMPOSE/docker-compose.s2p.yml'] = C.sha256_file(overlay)
     out = {'proto': proto, 'substitutes': subs, 'batch_types': batch_types,
-           'batch_types_digest': C.digest_of_map(batch_types)}
+           'batch_types_digest': C.digest_of_map(batch_types), 'ingress': ingress, 's2p': s2p}
     out['digest'] = C.sha256_json({'proto': {k: v['digest'] for k, v in proto.items()}, 'substitutes': subs,
-                                   'batch_types': out['batch_types_digest']})
+                                   'batch_types': out['batch_types_digest'], 'ingress': ingress, 's2p': s2p})
     return out
 
 

@@ -33,6 +33,11 @@ PROVES = {
     "family:webhooks": ["family:async-workers"],
     "family:approval-workflow": ["family:internal-service-routes"],
     "family:bulk-payouts": ["family:async-workers", "family:internal-service-routes"],
+    # M7: every ingress journey exercises the public/dashboard/internal ingress families and the real create path
+    "family:shared-ingress": ["family:public-api-ingress", "family:dashboard-ingress", "family:internal-service-routes",
+                              "family:beneficiary-fund-accounts", "family:idempotency-retries"],
+    "family:cross-domain-s2p": ["family:internal-service-routes", "family:source-updates", "family:async-workers",
+                                "family:source-to-pay-tds"],
 }
 # substitutes a journey of a family exercises (grounded in the driver modules under RED_LOOP/m6/journeys)
 DEPENDS_ON_SUBS = {
@@ -44,6 +49,8 @@ DEPENDS_ON_SUBS = {
     "family:webhooks": ["sub:stork-capture", "sub:merchant-webhook-sink"],
     "family:direct-payouts": ["sub:xas-sim", "sub:bankingaccounts-stub"],
     "family:statement-reconciliation": ["sub:xas-sim"],
+    "family:shared-ingress": ["sub:api-ingress", "sub:batch-sim", "sub:workflow-engine"],
+    "family:cross-domain-s2p": ["sub:api-ingress", "sub:s2p-source-driver"],
 }
 DEPENDS_ON_ALL = ["sub:kong-lite", "sub:mozart-sim", "sub:monolith-stub", "sub:dcs-stub", "sub:splitz-stub"]
 # variant-specific extra families

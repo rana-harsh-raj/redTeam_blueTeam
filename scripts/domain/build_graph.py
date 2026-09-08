@@ -30,7 +30,8 @@ EDGE_TYPES = {"calls","consumes","produces","reads","writes","transitions","gate
 CRIT = {"P0","P1","P2"}
 CONF = {"confirmed","probable","inferred"}
 # lane precedence for conflicting scalar fields (higher wins)
-LANE_RANK = {"twin-inventory": 100, "zz-runtime-overlay": 200, "m6-journeys": 150, "zz-worker-gaps": 120}
+LANE_RANK = {"twin-inventory": 100, "zz-runtime-overlay": 200, "m6-journeys": 150, "zz-worker-gaps": 120,
+             "m7-ingress": 170, "zz-s2p-namespace": 90}   # M7: ingress lane upgrades the api-monolith routes it serves; S2P namespace never overrides
 FID_RANK = {"real_source_running":6,"high_fidelity_replacement":5,"behavioural_placeholder":4,
             "real_source_mapped_not_running":3,"graph_only":2,"blocked_missing_access":1}
 

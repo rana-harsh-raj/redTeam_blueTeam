@@ -133,7 +133,7 @@ compose --profile datastores --profile substitutes up -d
 # a boot that leaves it unhealthy must fail here rather than surface later as
 # workflow-applicable payout creates failing. batch-sim is inert until called
 # but is health-gated for the same reason every other substitute is.
-./scripts/healthcheck.sh kong-lite monolith-stub dcs-stub splitz-stub shield-stub \
+./scripts/healthcheck.sh kong-lite api-ingress monolith-stub dcs-stub splitz-stub shield-stub \
   pricing-stub asv-stub stork-capture merchant-webhook-sink xas-sim \
   workflow-engine batch-sim --timeout 120
 

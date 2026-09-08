@@ -153,8 +153,11 @@
         password = "env|PAYOUTS_AUTH_IRCTC_PASSWORD"
 
 [api]
-    internalIngressHost = "{{SVC.monolith_stub.url}}/v1"
-    host = "{{SVC.monolith_stub.url}}/v1"
+    # M7: payouts -> API monolith goes through the shared ingress (substitutes/api-ingress); the
+    # payouts-service callback group is passed through to monolith-stub, fund_accounts_internal &
+    # co. are served by the ingress from explicit merchant-owned records.
+    internalIngressHost = "{{SVC.api_ingress.url}}/v1"
+    host = "{{SVC.api_ingress.url}}/v1"
     timeout = "30s"
     keepAliveTimeout = "600s"
     maxIdleConnections = 100

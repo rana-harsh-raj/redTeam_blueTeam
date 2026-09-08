@@ -133,3 +133,36 @@ m6-acceptance:     ## evaluate the M6 gates against committed evidence (clean-ch
 	@python3 RED_LOOP/surface/m6_acceptance.py
 
 m6-full: m6-clean-boot m6-graph m6-acceptance ## the weekly full rebuild chain (after images are built)
+
+# ---- M7 shared API-monolith ingress + Source-to-Pay integration ----
+.PHONY: m7-contract m7-ingress-test m7-s2p-build m7-s2p-up m7-s2p-down m7-s2p-status m7-journeys m7-clean-boot m7-graph m7-refresh-demo m7-acceptance m7-hashes
+m7-contract:       ## derive substitutes/api-ingress/contract/routes.json from the pinned api/payouts/vendor-payments sources
+	@python3 scripts/m7/derive_contract.py
+m7-ingress-test:   ## host contract tests of the shared ingress (fake PS upstream, no docker)
+	@cd ENV2_COMPOSE/substitutes/api-ingress && python3 -m unittest test_contract -v 2>&1 | tail -3
+m7-s2p-build:      ## pinned vendor-payments source -> runtime image (DOMAIN_REPLICAS/source_to_pay scripts)
+	@python3 RED_LOOP/m7/s2p_stack.py build
+m7-s2p-up:         ## start the Source-to-Pay stack inside the arena (compose overlay, api-ingress = boundary)
+	@python3 RED_LOOP/m7/s2p_stack.py up
+m7-s2p-down:       ## stop it (arena untouched)
+	@python3 RED_LOOP/m7/s2p_stack.py down
+m7-s2p-status:     ## containers / health / topics
+	@python3 RED_LOOP/m7/s2p_stack.py status
+m7-journeys:       ## the M7 journey families only (shared-ingress + cross-domain-s2p) against the live arena
+	@python3 RED_LOOP/m6/journeys/run.py --family shared-ingress,cross-domain-s2p $(ARGS)
+m7-clean-boot:     ## down -> empty volumes -> up (with the shared ingress) -> S2P stack -> FULL journey suite (M6 + M7)
+	@python3 RED_LOOP/m7/clean_boot.py $(ARGS)
+m7-graph:          ## regenerate the functional graph + the M7 canonical architecture snapshot from source
+	@python3 scripts/domain/runtime_overlay.py || true
+	@python3 scripts/domain/journeys_part.py || true
+	@python3 scripts/m7/ingress_part.py
+	@python3 scripts/m7/s2p_part.py
+	@python3 scripts/domain/build_graph.py --strict
+	@python3 scripts/domain/inventory.py
+	@python3 scripts/m7/canonical_snapshot.py
+m7-refresh-demo:   ## incremental refresh proof: an ingress contract change reruns only the affected journeys
+	@python3 RED_LOOP/m7/refresh_demo.py $(ARGS)
+m7-acceptance:     ## evaluate the 22 M7 hard gates against committed evidence
+	@python3 scripts/m7/acceptance.py
+m7-hashes:         ## bind every M7 runtime/report artifact into reports/implementation/M7_ARTIFACT_HASHES.json
+	@python3 scripts/m7/hashes.py
