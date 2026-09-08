@@ -1,0 +1,155 @@
+{
+  "milestone": "M8",
+  "accepted": true,
+  "evaluated_at": "2026-09-08T16:04:03.875869+00:00",
+  "head": "be3025246e42ec3ffc291a39fcf7b1af151d57ac",
+  "branch": "milestone-8-snapshot-query",
+  "snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+  "archkit_version": "1.0.0",
+  "gates_passed": 20,
+  "gates_total": 20,
+  "gates": [
+    {
+      "id": "M8-01",
+      "description": "Historical milestone tags unchanged (incl. the M7 tag)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'assurance-m4.1-reproducible': 'ef4ba7264d', 'assurance-m5-autonomous-discovery': '2613f38329', 'red-loop-m3.1': '3a044f83ed', 'red-loop-m4': '3ae1773283', 's2p-acceptance-closure-m7': '4505e62dce', 'twin-m6-complete-domain': '76024aed5a', 'twin-m7-shared-ingress-integration': '37ac47db1e', 'twin-v1.0': '78def24eb5'}"
+    },
+    {
+      "id": "M8-02",
+      "description": "Branch descends from the M7 tag",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'branch': 'milestone-8-snapshot-query', 'head': 'be3025246e'}"
+    },
+    {
+      "id": "M8-03",
+      "description": "M7 artifacts unchanged (canonical snapshot, acceptance, hash manifest)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'reports/architecture/M7_CANONICAL_SNAPSHOT.json': True, 'reports/implementation/M7_ACCEPTANCE.json': True, 'reports/implementation/M7_ARTIFACT_HASHES.json': True}"
+    },
+    {
+      "id": "M8-04",
+      "description": "Current architecture snapshot verifies (snapshot_id recomputes from the body; manifest hashes match)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'snapshot_id': '5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141', 'id_recomputes': True, 'manifest_ok': True, 'changed_or_missing': []}"
+    },
+    {
+      "id": "M8-05",
+      "description": "Three fresh compiles are byte-identical to the committed snapshot",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'runs': [True, True, True], 'snapshot_id': '5b6a5dade17e'}"
+    },
+    {
+      "id": "M8-06",
+      "description": "Static body carries no wall clock, host path, docker status, boot id or journey result",
+      "passed": true,
+      "status": "PASS",
+      "detail": "[]"
+    },
+    {
+      "id": "M8-07",
+      "description": "Every coverage measure names numerator, denominator and population",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'actual_source_defined': '242/525 p0_non_journey', 'behavioral_stub': '20/525 p0_non_journey', 'contract_faithful_replacement': '141/525 p0_non_journey', 'executable_defined': '259/364 p0_critical_kinds', 'mapping': '364/364 p0_critical_kinds', 'nodes_affected_by_production_unknowns': '81/3065 all_nodes', 'p0_families_with_journey_definition': '26/26 p0_families'}"
+    },
+    {
+      "id": "M8-08",
+      "description": "M7 import projects onto the snapshot (same node ids, no lost edges, every fidelity delta classified, M7 sha bound)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'node_ids_equal': True, 'fidelity_delta_count': 10, 'label_delta_count': 49, 'edges_only_in_static': 1}"
+    },
+    {
+      "id": "M8-09",
+      "description": "RuntimeInstance, EvidenceBundle and AcceptanceRecord are separate, id-bound documents chained to each other",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'boot_id': '6cdf3d73-c39c-4ff7-aafb-856774ed2fd0', 'bundle_files': 143, 'acceptance': '22/22'}"
+    },
+    {
+      "id": "M8-10",
+      "description": "Production unknowns consolidated (PU-1..10 + 4 Source-to-Pay) with original id/file kept and every affected node resolving",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'count': 14, 'unresolved': []}"
+    },
+    {
+      "id": "M8-11",
+      "description": "98 normalized service recipes with explicit unknowns and content ids",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'count': 98, 'by_category': {'core-real-binary': 67, 'datastore-or-infra': 9, 'source-to-pay': 4, 'substitute': 18}}"
+    },
+    {
+      "id": "M8-12",
+      "description": "All query capabilities answer through the library; canonical queries never load the Source-to-Pay detail namespace; explicit detail expansion works",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'capabilities': 27, 'failed': [], 'detail_loaded_by_canonical_queries': False}"
+    },
+    {
+      "id": "M8-13",
+      "description": "archkit, scripts/snapshot and RED_LOOP test suites pass",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'archkit': {'rc': 0, 'tests': 25, 'ok': True}, 'snapshot': {'rc': 0, 'tests': 36, 'ok': True}, 'red_loop': {'rc': 0, 'tests': 102, 'ok': True}}"
+    },
+    {
+      "id": "M8-14",
+      "description": "Fresh clean checkout of HEAD (no .local, no run dirs) reproduces the snapshot, recipes and M7 import byte-for-byte",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'rc': 0, 'snapshot_identical': True, 'recipes_identical': True, 'import_identical': True, 'tail': ''}"
+    },
+    {
+      "id": "M8-15",
+      "description": "archkit never shells out, invokes docker or reads secrets/clones (compilation and queries are pure repository reads)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'offenders': []}"
+    },
+    {
+      "id": "M8-16",
+      "description": "Read-only loopback HTTP service answers the query envelope",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'port': 55212}"
+    },
+    {
+      "id": "M8-17",
+      "description": "Final report, runbook and schema present; no single 'percent identical to production' claim",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'missing': [], 'hits': []}"
+    },
+    {
+      "id": "M8-18",
+      "description": "Performance measurements recorded for this snapshot (index build, lookups, paths, detail expansion)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'index_build_ms': 7.956, 'rss_mb_after_index': 44.6}"
+    },
+    {
+      "id": "M8-19",
+      "description": "M8 artifacts hash-bound (M8_ARTIFACT_HASHES.json verifies: snapshot store, imports, recipes, archkit sources, reports)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'count': 131, 'changed': []}"
+    },
+    {
+      "id": "M8-20",
+      "description": "Tracked tree clean (excluding the acceptance + hash manifest this evaluation writes)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'dirty': []}"
+    }
+  ],
+  "artifact_manifest_sha256": "963a647fcbf70a50b228a96dedee94a3d7200a8a334ad7343121b2650d5dde94",
+  "evaluation_scope": "20 hard gates over Git state, the committed snapshot store, fresh compiles (in temp stores and a fresh worktree), the three test suites and the query library; no docker, no clones, no secrets."
+}
