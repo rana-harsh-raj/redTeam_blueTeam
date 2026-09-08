@@ -1,0 +1,168 @@
+{
+  "schema_version": 1,
+  "started_at": "20260908T093324Z",
+  "git_head": "409cbe043c7438bc7feae274da2244ac52ca46d9",
+  "m6_clean_boot_rc": 0,
+  "m6_clean_boot": {
+    "run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m6-clean-boot-20260908T093324Z",
+    "from_empty_state": true,
+    "up_rc": 0,
+    "container_count": 98,
+    "running": 97,
+    "healthy": 97,
+    "unhealthy": [],
+    "not_running": [
+      "env2_compose-ledger-scheduler-1"
+    ],
+    "fresh_merchants": 17,
+    "journey_results": {
+      "PASS": 110,
+      "FAIL": 0,
+      "EXPECTED_FAILURE": 1,
+      "BLOCKED": 0
+    },
+    "suite_passed": true,
+    "no_stale_local_state": true,
+    "fingerprint": {
+      "boot_id": "6cdf3d73-c39c-4ff7-aafb-856774ed2fd0",
+      "compose_project": "env2_compose",
+      "route_profile": "monolith",
+      "config_digest": "3ef134253dbc07252b24e0698a2ae6f7dc4ef31ae49040486a5c4706cceda080",
+      "git_head": "e63102de0adda18fdb7d69d7ace709054b3648ad",
+      "generated_at": null
+    },
+    "post_up": [
+      {
+        "cmd": "python3 RED_LOOP/m7/s2p_stack.py up",
+        "rc": 0,
+        "stdout_tail": "{\"project\": \"env2_compose\", \"image\": \"s2p-architecture-replica/vendor-payments:20c4f4d59970471067388afea8b1d65ac39ee126-550e673322646fbb\", \"containers\": {\"s2p-kafka\": \"running healthy 2026-09-08T09:25:06.708338675Z d3739fb1f9b7969d750646bfa54c2e62042734cee484cbb7512a934da5dc128e\", \"s2p-mysql\": \"running healthy 2026-09-08T09:25:06.78001432Z f1ad64f68e9e74b2193a5eef6c47d5c1304224da9e4506f329be3041d5e00457\", \"s2p-redis\": \"running healthy 2026-09-08T09:25:06.861279423Z 9b3567e08ae194e491181a6866695691d8d5e31abe80436c6aefeec11e224934\", \"s2p-vp-source\": \"running healthy 2026-09-08T09:25:14.660782164Z c95b1329991146121cdf5807009591ea6d68f22634b65380642c3e8ba6c47b10\", \"api-ingress\": \"running healthy 2026-09-08T09:32:48.40346653Z 1dc785ae5b1c24971c3dea95cbacc2a78fa9831ea66f21c5a04b3ecff552f176\"}, \"at\": \"2026-09-08T09:33:29.348543+00:00\", \"vp_source_health_rc\": 0, \"topics\": [\"add-tds-entry\", \"prod.x.vendor-payments.accounting-payouts.status-update\"]}\n",
+        "stderr_tail": ""
+      }
+    ],
+    "journeys_run_dir": "RED_LOOP/runs/m6-journeys-20260908T085132Z"
+  },
+  "s2p_stack": {
+    "project": "env2_compose",
+    "image": "s2p-architecture-replica/vendor-payments:20c4f4d59970471067388afea8b1d65ac39ee126-550e673322646fbb",
+    "containers": {
+      "s2p-kafka": "running healthy 2026-09-08T09:25:06.708338675Z d3739fb1f9b7969d750646bfa54c2e62042734cee484cbb7512a934da5dc128e",
+      "s2p-mysql": "running healthy 2026-09-08T09:25:06.78001432Z f1ad64f68e9e74b2193a5eef6c47d5c1304224da9e4506f329be3041d5e00457",
+      "s2p-redis": "running healthy 2026-09-08T09:25:06.861279423Z 9b3567e08ae194e491181a6866695691d8d5e31abe80436c6aefeec11e224934",
+      "s2p-vp-source": "running healthy 2026-09-08T09:25:14.660782164Z c95b1329991146121cdf5807009591ea6d68f22634b65380642c3e8ba6c47b10",
+      "api-ingress": "running healthy 2026-09-08T09:32:48.40346653Z 1dc785ae5b1c24971c3dea95cbacc2a78fa9831ea66f21c5a04b3ecff552f176"
+    },
+    "at": "2026-09-08T09:33:29.620363+00:00",
+    "vp_source_health_rc": 0,
+    "topics": [
+      "add-tds-entry",
+      "prod.x.vendor-payments.accounting-payouts.status-update"
+    ]
+  },
+  "ingress_health": {
+    "status": "ok",
+    "service": "api-ingress",
+    "schema_version": 1,
+    "boot_id": "b64f951316cd410282cea1c14ace88b5",
+    "api_keys": 336,
+    "merchants": 168,
+    "app_identities": [
+      "batch",
+      "merchant_dashboard",
+      "payouts_service",
+      "vendor_payments",
+      "workflows",
+      "xpayroll"
+    ],
+    "passport_signer": true,
+    "ps_api_url": "http://payouts-api:9400",
+    "monolith_stub_url": "http://monolith-stub:8080",
+    "s2p_vp_source_url": "http://vp-source:8080",
+    "contract_routes": 25,
+    "served_routes": 25,
+    "tables": {
+      "resources": 426,
+      "banking_accounts": 1,
+      "sessions": 0,
+      "otps": 12,
+      "idempotency": 10,
+      "audit": 333,
+      "payout_details": 6,
+      "internal_payouts": 4,
+      "callbacks": 7
+    }
+  },
+  "journeys": {
+    "total": 111,
+    "by_family": {
+      "family:shared-payouts": {
+        "PASS": 10
+      },
+      "family:direct-payouts": {
+        "PASS": 9
+      },
+      "family:queued-low-balance": {
+        "PASS": 5
+      },
+      "family:scheduled-payouts": {
+        "PASS": 6
+      },
+      "family:failure-reversal-cancellation": {
+        "PASS": 7
+      },
+      "family:pricing-free-payouts": {
+        "PASS": 6,
+        "EXPECTED_FAILURE": 1
+      },
+      "family:webhooks": {
+        "PASS": 6
+      },
+      "family:approval-workflow": {
+        "PASS": 8
+      },
+      "family:bulk-payouts": {
+        "PASS": 5
+      },
+      "family:idempotency-retries": {
+        "PASS": 6
+      },
+      "family:accounting": {
+        "PASS": 5
+      },
+      "family:on-hold": {
+        "PASS": 5
+      },
+      "family:fetch-list": {
+        "PASS": 4
+      },
+      "family:source-updates": {
+        "PASS": 4
+      },
+      "family:async-workers": {
+        "PASS": 4
+      },
+      "family:beneficiary-fund-accounts": {
+        "PASS": 6
+      },
+      "family:shared-ingress": {
+        "PASS": 10
+      },
+      "family:cross-domain-s2p": {
+        "PASS": 4
+      }
+    },
+    "m7_families": {
+      "family:shared-ingress": {
+        "PASS": 10
+      },
+      "family:cross-domain-s2p": {
+        "PASS": 4
+      }
+    },
+    "run_dir": "RED_LOOP/runs/m6-journeys-20260908T085132Z",
+    "fingerprint_boot_id": "6cdf3d73-c39c-4ff7-aafb-856774ed2fd0"
+  },
+  "shared_ingress_booted_from_clean_state": true,
+  "s2p_stack_healthy": true,
+  "seconds": 5.4,
+  "finished_at": "20260908T093330Z"
+}

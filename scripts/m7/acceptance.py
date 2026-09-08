@@ -56,8 +56,12 @@ def main():
     g("M7-01", "Historical milestone tags unchanged", unchanged, {t: now[t][:10] for t in HISTORICAL_TAGS})
     # 2 canonical branch ancestry
     m6_tag = git("rev-list", "-n1", "twin-m6-complete-domain"); s2p_tag = git("rev-list", "-n1", "s2p-acceptance-closure-m7")
-    merge = git("log", "--merges", "--format=%H", "-1", "--", "DOMAIN_REPLICAS/source_to_pay")
-    parents = git("show", "-s", "--format=%P", merge).split() if merge else []
+    merge, parents = "", []
+    for m in git("rev-list", "--merges", "HEAD").split():
+        ps = git("show", "-s", "--format=%P", m).split()
+        if s2p_tag in ps:
+            merge, parents = m, ps
+            break
     g("M7-02", "Canonical branch has documented ancestry (M6 tag + S2P closure tag are ancestors; merge commit recorded)",
       branch == "milestone-7-shared-ingress-integration" and ancestor(m6_tag, head) and ancestor(s2p_tag, head) and ancestor("b6e4976f9baebfe770dfa30794f6f61ea08ccb1b", head) and len(parents) == 2,
       {"branch": branch, "head": head[:10], "merge_commit": merge[:10], "parents": [p[:10] for p in parents]})
@@ -73,7 +77,8 @@ def main():
     # 4 M6 acceptance after integration (direct evaluation)
     try:
         m6 = module("m6_acceptance", REPO / "RED_LOOP/surface/m6_acceptance.py")
-        m6_gates = m6.evaluate()
+        res = m6.evaluate()
+        m6_gates = res if isinstance(res, list) else (res.get("gates") if isinstance(res, dict) else res[0])
         m6_ok = all(x["passed"] for x in m6_gates)
         g("M7-04", "M6 acceptance passes after integration (re-evaluated now)", m6_ok, {"gates": "%d/%d" % (sum(x["passed"] for x in m6_gates), len(m6_gates)), "failed": [x["id"] for x in m6_gates if not x["passed"]]})
     except Exception as e:

@@ -1,82 +1,84 @@
 {
-  "generated_at": "2026-09-08T02:27:25.386838+00:00",
+  "generated_at": "2026-09-08T09:24:53.265145+00:00",
   "lanes": [
     "external-config-deploy",
     "fts-mozart",
     "identity-ingress",
     "m6-journeys",
+    "m7-ingress",
     "money-and-statements",
     "payouts-core",
     "twin-inventory",
     "zz-runtime-overlay",
+    "zz-s2p-namespace",
     "zz-worker-gaps"
   ],
-  "nodes": 2093,
-  "edges": 4077,
-  "families": 42,
+  "nodes": 3065,
+  "edges": 5266,
+  "families": 45,
   "nodes_by_kind": {
     "cron": 51,
     "event": 85,
     "external": 76,
     "flag": 208,
-    "identity": 77,
-    "journey": 188,
+    "identity": 82,
+    "journey": 202,
     "queue": 240,
     "repository": 38,
-    "route": 450,
-    "substitute": 21,
-    "service": 42,
-    "topic": 29,
-    "worker": 287,
-    "datastore": 23,
-    "table": 124,
-    "state": 100,
+    "route": 464,
+    "substitute": 24,
+    "service": 45,
+    "topic": 843,
+    "worker": 313,
+    "datastore": 87,
+    "table": 131,
+    "state": 122,
     "role": 25,
     "family": 29
   },
   "fidelity_histogram": {
-    "graph_only": 481,
-    "real_source_running": 763,
-    "real_source_mapped_not_running": 469,
-    "high_fidelity_replacement": 299,
-    "behavioural_placeholder": 79,
+    "graph_only": 462,
+    "real_source_running": 796,
+    "real_source_mapped_not_running": 1372,
+    "high_fidelity_replacement": 355,
+    "behavioural_placeholder": 78,
     "blocked_missing_access": 2
   },
   "fidelity_by_criticality": {
     "P1": {
-      "graph_only": 235,
-      "real_source_running": 256,
-      "high_fidelity_replacement": 135,
+      "graph_only": 229,
+      "real_source_running": 267,
+      "high_fidelity_replacement": 138,
       "behavioural_placeholder": 29,
       "real_source_mapped_not_running": 365,
       "blocked_missing_access": 1
     },
     "P2": {
       "real_source_running": 128,
-      "real_source_mapped_not_running": 63,
-      "graph_only": 151,
+      "real_source_mapped_not_running": 966,
+      "graph_only": 150,
       "behavioural_placeholder": 20,
-      "high_fidelity_replacement": 53,
+      "high_fidelity_replacement": 54,
       "blocked_missing_access": 1
     },
     "P0": {
-      "real_source_running": 379,
-      "high_fidelity_replacement": 111,
-      "graph_only": 95,
-      "behavioural_placeholder": 30,
+      "real_source_running": 401,
+      "high_fidelity_replacement": 163,
+      "graph_only": 83,
+      "behavioural_placeholder": 29,
       "real_source_mapped_not_running": 41
     }
   },
-  "critical_components_total": 330,
-  "critical_components_represented": 330,
-  "critical_components_runtime": 227,
-  "critical_components_executable": 218,
+  "critical_components_total": 364,
+  "critical_components_represented": 364,
+  "critical_components_runtime": 273,
+  "critical_components_executable": 265,
   "critical_representation_pct": 100.0,
-  "critical_runtime_pct": 68.8,
-  "critical_executable_pct": 66.1,
+  "critical_runtime_pct": 75.0,
+  "critical_executable_pct": 72.8,
   "critical_unrepresented": [],
-  "p0_families": 24,
-  "p0_families_with_journey": 24,
+  "p0_families": 26,
+  "p0_families_with_journey": 26,
   "p0_families_missing_journey": [],
   "family_coverage": {
     "family:webhooks": {
@@ -295,21 +297,46 @@
         "journey:bulk-payouts/failure",
         "journey:bulk-payouts/idempotency",
         "journey:bulk-payouts/success",
+        "journey:cross-domain-s2p/async_state",
+        "journey:cross-domain-s2p/failure",
+        "journey:cross-domain-s2p/idempotency",
+        "journey:cross-domain-s2p/success",
         "journey:internal-service-routes/m4-g46",
         "journey:internal-service-routes/m4-g47",
         "journey:internal-service-routes/m4-g48",
         "journey:internal-service-routes/m4-g49",
         "journey:internal-service-routes/m4-g50",
         "journey:internal-service-routes/m4-hd3",
-        "journey:internal-service-routes/v15"
+        "journey:internal-service-routes/v15",
+        "journey:shared-ingress/admin",
+        "journey:shared-ingress/approval",
+        "journey:shared-ingress/async_state",
+        "journey:shared-ingress/batch",
+        "journey:shared-ingress/direct",
+        "journey:shared-ingress/failure",
+        "journey:shared-ingress/idempotency",
+        "journey:shared-ingress/restart",
+        "journey:shared-ingress/success",
+        "journey:shared-ingress/tenant_isolation"
       ],
-      "executable": 19,
+      "executable": 33,
       "fidelity": "behavioural_placeholder"
     },
     "family:dashboard-ingress": {
       "priority": "P1",
-      "journeys": [],
-      "executable": 0,
+      "journeys": [
+        "journey:shared-ingress/admin",
+        "journey:shared-ingress/approval",
+        "journey:shared-ingress/async_state",
+        "journey:shared-ingress/batch",
+        "journey:shared-ingress/direct",
+        "journey:shared-ingress/failure",
+        "journey:shared-ingress/idempotency",
+        "journey:shared-ingress/restart",
+        "journey:shared-ingress/success",
+        "journey:shared-ingress/tenant_isolation"
+      ],
+      "executable": 10,
       "fidelity": "behavioural_placeholder"
     },
     "family:public-api-ingress": {
@@ -324,6 +351,16 @@
         "journey:direct-payouts/pending",
         "journey:direct-payouts/statement_first",
         "journey:direct-payouts/success",
+        "journey:shared-ingress/admin",
+        "journey:shared-ingress/approval",
+        "journey:shared-ingress/async_state",
+        "journey:shared-ingress/batch",
+        "journey:shared-ingress/direct",
+        "journey:shared-ingress/failure",
+        "journey:shared-ingress/idempotency",
+        "journey:shared-ingress/restart",
+        "journey:shared-ingress/success",
+        "journey:shared-ingress/tenant_isolation",
         "journey:shared-payouts/accounting",
         "journey:shared-payouts/async_state",
         "journey:shared-payouts/cancel_or_reverse",
@@ -335,8 +372,47 @@
         "journey:shared-payouts/restart",
         "journey:shared-payouts/success"
       ],
-      "executable": 19,
+      "executable": 29,
       "fidelity": "behavioural_placeholder"
+    },
+    "family:shared-ingress": {
+      "priority": "P0",
+      "journeys": [
+        "journey:shared-ingress/admin",
+        "journey:shared-ingress/approval",
+        "journey:shared-ingress/async_state",
+        "journey:shared-ingress/batch",
+        "journey:shared-ingress/direct",
+        "journey:shared-ingress/failure",
+        "journey:shared-ingress/idempotency",
+        "journey:shared-ingress/restart",
+        "journey:shared-ingress/success",
+        "journey:shared-ingress/tenant_isolation"
+      ],
+      "executable": 10,
+      "fidelity": "high_fidelity_replacement"
+    },
+    "family:cross-domain-s2p": {
+      "priority": "P0",
+      "journeys": [
+        "journey:cross-domain-s2p/async_state",
+        "journey:cross-domain-s2p/failure",
+        "journey:cross-domain-s2p/idempotency",
+        "journey:cross-domain-s2p/success"
+      ],
+      "executable": 4,
+      "fidelity": "real_source_running"
+    },
+    "family:source-to-pay-tds": {
+      "priority": "P1",
+      "journeys": [
+        "journey:cross-domain-s2p/async_state",
+        "journey:cross-domain-s2p/failure",
+        "journey:cross-domain-s2p/idempotency",
+        "journey:cross-domain-s2p/success"
+      ],
+      "executable": 4,
+      "fidelity": "real_source_running"
     },
     "family:accounting": {
       "priority": "P0",
@@ -419,9 +495,19 @@
         "journey:beneficiary-fund-accounts/failure",
         "journey:beneficiary-fund-accounts/idempotency",
         "journey:beneficiary-fund-accounts/success",
-        "journey:beneficiary-fund-accounts/tenant_isolation"
+        "journey:beneficiary-fund-accounts/tenant_isolation",
+        "journey:shared-ingress/admin",
+        "journey:shared-ingress/approval",
+        "journey:shared-ingress/async_state",
+        "journey:shared-ingress/batch",
+        "journey:shared-ingress/direct",
+        "journey:shared-ingress/failure",
+        "journey:shared-ingress/idempotency",
+        "journey:shared-ingress/restart",
+        "journey:shared-ingress/success",
+        "journey:shared-ingress/tenant_isolation"
       ],
-      "executable": 6,
+      "executable": 17,
       "fidelity": "real_source_running"
     },
     "family:virtual-account-payouts": {
@@ -547,9 +633,19 @@
         "journey:idempotency-retries/success",
         "journey:idempotency-retries/v01",
         "journey:idempotency-retries/v02",
-        "journey:idempotency-retries/v03"
+        "journey:idempotency-retries/v03",
+        "journey:shared-ingress/admin",
+        "journey:shared-ingress/approval",
+        "journey:shared-ingress/async_state",
+        "journey:shared-ingress/batch",
+        "journey:shared-ingress/direct",
+        "journey:shared-ingress/failure",
+        "journey:shared-ingress/idempotency",
+        "journey:shared-ingress/restart",
+        "journey:shared-ingress/success",
+        "journey:shared-ingress/tenant_isolation"
       ],
-      "executable": 10,
+      "executable": 20,
       "fidelity": "real_source_running"
     },
     "family:async-workers": {
@@ -564,6 +660,10 @@
         "journey:bulk-payouts/failure",
         "journey:bulk-payouts/idempotency",
         "journey:bulk-payouts/success",
+        "journey:cross-domain-s2p/async_state",
+        "journey:cross-domain-s2p/failure",
+        "journey:cross-domain-s2p/idempotency",
+        "journey:cross-domain-s2p/success",
         "journey:direct-payouts/async_state",
         "journey:direct-payouts/cancel_or_reverse",
         "journey:direct-payouts/duplicate",
@@ -601,7 +701,7 @@
         "journey:webhooks/success",
         "journey:webhooks/webhook"
       ],
-      "executable": 45,
+      "executable": 49,
       "fidelity": "real_source_running"
     },
     "family:fund-management-payouts": {
@@ -619,12 +719,16 @@
     "family:source-updates": {
       "priority": "P0",
       "journeys": [
+        "journey:cross-domain-s2p/async_state",
+        "journey:cross-domain-s2p/failure",
+        "journey:cross-domain-s2p/idempotency",
+        "journey:cross-domain-s2p/success",
         "journey:source-updates/async_state",
         "journey:source-updates/failure",
         "journey:source-updates/idempotency",
         "journey:source-updates/success"
       ],
-      "executable": 4,
+      "executable": 8,
       "fidelity": "real_source_mapped_not_running"
     },
     "family:data-consistency": {
@@ -717,11 +821,14 @@
       "fidelity": "real_source_running"
     }
   },
-  "dangling_edge_endpoints": [],
+  "dangling_edge_endpoints": [
+    "family:cross-domain-s2p",
+    "family:shared-ingress"
+  ],
   "blocked_missing_access": [
     "sub:mozart-mock",
     "svc:mozart-mock-mode"
   ],
   "schema_violations": 0,
-  "graph_sha256": "a13555b6d8a678c34721b5cdc68e60a48a3830035646e695bf5c57d01fab4d77"
+  "graph_sha256": "95498fb9afc09bd25801043f1282ec518facc83b4f2e8817cf787d8a6fb61fe4"
 }

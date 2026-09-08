@@ -76,6 +76,9 @@ def main():
     ap.add_argument("--post-up", action="append", default=[],
                     help="M7: command(s) run after the health wait and before the journeys (e.g. the Source-to-Pay "
                          "stack: 'python3 RED_LOOP/m7/s2p_stack.py up'); recorded in the command log, a non-zero rc fails the boot")
+    ap.add_argument("--reuse-journeys", action="store_true",
+                    help="M7: with --no-journeys, summarize the existing reports/implementation/m6-journeys.json when it "
+                         "was produced on THIS boot (same fingerprint boot_id) instead of rerunning the suite")
     ap.add_argument("--attach", action="store_true",
                     help="the down/up already ran (e.g. the orchestrator was killed after boot): prove the empty-state "
                          "boot from docker volume/container creation times + regenerated secrets, then run the suite")
@@ -95,6 +98,9 @@ def main():
         # secret file was regenerated in that same window (REGEN_SECRETS=1).
         print("== 1/5 attach: verifying the previous down/up from docker + secrets timestamps")
         vols = volumes()
+        # M7: the Source-to-Pay stack's volume (rzp-arena-s2p-*) is torn down / recreated by design during the M7
+        # evidence chain (three connected runs, reset proof); it is not part of the arena's boot window.
+        vols = [v for v in vols if "s2p" not in v]
         vinfo = json.loads(sh(["docker", "volume", "inspect"] + vols).stdout or "[]") if vols else []
         vcreated = sorted(v.get("CreatedAt", "") for v in vinfo)
         cs = containers()
@@ -171,11 +177,21 @@ def main():
         if p.returncode != 0:
             rep["up_rc"] = rep.get("up_rc") or p.returncode
             print("   post-up FAILED rc=%d" % p.returncode)
-    if not a.no_journeys:
-        print("== 4/5 journeys (fresh merchants)")
-        cmd = [sys.executable, "RED_LOOP/m6/journeys/run.py"] + (a.journeys_args.split() if a.journeys_args else [])
-        p = sh(cmd, log=log, timeout=7200)
-        (run_dir / "journeys.log").write_text(p.stdout + "\n--- stderr ---\n" + p.stderr)
+    reuse = False
+    if a.no_journeys and a.reuse_journeys:
+        try:
+            prev = json.loads((IMPL / "m6-journeys.json").read_text())
+            reuse = (prev.get("fingerprint") or {}).get("boot_id") == (rep.get("fingerprint") or {}).get("boot_id")
+        except Exception:
+            reuse = False
+        print("== 4/5 journeys: reusing the suite already run on this boot:", reuse)
+        rep["journeys_reused_from_same_boot"] = reuse
+    if not a.no_journeys or reuse:
+        if not reuse:
+            print("== 4/5 journeys (fresh merchants)")
+            cmd = [sys.executable, "RED_LOOP/m6/journeys/run.py"] + (a.journeys_args.split() if a.journeys_args else [])
+            p = sh(cmd, log=log, timeout=7200)
+            (run_dir / "journeys.log").write_text(p.stdout + "\n--- stderr ---\n" + p.stderr)
         try:
             jr = json.loads((IMPL / "m6-journeys.json").read_text())
         except Exception:

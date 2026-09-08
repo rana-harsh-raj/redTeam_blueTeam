@@ -105,4 +105,4 @@ razorpay/alert-rules,deployment_artifact,c372beabedf833a2a2c7aec862a4f78ce19e5d0
 razorpay/terraform-kong,deployment_artifact,8ffe965bce7868d150344433d3bfbf3e630e228b,,,yaml,/Users/rana.singh/rzp-payouts-clones/terraform-kong,,Edge routes/plugins incl. payouts-proxy-cutover,cloned,,
 razorpay/proto,deployment_artifact,52682577d79d7237944e9fbb10477a1721623065,,,yaml,/Users/rana.singh/rzp-payouts-clones/proto,,"protobuf contracts (payouts, ledger, stork, x-*, validx, workflows)",cloned,,
 razorpay/config-proto,deployment_artifact,a6b201039f22cc543efb740eba9dd72fd29474b0,,,yaml,/Users/rana.singh/rzp-payouts-clones/config-proto,,DCS object schemas (rzp/x/merchant/payouts/*),cloned,,
-rzp-payouts-architecture (twin),twin,1e14f17087c4dfc202ea34100589f7a27424c788,2026-09-08T07:27:21+05:30,True,python/yaml,/Users/rana.singh/rzp-payouts-architecture,,functional twin,local,,
+rzp-payouts-architecture (twin),twin,409cbe043c7438bc7feae274da2244ac52ca46d9,2026-09-08T14:22:08+05:30,True,python/yaml,/Users/rana.singh/rzp-payouts-architecture,,functional twin,local,,

@@ -17,6 +17,7 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--no-journeys", action="store_true"); ap.add_argument("--journeys-args", default="")
     ap.add_argument("--attach", action="store_true"); ap.add_argument("--skip-s2p-build", action="store_true")
+    ap.add_argument("--reuse-journeys", action="store_true", help="with --attach --no-journeys: summarize the suite already run on this boot")
     a = ap.parse_args()
     t0 = time.time()
     rep = {"schema_version": 1, "started_at": datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ"),
@@ -32,6 +33,8 @@ def main():
         cmd.append("--attach")
     if a.no_journeys:
         cmd.append("--no-journeys")
+    if a.reuse_journeys:
+        cmd.append("--reuse-journeys")
     if a.journeys_args:
         cmd += ["--journeys-args", a.journeys_args]
     p = subprocess.run(cmd, cwd=REPO, text=True)

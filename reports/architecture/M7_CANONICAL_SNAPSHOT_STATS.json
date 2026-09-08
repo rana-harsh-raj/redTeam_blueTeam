@@ -1,0 +1,167 @@
+{
+ "generated_at": "2026-09-08T09:33:30.481333+00:00",
+ "git_head": "409cbe043c7438bc7feae274da2244ac52ca46d9",
+ "label_histogram": {
+  "GRAPH_ONLY": 461,
+  "BEHAVIORAL_STUB": 78,
+  "SOURCE_MAPPED_NOT_RUNNING": 1372,
+  "ACTUAL_SOURCE_RUNNING": 796,
+  "CONTRACT_FAITHFUL_REPLACEMENT": 355,
+  "PRODUCTION_STATE_UNKNOWN": 3
+ },
+ "p0_label_histogram": {
+  "ACTUAL_SOURCE_RUNNING": 242,
+  "CONTRACT_FAITHFUL_REPLACEMENT": 147,
+  "SOURCE_MAPPED_NOT_RUNNING": 39,
+  "BEHAVIORAL_STUB": 14,
+  "GRAPH_ONLY": 83
+ },
+ "coverage": {
+  "mapping": {
+   "critical_components_total": 364,
+   "represented": 364,
+   "pct": 100.0
+  },
+  "executable": {
+   "critical_components_executable": 265,
+   "pct": 72.8,
+   "definition": "P0 nodes whose fidelity is real_source_running or high_fidelity_replacement"
+  },
+  "actual_source_runtime": {
+   "p0": 242,
+   "p0_pct": 46.1,
+   "all_nodes": 796
+  },
+  "contract_faithful_replacement": {
+   "p0": 147,
+   "p0_pct": 28.0,
+   "all_nodes": 355
+  },
+  "behavioral_stub": {
+   "p0": 14,
+   "all_nodes": 78
+  },
+  "critical_journey": {
+   "p0_families": 26,
+   "p0_families_with_passing_journey": 26,
+   "journeys_executed": 202,
+   "journeys_pass_or_expected": 111
+  },
+  "s2p_namespace": {
+   "patch_nodes": 27994,
+   "patch_edges": 34744,
+   "projected_nodes": 930,
+   "mandatory_runtime_nodes": 18
+  },
+  "detector_limitations": [
+   "Payouts graph: lane detectors are regex/AST based over the pinned repos; a node absent from every lane is absent from the graph (REMAINING_ACCESS_MANIFEST.md lists blocked repos).",
+   "Source-to-Pay: representation is measured against mechanically detected observations, not detector recall (architecture-inventory-summary.md 'extraction_completeness_is_not_measured_by_percentage').",
+   "Runtime overlay: 'running' means a compose service is up and healthy right now, not that every code path of the service executed.",
+   "Ingress contract: routes.json is derived from Route.php arrays and router files; middleware-level behaviour beyond the cited groups (rate limits, permissions) is not inventoried."
+  ]
+ },
+ "production_unknowns": [
+  {
+   "id": "PU-1",
+   "topic": "payout create route selection",
+   "statement": "Whether a given merchant's POST /v1/payouts is served Edge->PS directly or Edge->API->PS (PayoutController::postFundAccountPayout logs X-Payouts-Service-Proxy / PROXY_CUTOVER_DECISION) depends on live routing and merchant flags; not decidable from source.",
+   "affects": [
+    "route:api-monolith/POST payouts",
+    "sub:api-ingress",
+    "sub:kong-lite"
+   ]
+  },
+  {
+   "id": "PU-2",
+   "topic": "fund-account ownership on the PS-direct path",
+   "statement": "On a path where Edge reaches PS without the monolith, ownership still rests on the monolith's merchant-scoped GET fund_accounts_internal answered to PS; whether any production configuration lets PS resolve a beneficiary without that hop (cache pre-warm, composite create) is unknown.",
+   "affects": [
+    "route:api-monolith/GET fund_accounts_internal/{id}",
+    "table:api-ingress/resources"
+   ]
+  },
+  {
+   "id": "PU-3",
+   "topic": "tax-payment tag-back scoping",
+   "statement": "PayoutsDetails/Core.php updateTaxPayment updates by payout id only; whether another production layer scopes vendor_payments' tag-back to the merchant is unknown.",
+   "affects": [
+    "route:api-monolith/PATCH payouts_internal/{id}/tax-payment-id"
+   ]
+  },
+  {
+   "id": "PU-4",
+   "topic": "internal-app secrets and Passport-issued app auth",
+   "statement": "Production internal applications may authenticate through Passport (BasicAuth::isValidPassportForAppAuth) rather than key-blank secrets; the twin models the key-blank appAuth branch only.",
+   "affects": [
+    "identity:ingress-app-secret"
+   ]
+  },
+  {
+   "id": "PU-5",
+   "topic": "dashboard session/OTP",
+   "statement": "Production sessions and OTPs come from the dashboard + Raven; the twin's session/OTP store is synthetic (control plane).",
+   "affects": [
+    "identity:dashboard-session",
+    "identity:dashboard-otp"
+   ]
+  },
+  {
+   "id": "PU-6",
+   "topic": "SourceUpdater transport",
+   "statement": "The SNS SourceUpdater leg is off in the pinned config; the live flag value and the vendor-payments Twirp authentication on PayoutStatusChange are unknown; the twin relays over HTTP to the source driver's callback adapter.",
+   "affects": [
+    "route:vendor-payments/POST /twirp/vendorpayments.Vendorpayments/PayoutStatusChange"
+   ]
+  },
+  {
+   "id": "PU-7",
+   "topic": "Source-to-Pay deployment",
+   "statement": "Deployed vendor-payments/vendor-experience/accounting-integrations topology, Kafka partitioning, flags and secrets are unknown (DOMAIN_REPLICAS/source_to_pay/spec/unresolved-production-unknowns.yaml).",
+   "affects": [
+    "svc:s2p/vendor-payments",
+    "svc:s2p/vendor-experience",
+    "svc:s2p/accounting-integrations"
+   ]
+  },
+  {
+   "id": "PU-8",
+   "topic": "batch approval hop",
+   "statement": "Batch per-row approve/reject in the twin still bypasses the monolith (bulk_approve is outside the selected ingress surface).",
+   "affects": [
+    "sub:batch-sim"
+   ]
+  }
+ ],
+ "payouts_graph": {
+  "path": "reports/domain/PAYOUTS_FUNCTIONAL_GRAPH.json",
+  "sha256": "95498fb9afc09bd25801043f1282ec518facc83b4f2e8817cf787d8a6fb61fe4",
+  "nodes": 3065,
+  "edges": 5266,
+  "families": 45,
+  "lanes": [
+   "external-config-deploy",
+   "fts-mozart",
+   "identity-ingress",
+   "m6-journeys",
+   "m7-ingress",
+   "money-and-statements",
+   "payouts-core",
+   "twin-inventory",
+   "zz-runtime-overlay",
+   "zz-s2p-namespace",
+   "zz-worker-gaps"
+  ]
+ },
+ "s2p_namespace": {
+  "path": "DOMAIN_REPLICAS/source_to_pay/integration/unified-graph-patch.json",
+  "sha256": "a16269693289a89b4e1776a455053129f9e979d2edc48a7655b47813ffc9e319",
+  "nodes": 27994,
+  "edges": 34744,
+  "namespace": "source_to_pay",
+  "projected_part": "reports/domain/parts/zz-s2p-namespace.json",
+  "projected_part_sha256": "d5309e59f0a069b3a41a06e28d8eedbd636de8013b88efd96493e4242059a265"
+ },
+ "shared_ingress_routes": 25,
+ "running_compose_services": 97,
+ "snapshot_sha256": "d88a26342e10eea4c18971f2765ecc2e05364d7716cc113733f7d76233709651"
+}

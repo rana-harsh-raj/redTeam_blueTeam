@@ -1,6 +1,6 @@
 # Remaining-access manifest — what prevents the final ~1% of Payouts fidelity
 
-Generated 2026-09-08T02:27:35.550843+00:00 by scripts/domain/inventory.py.
+Generated 2026-09-08T09:25:03.180600+00:00 by scripts/domain/inventory.py.
 Every item is a specific export, schema, config value, or repository the twin cannot derive from the
 readable clones. Nothing here asks for production access.
 

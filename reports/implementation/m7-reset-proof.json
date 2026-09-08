@@ -1,0 +1,51 @@
+{
+  "started_at": "2026-09-08T09:25:03.713753+00:00",
+  "tables_before": {
+    "resources": 414,
+    "banking_accounts": 1,
+    "sessions": 2,
+    "otps": 13,
+    "idempotency": 19,
+    "audit": 2270,
+    "payout_details": 6,
+    "internal_payouts": 4,
+    "callbacks": 8
+  },
+  "ingress_mutable_rows_before": 52,
+  "pre_reset_request": {
+    "status": 400
+  },
+  "reset": {
+    "status": 200,
+    "body": {
+      "reset": true,
+      "at": 1788859504
+    }
+  },
+  "tables_after_reset": {
+    "resources": 404,
+    "banking_accounts": 0,
+    "sessions": 0,
+    "otps": 0,
+    "idempotency": 0,
+    "audit": 0,
+    "payout_details": 0,
+    "internal_payouts": 0,
+    "callbacks": 0
+  },
+  "ingress_mutable_rows_after_reset": 0,
+  "seed_ownership_kept": true,
+  "evidence_after_reset_empty": true,
+  "audit_rows_after_reset": [],
+  "audit_rows_after_reset_all_newer_than_reset": true,
+  "ingress_replay_after_reset_is_new": true,
+  "post_reset_request": {
+    "status": 400,
+    "replayed": false
+  },
+  "s2p_volume_removed": true,
+  "s2p_up_rc": 0,
+  "s2p_tax_payments_after_fresh_up": "",
+  "arena_down_removes_volumes": "compose ... down -v (ENV2_COMPOSE/scripts/down.sh) -- proven by m6-clean-boot.json from_empty_state",
+  "finished_at": "2026-09-08T09:26:19.644714+00:00"
+}

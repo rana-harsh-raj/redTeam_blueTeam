@@ -107,8 +107,8 @@ def main():
         if canonical_cov is not None:
             (IMPL / "m6-journey-coverage.md").write_bytes(canonical_cov)
         rep["canonical_evidence_preserved"] = canonical is None or (IMPL / "m6-journeys.json").read_bytes() == canonical
-        git = sh(["git", "status", "--porcelain", str(target.relative_to(REPO)), "reports/implementation/m6-journeys.json"], check=False)
-        rep["git_clean_after_revert"] = git.stdout.strip() == ""
+        git = sh(["git", "status", "--porcelain", "--", str(target.relative_to(REPO))], check=False)
+        rep["git_clean_after_revert"] = git.stdout.strip() == ""   # the changed file is back to its committed content
     rep["finished_at"] = datetime.now(timezone.utc).isoformat()
     (IMPL / "m7-refresh-demo.json").write_text(json.dumps(rep, indent=2))
     print(json.dumps({k: rep.get(k) for k in ("change_detected", "affected_services", "rerun_journeys", "suite_size", "affected_is_small_subset",

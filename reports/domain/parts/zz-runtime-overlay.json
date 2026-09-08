@@ -1,6 +1,6 @@
 {
  "lane": "zz-runtime-overlay",
- "generated_at": "2026-09-08T02:27:25.284471+00:00",
+ "generated_at": "2026-09-08T09:24:52.968247+00:00",
  "sources": [
   {
    "repo": "twin",
@@ -40,10 +40,10 @@
    "runtime": {
     "running": true,
     "healthy": true,
-    "status": "Up 28 minutes (healthy)"
+    "status": "Up 31 minutes (healthy)"
    },
    "fidelity": "real_source_running",
-   "fidelity_evidence": "container for compose service payouts-worker-webhook-event is Up 28 minutes (healthy)"
+   "fidelity_evidence": "container for compose service payouts-worker-webhook-event is Up 31 minutes (healthy)"
   },
   {
    "id": "worker:payouts/webhook_event",
@@ -58,10 +58,10 @@
    "runtime": {
     "running": true,
     "healthy": true,
-    "status": "Up 28 minutes (healthy)"
+    "status": "Up 31 minutes (healthy)"
    },
    "fidelity": "real_source_running",
-   "fidelity_evidence": "container for compose service payouts-worker-webhook-event is Up 28 minutes (healthy)"
+   "fidelity_evidence": "container for compose service payouts-worker-webhook-event is Up 31 minutes (healthy)"
   },
   {
    "id": "worker:payouts/queued_payout",
@@ -184,10 +184,10 @@
    "runtime": {
     "running": true,
     "healthy": true,
-    "status": "Up 28 minutes (healthy)"
+    "status": "Up 31 minutes (healthy)"
    },
    "fidelity": "real_source_running",
-   "fidelity_evidence": "container for compose service payouts-worker-fts-async-processing is Up 28 minutes (healthy)"
+   "fidelity_evidence": "container for compose service payouts-worker-fts-async-processing is Up 31 minutes (healthy)"
   },
   {
    "id": "worker:payouts/fts_async_processing",
@@ -202,10 +202,10 @@
    "runtime": {
     "running": true,
     "healthy": true,
-    "status": "Up 28 minutes (healthy)"
+    "status": "Up 31 minutes (healthy)"
    },
    "fidelity": "real_source_running",
-   "fidelity_evidence": "container for compose service payouts-worker-fts-async-processing is Up 28 minutes (healthy)"
+   "fidelity_evidence": "container for compose service payouts-worker-fts-async-processing is Up 31 minutes (healthy)"
   },
   {
    "id": "worker:payouts/fts_async_hv_processing",
@@ -1102,10 +1102,10 @@
    "runtime": {
     "running": true,
     "healthy": true,
-    "status": "Up 28 minutes (healthy)"
+    "status": "Up 31 minutes (healthy)"
    },
    "fidelity": "real_source_running",
-   "fidelity_evidence": "container for compose service fts-worker-fire-transfer-status-webhook is Up 28 minutes (healthy)"
+   "fidelity_evidence": "container for compose service fts-worker-fire-transfer-status-webhook is Up 31 minutes (healthy)"
   },
   {
    "id": "worker:fts/retry_transfer",
@@ -1246,10 +1246,10 @@
    "runtime": {
     "running": true,
     "healthy": true,
-    "status": "Up 3 minutes (healthy)"
+    "status": "Up 44 seconds (healthy)"
    },
    "fidelity": "high_fidelity_replacement",
-   "fidelity_evidence": "container for compose service kong-lite is Up 3 minutes (healthy)"
+   "fidelity_evidence": "container for compose service kong-lite is Up 44 seconds (healthy)"
   },
   {
    "id": "sub:ledger-gate",
@@ -1282,10 +1282,10 @@
    "runtime": {
     "running": true,
     "healthy": true,
-    "status": "Up 3 minutes (healthy)"
+    "status": "Up 57 seconds (healthy)"
    },
    "fidelity": "high_fidelity_replacement",
-   "fidelity_evidence": "container for compose service monolith-stub is Up 3 minutes (healthy)"
+   "fidelity_evidence": "container for compose service monolith-stub is Up 57 seconds (healthy)"
   },
   {
    "id": "sub:dcs-stub",
@@ -1300,10 +1300,10 @@
    "runtime": {
     "running": true,
     "healthy": true,
-    "status": "Up 26 minutes (healthy)"
+    "status": "Up 29 minutes (healthy)"
    },
    "fidelity": "high_fidelity_replacement",
-   "fidelity_evidence": "container for compose service dcs-stub is Up 26 minutes (healthy)"
+   "fidelity_evidence": "container for compose service dcs-stub is Up 29 minutes (healthy)"
   },
   {
    "id": "sub:splitz-stub",
@@ -1318,10 +1318,10 @@
    "runtime": {
     "running": true,
     "healthy": true,
-    "status": "Up 26 minutes (healthy)"
+    "status": "Up 29 minutes (healthy)"
    },
    "fidelity": "high_fidelity_replacement",
-   "fidelity_evidence": "container for compose service splitz-stub is Up 26 minutes (healthy)"
+   "fidelity_evidence": "container for compose service splitz-stub is Up 29 minutes (healthy)"
   },
   {
    "id": "sub:shield-stub",
@@ -1390,10 +1390,10 @@
    "runtime": {
     "running": true,
     "healthy": true,
-    "status": "Up 26 minutes (healthy)"
+    "status": "Up 29 minutes (healthy)"
    },
    "fidelity": "high_fidelity_replacement",
-   "fidelity_evidence": "container for compose service bankingaccounts-stub is Up 26 minutes (healthy)"
+   "fidelity_evidence": "container for compose service bankingaccounts-stub is Up 29 minutes (healthy)"
   },
   {
    "id": "sub:stork-capture",
