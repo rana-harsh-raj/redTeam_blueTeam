@@ -1,0 +1,1875 @@
+{
+  "compose": {
+    "digest": "7cc44c15932cb7ab77e799e1737cbe471d3d25ac4ab049551c3970810a489f80",
+    "service_count": 100,
+    "services": [
+      "asv-stub",
+      "bankingaccounts-stub",
+      "batch-sim",
+      "cfa-migrate",
+      "cfa-server",
+      "cfa-worker-contact",
+      "cfa-worker-fa",
+      "cron-driver",
+      "dcs-stub",
+      "fts-migrate",
+      "fts-web",
+      "fts-worker-check-transfer-status",
+      "fts-worker-default",
+      "fts-worker-fire-transfer-status-webhook",
+      "fts-worker-hv-fire-transfer-status-webhook",
+      "fts-worker-hv-initiate-transfer",
+      "fts-worker-initiate-transfer",
+      "fts-worker-rbl-check-transfer-status",
+      "fts-worker-rbl-direct-check-transfer-status",
+      "fts-worker-rbl-direct-imps-check-transfer-status",
+      "fts-worker-rbl-direct-imps-hv-initiate-transfer",
+      "fts-worker-rbl-direct-imps-initiate-transfer",
+      "fts-worker-rbl-direct-initiate-transfer",
+      "fts-worker-rbl-direct-slow-lane-initiate-transfer",
+      "fts-worker-rbl-direct-upi-check-transfer-status",
+      "fts-worker-rbl-direct-upi-initiate-transfer",
+      "fts-worker-rbl-imps-check-transfer-status",
+      "fts-worker-rbl-imps-initiate-transfer",
+      "fts-worker-rbl-initiate-transfer",
+      "fts-worker-rbl-upi-check-transfer-status",
+      "fts-worker-rbl-upi-hv-check-transfer-status",
+      "fts-worker-rbl-upi-hv-initiate-transfer",
+      "fts-worker-rbl-upi-initiate-transfer",
+      "fts-worker-retry-transfer",
+      "fts-worker-retry-transfer-preprocessor",
+      "fts-worker-retry-transfer-source-update",
+      "fts-worker-slow-lane-initiate-transfer",
+      "kafka",
+      "kong-lite",
+      "ledger-api",
+      "ledger-gate",
+      "ledger-migrate",
+      "ledger-scheduler",
+      "ledger-worker",
+      "ledger-worker-balance-update",
+      "ledger-worker-entry-details-create",
+      "ledger-worker-entry-details-create-pg",
+      "ledger-worker-journal-create",
+      "localstack",
+      "merchant-webhook-sink",
+      "mongo-cfa",
+      "monolith-stub",
+      "mozart-mock",
+      "mozart-sim",
+      "mysql-apidb-stub",
+      "mysql-fts",
+      "mysql-payouts",
+      "mysql-xbalances",
+      "payouts-api",
+      "payouts-kafka-fts-status-updates-consumer",
+      "payouts-kafka-fts-status-updates-retry-consumer",
+      "payouts-migrate",
+      "payouts-worker-api-queue-for-async-dual-write-direct-push",
+      "payouts-worker-async-dual-write",
+      "payouts-worker-batch-submitted-merchants",
+      "payouts-worker-bulk-payouts",
+      "payouts-worker-data-consistency-checker",
+      "payouts-worker-data-consistency-event",
+      "payouts-worker-fts-async-hv-processing",
+      "payouts-worker-fts-async-processing",
+      "payouts-worker-fund-management-payout-check",
+      "payouts-worker-fund-management-payout-initiate",
+      "payouts-worker-generic-processing",
+      "payouts-worker-on-hold-payout",
+      "payouts-worker-partner-bank-hold-payouts",
+      "payouts-worker-payout-create-failure-handling",
+      "payouts-worker-payout-source-updater",
+      "payouts-worker-payout-update-failure-handling",
+      "payouts-worker-payout-usage-event-processing",
+      "payouts-worker-queued-payout",
+      "payouts-worker-rbl-banking-account-statement",
+      "payouts-worker-schedule-payout",
+      "payouts-worker-transaction-create",
+      "payouts-worker-webhook-event",
+      "payouts-worker-x-account-statement-source-event",
+      "payouts-worker-x-balance-payouts-event",
+      "payouts-worker-x-balances-balance-refresh",
+      "postgres-ledger",
+      "pricing-stub",
+      "redis",
+      "shield-stub",
+      "splitz-stub",
+      "stork-capture",
+      "verifier",
+      "workflow-engine",
+      "workflow-sim",
+      "xas-sim",
+      "xbalances-migrate",
+      "xbalances-server",
+      "xbalances-worker"
+    ]
+  },
+  "config_digest": "a3b68136ef6dd91a5834d92aff0890fd74811142dc051c42c7f8c66a7f23601c",
+  "config_hashes": {
+    "config/generate.py": "5f28eb4c1014d35f75b977b6555c9f40a4e542db87c3393e313ebd7e3b2f2219",
+    "config/routes.py": "dd1b30d34d123ed37a08988d806bb557f9656b0f9a6bf9a14bad447111be8042",
+    "config/templates/base/cfa/arena.toml": "eb43460ee4f13cac048bee5db345d2b60b7f666dcac138f0a4960fe3692b3c2e",
+    "config/templates/base/cfa/default.toml": "0a7dc0a627d65d74f19d3b77de283f4ec3c0c49e853ed4e751613c11855e2446",
+    "config/templates/base/fts/env.arena-migration.toml": "c15bbf81f8067d6b59388b923b5b00233d2f12997e29aae1aef247950308196b",
+    "config/templates/base/fts/env.arena.toml": "f27cc4e094120b12d323370c90082eb37cb1a26340799b537d9cbf7bd766349b",
+    "config/templates/base/fts/env.default.toml": "fb741bf7e17d8e399f919d3ad3cb6583fc5231d03c2b0073cbe142bfd486a768",
+    "config/templates/base/fts/holiday.toml": "fce6c44e0bd9f908695736600cfab5694f07e59bf9d4037ace8e2b61b39930a6",
+    "config/templates/base/ledger/arena.toml": "3fbc50444bbc59487cdaf4e3c7f5ef9a7510061d297ad37a6621369c27daa017",
+    "config/templates/base/ledger/default.toml": "e247d55802cc2d465d9f14a8174be5a8e980898b9841afad383330dbf1a767dc",
+    "config/templates/base/payouts/arena.toml": "5632c86d11e39920cf504f0e7280db7834ce9e19e0b5c00cc8ba869e44d1b65f",
+    "config/templates/base/payouts/default.toml": "0ed9de02556c2eb113ac49cce878fb4334aa4103423462e8f656ab2cebedf4b7",
+    "config/templates/base/payouts/e2e.toml": "55b5d2aaa437cab413da26296a55e9d681dde22f5bb5de40290f33947b696792",
+    "config/templates/base/xbalances/arena.toml": "f5999de90bff0631376ea752dcfb9e143fd2ec56048744a92937218a736cd2f2",
+    "config/templates/base/xbalances/default.toml": "9ba830d4a49ff80a179d6ee2c98dd014256824120ee623a3c68927c386f938f9",
+    "config/templates/mozart-mock.toml.tmpl": "312599991161db66949bef110294e781467a92abb0c4b31d4297a4fb62a4ae3a",
+    "docker-compose.yml": "ddabf028be44a661f5ac3fe5693606d0cad0f7461767af8e3441d57bd44b2698",
+    "scripts/cron-driver/driver.py": "c8a82cb2a115adf44fef5d9b9bd389f1d8e9e2f31d9f32caff980637bffe01bf",
+    "seeds/dcs/merchants.json": "957363aed183c9f4d49f37a1d663eb6194e90c2db7adfd4743f009ee6c8a8013",
+    "seeds/generator/README.md": "02ac56b80c7e961495aad8a64c269c0fe733cf80cc4fd8adc984b76de16017cf",
+    "seeds/generator/evidence-lock.json": "b8c3516e8d5f93ea408b11f6aaa556b1e461ba9ff481ab72bd4b693c58d4fb2c",
+    "seeds/generator/generate.py": "897a506e5752c00a74b90eb6f7c5355fb53e89616caab1a27cd4c4d64d175f31",
+    "seeds/generator/schema-evidence.json": "228350a60f70d20af07cf0b32d1601e79d626574e67c38f340146c5a1a0b851e",
+    "seeds/generator/schema_compare.py": "4a297d3b0ee9736b181f960fa79f7fafb1f47534bf24edd8efb74611c95ce0e0",
+    "seeds/generator/test_generate.py": "b48870d2c781ef5cdaf06a4ddca5641128d890c4e0d674805f9d6872f0be00e0",
+    "seeds/localstack/init-queues.sh": "21bda2266f85aed58edda6b32bc547769b7153b29161df6b27f9c7ae77761a14",
+    "seeds/merchants.json": "f1f0fed8aea0d62ea1e52681ee178ca0fec1baf595aed55c93e6ba3fb5ff52bb",
+    "seeds/mongo/cfa_seed.js": "82cce08c3e6885aacc997ed74f454d4fedb370f8cdaa348f5cf957f661268edd",
+    "seeds/monolith/fund_accounts.json": "c8bfe292f65dcaf9b22d94abc395e9a37c1ba4ee276aa94523f1be0a3c399f00",
+    "seeds/monolith/merchants.json": "1d76ceef13441fa21e57504294405193de8a444e4ac4824bcfb827fdb6c8515b",
+    "seeds/monolith/misc.json": "9d09a9b60a3d6f474c3ab2adf99faa673939f727288a52188f8a6b516efaaecd",
+    "seeds/mozart_scenarios.json": "fc1f9bae0ff77c59013d2bac4c9b5bb7a0076c1fe49998abaeb5621e9494273e",
+    "seeds/mysql/apidb-ddl/00_init.sql": "c3a104d6795a9f9b11b48429a5da0b252763b68a612924f2f3a6ba5bf5b6e5c3",
+    "seeds/mysql/fts_seed.sql": "860fa5473cc5e6bd5220f797f82a5d2e25ea51997ca7a0b328522f526810ffb4",
+    "seeds/postgres/ledger_seed.sql": "73cd071bebdb772ec4d43522ee8031f163d60ea8b3e28a999be3528f7258bc32",
+    "seeds/pricing.json": "309e2b0c454e528fe60fcbe2e32853728032aa7a468de7c073cee3c5bd62aa37",
+    "seeds/s4/README.md": "fefd86b31665bbd51f16251a82fe73c26a1cec7e116fccc13b517de1be7264a8",
+    "seeds/s4/cfa.js": "f31f3ec576f131148cde84965eceb3f947cc50f67439c64e4eb5409f903e6b32",
+    "seeds/s4/cfa_via_api.sh": "cbf236ec23bafba6e5ba993ebc17dde3d641a65fa3246f66080716b840e26d49",
+    "seeds/s4/cron_schedule.yaml": "4bca5cafa434472993f988d9aa67edcca9fb7e3db21d589568b0fddeb3f8cb5b",
+    "seeds/s4/dcs_fixtures.json": "62ba13197b8ad47824fd405afe8f1d5e7b0b22da63e7c0a8b3a286ef6d4b2665",
+    "seeds/s4/fts.sql": "36f324bdc6def1b4ce5e66b767f563e55fc0ec07f36d3def306c20338164c8e3",
+    "seeds/s4/ledger.sql": "eeec91b795ffbdd5fbe7b4d66d71d1f079f51a8cd43ff3b5b0a37964aee082eb",
+    "seeds/s4/ledger_accounts_via_api.sh": "958df4cf6c04738e1ccd0e499faf3512cf00e9504fa3c743e798fc6069fb3392",
+    "seeds/s4/monolith_fixtures.json": "a356d03b059c3c04c3a579a9e030b3c89adec138d335eef4d0c483b51bbc05c7",
+    "seeds/s4/mozart_scenarios.json": "fc1f9bae0ff77c59013d2bac4c9b5bb7a0076c1fe49998abaeb5621e9494273e",
+    "seeds/s4/passport_fixtures.json": "2fa9f006bf9402ed26fe77bc5a846d287933c20aa93ee9de2e01a11c57f79fa6",
+    "seeds/s4/payouts.sql": "88e6d9c9c81b3a7148715b0bd5cc5e9ea3af9556c789031a63da2285e21e535d",
+    "seeds/s4/pricing_fixtures.json": "dbe7ed571216b2a72ce222e2e35a8acb46aee2e3809496938d52eee9f0fb53cc",
+    "seeds/s4/shield_fixtures.json": "251a96dde6061667627e54e9c9cba6dc92fbd96dcd819c0e1dfb698e7932fb82",
+    "seeds/s4/splitz_fixtures.json": "61c22d8420d06f39728ef7c1fadf74c77675b9d4eacf8b760a0fd8647d47b240",
+    "seeds/s4/stork_subscriptions.json": "e4339216063283d2d429db1ebed7bdccdf9fe3804e377a9db5df7e43d875ea54",
+    "seeds/s4/xbalances.sql": "a2d027e96d8692707eb857c49de0f19c2ae6b020e68368278d469102075d144a",
+    "seeds/schema-patches/apidb.sql": "bc2df09a362eb6771242320da8c2017b6d8c02c201684d23f9a047fdaf828493",
+    "seeds/schema-patches/payouts.sql": "d4e09cf275558096ab9252b16f38604d8ad5a6afe27191044bdec1467cf4a57d",
+    "seeds/shield/rules.json": "ca7589b0c502f4754e0d44eeae0415219eebf008c0c1f104daed86368feb4260",
+    "seeds/splitz/experiments.json": "21b1fbfcb6986cac7caf4a8420a718cca7b774c7f2c7631f06e0a756428c078b",
+    "seeds/splitz/variant_table.json": "82f5c17cb4e6785c48d11ba4bfbf3e6f6474e4862c299d26767a36258417f1c8",
+    "seeds/stork/subscriptions.json": "8f20a18ee46ed4fed0204125a5c30bff86e5bb614a22555d2fe64242f90ad828",
+    "substitutes/_common/base_stub.py": "daa138445740d5e9222d17ea6afd91b17a065948dd1809508cf3eb4a7ed6cecd",
+    "substitutes/_common/faults.py": "631f2c8dd01bf97f286539f9db034dc7c44a0c8f2dadff23c2bdcae05ee7cfb4",
+    "substitutes/_common/rsa_sign.py": "873d5306dc0088b265dd6833e5a3419c08b0c6772714c818fcb5a0be44e8440b",
+    "substitutes/asv-stub/server.py": "e61a0c1246bedd8caafea14b05f4d295dee60200e05cf241fa9ab60f0f7fe274",
+    "substitutes/bankingaccounts-stub/server.py": "876f97696aa7113bdfd7a249b4f58305944925cb738fc2108a95009b362c24ad",
+    "substitutes/batch-sim/server.py": "a237653e05904c3e36044d48c1e040ac79be8aa8b15e61f2fbbbbcd6be822e25",
+    "substitutes/batch-sim/test_batch_sim.py": "df742c14d99a38a302a622d1cefc04d215521f820010714f366d70cf978364a6",
+    "substitutes/dcs-stub/server.py": "c8208875e2d12dd0ea1f1669d2bec66fcb2c52bff866cb152b7dc4c095b563db",
+    "substitutes/kong-lite/route_policy.py": "2ce94af4f44ab340d5e1c7809c99c4ecd20c362177af606ed61c752bfa445f62",
+    "substitutes/kong-lite/server.py": "d8e997677f7ba256fff0627ad1d369297d9281d895b7291828a156d1f28e9bc2",
+    "substitutes/ledger-gate/server.py": "0743e2b144fb295da8ac5eacac6ed247cfab9937d2e01d74fff1bf51e7eacf0e",
+    "substitutes/ledger-gate/test_contract.py": "00d8fa7712ea28aa458e3118cc35500395e26c31e555474439baf736fa76bf03",
+    "substitutes/merchant-webhook-sink/server.py": "fcf03c93d0334397be7152b56899f563ca616a83e9f5644d15cfd37368bcb21a",
+    "substitutes/monolith-stub/server.py": "c75482e1eff7612eaf5288f6ea22bc17ae4d86fcd07565ef5a268c1a196af89e",
+    "substitutes/monolith-stub/test_contract.py": "05d711482a175ea76822238c64666e889db02818c3e4350718d863b4aa4eaa15",
+    "substitutes/mozart-sim/server.py": "292e7b0c44a22292298479d3295281d85f21e99021a5fb50e374e51756621930",
+    "substitutes/mozart-sim/test_scenarios.py": "c302f640aac68d1a2c7ca64a62f4ec33c68c08c922bed17996a5caeaf5bfd79b",
+    "substitutes/pricing-stub/server.py": "48c8cbf9cf6866cc58be24309c16ecf4a7a0c9319a3299fc9d5c2fc1d384aca2",
+    "substitutes/shield-stub/server.py": "2920e62080b44ca9a52191ab2a587fc87d5e4adaae5962e72b47411bad05d37d",
+    "substitutes/splitz-stub/server.py": "2977bff9ba1cd85ec7744c096999052de364eb6012d823d4b3b0cfca3a180b19",
+    "substitutes/splitz-stub/test_contract.py": "4c8631b7ca9a77008e73da0af5c220c5f7922c97af0b7676913e9c7c93c0b32d",
+    "substitutes/stork-capture/server.py": "4c4bf9b97cd960a1f114e2a96dd7e3a5800133a52b81e02fdaddeea149a8e896",
+    "substitutes/stork-capture/test_stork_duplicate.py": "527be5273bd0513ca35bc21d4e18b37f5f05ede865fbc55f5ed19bfbb7a7a377",
+    "substitutes/workflow-engine/arena_entrypoint.py": "2ff92e7e954f8c3b0d3e81c5bd211c18d82298c3d0dd9e89bd65f45ac2bf22e3",
+    "substitutes/workflow-engine/payout_sink.py": "3537c376c7dc38b61bc05ec6a8a0dab1c430b063e5d6725bfe656971eeda5ea8",
+    "substitutes/workflow-engine/run_engine.py": "551ca9b758d02d9ead7d762c3b7c677a37feee12266a91cd0e025067ef2070b4",
+    "substitutes/workflow-engine/wfengine/__init__.py": "3c9afd1ca84d2249f80a8aa0d58794c343a513f46b0cd90b88264c21f361b4e3",
+    "substitutes/workflow-engine/wfengine/callbacks.py": "ca687d452121ac7217d8f5322d0d8ccf8b7afbe44be7ac6201fcd945db40a321",
+    "substitutes/workflow-engine/wfengine/core.py": "5ec2fdbd2e79aa43a1f0b7db6765b36ee211adf2fb628b069346b8c359486ad9",
+    "substitutes/workflow-engine/wfengine/identity.py": "6f08de2099b9a8530827692a7130f5de495a1ccdadb3438c99dc88f4a7f8970d",
+    "substitutes/workflow-engine/wfengine/server.py": "d9d4429ee998f0a32b628710be4e2589f0fcc88f8c8074a639f009bf470278e5",
+    "substitutes/workflow-engine/wfengine/store.py": "18fdbcc593b049c7d1539b91fddd1ab8069ab1d81438abf16a16ffda2240c24c",
+    "substitutes/workflow-sim/server.py": "43a27dc0f494e909b5ce01d4aa0fc2130d85d33fbd80f47fc98e6c2c3b4d8c02",
+    "substitutes/workflow-sim/test_workflow_sim.py": "4a20292439b965f6544dcafe252e156fc2c9896820ded17dfd891afd9c0c057f",
+    "substitutes/xas-sim/awslite.py": "fbff4c5e1e838d71c56b6096f80b2522808dbad728e05a791d85681bd0ee0253",
+    "substitutes/xas-sim/server.py": "dbbe85ecd665590672622c733d78275efaef00b107edea84971aa7b14ec2ccc0",
+    "substitutes/xas-sim/test_contract.py": "e13cc3efe9a194bdc795c0333bfb00be4c039b9b2eead74bf9d2bce46dff878c",
+    "substitutes/xas-sink/server.py": "45e9169c2e4dbafa87c18d0de82ffea763f955fee2f82a655c9d3dabae8ce255",
+    "verifier/bank_scenarios.py": "6055d505f76d171667b596406dbec1fd630e1a02a6ea805df3dadac850f3ac21",
+    "verifier/conftest.py": "cdec8724a8f73b60fea5d07a953d00512cb330e33d2ef76ea5aae77b9dca275d",
+    "verifier/helpers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verifier/helpers/creds.py": "23aea13f8ae8a21dab6a43b4748b62e8160a451972fa7a526b4ffd73b094d547",
+    "verifier/helpers/db.py": "451a1ee8db1b43cbc8af20b9c5fb7bda099797213606773b93972f44b7c9337e",
+    "verifier/helpers/http_client.py": "e975f5d2c6786784bffeedcf67b7d2bc46b797060bbe42bafacbb4bb9c2aa50d",
+    "verifier/helpers/m4_boundary.py": "98b4d52095bff44026c97860da0e898a51b9a0224b3ee73936bb513d051359b6",
+    "verifier/helpers/passport.py": "40101e29b6cb18b2ec5a2305eb4a819ca49d7f7b3145024cff0b8304826562c4",
+    "verifier/helpers/payouts_flow.py": "45547b1bd8f567e18f0992b54da9e47a646a15dcefb9692774afbaffca2681b6",
+    "verifier/helpers/trace.py": "3bc1c2c63e4f7e704d65c73f53578d0a07f22022cfdcec92c57f63246781a6aa",
+    "verifier/helpers/trace_snapshot.py": "6a0be9c94ebbe51938198ec48dd1124e481bf25d15e2afd085abc20251dfbad3",
+    "verifier/helpers/wait.py": "e4e2749d3bfa56df6d0fc00a93956ba08d95348ea22588060d6cb1f9b3e778d4",
+    "verifier/kafka_scenarios.py": "86c9a71871ab4c640d1d70dfddc397a68703fc8501b883a90bb9f73aa0d2e1ba",
+    "verifier/m4_boundary.py": "f3a59bcc1532f5053043069e6905b9205f305171b46d501d3bf83a5fd95785f4",
+    "verifier/m4_summarize.py": "6d01c792b3d26ee2d271edbfc9c09c37c15db5973294f7512f7d4bba758384ad",
+    "verifier/network_check.py": "8495e7ac6145c22e355d564e0190fdd31ae08cb16f8d081023a3e688a65849a0",
+    "verifier/offline_tests/test_held_handoff_wait.py": "b503ecd6ee0ccc826ade8422c6b5ad3ad0c1d07550d06b06f376bd817ef33be5",
+    "verifier/offline_tests/test_processed_journal_wait.py": "78d5c009a17258aeecd779b4f6ff38bf0a15bbd0c2918ad714ac0861cb502a04",
+    "verifier/offline_tests/test_trace_snapshot.py": "79b6ed4000f69a8aa69099097e6b6232c5fffe0a258634b5d154f44958aadd08",
+    "verifier/route_scenarios.py": "419dd7517b1d800c04ab0f4cbb1f536a415abaf434c77ae38dbc56d332843cf7",
+    "verifier/scenario.py": "e735d1e31c81ba4b5a14a69bf369ab5f246abeed41fb0679e8bfac104e0ca2d5",
+    "verifier/verifiers/__init__.py": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "verifier/verifiers/test_m4_g34_duplicate_terminal_webhook.py": "dc8c24edfc3aac5cbf8271946c222ef873b1eccfbf0950b3c2b39b0b31d712f9",
+    "verifier/verifiers/test_m4_g46_cross_merchant.py": "882bb4e5fe7685098f8b752578297415b1e632c2febd18c83ba09eea75723464",
+    "verifier/verifiers/test_m4_g47_body_identity_override.py": "3e97418febc1d075f287c8c0b55d1e780d50fa165da3980eb0a269775c8de5dd",
+    "verifier/verifiers/test_m4_g48_forged_service_headers.py": "d96b7ac0e0745830c956ba47bb898356df31ec1a3ffd9e17fae1a587d3f282dd",
+    "verifier/verifiers/test_m4_g49_internal_routes_unreachable.py": "8e0edcd514527c3f266e90221f67e981f57e45f59ae04a5830d1eacd7f369202",
+    "verifier/verifiers/test_m4_g50_denial_layer_distinction.py": "c83e7117eefae6c815f63d9c98778b99f68e1960fac91f2ad1e42feaa3288876",
+    "verifier/verifiers/test_m4_g52_concurrent_idempotency.py": "ed7ddef979bddf7a918d41e776a4a88e192b8b8aa96a40367e0f9a5b06316a6f",
+    "verifier/verifiers/test_m4_hd3_free_payout_ownership.py": "a76e45d0ecb8c186b96d2908c06d01b0db667e75cc9b8bbdd519bda439a5269e",
+    "verifier/verifiers/test_v01_idempotency_same_key_same_body.py": "b4605bb4862377b086f91cf43a6e67e165eec8c7b90b75bb6d259d00c5536932",
+    "verifier/verifiers/test_v02_idempotency_same_key_different_body.py": "c71abfb8eb8b0066df57a795bc52695790b9c2fa5d0e62ee95b4b3a5fc87b0c5",
+    "verifier/verifiers/test_v03_fts_transfer_dedupe.py": "6f3f306fb4b5ec772f5fe06813813d9d6e84334f47cff176712fddcf6d1bb228",
+    "verifier/verifiers/test_v04_ledger_dedupe.py": "8bfc00ac6a33ba60e3f82ab8ef653f09bbe96a872aec951a25748151032c2151",
+    "verifier/verifiers/test_v05_ledger_accounting_initiated.py": "66aeb7790fd8c386b9817a4f5d4a10bf90ed275ffee6021069948fabd066bb24",
+    "verifier/verifiers/test_v06_ledger_accounting_processed.py": "c7f4a8653b228b77d0a677b529ecc84fe3fb11a774bddfb7746f01441bd07e56",
+    "verifier/verifiers/test_v07_ledger_accounting_reversed.py": "1bbce75a292eb362def1ec212fbd0a3448dc5e3c19ea818751216ef2259cb4cd",
+    "verifier/verifiers/test_v08_ledger_accounting_failed_direct.py": "7ce32f1e7e979dcb8b1bf88f0a7be56126758137acfee5a09f5584e70c2b1b23",
+    "verifier/verifiers/test_v09_balance_auth_queued.py": "90ef214a5e7472ede215dea3a9636ec3d2e580a9a22c079b405c74f5ab3b4286",
+    "verifier/verifiers/test_v10_balance_auth_failed.py": "97cce05e0ca3957e394c9df9052aad3dfb472c32b504dc27a716cb5b22034c48",
+    "verifier/verifiers/test_v11_merchant_balance_sync.py": "4a9fae4b03a8f33a38f7ced6aed6b906a50a5e8dfda138daf6e824a0bee3922c",
+    "verifier/verifiers/test_v12_reservation_gate_total.py": "2afa21e5360692580e24dafe80bf2905a7b58c5187e41ae5ad12270bf02a8ca5",
+    "verifier/verifiers/test_v13_reservation_release_on_terminal.py": "b60d620eda4dcb12eb22b5d5992fd17de85e49e6cf7c6b7aaa428765cb94a9f4",
+    "verifier/verifiers/test_v14_state_machine_legality.py": "7db79294fe55a3290a7ad2ead5b3e242c02fe8f8159b0900582997a7c4d69e74",
+    "verifier/verifiers/test_v15_fts_webhook_state_guard.py": "3a058618f4d3c681f784881fbe37896ddde6504f93af02e272ac3cd46dbf2129",
+    "verifier/verifiers/test_v16_stuck_initiated_no_repair.py": "4f21b3a41797d7b558ed886f311e1868da65e191e35036d6dcbe74e45b193d59",
+    "verifier/verifiers/test_v17_reversal_ordering.py": "1046c6773088d1b5050b95e894110790069763b1288835548aa5167870a5f6a8",
+    "verifier/verifiers/test_v18_shared_vs_direct_failed_remap.py": "32054450a1614fe32d2f9e382bfcfbcb457b7cdf17df14e127a927df73a4f90f",
+    "verifier/verifiers/test_v19_direct_failed_verification_guard.py": "c99ad8dd58bf0ef9c87b4265766b5701bab29b8fc95b6a910feea2d22b2f5ba1",
+    "verifier/verifiers/test_v20_tenant_isolation.py": "3cec143779bdb1cae72274a9c11884a7f01531842fefbe98f79bc9d9f3c5b211",
+    "verifier/verifiers/test_v21_webhook_completeness.py": "64a6a09ee0f584fd37d59756012bf55d42f3deb5ab99b832334615a706707d0b",
+    "verifier/verifiers/test_v22_shield_fail_open.py": "27938e154c9ff6ae46b4f8f3cf6422ebc5daeba74154ab1364c20657bcd2d658",
+    "verifier/verifiers/test_v23_fee_fail_closed.py": "cdd5420877cdcacf8ae69b3d42436ade6a489e9a1ec524d6b4a58d5b6044012d",
+    "verifier/verifiers/test_v24_cron_dequeue.py": "d764c6e49350386cd7db28ee5fae15019130e4549d06a3d87a098b033b77ef62"
+  },
+  "contracts": {
+    "batch_types_digest": "5b1ec8b30e75ff375c0f5d4dc7e4884dcd46c224f04c9051c084a0686f5ca972",
+    "digest": "70c07c47f1d21a94458189231a7fca30d87ce08e8df5428d6fbdd909bb0c6e03",
+    "proto": {
+      "ledger": "129e1a4bd97b83195d6da9390de294dabb7d1302e7906abe96510972db7d0057",
+      "payouts": "35bfac2c50e4944b2e3bdadea483c65390d32fdb5303ecee778565e3522bde54"
+    },
+    "substitutes": {
+      "asv-stub": "2c878055ece0308c9da060e1fca58ec1b20a70839f154b685dcfd8c76d8fb033",
+      "bankingaccounts-stub": "3ea5fb38ed5c5acf593dc4592f1340430bc92e2b818309cb326c00455682e2fd",
+      "batch-sim": "2c0476931eb90a50c1f373c46d34f362c882d0998cfd63e2d87a23130666831b",
+      "dcs-stub": "a53a1604f907d3341b56148bddf94e5295fb450ff67057f8ac04f7082884d0d1",
+      "kong-lite": "de8b182dcca1cb51960cc18ea40b80cb23627289b336efb02247e79ae4f7b51b",
+      "ledger-gate": "9a9da9d9544ad644a42e9183098872382c1b7343e338ac9b8363ba95bb4d30ab",
+      "merchant-webhook-sink": "b58f60d39db072835313df9fa56b281d319a7d07f79a506204f03be0308fc985",
+      "monolith-stub": "89a0803b318ebc60a58ab1d1bc6e67e8d55ba89c7c9f0295451e5a0c093e6429",
+      "mozart-sim": "9d6e2b71906c76b6d3c7f04bf87ee0c1eeeedfed6bdae9f9989e617c0f525dbd",
+      "pricing-stub": "15b6a53191a5a44be7f927f391c354bed8f43d8c2b158866cedcb17addc9c8eb",
+      "shield-stub": "c2a405d1f35b740d4a5ae88891c3e6d41fe680519a3dc13a2ad49c535d94ea4a",
+      "splitz-stub": "443f9500d71e8f949dcb0862553b30a6cb1394787fb6a39cc6aca7a4cdb40dd6",
+      "stork-capture": "c85e5213ff995bc0f9603e4b90cb096981c0bf44523d7d1f9ce5680960008182",
+      "workflow-sim": "b7e86d601c3d2ef2c840408d69bdb881d67743ab7e117fd619c10e11a6eb705e",
+      "xas-sim": "904ca36576b3f27f788d8666ed5f438472186d263b9f8389fb054ece8e1efd61",
+      "xas-sink": "a415cc62e3f2ecac3837ca85a97e89df799e29c956988ecb26f760e4d1bcb43c"
+    }
+  },
+  "fidelity_counts": {
+    "behavioural_placeholder": 5,
+    "blocked_missing_access": 1,
+    "graph_only": 10,
+    "high_fidelity_replacement": 14,
+    "real_source_mapped_not_running": 23,
+    "real_source_running": 85
+  },
+  "flags": {
+    "dcs": "31adca63593bad9e153aeca320b57f2ea57e8ec5f6ee2b4e0183430b7aded11a",
+    "splitz": "538bb30830c18ca31d341b76f358465c454f65184d779d1746e3de4b1903a09c"
+  },
+  "generated_at": "2026-09-08T02:27:42Z",
+  "graph_counts": {
+    "edges": 4077,
+    "nodes": 2093
+  },
+  "graph_version": "a13555b6d8a678c34721b5cdc68e60a48a3830035646e695bf5c57d01fab4d77",
+  "image_digests": {
+    "rzp-arena/asv-stub:v1-candidate": "sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f",
+    "rzp-arena/bankingaccounts-stub:v1-candidate": "sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d",
+    "rzp-arena/batch-sim:v1-candidate": "sha256:c05c61d28a6174a3d36bd4bdaeac6ceea4cbcd4f3fbedbddd14bd475e308cd87",
+    "rzp-arena/cfa:v1-candidate": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+    "rzp-arena/dcs-stub:v1-candidate": "sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b",
+    "rzp-arena/fts:v1-candidate": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+    "rzp-arena/kong-lite:v1-candidate": "sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f",
+    "rzp-arena/ledger-gate:v1-candidate": "sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f",
+    "rzp-arena/ledger:v1-candidate": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+    "rzp-arena/merchant-webhook-sink:v1-candidate": "sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13",
+    "rzp-arena/monolith-stub:v1-candidate": "sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557",
+    "rzp-arena/mozart-sim:v1-candidate": "sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9",
+    "rzp-arena/mozart:v1-candidate": null,
+    "rzp-arena/payouts:v1-candidate": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+    "rzp-arena/pricing-stub:v1-candidate": "sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05",
+    "rzp-arena/shield-stub:v1-candidate": "sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43",
+    "rzp-arena/splitz-stub:v1-candidate": "sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a",
+    "rzp-arena/stork-capture:v1-candidate": "sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c",
+    "rzp-arena/verifier:v1-candidate": "sha256:3ed49c7ae280836cd4e7e7f8294d874ee5509d85a9564e065965cd8f6cbcf604",
+    "rzp-arena/workflow-engine:v1-candidate": "sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0",
+    "rzp-arena/workflow-sim:v1-candidate": "sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96",
+    "rzp-arena/xas-sim:v1-candidate": "sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7",
+    "rzp-arena/xbalances:v1-candidate": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f"
+  },
+  "image_digests_reason": null,
+  "note": "Hashes, ids and commit SHAs only. secrets/, config/generated, seeds/generated, .env* and .runtime/ are never read.",
+  "recipes": {
+    "asv-stub": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/asv-stub.yaml",
+      "recipe_hash": "20025c74285420be460e64344256544ec19fb9b6d5a5b7b60a4f8716fbc3688f"
+    },
+    "bankingaccounts-stub": {
+      "fidelity_label": "behavioural_placeholder",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/bankingaccounts-stub.yaml",
+      "recipe_hash": "e4ad993656be34752b46d958a0abc5e952218529adadcfd2e89263f5123030b5"
+    },
+    "batch-sim": {
+      "fidelity_label": "graph_only",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/batch-sim.yaml",
+      "recipe_hash": "14b977d92f05a2c4869e17c9443744b8baf1f5035802cd8e13acac5ac121b027"
+    },
+    "cfa-migrate": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/cfa-migrate.yaml",
+      "recipe_hash": "83f5c0653e24679026d1e03a6e24473015cdc42e669f6f38c0c9e937235b098d"
+    },
+    "cfa-server": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/cfa-server.yaml",
+      "recipe_hash": "7d5cedfa3cfd3d34c430ea095be8dd3230f2c0eb77858502c95aca2422a554f9"
+    },
+    "cfa-worker-contact": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/cfa-worker-contact.yaml",
+      "recipe_hash": "b41fc5d392d053c4eedbcb61bfe0a7352517dde204dab17586c390693d64d40b"
+    },
+    "cfa-worker-fa": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/cfa-worker-fa.yaml",
+      "recipe_hash": "b7a6f4c477575723cb2e9089ac1080f6bdc568fdfa221b2a6954c48df79732a7"
+    },
+    "cron-driver": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/cron-driver.yaml",
+      "recipe_hash": "3d2d5aaae92e0de0bd74a86a30f054b64be8492bd334a693ea43d6777db2c55e"
+    },
+    "dcs-stub": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/dcs-stub.yaml",
+      "recipe_hash": "e0711bccb31abfc3ddfa0bc210d19a53cd9e7488dc15df23cd1593fe533c91f7"
+    },
+    "fts-migrate": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-migrate.yaml",
+      "recipe_hash": "59927bcd86e8c5d599c6df015347606bd38efaf9dc13f5aca163362aef4bf8aa"
+    },
+    "fts-web": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-web.yaml",
+      "recipe_hash": "c502efa828f6a63cfa686d058acbaceaa5bab019339788f12f3af591b2624dd7"
+    },
+    "fts-worker-check-transfer-status": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-check-transfer-status.yaml",
+      "recipe_hash": "d2b2efcbe77f35720a03c82b906c6c33e60053982c4c127f99bea47ad222419a"
+    },
+    "fts-worker-default": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-default.yaml",
+      "recipe_hash": "919fb27922225330952fa1ee8b783342dfa884d270812ca05aba5bd68c00798a"
+    },
+    "fts-worker-fire-transfer-status-webhook": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-fire-transfer-status-webhook.yaml",
+      "recipe_hash": "d620b387894c63d4d6618eaad61c0feb4c9e6c56bace620e918fbdc07d85b0ba"
+    },
+    "fts-worker-hv-fire-transfer-status-webhook": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-hv-fire-transfer-status-webhook.yaml",
+      "recipe_hash": "e1e1321c7462327f203e01e71794803520591db53130ed12e7ebde6e594fc389"
+    },
+    "fts-worker-hv-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-hv-initiate-transfer.yaml",
+      "recipe_hash": "f78d171210f9893e108ab759bead3153e6d63f614875224074d4070fb7f8d7e2"
+    },
+    "fts-worker-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-initiate-transfer.yaml",
+      "recipe_hash": "89f658b93bc80760f12740ed573f2ab1374110f2625a9a1ce6fdd277f7b6a021"
+    },
+    "fts-worker-rbl-check-transfer-status": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-check-transfer-status.yaml",
+      "recipe_hash": "3c2cd1460b9ddbfdcc2743455fd83307f516a67e8f88e03ee4fa96bacaf53b81"
+    },
+    "fts-worker-rbl-direct-check-transfer-status": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-direct-check-transfer-status.yaml",
+      "recipe_hash": "3b94109d7b54718c43a847c56173ffe52775a359ecad2e9fc726f456242279c7"
+    },
+    "fts-worker-rbl-direct-imps-check-transfer-status": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-direct-imps-check-transfer-status.yaml",
+      "recipe_hash": "6c85dcdf7e6c54cc38f093b6ce58dbda50aea7589e6850f25c8db8d93767fb47"
+    },
+    "fts-worker-rbl-direct-imps-hv-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-direct-imps-hv-initiate-transfer.yaml",
+      "recipe_hash": "4096de13b0122879e75bc918743451d1012214fe8b09e5989fe99d0b809d1311"
+    },
+    "fts-worker-rbl-direct-imps-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-direct-imps-initiate-transfer.yaml",
+      "recipe_hash": "fdac5bfc1c1b736d8d27e7387703ca14cefa2193c83796b3cbf194125a045005"
+    },
+    "fts-worker-rbl-direct-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-direct-initiate-transfer.yaml",
+      "recipe_hash": "7950e90edd118bcd2e3dc92516445d2b7845930de1dedff9b294bc368da843ce"
+    },
+    "fts-worker-rbl-direct-slow-lane-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-direct-slow-lane-initiate-transfer.yaml",
+      "recipe_hash": "fe07699db274c0a886582f8e4772e3c5936ad8d9c403ecbb2c016916fe75f124"
+    },
+    "fts-worker-rbl-direct-upi-check-transfer-status": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-direct-upi-check-transfer-status.yaml",
+      "recipe_hash": "18bc0e6951996f459805f81a2c311fbef77f097474eaac513115f5ad801be170"
+    },
+    "fts-worker-rbl-direct-upi-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-direct-upi-initiate-transfer.yaml",
+      "recipe_hash": "a3d096dbb8cd6e2ce0a54c32d4f9e6523fda45acbcdad9b53908d95539abc0e2"
+    },
+    "fts-worker-rbl-imps-check-transfer-status": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-imps-check-transfer-status.yaml",
+      "recipe_hash": "cffd532546fbf6f4a394084efa982a3feafcc15d0f56d18bd5d4bd3ef68ab636"
+    },
+    "fts-worker-rbl-imps-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-imps-initiate-transfer.yaml",
+      "recipe_hash": "be7bb1c1fc0e7549bc0b25f8d4efb905daddc60da6feecbcb5c985441c6e1ad4"
+    },
+    "fts-worker-rbl-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-initiate-transfer.yaml",
+      "recipe_hash": "fe5c622f096fb884bcc0a155dbe287e0d02b4d117107492c9c22c2aa44c5ad20"
+    },
+    "fts-worker-rbl-upi-check-transfer-status": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-upi-check-transfer-status.yaml",
+      "recipe_hash": "8669ecaf6aa0fe7342fcfce5d7ff93fd512d3ca35c4b264af55b0ce4c32c59be"
+    },
+    "fts-worker-rbl-upi-hv-check-transfer-status": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-upi-hv-check-transfer-status.yaml",
+      "recipe_hash": "e65225675911ccfda322a9128f783244eb8a952913b5b3325ed80ba9965c4be7"
+    },
+    "fts-worker-rbl-upi-hv-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-upi-hv-initiate-transfer.yaml",
+      "recipe_hash": "484bbb5d4f5cd3bd35f4029afc3bf8eea0694c59eec3ad143dfa90abc9495451"
+    },
+    "fts-worker-rbl-upi-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-rbl-upi-initiate-transfer.yaml",
+      "recipe_hash": "8e57de96e02d1b6a3b3481b784f89da6dcdf9200ed068c20ffc276f1229f7ad5"
+    },
+    "fts-worker-retry-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-retry-transfer.yaml",
+      "recipe_hash": "e8668dc055562d57dcde612d8f42b79132c45271edb890978662fb4933b1bf15"
+    },
+    "fts-worker-retry-transfer-preprocessor": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-retry-transfer-preprocessor.yaml",
+      "recipe_hash": "686337950b26229aa6cb639f1f0fc5d0b69fa6959cf947c64b3e3b4f520e1518"
+    },
+    "fts-worker-retry-transfer-source-update": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-retry-transfer-source-update.yaml",
+      "recipe_hash": "b5aae4c5d574f197e5ee4c45816dc49f601d6970aecfee60fc6f52687ddadff1"
+    },
+    "fts-worker-slow-lane-initiate-transfer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/fts-worker-slow-lane-initiate-transfer.yaml",
+      "recipe_hash": "b4c7b80d1ffb05cbf2df59989b74382d12e7e0d92922944f5e75286631bb4cd4"
+    },
+    "kafka": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/kafka.yaml",
+      "recipe_hash": "e19edf6753f6ea9f9a70822d762f9cea7f612aee4c5b908bcfbb6ec358286929"
+    },
+    "kong-lite": {
+      "fidelity_label": "behavioural_placeholder",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/kong-lite.yaml",
+      "recipe_hash": "78c3505e15c394f56c6029fd30766832bd5af1ab62da732706ff04b3d162edfa"
+    },
+    "ledger-api": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/ledger-api.yaml",
+      "recipe_hash": "dbbfc510cd7991255c5e54b5dd146c23b0c3fe991c2d888f79d8d8417eb43826"
+    },
+    "ledger-gate": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/ledger-gate.yaml",
+      "recipe_hash": "d48df8608531395ab85d9de59ba138db4ade3c81c704b697ef38941504b922eb"
+    },
+    "ledger-migrate": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/ledger-migrate.yaml",
+      "recipe_hash": "2cc9a9918c61d053218d5cafcf1625ff6872f169857e61241279ca5fd98b7ed6"
+    },
+    "ledger-scheduler": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/ledger-scheduler.yaml",
+      "recipe_hash": "7d6b442457acc955c072d08e50b6283a8e5d94275d9226c48c98e6b029f3b40c"
+    },
+    "ledger-worker": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/ledger-worker.yaml",
+      "recipe_hash": "4f2f38ec219811b701c33b40e90be52f1454d3a529c679f20f4ee9796b8984d2"
+    },
+    "ledger-worker-balance-update": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/ledger-worker-balance-update.yaml",
+      "recipe_hash": "732c5cb4c3b68e3c8fb4b94047dc188fe3db2362e9a99a586d2d9a3fd59abf66"
+    },
+    "ledger-worker-entry-details-create": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/ledger-worker-entry-details-create.yaml",
+      "recipe_hash": "6c3e88fb5044200a4de3c2ae19fe24317a42b88776e6b6a4e599de47db6d5619"
+    },
+    "ledger-worker-entry-details-create-pg": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/ledger-worker-entry-details-create-pg.yaml",
+      "recipe_hash": "6f22dbfbb62819e725b50ba4dabc513407cff79e83a112a7d5ac11028820e58b"
+    },
+    "ledger-worker-journal-create": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/ledger-worker-journal-create.yaml",
+      "recipe_hash": "3b8d4a5354d4d9cc2503cdc178a50a619d8b7987f55ebcbed2f4f51bae6e99a6"
+    },
+    "localstack": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/localstack.yaml",
+      "recipe_hash": "de218d5fb815f2bc9383edb3e0e8f840a3c7fe6a54e1c3a684b5fdd61af23735"
+    },
+    "merchant-webhook-sink": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/merchant-webhook-sink.yaml",
+      "recipe_hash": "cb8e12bff465e0d8c8d5cd6f6281f7e24f940c4c39cc81f8e5d148e006fea208"
+    },
+    "mongo-cfa": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/mongo-cfa.yaml",
+      "recipe_hash": "8e57a6df67cfd29b052cabbdb617fb4209fd50b759082d1421c9a326c8fce04b"
+    },
+    "monolith-stub": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/monolith-stub.yaml",
+      "recipe_hash": "779ff1fa18723d6109775414f9cad9759c6fd5d925eb69916e4c4e8b40ecc800"
+    },
+    "mozart-mock": {
+      "fidelity_label": "blocked_missing_access",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/mozart-mock.yaml",
+      "recipe_hash": "791cc3ab0765d8383e6eabc32e7d86926b6512b8aa4f6dd12e091c46b0457700"
+    },
+    "mozart-sim": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/mozart-sim.yaml",
+      "recipe_hash": "f5f47c196307c5a0b1f4698288caa794e7863f7fafd31b4354fcce722ffd9e0b"
+    },
+    "mysql-apidb-stub": {
+      "fidelity_label": "behavioural_placeholder",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/mysql-apidb-stub.yaml",
+      "recipe_hash": "cb05ec25b19ae3a10c9bb031598fd6636d2349bd8ea03cee23a3d919407e9b20"
+    },
+    "mysql-fts": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/mysql-fts.yaml",
+      "recipe_hash": "fbaa4e5912561196215ff875f3015bbca4e68fbb4ed897d1db50427324631cad"
+    },
+    "mysql-payouts": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/mysql-payouts.yaml",
+      "recipe_hash": "0afc1b140aad18b16ce591f2ce044cbdcbb1466fc651e9a8ef5591588eed961d"
+    },
+    "mysql-xbalances": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/mysql-xbalances.yaml",
+      "recipe_hash": "a82c8d037b466402b0d3bdf0753c16f34acfec7c2cc0925143437aac5467fa88"
+    },
+    "payouts-api": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-api.yaml",
+      "recipe_hash": "35643cfbb098a8df2ab56397c4cd4005623fdfb82d44fc4d2d3ec6c75ae6b373"
+    },
+    "payouts-kafka-fts-status-updates-consumer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-kafka-fts-status-updates-consumer.yaml",
+      "recipe_hash": "8b3b05d62fb048b2f516e4c68464457034a75387a1a85f48c5e2c19e46537f17"
+    },
+    "payouts-kafka-fts-status-updates-retry-consumer": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-kafka-fts-status-updates-retry-consumer.yaml",
+      "recipe_hash": "ea24cb07ac81dc4e90ae6e6e938c65be4de63761e77b264051ff7cb87a3c3bb8"
+    },
+    "payouts-migrate": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-migrate.yaml",
+      "recipe_hash": "1010a74afef40dcf470a30abc5105a4da8027dcc83b23f44a1a3f393fefe7a38"
+    },
+    "payouts-worker-api-queue-for-async-dual-write-direct-push": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-api-queue-for-async-dual-write-direct-push.yaml",
+      "recipe_hash": "97592f72de3a295156dc2994dc97b851d98a9ba2620740058a4c3e72bb9420f9"
+    },
+    "payouts-worker-async-dual-write": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-async-dual-write.yaml",
+      "recipe_hash": "db92381e3c64c1a21cac599fcf4e1cd821b0ca4c619608e18892eca90f44cac1"
+    },
+    "payouts-worker-batch-submitted-merchants": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-batch-submitted-merchants.yaml",
+      "recipe_hash": "ba6320e9901a54a40241fb7f818f6fe860e3627f2a0a0d5d8507b541f836dbb3"
+    },
+    "payouts-worker-bulk-payouts": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-bulk-payouts.yaml",
+      "recipe_hash": "f582a64d8ebea56e0bbcb1345af3cb513cfe682b0807e8b767b69ef6da8fba61"
+    },
+    "payouts-worker-data-consistency-checker": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-data-consistency-checker.yaml",
+      "recipe_hash": "9cbbb7042647327f7ef9d23352bc9f60ce0b10a4049bc0b4ea3688c7be5fa007"
+    },
+    "payouts-worker-data-consistency-event": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-data-consistency-event.yaml",
+      "recipe_hash": "da727c8309baf3a7f4e04278f3064bc2f8ae70c0d4e7201278a8d22e23515536"
+    },
+    "payouts-worker-fts-async-hv-processing": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-fts-async-hv-processing.yaml",
+      "recipe_hash": "1d7f53120ca415ab92b657d7d67114a627682a07bb067b8baa4f199d2f6f02ec"
+    },
+    "payouts-worker-fts-async-processing": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-fts-async-processing.yaml",
+      "recipe_hash": "cc9748f6c4bfc51b4c6af467c2661b82651b814fb89cd58a49ee740c464bd2be"
+    },
+    "payouts-worker-fund-management-payout-check": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-fund-management-payout-check.yaml",
+      "recipe_hash": "88a84a161f2bf68e324d62a47a37b6422ba85955599df8632428f0bac09ba609"
+    },
+    "payouts-worker-fund-management-payout-initiate": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-fund-management-payout-initiate.yaml",
+      "recipe_hash": "54a39d431600814d1fd07b492e022f2665c97c72e72d14b21dfd0fbbfa8c5d14"
+    },
+    "payouts-worker-generic-processing": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-generic-processing.yaml",
+      "recipe_hash": "e5989f8b03ce630c84a4b8d423e7eff7b17b6921f6a6d5a5a60df1a81b85054f"
+    },
+    "payouts-worker-on-hold-payout": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-on-hold-payout.yaml",
+      "recipe_hash": "855fff28c118364d869087c781e24afdbe4ecf95981673f0ecb1c4948f77194c"
+    },
+    "payouts-worker-partner-bank-hold-payouts": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-partner-bank-hold-payouts.yaml",
+      "recipe_hash": "eaac5fb2ee4d1e7fb8ffa72d54bd18ab2f7dd550cd9b4589f53f49dfec0f2af4"
+    },
+    "payouts-worker-payout-create-failure-handling": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-payout-create-failure-handling.yaml",
+      "recipe_hash": "bd271b3de62a047bab8f7b8abe1d74db6022a4e6f9caffbe5483e077f949a6f9"
+    },
+    "payouts-worker-payout-source-updater": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-payout-source-updater.yaml",
+      "recipe_hash": "b206285029e370307daeca8217515a74eba399dd24c370ce1a29762fcca97a67"
+    },
+    "payouts-worker-payout-update-failure-handling": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-payout-update-failure-handling.yaml",
+      "recipe_hash": "77f1079e2f68bc174b496fde0b0f42f3c495673be8043e290ae199b9bd67f92d"
+    },
+    "payouts-worker-payout-usage-event-processing": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-payout-usage-event-processing.yaml",
+      "recipe_hash": "735c887d06c9a9a490796c41ad8dff50f0ee46202a72eb3e1d6b15c524b40dd5"
+    },
+    "payouts-worker-queued-payout": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-queued-payout.yaml",
+      "recipe_hash": "261a0c415554c64291b2e5facbaae0a241c1bcade5576828566860ba2bcd00c9"
+    },
+    "payouts-worker-rbl-banking-account-statement": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-rbl-banking-account-statement.yaml",
+      "recipe_hash": "6718adcbfa73389933a55c5c70c2eb979c05a1bfc1011fa7ffccb45bef8b1faf"
+    },
+    "payouts-worker-schedule-payout": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-schedule-payout.yaml",
+      "recipe_hash": "eca38ecd7d8e73060db991c67f7d1be87fea3b82a20660850131299a1f7f2096"
+    },
+    "payouts-worker-transaction-create": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-transaction-create.yaml",
+      "recipe_hash": "06d8bfa6503e8e1d28bf94946bc99fa473c063fc011a522c3473a3c61150bacf"
+    },
+    "payouts-worker-webhook-event": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-webhook-event.yaml",
+      "recipe_hash": "fec548393c189cbca8cc5a03abd72893828c02d2e166d1ed1aa5e9832acb8a2e"
+    },
+    "payouts-worker-x-account-statement-source-event": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-x-account-statement-source-event.yaml",
+      "recipe_hash": "ce68cfd7c44823379aef2652495e0bcaab6267ff49b494cd237b8498402e8fe3"
+    },
+    "payouts-worker-x-balance-payouts-event": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-x-balance-payouts-event.yaml",
+      "recipe_hash": "47bc013a49e26367ff5ac386ae8f338e34ef371bb6a0803342825f8a4993eebf"
+    },
+    "payouts-worker-x-balances-balance-refresh": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/payouts-worker-x-balances-balance-refresh.yaml",
+      "recipe_hash": "16f005599204663a964945ce2833eacbd4432045d46a169d4d881028fdd642ad"
+    },
+    "postgres-ledger": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/postgres-ledger.yaml",
+      "recipe_hash": "c0dd9e023dc9df87009d9ff97b91f10d11fc4822cdcef096a0dc32e47112b01c"
+    },
+    "pricing-stub": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/pricing-stub.yaml",
+      "recipe_hash": "de595e30711287d7257a2d011fd64a5671134bf1fadbf03d3dd8552a66598c96"
+    },
+    "redis": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/redis.yaml",
+      "recipe_hash": "c2d9f8f2ee6948ac11b6a2e9d241cf4eb520d67a9f18133b5b6aa40338e7a595"
+    },
+    "repo-accounting-integrations": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-accounting-integrations.yaml",
+      "recipe_hash": "a2c68682603c3af98bd6b39482ea111da0c6d1e1371339cce90059f18973a14a"
+    },
+    "repo-admin-dashboard": {
+      "fidelity_label": "graph_only",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-admin-dashboard.yaml",
+      "recipe_hash": "7b33eacb1e296fcdedd36ab206e415dd61fddff1585304196970ff632766a88f"
+    },
+    "repo-alert-rules": {
+      "fidelity_label": "graph_only",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-alert-rules.yaml",
+      "recipe_hash": "af6a9150066823c45b0c9c48cbb12a441f44254d99a16bbc3de95dc3ac5eb561"
+    },
+    "repo-api": {
+      "fidelity_label": "behavioural_placeholder",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-api.yaml",
+      "recipe_hash": "2181efb1b92c3216caff0d2131524c8991011f7874913910005e7be800af55e2"
+    },
+    "repo-authz": {
+      "fidelity_label": "graph_only",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-authz.yaml",
+      "recipe_hash": "29cdabf49f925faf1c62d0c3705acd6fca83789b760f58d14893151a9ba41a19"
+    },
+    "repo-banking-accounts": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-banking-accounts.yaml",
+      "recipe_hash": "828440522a40db4a3bff92b805091a8d43fa6c4220099f693b82b614280d3acd"
+    },
+    "repo-batch": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-batch.yaml",
+      "recipe_hash": "bc722641ce79abed44f2206ae1c215e5f03e232d0378e07c553ae98b7afa41fb"
+    },
+    "repo-cfa": {
+      "fidelity_label": "real_source_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-cfa.yaml",
+      "recipe_hash": "4275e4b4ad394d91ac2d25da3a00bf57e6fb72364082751d21e48305a9368827"
+    },
+    "repo-charge-collections": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-charge-collections.yaml",
+      "recipe_hash": "34314cf9fcdbdeb7128e631b5170a1a4063bf3360e50d051d81a445ac92a6874"
+    },
+    "repo-config-proto": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-config-proto.yaml",
+      "recipe_hash": "faafd7d24c2225edc21d264f605309923f2991c4d203a313cc2a26622406334c"
+    },
+    "repo-dcs": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-dcs.yaml",
+      "recipe_hash": "a25df6539ac4222e8750e3c6085a6a1abfd41d1f6bf9d5370037ca07cb35be12"
+    },
+    "repo-edge": {
+      "fidelity_label": "behavioural_placeholder",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-edge.yaml",
+      "recipe_hash": "80501ae066122d29a5bbe2aaf06f37e07fd27a4750ff127ba9376a9dbf16fb21"
+    },
+    "repo-fts": {
+      "fidelity_label": "real_source_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-fts.yaml",
+      "recipe_hash": "c134935c3c64715d787e3194efcd26737e1058291cbffa3db836041f629eea81"
+    },
+    "repo-goutils": {
+      "fidelity_label": "graph_only",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-goutils.yaml",
+      "recipe_hash": "81f7520bd04e8299261f51d0b554a0e4a0944dd8adf07230b24aa064f3753497"
+    },
+    "repo-governor": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-governor.yaml",
+      "recipe_hash": "12a1f1e3de40534652293a2ab32a6ec377b0c8d6a164804bcb794ad791720b1d"
+    },
+    "repo-governor-executor": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-governor-executor.yaml",
+      "recipe_hash": "2f0c5cdeba741341df1e416c7c3a03af7f48d9cdcec275633e8ca77835e01ab7"
+    },
+    "repo-kube-manifests": {
+      "fidelity_label": "graph_only",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-kube-manifests.yaml",
+      "recipe_hash": "932d5f55253b0ff8a858bb367fa481f60239f59500b488956ae2d1a8118c3e03"
+    },
+    "repo-ledger": {
+      "fidelity_label": "real_source_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-ledger.yaml",
+      "recipe_hash": "b8a171590a4baeb088516a84c6feeb010d4c928327b5bdf138077be521196715"
+    },
+    "repo-ledger-sdk": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-ledger-sdk.yaml",
+      "recipe_hash": "4ef7c41c0bca478e0c9e20c167ca008076832087b51b85858bf96ec7b466279c"
+    },
+    "repo-mozart": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-mozart.yaml",
+      "recipe_hash": "b83a1f016b0ab334a3f91f01ee34c42b1ce0ad4227f61287f5fa5f854432861f"
+    },
+    "repo-payments-upi": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-payments-upi.yaml",
+      "recipe_hash": "6787a2f03cf04a4d552c54fcfdf54c26dc2a6c45f7a0163d7f6c5258d084aefe"
+    },
+    "repo-payout-links": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-payout-links.yaml",
+      "recipe_hash": "98b5f3b1cd077a990f0e55cf7587d9227108ef150342d9554c5f9668f150ae68"
+    },
+    "repo-payouts": {
+      "fidelity_label": "real_source_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-payouts.yaml",
+      "recipe_hash": "97313c9423035d0abc06eb351a8d85d861c650ef06edb289635371d8e6498e00"
+    },
+    "repo-proto": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-proto.yaml",
+      "recipe_hash": "a738ca66a8facc6272b76f3850845a9ae5265cb423480f881a62778a13ceb426"
+    },
+    "repo-recon": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-recon.yaml",
+      "recipe_hash": "72d5973c097315d7edeec683a5924edcefd0d1ee52a260b99a4d727e1665b081"
+    },
+    "repo-shield-sdk": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-shield-sdk.yaml",
+      "recipe_hash": "89fcb89d2c241cd00c37508ed4b9d29930f8e377ee96d02c6d5c687243f91c21"
+    },
+    "repo-spinacode": {
+      "fidelity_label": "graph_only",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-spinacode.yaml",
+      "recipe_hash": "abbc7a93b6b90515c2a28b66e682bf68e82e3cff3027fbc11d408d963e316b6b"
+    },
+    "repo-splitz": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-splitz.yaml",
+      "recipe_hash": "ca021027d4d2db11dfb92d753243af1d1bc673826a2fb7dbe310028db1920a84"
+    },
+    "repo-stork": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-stork.yaml",
+      "recipe_hash": "db54b2a0718ca03d8cbc56e5271e45ce1420757bf8f73768066763f6bcb2f928"
+    },
+    "repo-terraform-kong": {
+      "fidelity_label": "graph_only",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-terraform-kong.yaml",
+      "recipe_hash": "b855d4791c62e9e41adab361eafe9716f5d5eb9bc945eddd20a7b4e7f29017d2"
+    },
+    "repo-validx": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-validx.yaml",
+      "recipe_hash": "fdae7bec4c8b458f0e73da95765b5f2ee0e95390d57be86cacfc1e1540f1497e"
+    },
+    "repo-vendor-payments": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-vendor-payments.yaml",
+      "recipe_hash": "4c7a8cfd905640dbf0651a2aae2ad6a40e9407c89a94c998abec87d2801d65b4"
+    },
+    "repo-virtual-account": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-virtual-account.yaml",
+      "recipe_hash": "f8363688eea629bb642adf90d80043b912b4e87355c824ad954386e25ba6a354"
+    },
+    "repo-workflows": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-workflows.yaml",
+      "recipe_hash": "10b52ca8b465ad65e01b887730b9558c036ee70ef548e6abe201c40538313262"
+    },
+    "repo-x": {
+      "fidelity_label": "graph_only",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-x.yaml",
+      "recipe_hash": "8e1a10034f872491890ac0918eedd0765e3be0ce564281bcb2a6a0b86a49fd28"
+    },
+    "repo-x-account-statements": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-x-account-statements.yaml",
+      "recipe_hash": "43155f20a1b95ceb29d85b62c0132b78710b2dbe901bb10a6e8619cbad2e969b"
+    },
+    "repo-x-balances": {
+      "fidelity_label": "real_source_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-x-balances.yaml",
+      "recipe_hash": "b5b1f30216ab8c7d8df0da0410c82667270681b514f676506c1fbaacf6ddaabd"
+    },
+    "repo-xperience": {
+      "fidelity_label": "real_source_mapped_not_running",
+      "kind": "source_repo",
+      "path": "reports/domain/recipes/repo-xperience.yaml",
+      "recipe_hash": "878b4af80adda5a29d43b2f2cf9a590986b77d206fcc518d7fda5099a2d4bc6d"
+    },
+    "shield-stub": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/shield-stub.yaml",
+      "recipe_hash": "f91144f37888a7577eb384cc2d80ac28f65bce9aa52ec43fe4f1a2df593a53e5"
+    },
+    "splitz-stub": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/splitz-stub.yaml",
+      "recipe_hash": "163e9b81db6dceb435be306efa20cd076bd30dc945a5ec41d58710bfac5f0ff9"
+    },
+    "stork-capture": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/stork-capture.yaml",
+      "recipe_hash": "c87eead1c3c0700adb481da7e100f8141f240f9dc952442b514bf24e77b75839"
+    },
+    "verifier": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/verifier.yaml",
+      "recipe_hash": "d556c3336e44a62eb76ca6b045116c6e95762eb69c36d50c99ac804a7285349b"
+    },
+    "workflow-engine": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/workflow-engine.yaml",
+      "recipe_hash": "996ec41da3371b0dff9478915ff5e23456d13b28f1fe04fc379ef7d68808f435"
+    },
+    "workflow-sim": {
+      "fidelity_label": "graph_only",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/workflow-sim.yaml",
+      "recipe_hash": "ec8d9b23322c789553d911239cf56e4a92b63978b5ed5abfa338af793437d89e"
+    },
+    "xas-sim": {
+      "fidelity_label": "high_fidelity_replacement",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/xas-sim.yaml",
+      "recipe_hash": "dc8d8c92cf4a95ed2ea1bfce4a3cc63d860c07b6d55ab41a9ef0245d8b02953a"
+    },
+    "xbalances-migrate": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/xbalances-migrate.yaml",
+      "recipe_hash": "ffcb9ccd26e4d817a27b529e500fb5ef33f4641ba2994a452002c72d23f88943"
+    },
+    "xbalances-server": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/xbalances-server.yaml",
+      "recipe_hash": "8f6ca4aea36e0615aa794b715b549d25629b2f00e24e2b8aabdc24bdeaaf36a7"
+    },
+    "xbalances-worker": {
+      "fidelity_label": "real_source_running",
+      "kind": "compose_service",
+      "path": "reports/domain/recipes/xbalances-worker.yaml",
+      "recipe_hash": "26b2e57307debdc13938b5a4417c505ac2b18ad261e8d0001f6aa69f845c3655"
+    }
+  },
+  "repositories": {
+    "accounting-integrations": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-03T08:18:48+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/accounting-integrations",
+      "repository": "razorpay/accounting-integrations",
+      "sha": "fc13a0b2a38214374e80a16af3ed4465b2d84ef1"
+    },
+    "admin-dashboard": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-03T17:42:28+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/admin-dashboard",
+      "repository": "razorpay/admin-dashboard",
+      "sha": "e29bdf988410704c3053417e91051a0ec88cebbb"
+    },
+    "alert-rules": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-04T17:04:46+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/alert-rules",
+      "repository": "razorpay/alert-rules",
+      "sha": "c372beabedf833a2a2c7aec862a4f78ce19e5d00"
+    },
+    "api": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": true,
+      "head_date": "2026-09-04T16:24:09+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/api",
+      "repository": "razorpay/api",
+      "sha": "2d665f918b60e917ec92be648fb5816d247f72b1"
+    },
+    "authz": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-04T13:45:24+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/authz",
+      "repository": "razorpay/authz",
+      "sha": "8687f48f0b760b6bab6c711133079d4b534d391b"
+    },
+    "banking-accounts": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-02T09:47:48Z",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/banking-accounts",
+      "repository": "razorpay/banking-accounts",
+      "sha": "c3fc1fe8ae41a528a4a3d7ed1b0ec9dad6f98141"
+    },
+    "batch": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-04T11:42:38+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/batch",
+      "repository": "razorpay/batch",
+      "sha": "3839dd77d061422c144b7409af401415d598c54b"
+    },
+    "cfa": {
+      "accepted_matches_provenance": true,
+      "accepted_path": "/Users/rana.singh/rzp-payouts-architecture/.local/twin-repos/accepted/cfa",
+      "accepted_source_commit": "d488558e162c08e9fa04dff005f27d846ce88ad2",
+      "dirty": false,
+      "head_date": "2026-07-16T10:18:56+05:30",
+      "kind": "clone+accepted",
+      "path": "/Users/rana.singh/rzp-payouts-clones/cfa",
+      "repository": "razorpay/cfa",
+      "sha": "d488558e162c08e9fa04dff005f27d846ce88ad2"
+    },
+    "charge-collections": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-02T16:51:34+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/charge-collections",
+      "repository": "razorpay/charge-collections",
+      "sha": "412816c70d569abd9a8220a4c320a994ceec2883"
+    },
+    "config-proto": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-04T12:29:23+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/config-proto",
+      "repository": "razorpay/config-proto",
+      "sha": "a6b201039f22cc543efb740eba9dd72fd29474b0"
+    },
+    "dcs": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-03T19:20:19+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/dcs",
+      "repository": "razorpay/dcs",
+      "sha": "fca59e3e68305683b94b8042ab64e2b9845ecd29"
+    },
+    "edge": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-02T19:27:50+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/edge",
+      "repository": "razorpay/edge",
+      "sha": "da9ff5b22b7d0e4dbecfba5d3305ff8469c60de0"
+    },
+    "fts": {
+      "accepted_matches_provenance": true,
+      "accepted_path": "/Users/rana.singh/rzp-payouts-architecture/.local/twin-repos/accepted/fts",
+      "accepted_source_commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "dirty": false,
+      "head_date": "2026-09-01T18:35:30+05:30",
+      "kind": "clone+accepted",
+      "path": "/Users/rana.singh/rzp-payouts-clones/fts",
+      "repository": "razorpay/fts",
+      "sha": "2a09e763116db47a2f28553c677ad73ef8133ebf"
+    },
+    "goutils": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-03T11:14:35+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/goutils",
+      "repository": "razorpay/goutils",
+      "sha": "efc794188bbd12318602763b8e8cc321e1793309"
+    },
+    "governor": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-04T00:08:29+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/governor",
+      "repository": "razorpay/governor",
+      "sha": "875eabaf2d5f6be5b7fcffcdb2047cfc8e28050c"
+    },
+    "governor-executor": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-02T09:38:09Z",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/governor-executor",
+      "repository": "razorpay/governor-executor",
+      "sha": "1bd640c2a27756d7d62763bbb359f1fa7babbe7c"
+    },
+    "kube-manifests": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-04T16:10:35+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/kube-manifests",
+      "repository": "razorpay/kube-manifests",
+      "sha": "9226a892fd767b0e31dd4282b0b4919298f53fda"
+    },
+    "ledger": {
+      "accepted_matches_provenance": true,
+      "accepted_path": "/Users/rana.singh/rzp-payouts-architecture/.local/twin-repos/accepted/ledger",
+      "accepted_source_commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "dirty": false,
+      "head_date": "2026-09-02T18:58:57+05:30",
+      "kind": "clone+accepted",
+      "path": "/Users/rana.singh/rzp-payouts-clones/ledger",
+      "repository": "razorpay/ledger",
+      "sha": "471ff4d5321b6b99a7965882d18f572a1adf5194"
+    },
+    "ledger-sdk": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-07-29T21:55:09+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/ledger-sdk",
+      "repository": "razorpay/ledger-sdk",
+      "sha": "2eae8920c73ca592a16130d2b15707ed1e7f277f"
+    },
+    "mozart": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": true,
+      "head_date": "2026-09-03T22:12:53+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/mozart",
+      "repository": "razorpay/mozart",
+      "sha": "bf4688300d4896500fb9e9f422ee28d80d81b6e6"
+    },
+    "payments-upi": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-03T21:41:32+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/payments-upi",
+      "repository": "razorpay/payments-upi",
+      "sha": "b23ec7ea9126561500ae34791c4ef8efe55e6f14"
+    },
+    "payout-links": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-06-11T07:51:36Z",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/payout-links",
+      "repository": "razorpay/payout-links",
+      "sha": "2c81a4d97f961794fa8a95ec8580311203460bdf"
+    },
+    "payouts": {
+      "accepted_matches_provenance": true,
+      "accepted_path": "/Users/rana.singh/rzp-payouts-architecture/.local/twin-repos/accepted/payouts",
+      "accepted_source_commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "dirty": false,
+      "head_date": "2026-09-03T05:41:21Z",
+      "kind": "clone+accepted",
+      "path": "/Users/rana.singh/rzp-payouts-clones/payouts",
+      "repository": "razorpay/payouts",
+      "sha": "4bf3dbf9239feadea6d65ca90c893a988e116173"
+    },
+    "proto": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-04T14:21:24+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/proto",
+      "repository": "razorpay/proto",
+      "sha": "52682577d79d7237944e9fbb10477a1721623065"
+    },
+    "recon": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-02T16:53:09+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/recon",
+      "repository": "razorpay/recon",
+      "sha": "6974fec90f78712af77aea3ce8e3858836fd16fe"
+    },
+    "shield-sdk": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-02T17:10:00+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/shield-sdk",
+      "repository": "razorpay/shield-sdk",
+      "sha": "1a4cbf7691734a781034295c6bcb21877d263fff"
+    },
+    "spinacode": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-04T14:57:31+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/spinacode",
+      "repository": "razorpay/spinacode",
+      "sha": "da46a5239144c61049c96729b76813b59f6a349c"
+    },
+    "splitz": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-01T02:28:24+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/splitz",
+      "repository": "razorpay/splitz",
+      "sha": "fa6f4c7ee13db2b1111887fea69b497e58ecc0e5"
+    },
+    "stork": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-03T14:14:08Z",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/stork",
+      "repository": "razorpay/stork",
+      "sha": "800b719030aa5051c76630fa7c2020aa2a1f8348"
+    },
+    "terraform-kong": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-04T08:50:02Z",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/terraform-kong",
+      "repository": "razorpay/terraform-kong",
+      "sha": "8ffe965bce7868d150344433d3bfbf3e630e228b"
+    },
+    "validx": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": null,
+      "head_date": null,
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/validx",
+      "repository": "razorpay/validx",
+      "sha": null
+    },
+    "vendor-payments": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-08-28T00:11:57+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/vendor-payments",
+      "repository": "razorpay/vendor-payments",
+      "sha": "20c4f4d59970471067388afea8b1d65ac39ee126"
+    },
+    "virtual-account": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-08-31T10:30:23+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/virtual-account",
+      "repository": "razorpay/virtual-account",
+      "sha": "437f39807e1575c3b00b0ef57cdde804a54be5ce"
+    },
+    "workflows": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-02-10T22:29:06+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/workflows",
+      "repository": "razorpay/workflows",
+      "sha": "080d71a51b777c89af586c92ac4b5f683a473a7c"
+    },
+    "x": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-09-02T17:26:21+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/x",
+      "repository": "razorpay/x",
+      "sha": "40b093f97ec1b8162e7f46ecee223af04982d5ba"
+    },
+    "x-account-statements": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-08-31T10:53:08+05:30",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/x-account-statements",
+      "repository": "razorpay/x-account-statements",
+      "sha": "e73fd5ae271dea104cea71781f4b644e52d414c3"
+    },
+    "x-balances": {
+      "accepted_matches_provenance": true,
+      "accepted_path": "/Users/rana.singh/rzp-payouts-architecture/.local/twin-repos/accepted/x-balances",
+      "accepted_source_commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+      "dirty": false,
+      "head_date": "2026-08-18T20:11:55+05:30",
+      "kind": "clone+accepted",
+      "path": "/Users/rana.singh/rzp-payouts-clones/x-balances",
+      "repository": "razorpay/x-balances",
+      "sha": "1a21c0f9111da14125d839dc0dfe8d980740f207"
+    },
+    "xperience": {
+      "accepted_matches_provenance": null,
+      "accepted_path": null,
+      "accepted_source_commit": null,
+      "dirty": false,
+      "head_date": "2026-06-11T07:51:13Z",
+      "kind": "clone",
+      "path": "/Users/rana.singh/rzp-payouts-clones/xperience",
+      "repository": "razorpay/xperience",
+      "sha": "88729560e52b35aa9d5768d67ff807f847537ee7"
+    }
+  },
+  "schema_version": 1,
+  "schema_versions": {
+    "batch": {
+      "count": 0,
+      "digest": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+      "dirs": [],
+      "files": []
+    },
+    "cfa": {
+      "count": 6,
+      "digest": "0e3ee4c4be6986d2ef2af34875a54334284766a9ffa8df1d7f84f9b179bd0ed2",
+      "dirs": [
+        "internal/database/migrations"
+      ],
+      "files": [
+        "internal/database/migrations/1715709457_create_contacts_collection.go",
+        "internal/database/migrations/1715709458_create_hash_lookup_collection.go",
+        "internal/database/migrations/1715709459_create_fund_accounts_collection.go",
+        "internal/database/migrations/1739361599_identify_duplicates.go",
+        "internal/database/migrations/README.md",
+        "internal/database/migrations/migration.go"
+      ]
+    },
+    "fts": {
+      "count": 53,
+      "digest": "6e31bbeaadd21f27f55276212b97f3520ae7c1a37995d26b47f69a8ef7bff915",
+      "dirs": [
+        "internal/migrations"
+      ],
+      "files": [
+        "internal/migrations/00001_bank_accounts_table_create.go",
+        "internal/migrations/00002_vpas_table_create.go",
+        "internal/migrations/00003_fund_accounts_table_create.go",
+        "internal/migrations/00004_beneficiary_status_table_create.go",
+        "internal/migrations/00005_transfers_table_create.go",
+        "internal/migrations/00006_attempts_table_create.go",
+        "internal/migrations/00007_source_accounts_table_create.go",
+        "internal/migrations/00008_state_change_log_table_create.go",
+        "internal/migrations/00009_cards_table_create.go",
+        "internal/migrations/00010_channel_health_events_table_create.go",
+        "internal/migrations/00011_source_account_mappings_table_create.go",
+        "internal/migrations/00012_batches_table_create.go",
+        "internal/migrations/00014_bene_health_table_create.go",
+        "internal/migrations/00015_event_tags_table_create.go",
+        "internal/migrations/00016_wallets_table_create.go",
+        "internal/migrations/00017_preferred_routing_weights_table_create.go",
+        "internal/migrations/00018_account_type_mappings_table_create.go",
+        "internal/migrations/00019_merchant_configuration.go",
+        "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+        "internal/migrations/00021_attempts_unique_keys_table_create.go",
+        "internal/migrations/00022_channel_information_status_table_create.go",
+        "internal/migrations/00023_trigger_status_table_create.go",
+        "internal/migrations/00024_schedules_table_create.go",
+        "internal/migrations/00025_channel_information_status_logs_table_create.go",
+        "internal/migrations/00026_trigger_status_logs_table_create.go",
+        "internal/migrations/00027_fail_fast_status_table_create.go",
+        "internal/migrations/00028_fail_fast_status_logs_table_create.go",
+        "internal/migrations/00029_bank_account_meta_table_create.go",
+        "internal/migrations/00030_key_value_store_table_create.go",
+        "internal/migrations/00031_key_value_store_logs_table_create.go",
+        "internal/migrations/00032_entity_meta_table_create.go",
+        "internal/migrations/00033_non_saved_cards.go",
+        "internal/migrations/00034_otp_requests.go",
+        "internal/migrations/00035_otp_information_table_create.go",
+        "internal/migrations/00036_otp_request_logs_table_create.go",
+        "internal/migrations/00037_otp_verification_logs_table_create.go",
+        "internal/migrations/00038_audit_logs_table_create.go",
+        "internal/migrations/00039_cron_jobs.go",
+        "internal/migrations/00040_remitter_accounts_table_create.go",
+        "internal/migrations/00041_merchant_communication_details_table_create.go",
+        "internal/migrations/00042_multi_account_routing_rules_table_create.go",
+        "internal/migrations/00043_channel_metrics_table_create.go",
+        "internal/migrations/00044_downtimes_table_create.go",
+        "internal/migrations/00045_transfer_meta_table_create.go",
+        "internal/migrations/00046_downtime_state_change_logs_table_create.go",
+        "internal/migrations/00047_update_channel_enum_add_slice_channels.go",
+        "internal/migrations/00048_bene_health_add_success_rate.go",
+        "internal/migrations/00049_update_channel_enum_add_jpmc.go",
+        "internal/migrations/00050_rename_jpmc_channel_enum.go",
+        "internal/migrations/one_off_db_update_migration_script.go",
+        "internal/migrations/queries.txt",
+        "internal/migrations/runner.go",
+        "internal/migrations/update_queries.txt"
+      ]
+    },
+    "ledger": {
+      "count": 115,
+      "digest": "bea515cef7e2e796840d50fd41fb1caa47d0919106608a4bab931e5d29ef7745",
+      "dirs": [
+        "internal/database/migrations",
+        "internal/database/pg_migrations",
+        "internal/database/rx_migrations"
+      ],
+      "files": [
+        "internal/database/migrations/20201001011117_create_accounts.go",
+        "internal/database/migrations/20201001011143_create_journal.go",
+        "internal/database/migrations/20201001011149_create_ledger_entries.go",
+        "internal/database/migrations/20201001011240_create_ledger_entry_details.go",
+        "internal/database/migrations/20201022184734_create_account_details.go",
+        "internal/database/migrations/20201027234816_create_state_change_logs.go",
+        "internal/database/migrations/20210416152026_alter_transactor_id_column.go",
+        "internal/database/migrations/20210517133655_alter_balance_column.go",
+        "internal/database/migrations/20210527121244_create_idempotency.go",
+        "internal/database/migrations/20210628101139_add_balance_in_ledger_entries.go",
+        "internal/database/migrations/20210723155653_add_onboarding_events_in_account_details.go",
+        "internal/database/migrations/20210810170948_create_ledger_config.go",
+        "internal/database/migrations/20210826041040_add_tenant_in_account_details.go",
+        "internal/database/migrations/20210826041041_add_tenant_in_journal.go",
+        "internal/database/migrations/20210916041039_add_reason_in_state_change_logs.go",
+        "internal/database/migrations/20210924122122_add_index_on_notes_column_in_ledger_entry_details_go.go",
+        "internal/database/migrations/20210925113658_rename_transactor_type_to_transactor_event_in_journal_go.go",
+        "internal/database/migrations/20211020100711_add_balance_updated_in_ledger_entries.go",
+        "internal/database/migrations/20211020131618_modify_amount_datatypes.go",
+        "internal/database/migrations/20220502170054_create_idempotency_partition_info.go",
+        "internal/database/migrations/20220614145258_20220614144234_alter_add_redash_access_to_idempotency_partition_info_go.go",
+        "internal/database/migrations/20220721150555_create_journal_rejected_events.go",
+        "internal/database/migrations/20220727152211_alter_add_redash_access_journal_rejected_events_default.go",
+        "internal/database/migrations/20221117104115_create_outbox_jobs.go",
+        "internal/database/migrations/20221128052500_alter_state_change_logs_table.go",
+        "internal/database/migrations/20221209182605_modify_idempotency_table.go",
+        "internal/database/migrations/20221211114222_create_split_accounts.go",
+        "internal/database/migrations/20221211115222_alter_use_split_accounts_column_in_account_details.go",
+        "internal/database/migrations/20230216023203_onboarding_events.go",
+        "internal/database/migrations/20230327173846_add_redash_access_for_onboarding_events.go",
+        "internal/database/migrations/20230911161905_alter_table_outbox_jobs_add_column_initial_delay.go",
+        "internal/database/migrations/20230920171333_alter_remove_onboarding_events_column_in_account_details.go",
+        "internal/database/pg_migrations/20201001011117_create_accounts.go",
+        "internal/database/pg_migrations/20201001011143_create_journal.go",
+        "internal/database/pg_migrations/20201001011149_create_ledger_entries.go",
+        "internal/database/pg_migrations/20201001011240_create_ledger_entry_details.go",
+        "internal/database/pg_migrations/20201022184734_create_account_details.go",
+        "internal/database/pg_migrations/20201027234816_create_state_change_logs.go",
+        "internal/database/pg_migrations/20210416152026_alter_transactor_id_column.go",
+        "internal/database/pg_migrations/20210517133655_alter_balance_column.go",
+        "internal/database/pg_migrations/20210527121244_create_idempotency.go",
+        "internal/database/pg_migrations/20210628101139_add_balance_in_ledger_entries.go",
+        "internal/database/pg_migrations/20210723155653_add_onboarding_events_in_account_details.go",
+        "internal/database/pg_migrations/20210810170948_create_ledger_config.go",
+        "internal/database/pg_migrations/20210826041040_add_tenant_in_account_details.go",
+        "internal/database/pg_migrations/20210826041041_add_tenant_in_journal.go",
+        "internal/database/pg_migrations/20210916041039_add_reason_in_state_change_logs.go",
+        "internal/database/pg_migrations/20210924122122_add_index_on_notes_column_in_ledger_entry_details_go.go",
+        "internal/database/pg_migrations/20210925113658_rename_transactor_type_to_transactor_event_in_journal_go.go",
+        "internal/database/pg_migrations/20211020100711_add_balance_updated_in_ledger_entries.go",
+        "internal/database/pg_migrations/20211020131618_modify_amount_datatypes.go",
+        "internal/database/pg_migrations/20220502170054_create_idempotency_partition_info.go",
+        "internal/database/pg_migrations/20220614145258_20220614144234_alter_add_redash_access_to_idempotency_partition_info_go.go",
+        "internal/database/pg_migrations/20220721150555_create_journal_rejected_events.go",
+        "internal/database/pg_migrations/20220727152211_alter_add_redash_access_journal_rejected_events_default.go",
+        "internal/database/pg_migrations/20221117104115_create_outbox_jobs.go",
+        "internal/database/pg_migrations/20221128052500_alter_state_change_logs_table.go",
+        "internal/database/pg_migrations/20221209182605_modify_idempotency_table.go",
+        "internal/database/pg_migrations/20221211114222_create_split_accounts.go",
+        "internal/database/pg_migrations/20221211115222_alter_use_split_accounts_column_in_account_details.go",
+        "internal/database/pg_migrations/20221220182605_create_outbox_jobs_settlements.go",
+        "internal/database/pg_migrations/20221220182705_create_outbox_jobs_api.go",
+        "internal/database/pg_migrations/20221220182805_create_outbox_jobs_cps.go",
+        "internal/database/pg_migrations/20230216023203_onboarding_events.go",
+        "internal/database/pg_migrations/20230327173846_add_redash_access_for_onboarding_events.go",
+        "internal/database/pg_migrations/20230719182805_create_outbox_jobs_growth.go",
+        "internal/database/pg_migrations/20230818182805_create_outbox_jobs_ups.go",
+        "internal/database/pg_migrations/20230818182806_create_outbox_jobs_nbs.go",
+        "internal/database/pg_migrations/20230911161905_alter_table_outbox_jobs_add_column_initial_delay.go",
+        "internal/database/pg_migrations/20230920171333_alter_remove_onboarding_events_column_in_account_details.go",
+        "internal/database/pg_migrations/20231004125148_create_outbox_jobs_pcp.go",
+        "internal/database/pg_migrations/20240321190046_create_outbox_jobs_emandate.go",
+        "internal/database/pg_migrations/20240423125148_create_outbox_jobs_sync.go",
+        "internal/database/pg_migrations/20240910124718_create_outbox_jobs_optimizer_core.go",
+        "internal/database/pg_migrations/20241104193140_create_outbox_jobs_route.go",
+        "internal/database/pg_migrations/20250324011125_create_outbox_jobs_affordability.go",
+        "internal/database/pg_migrations/20250721011125_create_outbox_jobs_cbimport.go",
+        "internal/database/pg_migrations/20250807135839_create_outbox_job_dispute_service.go",
+        "internal/database/pg_migrations/20250902173605_create_outbox_jobs_bts.go",
+        "internal/database/pg_migrations/20251009011125_create_outbox_jobs_offers.go",
+        "internal/database/pg_migrations/20260325100000_create_outbox_jobs_apmservice.go",
+        "internal/database/pg_migrations/20260405120000_create_outbox_jobs_partnerships.go",
+        "internal/database/pg_migrations/20260619120000_add_index_on_account_details_tenant_currency.go",
+        "internal/database/rx_migrations/20201001011117_create_accounts.go",
+        "internal/database/rx_migrations/20201001011143_create_journal.go",
+        "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+        "internal/database/rx_migrations/20201001011240_create_ledger_entry_details.go",
+        "internal/database/rx_migrations/20201022184734_create_account_details.go",
+        "internal/database/rx_migrations/20201027234816_create_state_change_logs.go",
+        "internal/database/rx_migrations/20210416152026_alter_transactor_id_column.go",
+        "internal/database/rx_migrations/20210517133655_alter_balance_column.go",
+        "internal/database/rx_migrations/20210527121244_create_idempotency.go",
+        "internal/database/rx_migrations/20210628101139_add_balance_in_ledger_entries.go",
+        "internal/database/rx_migrations/20210723155653_add_onboarding_events_in_account_details.go",
+        "internal/database/rx_migrations/20210810170948_create_ledger_config.go",
+        "internal/database/rx_migrations/20210826041040_add_tenant_in_account_details.go",
+        "internal/database/rx_migrations/20210826041041_add_tenant_in_journal.go",
+        "internal/database/rx_migrations/20210916041039_add_reason_in_state_change_logs.go",
+        "internal/database/rx_migrations/20210924122122_add_index_on_notes_column_in_ledger_entry_details_go.go",
+        "internal/database/rx_migrations/20210925113658_rename_transactor_type_to_transactor_event_in_journal_go.go",
+        "internal/database/rx_migrations/20211020100711_add_balance_updated_in_ledger_entries.go",
+        "internal/database/rx_migrations/20211020131618_modify_amount_datatypes.go",
+        "internal/database/rx_migrations/20220502170054_create_idempotency_partition_info.go",
+        "internal/database/rx_migrations/20220614145258_20220614144234_alter_add_redash_access_to_idempotency_partition_info_go.go",
+        "internal/database/rx_migrations/20220721150555_create_journal_rejected_events.go",
+        "internal/database/rx_migrations/20220727152211_alter_add_redash_access_journal_rejected_events_default.go",
+        "internal/database/rx_migrations/20221117104115_create_outbox_jobs.go",
+        "internal/database/rx_migrations/20221128052500_alter_state_change_logs_table.go",
+        "internal/database/rx_migrations/20221209182605_modify_idempotency_table.go",
+        "internal/database/rx_migrations/20221211114222_create_split_accounts.go",
+        "internal/database/rx_migrations/20221211115222_alter_use_split_accounts_column_in_account_details.go",
+        "internal/database/rx_migrations/20230216023203_onboarding_events.go",
+        "internal/database/rx_migrations/20230327173846_add_redash_access_for_onboarding_events.go",
+        "internal/database/rx_migrations/20230911161905_alter_table_outbox_jobs_add_column_initial_delay.go",
+        "internal/database/rx_migrations/20230920171333_alter_remove_onboarding_events_column_in_account_details.go"
+      ]
+    },
+    "payouts": {
+      "count": 34,
+      "digest": "5b33bfd2ac00899b48ab249ffdc5c2624c68eb85b7f3e24a0bdb0ed558844469",
+      "dirs": [
+        "internal/database/migrations"
+      ],
+      "files": [
+        "internal/database/migrations/20200615182810_create_payouts_table.go",
+        "internal/database/migrations/20200826172412_create_state_change_log_table.go",
+        "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+        "internal/database/migrations/20201113232006_create_reversals_table.go",
+        "internal/database/migrations/20210304093129_create_payout_sources_table.go",
+        "internal/database/migrations/20210524161952_create_payout_logs_table.go",
+        "internal/database/migrations/20210617163439_create_payout_purpose_table.go",
+        "internal/database/migrations/20210824110700_create_workflow_config_table.go",
+        "internal/database/migrations/20210824110739_create_workflow_entity_map_table.go",
+        "internal/database/migrations/20210902153752_create_payout_details_table.go",
+        "internal/database/migrations/20211026104754_create_payout_status_details_table.go",
+        "internal/database/migrations/20220120161944_create_fund_accounts_table.go",
+        "internal/database/migrations/20220120172736_create_bank_accounts_table.go",
+        "internal/database/migrations/20220526144631_create_counters_table.go",
+        "internal/database/migrations/20220608002625_create_settings_table.go",
+        "internal/database/migrations/20220616173226_create_payout_meta_temporary_table.go",
+        "internal/database/migrations/20220616173230_create_payout_meta_permanent_table.go",
+        "internal/database/migrations/20220822132631_create_counter_transactions_table.go",
+        "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+        "internal/database/migrations/20221004002554_create_idempotency_keys_table.go",
+        "internal/database/migrations/20230124225130_create_payout_attempts_table.go",
+        "internal/database/migrations/20230128010157_banking_account_statement_table.go",
+        "internal/database/migrations/20230128010223_banking_account_statement_details_table.go",
+        "internal/database/migrations/20240504145035_event_outbox_table.go",
+        "internal/database/migrations/20240625175332_delete_duplicate_bas.go",
+        "internal/database/migrations/20240830164301_bulk_idempotency_keys.go",
+        "internal/database/migrations/20241126054126_duplicate_prevention_config.go",
+        "internal/database/migrations/20250115000001_create_payouts_temp_table.go",
+        "internal/database/migrations/20250115000003_create_fund_transfer_attempts_temp_table.go",
+        "internal/database/migrations/20250311053125_create_merchant_configurations_table.go",
+        "internal/database/migrations/20250528222337_create_idempotency_key_exclusions_table.go",
+        "internal/database/migrations/20251106120000_create_source_request_id_mapping_table.go",
+        "internal/database/migrations/20260305000000_add_gateway_ref_no_to_payouts.go",
+        "internal/database/migrations/20260720000001_alter_fts_transfer_id_to_bigint.go"
+      ]
+    },
+    "workflows": {
+      "count": 10,
+      "digest": "705111312e8a3ca25b98e5df99f0d62c575a1f9b02e1159bd9f42ad4ebd7df24",
+      "dirs": [
+        "internal/database/migrations"
+      ],
+      "files": [
+        "internal/database/migrations/20200612155608_create_state_change_logs.go",
+        "internal/database/migrations/20200612161348_create_configs.go",
+        "internal/database/migrations/20200702202525_create_actions.go",
+        "internal/database/migrations/20200704083621_create_states.go",
+        "internal/database/migrations/20200707080613_create_comments.go",
+        "internal/database/migrations/20200712201722_create_workflows.go",
+        "internal/database/migrations/20221020095849_list_view_workfows_indexes.go",
+        "internal/database/migrations/20221020231335_create_assignee.go",
+        "internal/database/migrations/20231030231335_add_config_dimensions.go",
+        "internal/database/migrations/20241126231335_add_current_group_name_in_workflows.go"
+      ]
+    },
+    "x-balances": {
+      "count": 2,
+      "digest": "2914f1ae4b84227544decda5d9709a410be29e3b1fa30aa9012fbf810bb94423",
+      "dirs": [
+        "internal/database/migrations"
+      ],
+      "files": [
+        "internal/database/migrations/20250127224555_balance.go",
+        "internal/database/migrations/README.md"
+      ]
+    }
+  },
+  "snapshot": null,
+  "twin": {
+    "branch": "milestone-6-complete-payouts-domain",
+    "dirty": true,
+    "git_head": "1e14f17087c4dfc202ea34100589f7a27424c788",
+    "root": "/Users/rana.singh/rzp-payouts-architecture"
+  }
+}

@@ -1,0 +1,304 @@
+graph LR
+  db_api_monolith_mysql["db:api-monolith/mysql\nbehavioural_placeholder"]
+  db_arena_kafka["db:arena/kafka\nreal_source_running"]
+  db_arena_localstack["db:arena/localstack\nreal_source_running"]
+  db_arena_redis["db:arena/redis\nreal_source_running"]
+  db_banking_accounts_mysql["db:banking-accounts/mysql\ngraph_only"]
+  db_batch_postgres["db:batch/postgres\ngraph_only"]
+  db_cfa_mongo["db:cfa/mongo\nreal_source_running"]
+  db_cfa_mongodb["db:cfa/mongodb\nreal_source_running"]
+  db_fts_mysql["db:fts/mysql\nreal_source_running"]
+  db_fts_redis["db:fts/redis\nreal_source_running"]
+  db_ledger_postgres["db:ledger/postgres\nreal_source_running"]
+  db_ledger_redis["db:ledger/redis\nreal_source_running"]
+  db_payouts_elasticsearch["db:payouts/elasticsearch\ngraph_only"]
+  db_payouts_mysql["db:payouts/mysql\nreal_source_running"]
+  db_payouts_redis["db:payouts/redis\nreal_source_running"]
+  db_payouts_tidb["db:payouts/tidb\ngraph_only"]
+  db_recon_postgres["db:recon/postgres\ngraph_only"]
+  db_virtual_account_dynamodb["db:virtual-account/dynamodb\nreal_source_mapped_not_running"]
+  db_workflows_mysql["db:workflows/mysql\ngraph_only"]
+  db_x_balances_mysql["db:x-balances/mysql\nreal_source_running"]
+  db_x_balances_redis["db:x-balances/redis\nreal_source_running"]
+  db_xas_mysql["db:xas/mysql\nhigh_fidelity_replacement"]
+  db_xperience_mysql["db:xperience/mysql\ngraph_only"]
+  ext_account_service["ext:account-service\nbehavioural_placeholder"]
+  ext_alert_batch_created_not_launched["ext:alert/batch-created-not-launched\ngraph_only"]
+  ext_alert_batch_failure_p0["ext:alert/batch-failure-p0\ngraph_only"]
+  ext_alert_fts_internal_task_failure_p0["ext:alert/fts-internal-task-failure-p0\ngraph_only"]
+  ext_alert_fts_stuck_transfer_amazonpay["ext:alert/fts-stuck-transfer-amazonpay\ngraph_only"]
+  ext_alert_fts_task_publish_error["ext:alert/fts-task-publish-error\ngraph_only"]
+  ext_alert_fts_transfer_webhook_update_failure["ext:alert/fts-transfer-webhook-update-failure\ngraph_only"]
+  ext_alert_ledger_x_journal_create_failed["ext:alert/ledger-x-journal-create-failed\ngraph_only"]
+  ext_alert_ledger_x_journal_created_queue_stuck["ext:alert/ledger-x-journal-created-queue-stuck\ngraph_only"]
+  ext_alert_payouts_payroll_stuck_non_terminal["ext:alert/payouts-payroll-stuck-non-terminal\ngraph_only"]
+  ext_alert_payouts_process_queued_payout_worker_errors["ext:alert/payouts-process-queued-payout-worker-errors\ngraph_only"]
+  ext_alert_payouts_sla_breach_percentage["ext:alert/payouts-sla-breach-percentage\ngraph_only"]
+  ext_alert_payouts_source_updater_job_failures["ext:alert/payouts-source-updater-job-failures\ngraph_only"]
+  ext_alert_payouts_sqs_age_payout_create_failure_handling["ext:alert/payouts-sqs-age-payout-create-failure-handling\ngraph_only"]
+  ext_alert_payouts_sqs_age_payout_update_failure_handling["ext:alert/payouts-sqs-age-payout-update-failure-handling\ngraph_only"]
+  ext_alert_payouts_sqs_age_queued_processing["ext:alert/payouts-sqs-age-queued-processing\ngraph_only"]
+  ext_alert_payouts_stuck_payouts_idfc_imps["ext:alert/payouts-stuck-payouts-idfc-imps\ngraph_only"]
+  ext_alert_workflows_cadence_workflow_failed["ext:alert/workflows-cadence-workflow-failed\ngraph_only"]
+  ext_api_monolith["ext:api-monolith\nhigh_fidelity_replacement"]
+  ext_asv["ext:asv\nhigh_fidelity_replacement"]
+  ext_aws_dynamodb["ext:aws-dynamodb\ngraph_only"]
+  ext_aws_sns["ext:aws-sns\nhigh_fidelity_replacement"]
+  ext_aws_sqs["ext:aws-sqs\nhigh_fidelity_replacement"]
+  ext_bank_amazonpay["ext:bank-amazonpay\ngraph_only"]
+  ext_bank_axis["ext:bank-axis\nbehavioural_placeholder"]
+  ext_bank_citi["ext:bank-citi\ngraph_only"]
+  ext_bank_hdfc["ext:bank-hdfc\ngraph_only"]
+  ext_bank_icici["ext:bank-icici\nbehavioural_placeholder"]
+  ext_bank_idfc["ext:bank-idfc\nbehavioural_placeholder"]
+  ext_bank_kotak["ext:bank-kotak\ngraph_only"]
+  ext_bank_m2p["ext:bank-m2p\ngraph_only"]
+  ext_bank_mcs["ext:bank-mcs\ngraph_only"]
+  ext_bank_ocbc_duitnow["ext:bank-ocbc-duitnow\ngraph_only"]
+  ext_bank_rbl["ext:bank-rbl\nhigh_fidelity_replacement"]
+  ext_bank_slice["ext:bank-slice\ngraph_only"]
+  ext_bank_yesbank["ext:bank-yesbank\nbehavioural_placeholder"]
+  ext_banking_accounts["ext:banking-accounts\nhigh_fidelity_replacement"]
+  ext_beam["ext:beam\ngraph_only"]
+  ext_bin_service["ext:bin-service\nbehavioural_placeholder"]
+  ext_cadence["ext:cadence\ngraph_only"]
+  ext_cfa["ext:cfa\nreal_source_running"]
+  ext_charge_collections["ext:charge-collections\ngraph_only"]
+  ext_consul_authz["ext:consul-authz\ngraph_only"]
+  ext_databricks_emr["ext:databricks-emr\ngraph_only"]
+  ext_dcs["ext:dcs\nhigh_fidelity_replacement"]
+  ext_dynamodb["ext:dynamodb\ngraph_only"]
+  ext_elasticsearch["ext:elasticsearch\ngraph_only"]
+  ext_fastcron["ext:fastcron\nbehavioural_placeholder"]
+  ext_fts["ext:fts\nreal_source_running"]
+  ext_governor["ext:governor\ngraph_only"]
+  ext_kafka["ext:kafka\nreal_source_running"]
+  ext_kafka_cdc_maxwell["ext:kafka-cdc-maxwell\ngraph_only"]
+  ext_kafka_datalake["ext:kafka-datalake\ngraph_only"]
+  ext_ledger["ext:ledger\nreal_source_running"]
+  ext_merchant_webhook_endpoint["ext:merchant-webhook-endpoint\nhigh_fidelity_replacement"]
+  ext_mozart["ext:mozart\nhigh_fidelity_replacement"]
+  ext_pricing["ext:pricing\nhigh_fidelity_replacement"]
+  ext_raven["ext:raven\ngraph_only"]
+  ext_recon_art["ext:recon-art\ngraph_only"]
+  ext_relay["ext:relay\ngraph_only"]
+  ext_s3["ext:s3\ngraph_only"]
+  ext_s3_batch_files["ext:s3-batch-files\ngraph_only"]
+  ext_settlements["ext:settlements\ngraph_only"]
+  ext_shield["ext:shield\nhigh_fidelity_replacement"]
+  ext_slack["ext:slack\ngraph_only"]
+  ext_spinnaker["ext:spinnaker\ngraph_only"]
+  ext_splitz["ext:splitz\nhigh_fidelity_replacement"]
+  ext_sqs_batch["ext:sqs-batch\ngraph_only"]
+  ext_stork["ext:stork\nhigh_fidelity_replacement"]
+  ext_trino["ext:trino\ngraph_only"]
+  ext_ups["ext:ups\ngraph_only"]
+  ext_vault_service["ext:vault-service\nbehavioural_placeholder"]
+  ext_wallet_service["ext:wallet-service\ngraph_only"]
+  ext_workflows["ext:workflows\nhigh_fidelity_replacement"]
+  ext_x_balances["ext:x-balances\nreal_source_running"]
+  ext_xas["ext:xas\nhigh_fidelity_replacement"]
+  sub_asv_stub["sub:asv-stub\nhigh_fidelity_replacement"]
+  sub_bankingaccounts_stub["sub:bankingaccounts-stub\nhigh_fidelity_replacement"]
+  sub_batch_sim["sub:batch-sim\nhigh_fidelity_replacement"]
+  sub_cron_driver["sub:cron-driver\nhigh_fidelity_replacement"]
+  sub_dcs_stub["sub:dcs-stub\nhigh_fidelity_replacement"]
+  sub_kong_lite["sub:kong-lite\nhigh_fidelity_replacement"]
+  sub_ledger_da_onboarding["sub:ledger-da-onboarding\nhigh_fidelity_replacement"]
+  sub_ledger_gate["sub:ledger-gate\nhigh_fidelity_replacement"]
+  sub_merchant_webhook_sink["sub:merchant-webhook-sink\nhigh_fidelity_replacement"]
+  sub_monolith_stub["sub:monolith-stub\nhigh_fidelity_replacement"]
+  sub_mozart_mock["sub:mozart-mock\nblocked_missing_access"]
+  sub_mozart_sim["sub:mozart-sim\nhigh_fidelity_replacement"]
+  sub_pricing_stub["sub:pricing-stub\nhigh_fidelity_replacement"]
+  sub_shield_stub["sub:shield-stub\nhigh_fidelity_replacement"]
+  sub_splitz_stub["sub:splitz-stub\nhigh_fidelity_replacement"]
+  sub_stork_capture["sub:stork-capture\nhigh_fidelity_replacement"]
+  sub_verifier["sub:verifier\nhigh_fidelity_replacement"]
+  sub_workflow_engine["sub:workflow-engine\nhigh_fidelity_replacement"]
+  sub_workflow_sim["sub:workflow-sim\nhigh_fidelity_replacement"]
+  sub_xas_sim["sub:xas-sim\nhigh_fidelity_replacement"]
+  sub_xas_sink["sub:xas-sink\ngraph_only"]
+  svc_accounting_integrations["svc:accounting-integrations\nreal_source_mapped_not_running"]
+  svc_admin_dashboard["svc:admin-dashboard\ngraph_only"]
+  svc_api_monolith["svc:api-monolith\nreal_source_mapped_not_running"]
+  svc_asv["svc:asv\ngraph_only"]
+  svc_banking_accounts["svc:banking-accounts\ngraph_only"]
+  svc_batch["svc:batch\nhigh_fidelity_replacement"]
+  svc_cfa["svc:cfa\nreal_source_running"]
+  svc_cfa_migrate["svc:cfa-migrate\nreal_source_running"]
+  svc_cfa_server["svc:cfa-server\nreal_source_running"]
+  svc_charge_collections["svc:charge-collections\ngraph_only"]
+  svc_dcs["svc:dcs\nreal_source_mapped_not_running"]
+  svc_edge_kong["svc:edge-kong\nreal_source_mapped_not_running"]
+  svc_fts_migrate["svc:fts-migrate\nreal_source_running"]
+  svc_fts_mock_server["svc:fts-mock-server\nreal_source_mapped_not_running"]
+  svc_fts_web["svc:fts-web\nreal_source_running"]
+  svc_governor["svc:governor\ngraph_only"]
+  svc_ledger_api["svc:ledger-api\nreal_source_running"]
+  svc_ledger_migrate["svc:ledger-migrate\nreal_source_running"]
+  svc_mozart["svc:mozart\nreal_source_mapped_not_running"]
+  svc_mozart_mock_mode["svc:mozart-mock-mode\nblocked_missing_access"]
+  svc_payout_links["svc:payout-links\nreal_source_mapped_not_running"]
+  svc_payouts_api["svc:payouts-api\nreal_source_running"]
+  svc_payouts_kafka_consumer["svc:payouts-kafka-consumer\nreal_source_running"]
+  svc_payouts_migrate["svc:payouts-migrate\nreal_source_running"]
+  svc_payouts_worker["svc:payouts-worker\nreal_source_running"]
+  svc_recon["svc:recon\ngraph_only"]
+  svc_shield["svc:shield\ngraph_only"]
+  svc_splitz["svc:splitz\nreal_source_mapped_not_running"]
+  svc_stork["svc:stork\nreal_source_mapped_not_running"]
+  svc_ups["svc:ups\ngraph_only"]
+  svc_validx["svc:validx\nreal_source_mapped_not_running"]
+  svc_vendor_payments["svc:vendor-payments\nreal_source_mapped_not_running"]
+  svc_virtual_account["svc:virtual-account\nreal_source_mapped_not_running"]
+  svc_workflows["svc:workflows\nreal_source_mapped_not_running"]
+  svc_workflows_workers["svc:workflows-workers\ngraph_only"]
+  svc_x_account_statements["svc:x-account-statements\ngraph_only"]
+  svc_x_balances["svc:x-balances\nreal_source_running"]
+  svc_x_dashboard["svc:x-dashboard\ngraph_only"]
+  svc_xas["svc:xas\nhigh_fidelity_replacement"]
+  svc_xbalances_migrate["svc:xbalances-migrate\nreal_source_running"]
+  svc_xbalances_server["svc:xbalances-server\nreal_source_running"]
+  svc_xperience["svc:xperience\ngraph_only"]
+  sub_asv_stub -->|implements| ext_account_service
+  sub_asv_stub -->|implements| svc_asv
+  sub_bankingaccounts_stub -->|implements| svc_banking_accounts
+  sub_bankingaccounts_stub -->|implements| svc_banking_accounts
+  sub_bankingaccounts_stub -->|implements| svc_banking_accounts
+  sub_cron_driver -->|implements| ext_fastcron
+  sub_cron_driver -->|implements| ext_fastcron
+  sub_cron_driver -->|calls| svc_payouts_api
+  sub_dcs_stub -->|implements| svc_dcs
+  sub_dcs_stub -->|implements| svc_dcs
+  sub_kong_lite -->|calls| svc_cfa_server
+  sub_kong_lite -->|implements| svc_edge_kong
+  sub_kong_lite -->|implements| svc_edge_kong
+  sub_kong_lite -->|calls| svc_fts_web
+  sub_kong_lite -->|calls| svc_ledger_api
+  sub_kong_lite -->|calls| svc_payouts_api
+  sub_kong_lite -->|calls| svc_xbalances_server
+  sub_ledger_gate -->|calls| svc_ledger_api
+  sub_ledger_gate -->|calls| svc_ledger_api
+  sub_merchant_webhook_sink -->|implements| ext_merchant_webhook_endpoint
+  sub_merchant_webhook_sink -->|implements| ext_merchant_webhook_endpoint
+  sub_monolith_stub -->|implements| svc_api_monolith
+  sub_monolith_stub -->|implements| svc_api_monolith
+  sub_monolith_stub -->|calls| svc_fts_web
+  sub_mozart_mock -->|implements| svc_mozart
+  sub_mozart_sim -->|implements| svc_mozart
+  sub_mozart_sim -->|implements| svc_mozart
+  sub_pricing_stub -->|implements| svc_charge_collections
+  sub_shield_stub -->|implements| svc_shield
+  sub_shield_stub -->|implements| svc_shield
+  sub_splitz_stub -->|implements| svc_splitz
+  sub_splitz_stub -->|implements| svc_splitz
+  sub_stork_capture -->|calls| ext_merchant_webhook_endpoint
+  sub_stork_capture -->|implements| svc_stork
+  sub_stork_capture -->|implements| svc_stork
+  sub_workflow_engine -->|calls| svc_payouts_api
+  sub_workflow_engine -->|implements| svc_workflows
+  sub_workflow_engine -->|implements| svc_workflows
+  sub_workflow_sim -->|implements| ext_workflows
+  sub_workflow_sim -->|calls| svc_payouts_api
+  sub_workflow_sim -->|implements| svc_workflows
+  sub_workflow_sim -->|implements| svc_workflows
+  sub_xas_sim -->|calls| db_arena_localstack
+  sub_xas_sim -->|implements| svc_x_account_statements
+  sub_xas_sim -->|implements| svc_xas
+  sub_xas_sink -->|implements| svc_x_account_statements
+  svc_accounting_integrations -->|calls| svc_dcs
+  svc_admin_dashboard -->|calls| svc_recon
+  svc_api_monolith -->|calls| svc_validx
+  svc_api_monolith -->|calls| svc_xperience
+  svc_banking_accounts -->|calls| svc_fts_web
+  svc_banking_accounts -->|calls| svc_mozart
+  svc_banking_accounts -->|calls| svc_payouts_api
+  svc_cfa -->|calls| svc_api_monolith
+  svc_cfa_server -->|depends_on| db_arena_localstack
+  svc_cfa_server -->|depends_on| db_cfa_mongo
+  svc_charge_collections -->|calls| svc_governor
+  svc_fts_web -->|depends_on| db_arena_redis
+  svc_fts_web -->|depends_on| db_fts_mysql
+  svc_fts_web -->|depends_on| db_fts_redis
+  svc_fts_web -->|calls| ext_api_monolith
+  svc_fts_web -->|calls| ext_bank_hdfc
+  svc_fts_web -->|calls| ext_bank_slice
+  svc_fts_web -->|depends_on| ext_kafka
+  svc_fts_web -->|calls| ext_splitz
+  svc_fts_web -->|calls| sub_monolith_stub
+  svc_fts_web -->|calls| sub_mozart_sim
+  svc_fts_web -->|calls| svc_ledger_api
+  svc_fts_web -->|calls| svc_mozart
+  svc_fts_web -->|calls| svc_payouts_api
+  svc_ledger_api -->|depends_on| db_arena_localstack
+  svc_ledger_api -->|depends_on| db_arena_redis
+  svc_ledger_api -->|depends_on| db_ledger_postgres
+  svc_mozart -->|calls| ext_bank_amazonpay
+  svc_mozart -->|calls| ext_bank_axis
+  svc_mozart -->|calls| ext_bank_citi
+  svc_mozart -->|calls| ext_bank_icici
+  svc_mozart -->|calls| ext_bank_idfc
+  svc_mozart -->|calls| ext_bank_kotak
+  svc_mozart -->|calls| ext_bank_m2p
+  svc_mozart -->|calls| ext_bank_mcs
+  svc_mozart -->|calls| ext_bank_ocbc_duitnow
+  svc_mozart -->|calls| ext_bank_rbl
+  svc_mozart -->|calls| ext_bank_rbl
+  svc_mozart -->|calls| ext_bank_yesbank
+  svc_mozart -->|implements| sub_mozart_sim
+  svc_mozart -->|implements| svc_mozart_mock_mode
+  svc_payout_links -->|calls| svc_api_monolith
+  svc_payouts_api -->|depends_on| db_api_monolith_mysql
+  svc_payouts_api -->|depends_on| db_arena_kafka
+  svc_payouts_api -->|depends_on| db_arena_localstack
+  svc_payouts_api -->|depends_on| db_arena_redis
+  svc_payouts_api -->|depends_on| db_payouts_mysql
+  svc_payouts_api -->|calls| ext_api_monolith
+  svc_payouts_api -->|calls| ext_asv
+  svc_payouts_api -->|calls| ext_banking_accounts
+  svc_payouts_api -->|calls| ext_cfa
+  svc_payouts_api -->|calls| ext_dcs
+  svc_payouts_api -->|calls| ext_elasticsearch
+  svc_payouts_api -->|calls| ext_fts
+  svc_payouts_api -->|calls| ext_ledger
+  svc_payouts_api -->|calls| ext_mozart
+  svc_payouts_api -->|calls| ext_raven
+  svc_payouts_api -->|calls| ext_shield
+  svc_payouts_api -->|calls| ext_splitz
+  svc_payouts_api -->|calls| ext_stork
+  svc_payouts_api -->|calls| ext_ups
+  svc_payouts_api -->|calls| ext_workflows
+  svc_payouts_api -->|calls| ext_x_balances
+  svc_payouts_api -->|calls| ext_xas
+  svc_payouts_api -->|calls| sub_asv_stub
+  svc_payouts_api -->|calls| sub_bankingaccounts_stub
+  svc_payouts_api -->|calls| sub_dcs_stub
+  svc_payouts_api -->|calls| sub_ledger_gate
+  svc_payouts_api -->|calls| sub_monolith_stub
+  svc_payouts_api -->|calls| sub_shield_stub
+  svc_payouts_api -->|calls| sub_splitz_stub
+  svc_payouts_api -->|calls| sub_stork_capture
+  svc_payouts_api -->|calls| sub_workflow_sim
+  svc_payouts_api -->|calls| sub_xas_sim
+  svc_payouts_api -->|calls| svc_charge_collections
+  svc_payouts_api -->|calls| svc_dcs
+  svc_payouts_api -->|calls| svc_fts_web
+  svc_payouts_api -->|calls| svc_shield
+  svc_payouts_api -->|calls| svc_splitz
+  svc_payouts_api -->|calls| svc_stork
+  svc_payouts_api -->|calls| svc_ups
+  svc_payouts_api -->|calls| svc_xbalances_server
+  svc_payouts_worker -->|calls| ext_fts
+  svc_payouts_worker -->|calls| ext_mozart
+  svc_payouts_worker -->|calls| ext_stork
+  svc_recon -->|calls| svc_splitz
+  svc_stork -->|calls| ext_merchant_webhook_endpoint
+  svc_validx -->|calls| svc_fts_web
+  svc_vendor_payments -->|calls| svc_api_monolith
+  svc_virtual_account -->|calls| svc_mozart
+  svc_workflows_workers -->|depends_on| ext_cadence
+  svc_xbalances_server -->|depends_on| db_api_monolith_mysql
+  svc_xbalances_server -->|depends_on| db_arena_localstack
+  svc_xbalances_server -->|depends_on| db_arena_redis
+  svc_xbalances_server -->|depends_on| db_x_balances_mysql

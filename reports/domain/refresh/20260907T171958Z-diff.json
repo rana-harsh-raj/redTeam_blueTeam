@@ -1,0 +1,78 @@
+{
+  "changed": false,
+  "compose": {
+    "added": [],
+    "changed": false,
+    "modified": [],
+    "recipes": {
+      "added": [],
+      "modified": [],
+      "removed": []
+    },
+    "removed": []
+  },
+  "config": {
+    "added": [],
+    "changed": false,
+    "digest": [
+      "8b131ea003c5aedcbfda7c9cdf029260e097a6f5974769dbce6437377598c97c",
+      "8b131ea003c5aedcbfda7c9cdf029260e097a6f5974769dbce6437377598c97c"
+    ],
+    "modified": [],
+    "removed": []
+  },
+  "contracts": {
+    "batch_types": {
+      "added": [],
+      "modified": [],
+      "removed": []
+    },
+    "changed": false,
+    "proto": {},
+    "substitutes": {
+      "added": [],
+      "modified": [],
+      "removed": []
+    }
+  },
+  "flags": {},
+  "generated_at": "2026-09-07T17:19:58Z",
+  "graph": {
+    "changed": false,
+    "edges_added": [],
+    "edges_removed": [],
+    "new_version": null,
+    "nodes_added": [],
+    "nodes_modified": [],
+    "nodes_removed": [],
+    "old_version": null,
+    "version_changed": false
+  },
+  "images": {
+    "added": [],
+    "changed": false,
+    "modified": [],
+    "removed": [],
+    "resolved": []
+  },
+  "new": {
+    "captured_at": "2026-09-07T17:19:57Z",
+    "digest": "e348fbff22773147903d5a5761ad111709706ee133d5c302706cb59bebd69dda",
+    "path": "/Users/rana.singh/rzp-payouts-architecture/reports/domain/snapshots/20260907T171958Z.json"
+  },
+  "old": {
+    "captured_at": "2026-09-07T17:19:53Z",
+    "digest": "e348fbff22773147903d5a5761ad111709706ee133d5c302706cb59bebd69dda",
+    "path": "/Users/rana.singh/rzp-payouts-architecture/reports/domain/snapshots/20260907T171954Z.json"
+  },
+  "repos": [],
+  "schema_version": 1,
+  "schemas": {},
+  "summary": [
+    "no change"
+  ],
+  "twin": {
+    "new_head": "2613f383297c7c3b5c0831c26c5c7472494b6e7b",
+    "old_head": "2613f383297c7c3b5c0831c26c5c7472494b6e7b"
+  }
+}
