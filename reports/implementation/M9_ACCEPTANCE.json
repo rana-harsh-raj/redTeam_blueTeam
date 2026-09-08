@@ -1,0 +1,154 @@
+{
+  "milestone": "M9",
+  "title": "Isolated Twin Factory",
+  "evaluated_at": "2026-09-08T18:42:06Z",
+  "git_head": "7c52bdc1a19f808b04853fcb463b8533fcc98ac8",
+  "branch": "milestone-9-twin-factory",
+  "twinfactory_version": "1.0.0",
+  "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+  "gates": [
+    {
+      "id": "M9-01",
+      "description": "Historical milestone tags unchanged (M3.1..M8)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'assurance-m4.1-reproducible': 'ef4ba7264d', 'assurance-m5-autonomous-discovery': '2613f38329', 'red-loop-m3.1': '3a044f83ed', 'red-loop-m4': '3ae1773283', 's2p-acceptance-closure-m7': '4505e62dce', 'twin-m6-complete-domain': '76024aed5a', 'twin-m7-shared-ingress-integration': '37ac47db1e', 'twin-v1.0': '78def24eb5', 'arch-m8-snapshot-query': 'a84a668720'}"
+    },
+    {
+      "id": "M9-02",
+      "description": "Branch descends from the M8 tag",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'branch': 'milestone-9-twin-factory', 'head': '7c52bdc1a1'}"
+    },
+    {
+      "id": "M9-03",
+      "description": "M7 artifacts and the accepted M8 snapshot (id recomputes, manifest ok, inputs byte-identical) unchanged",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'m7': {'reports/architecture/M7_CANONICAL_SNAPSHOT.json': True, 'reports/implementation/M7_ACCEPTANCE.json': True, 'reports/implementation/M7_ARTIFACT_HASHES.json': True}, 'm8_verify': {'id_recomputes': True, 'manifest_ok': True}, 'inputs_changed': []}"
+    },
+    {
+      "id": "M9-04",
+      "description": "Runtime profiles are derived from the M8 snapshot + recipes (full = every recipe; focused = traced closure, no handwritten list)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'snapshot': '5b6a5dade17e', 'recipes': 98, 'full': {'services': 98, 'jobs': 5, 'by_category': {'core-real-binary': 67, 'datastore-or-infra': 9, 'source-to-pay': 4, 'substitute': 18}}, 'critical-payouts': {'services': 93, 'jobs': 5, 'by_category': {'core-real-binary': 67, 'datastore-or-infra': 9, 'substitute': 17}}, 'focused-s2p': {'services': 97, 'jobs': 5, 'by_category': {'core-real-binary': 67, 'datastore-or-infra': 9, 'source-to-pay': 4, 'substitute': 17}}}"
+    },
+    {
+      "id": "M9-05",
+      "description": "Instance manifests bind snapshot id, recipe set, profile, seed, config hashes, secrets digest, image digests and a RuntimeInstance id",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'instances': {'alpha-full': True, 'beta-focused': True}, 'full': ['alpha-full'], 'focused': ['beta-focused']}"
+    },
+    {
+      "id": "M9-06",
+      "description": "Every service of every instance resolved to an immutable image id (sha256) recorded in the manifest",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'alpha-full': {'services': 98, 'images': 34, 'missing': []}, 'beta-focused': {'services': 93, 'images': 29, 'missing': []}}"
+    },
+    {
+      "id": "M9-07",
+      "description": "Two instances ran concurrently on separate daemons/VMs (proof P1-P4: boundaries, namespaces, filesystem, reachability)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'P1': True, 'P2': True, 'P3': True, 'P4': True, 'a': 'alpha-full', 'b': 'beta-focused'}"
+    },
+    {
+      "id": "M9-08",
+      "description": "A full-profile journey and a focused-profile journey passed, attributed to the right instance (proof P5)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'a': {'blocked': 0, 'expected_failure': 0, 'fail': 0, 'pass': 1, 'total': 1}, 'b': {'blocked': 0, 'expected_failure': 0, 'fail': 0, 'pass': 1, 'total': 1}}"
+    },
+    {
+      "id": "M9-09",
+      "description": "Restart, reset, state snapshot/restore and destroy isolation controls passed (proof P6-P9)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'P6': True, 'P7': True, 'P8': True, 'P9': True}"
+    },
+    {
+      "id": "M9-10",
+      "description": "Image and configuration reproducibility: the destroyed instance was recreated from its manifest with identical inputs hash, profile digest, seed epoch and image ids",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'inputs_hash': True, 'profile_digest': True, 'seed_epoch': True, 'image_ids_equal': 34, 'images': 34}"
+    },
+    {
+      "id": "M9-11",
+      "description": "No hardcoded M7 instance names (env2_compose / rzp-arena / 18080) in twinfactory; journey runner is instance-aware through the environment",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'hardcoded': [], 'runner_env': True}"
+    },
+    {
+      "id": "M9-12",
+      "description": "Generated secrets/config/seeds/runtime files live outside the source checkout",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'exec_dirs': ['/Users/rana.singh/.twin-factory/instances/alpha-full', '/Users/rana.singh/.twin-factory/instances/beta-focused'], 'generated_in_tree': []}"
+    },
+    {
+      "id": "M9-13",
+      "description": "Source-to-Pay endpoints and secrets are instance-configurable (driver env overrides, twin overlay, per-instance secret observed)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'driver_env': True, 'overlay': True, 'instance_specific_secret': True}"
+    },
+    {
+      "id": "M9-14",
+      "description": "Durable instance registry with schema, live records and destroyed history",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'instances': [], 'destroyed': 9}"
+    },
+    {
+      "id": "M9-15",
+      "description": "Measured memory, disk, build, boot, reset, stop and destroy times and the host limits are recorded",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'measured_instances': ['alpha-full', 'beta-focused'], 'host_memory_gib': 24.0, 'cpus': 15}"
+    },
+    {
+      "id": "M9-16",
+      "description": "twinfactory + isolation tests, archkit (M8), snapshot and RED_LOOP test suites all pass",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'twinfactory': {'rc': 0, 'ran': 32, 'ok': True}, 'archkit': {'rc': 0, 'ran': 25, 'ok': True}, 'snapshot': {'rc': 0, 'ran': 36, 'ok': True}, 'red_loop': {'rc': 0, 'ran': 102, 'ok': True}}"
+    },
+    {
+      "id": "M9-17",
+      "description": "Final report, runbook and schema present",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'reports/implementation/M9_FINAL_REPORT.md': True, 'reports/implementation/M9_RUNBOOK.md': True, 'twinfactory/SCHEMA.md': True}"
+    },
+    {
+      "id": "M9-18",
+      "description": "A clean checkout (fresh git worktree, no .local, no generated state) provisions, boots and passes a journey in a FULL twin from the M8 snapshot on its own colima boundary",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'instance_id': 'm9-clean-7c52bd', 'health': {'healthy': True, 'containers': {'healthy': 97, 'not_running': ['ledger-scheduler'], 'running': 97, 'total': 98, 'unhealthy': []}}, 'journey': {'summary': {'blocked': 0, 'expected_failure': 0, 'fail': 0, 'pass': 1, 'total': 1}, 'attributed': True}, 'manifest': {'architecture_snapshot_id': '5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141', 'recipe_set_id': '85f237c46431c2af8b1ad9818a9e3b266080c7db829c198bf8811c8c02ee1bc0', 'profile': 'full', 'seed': 'acceptance-7c52bd', 'inputs_hash': '86423bfb9fe8fdc0deb1c633beb371cd6745190fa863c5c3cbb7da2ec7c1a6f3', 'runtime_instance_id': 'd08fb741f814ee49d3d9218965a9c03053fa2c19ddcbe77c1725dc99b7065db7', 'state': 'running', 'image_count': 34, 'migrations_source': 'factory-home-bundle'}, 'timings': {'boot_secs': 83.8, 'build_secs': 110.7, 'create_secs': 0.2, 'generate_secs': 1.4, 'images_secs"
+    },
+    {
+      "id": "M9-19",
+      "description": "Hash manifest binds twinfactory, the M9 evidence, the isolation proof and the changed runtime files",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'count': 63}"
+    },
+    {
+      "id": "M9-20",
+      "description": "Working tree clean at evaluation time (only the acceptance outputs may differ)",
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'dirty': []}"
+    }
+  ],
+  "passed": 20,
+  "total": 20,
+  "accepted": true
+}

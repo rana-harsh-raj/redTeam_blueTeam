@@ -6,7 +6,7 @@ Rendered by `python3 -m twinfactory report` from the committed machine records u
 
 | item | value |
 |---|---|
-| acceptance | **NOT ACCEPTED** (None/None gates, `reports/implementation/M9_ACCEPTANCE.json`, evaluated at `` on `None`) |
+| acceptance | **ACCEPTED** (20/20 gates, `reports/implementation/M9_ACCEPTANCE.json`, evaluated at `7c52bdc1a1` on `milestone-9-twin-factory`) |
 | architecture snapshot consumed | `5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141` (recipe set `85f237c46431c2af`) |
 | execution backend | colima (one Lima/vz virtual machine + its own dockerd per instance; only the instance's execution directory is mounted) |
 | profiles supported | `full` (98 services, 5 migration jobs, Source-to-Pay overlay) and `focused:<family>` derived by graph closure — demonstrated `critical-payouts` = `focused:shared-payouts` (93 services) |
@@ -33,7 +33,8 @@ Both manifests bind: architecture snapshot id, recipe set id, profile digest, se
 
 ## Observed defects during boot
 
-- none recorded (a real binary that crashes at start is restarted at most twice by the boot orchestrator and every restart is recorded here)
+- none recorded in the final boots (a real binary that crashes at start is restarted at most twice by the boot orchestrator and every restart is recorded in the manifest's `boot.crash_restarts`)
+- Observed once during the first P9 attempt (recorded in the proof run log, phase then re-run): `xbalances-worker` (real x-balances binary) died at start with `fatal error: concurrent map read and map write` in `pkg/worker.(*Manager).Do` (`pkg/worker/manager.go:253`) — a startup race in the pinned source; the orchestrator's bounded crash restart was added in response.
 
 ## Isolation proof (reports/implementation/m9-isolation-proof.json)
 
@@ -53,7 +54,7 @@ Both manifests bind: architecture snapshot id, recipe set id, profile digest, se
 
 | instance | provision | build (images) | boot | restart | reset | snapshot / restore state | stop | destroy | containers RSS (final) | VM disk dir |
 |---|---|---|---|---|---|---|---|---|---|---|
-| `alpha-full` | 23.3 s | 126.2 s (100.5 s) | 122.3 s | n/a | n/a | n/a / n/a | n/a | 40.3 s | 6190 MiB | 10.8 GiB |
+| `alpha-full` | 23.3 s | 126.2 s (100.5 s) | 122.3 s | 87.7 s | n/a | n/a / n/a | 25.5 s | 40.3 s | 6190 MiB | 10.8 GiB |
 | `beta-focused` | 25.5 s | 69.4 s (41.0 s) | 83.2 s | n/a | 63.9 s | 8.3 s / 18.8 s | n/a | 37.7 s | 5310 MiB | 9.0 GiB |
 
 Destroy of `alpha-full` (compose down -v + volumes/networks sweep + VM delete): 23.3 s; recreation from the manifest booted in 122.3 s.
@@ -64,7 +65,7 @@ Destroy of `alpha-full` (compose down -v + volumes/networks sweep + VM delete): 
 |---|---|---|---|---|
 | Mac17,9 (macOS-26.6.1-arm64-arm-64bit-Mach-O) | 15 | 24.0 GiB | 296 GiB | default Running cpu=4 mem=12884901888 |
 
-Clean-checkout gate (M9-18): 
+Clean-checkout gate (M9-18): {'instance_id': 'm9-clean-7c52bd', 'health': {'healthy': True, 'containers': {'healthy': 97, 'not_running': ['ledger-scheduler'], 'running': 97, 'total': 98, 'unhealthy': []}}, 'journey': {'summary': {'blocked': 0, 'expected_failure': 0, 'fail': 0, 'pass': 1, 'total': 1}, 'attributed': True}, 'manifest': {'architecture_snapshot_id': '5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141', 'recipe_set_id': '85f237c46431c2af8b1ad9818a9e3b266080c7db829c198bf8811c8c02ee1bc0', 'profile': 'full', 'seed': 'acceptance-7c52bd', 'inputs_hash': '86423bfb9fe8fdc0deb1c633beb371cd6745190fa863c5c3
 
 ## Blockers before scaling from two instances to ten
 
@@ -79,4 +80,24 @@ Clean-checkout gate (M9-18):
 
 | gate | result | description |
 |---|---|---|
+| M9-01 | PASS | Historical milestone tags unchanged (M3.1..M8) |
+| M9-02 | PASS | Branch descends from the M8 tag |
+| M9-03 | PASS | M7 artifacts and the accepted M8 snapshot (id recomputes, manifest ok, inputs byte-identical) unchanged |
+| M9-04 | PASS | Runtime profiles are derived from the M8 snapshot + recipes (full = every recipe; focused = traced closure, no handwritten list) |
+| M9-05 | PASS | Instance manifests bind snapshot id, recipe set, profile, seed, config hashes, secrets digest, image digests and a RuntimeInstance id |
+| M9-06 | PASS | Every service of every instance resolved to an immutable image id (sha256) recorded in the manifest |
+| M9-07 | PASS | Two instances ran concurrently on separate daemons/VMs (proof P1-P4: boundaries, namespaces, filesystem, reachability) |
+| M9-08 | PASS | A full-profile journey and a focused-profile journey passed, attributed to the right instance (proof P5) |
+| M9-09 | PASS | Restart, reset, state snapshot/restore and destroy isolation controls passed (proof P6-P9) |
+| M9-10 | PASS | Image and configuration reproducibility: the destroyed instance was recreated from its manifest with identical inputs hash, profile digest, seed epoch and image ids |
+| M9-11 | PASS | No hardcoded M7 instance names (env2_compose / rzp-arena / 18080) in twinfactory; journey runner is instance-aware through the environment |
+| M9-12 | PASS | Generated secrets/config/seeds/runtime files live outside the source checkout |
+| M9-13 | PASS | Source-to-Pay endpoints and secrets are instance-configurable (driver env overrides, twin overlay, per-instance secret observed) |
+| M9-14 | PASS | Durable instance registry with schema, live records and destroyed history |
+| M9-15 | PASS | Measured memory, disk, build, boot, reset, stop and destroy times and the host limits are recorded |
+| M9-16 | PASS | twinfactory + isolation tests, archkit (M8), snapshot and RED_LOOP test suites all pass |
+| M9-17 | PASS | Final report, runbook and schema present |
+| M9-18 | PASS | A clean checkout (fresh git worktree, no .local, no generated state) provisions, boots and passes a journey in a FULL twin from the M8 snapshot on its own colima boundary |
+| M9-19 | PASS | Hash manifest binds twinfactory, the M9 evidence, the isolation proof and the changed runtime files |
+| M9-20 | PASS | Working tree clean at evaluation time (only the acceptance outputs may differ) |
 
