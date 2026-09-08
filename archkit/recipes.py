@@ -134,7 +134,8 @@ def _deviations(name, spec, node):
     if t:
         pd = paths.ENV2 / "build/arena-patches"
         for p in sorted(pd.rglob("*")):
-            if p.is_file() and (CORE[t] in p.as_posix() or t in p.name):
+            rel = p.relative_to(pd).as_posix()   # match on the path INSIDE arena-patches only (never the checkout path)
+            if p.is_file() and (CORE[t] in rel or t in p.name):
                 out.append({"ref": paths.rel(p), "sha256": sha256_file(p), "kind": "arena-build-patch"})
     if name.startswith("s2p-"):
         p = paths.S2P / "spec/declared-deviations.yaml"

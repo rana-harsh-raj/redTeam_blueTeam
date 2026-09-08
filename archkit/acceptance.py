@@ -167,9 +167,17 @@ def main(argv=None):
     run(["git", "worktree", "remove", "--force", str(wt)])
     g("M8-14", "Fresh clean checkout of HEAD (no .local, no run dirs) reproduces the snapshot, recipes and M7 import byte-for-byte", r.returncode == 0 and same_snap and rec_same and imp_same,
       {"rc": r.returncode, "snapshot_identical": same_snap, "recipes_identical": rec_same, "import_identical": imp_same, "tail": r.stderr[-300:]})
-    # 15 no docker in the knowledge layer
-    src = "\n".join(p.read_text() for p in (paths.REPO / "archkit").rglob("*.py") if "tests" not in p.parts)
-    g("M8-15", "archkit never invokes docker or reads secrets/clones (compilation and queries are pure repository reads)", "docker" not in src.replace("docker-compose", "").replace("docker compose", "").replace("Docker", "").replace("dockerfile", "").replace("Dockerfile", "") and "secrets/" not in src.replace("gen-secrets.sh", "").replace("/run/secrets", "").replace("secrets/materialize", "").replace("secret_files", "") and ".local/" not in src, "")
+    # 15 no docker / subprocess / secret or clone reads in the knowledge layer (acceptance.py is the only module allowed to shell out: git + tests)
+    offenders = []
+    for p in sorted((paths.REPO / "archkit").rglob("*.py")):
+        if "tests" in p.parts or p.name == "acceptance.py":
+            continue
+        t = p.read_text()
+        reads_local = any(".local/" in l and ("Path(" in l or "open(" in l or 'REPO / "' in l) for l in t.splitlines())
+        if re.search(r"^\s*(import subprocess|from subprocess)", t, re.M) or re.search(r"""[\[(]\s*['"]docker['"]""", t) or reads_local \
+           or re.search(r"secrets/(merchant-keys|[a-z_]+\.txt)", t) or ("rzp-payouts-clones" in t and p.name != "canon.py"):
+            offenders.append(paths.rel(p))
+    g("M8-15", "archkit never shells out, invokes docker or reads secrets/clones (compilation and queries are pure repository reads)", not offenders, {"offenders": offenders})
     # 16 HTTP service smoke
     try:
         from .service import serve

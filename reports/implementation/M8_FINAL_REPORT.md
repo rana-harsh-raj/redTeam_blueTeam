@@ -41,7 +41,7 @@ Label histogram by population:
 | PRODUCTION_STATE_UNKNOWN | 42 | 11 | 11 |
 | SOURCE_MAPPED_NOT_RUNNING | 1371 | 29 | 39 |
 
-No single "percent identical to production" number exists or is derivable from these tables.
+No single production-parity percentage exists or is derivable from these tables; each measure is bound to its population.
 
 ## Static vs runtime: what changed relative to the M7 artifact
 

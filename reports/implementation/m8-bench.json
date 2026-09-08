@@ -1,27 +1,27 @@
 {
  "rss_mb_start": 22.5,
- "snapshot_load_and_verify_ms": 21.345,
+ "snapshot_load_and_verify_ms": 21.738,
  "snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
  "snapshot_bytes": 3676737,
- "index_build_ms": 6.702,
+ "index_build_ms": 7.956,
  "rss_mb_after_index": 44.6,
  "queries_ms": {
   "node": 0.005,
-  "search": 0.808,
-  "service_card": 0.309,
-  "neighbors_d2": 0.22,
-  "shortest_path": 0.264,
+  "search": 0.798,
+  "service_card": 0.22,
+  "neighbors_d2": 0.208,
+  "shortest_path": 0.269,
   "paths_h6": 0.149,
-  "identity_reachability": 0.076,
-  "data_flow": 0.047,
-  "fidelity_gaps": 0.451,
-  "uncovered_trust_boundaries": 0.089,
-  "affected": 2.223,
-  "context_packet": 1.207,
-  "compare_self": 28.162
+  "identity_reachability": 0.072,
+  "data_flow": 0.046,
+  "fidelity_gaps": 0.406,
+  "uncovered_trust_boundaries": 0.081,
+  "affected": 1.651,
+  "context_packet": 1.001,
+  "compare_self": 26.352
  },
  "detail_namespace_loaded_after_canonical_queries": false,
- "s2p_detail_first_call_ms": 75.315,
- "s2p_detail_warm_ms": 0.415,
- "rss_mb_after_s2p_detail": 140.4
+ "s2p_detail_first_call_ms": 119.089,
+ "s2p_detail_warm_ms": 0.759,
+ "rss_mb_after_s2p_detail": 140.9
 }
