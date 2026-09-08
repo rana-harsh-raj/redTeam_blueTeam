@@ -1,6 +1,6 @@
 {
   "algorithm": "sha256",
-  "generated_at": "2026-09-08T09:42:21.105372+00:00",
+  "generated_at": "2026-09-08T09:42:22.307196+00:00",
   "self_excluded": "reports/implementation/M7_ARTIFACT_HASHES.json",
   "files": {
     "ENV2_COMPOSE/docker-compose.s2p.yml": "b68b23c17ddb7c76da644d7f6f11b4595a86323bd95294d605967373310173df",
@@ -128,7 +128,7 @@
     "reports/domain/parts/m7-ingress.json": "5933ac70295edf8ee5dbb3a8fa780cbd02e54441087d4136a11e322f585c1da8",
     "reports/domain/parts/zz-s2p-namespace.json": "d5309e59f0a069b3a41a06e28d8eedbd636de8013b88efd96493e4242059a265",
     "reports/implementation/M7_FIDELITY_MATRIX.md": "4f3c9e814d48a27b8036935e67c995dda7df557a7023a0de32e783a2b8f71aa4",
-    "reports/implementation/M7_FINAL_REPORT.md": "af585146feaef82ab0ad9a462d14af6f664fda20b067d1f628607eabe0d916a5",
+    "reports/implementation/M7_FINAL_REPORT.md": "b24cd22de8db7f541b382b1e2971d483addd03416df20f004ab92ea3d881deee",
     "reports/implementation/M7_INTEGRATION_TOPOLOGY.md": "924a38ae83b3fcab662d9c38b3dc392025b5b638582542819535c2f721da6653",
     "reports/implementation/M7_OWNERSHIP_INVESTIGATION.md": "e4508beaa1da1c01d2830de6bc1281254b16d22f2522ec781859174ae68f9c90",
     "reports/implementation/M7_PRODUCTION_UNKNOWNS.md": "cade684ac31c8c28084ad1fc5ea9c0c83321bcd7472a4004c03faa52d42bdf07",

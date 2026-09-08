@@ -1,10 +1,10 @@
 {
   "milestone": "M7",
-  "accepted": false,
-  "evaluated_at": "2026-09-08T09:33:31.232944+00:00",
-  "head": "409cbe043c7438bc7feae274da2244ac52ca46d9",
+  "accepted": true,
+  "evaluated_at": "2026-09-08T09:42:22.053097+00:00",
+  "head": "e9d1bfe59f4a1185bab16454f5ca43eeb7b76eee",
   "branch": "milestone-7-shared-ingress-integration",
-  "gates_passed": 20,
+  "gates_passed": 22,
   "gates_total": 22,
   "gates": [
     {
@@ -19,7 +19,7 @@
       "description": "Canonical branch has documented ancestry (M6 tag + S2P closure tag are ancestors; merge commit recorded)",
       "passed": true,
       "status": "PASS",
-      "detail": "{'branch': 'milestone-7-shared-ingress-integration', 'head': '409cbe043c', 'merge_commit': '7505783fc6', 'parents': ['020480e683', '4505e62dce']}"
+      "detail": "{'branch': 'milestone-7-shared-ingress-integration', 'head': 'e9d1bfe59f', 'merge_commit': '7505783fc6', 'parents': ['020480e683', '4505e62dce']}"
     },
     {
       "id": "M7-03",
@@ -38,9 +38,9 @@
     {
       "id": "M7-05",
       "description": "Source-to-Pay acceptance passes after integration (3 clean runs from the integrated branch)",
-      "passed": false,
-      "status": "FAIL",
-      "detail": "{'final_commit': '', 'clean_runs': None, 'failed': []}"
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'final_commit': '6fc53bd4e3', 'clean_runs': {'attempts': 3, 'fresh_final_checkout_verified': True, 'successes': 3}, 'failed': []}"
     },
     {
       "id": "M7-06",
@@ -138,7 +138,7 @@
       "description": "All runtime and report artifacts are hash-bound (M7_ARTIFACT_HASHES.json verifies)",
       "passed": true,
       "status": "PASS",
-      "detail": "{'count': 142, 'changed_or_missing': []}"
+      "detail": "{'count': 143, 'changed_or_missing': []}"
     },
     {
       "id": "M7-20",
@@ -157,13 +157,13 @@
     {
       "id": "M7-22",
       "description": "Final tracked tree is clean (excluding the acceptance + hash manifest this evaluation writes)",
-      "passed": false,
-      "status": "FAIL",
-      "detail": "{'dirty': ['M RED_LOOP/m6/clean_boot.py', ' M RED_LOOP/m7/clean_boot.py', ' M RED_LOOP/m7/refresh_demo.py', ' M reports/domain/FIDELITY_CLASSIFICATION.csv', ' M reports/domain/GRAPH_STATS.json', ' M reports/domain/PAYOUTS_FUNCTIONAL_GRAPH.edges.csv', ' M reports/domain/PAYOUTS_FUNCTIONAL_GRAPH.graphml', ' M reports/domain/PAYOUTS_FUNCTIONAL_GRAPH.json']}"
+      "passed": true,
+      "status": "PASS",
+      "detail": "{'dirty': []}"
     }
   ],
   "canonical_snapshot_sha256": "d88a26342e10eea4c18971f2765ecc2e05364d7716cc113733f7d76233709651",
   "s2p_closure_final_commit": "d87591000f359f1a58fc805c9667d84dc1871d09",
-  "artifact_manifest_sha256": "352a2aa370a11c4301b5a1a5dc4864e91e47a35e371f89156776ef26bf442ffd",
+  "artifact_manifest_sha256": "bf0cb60e30ca1cca1a17857af760dcb0292db5240c00a83436dacb11037d9689",
   "evaluation_scope": "22 hard gates over Git state, committed evidence and hash-bound runtime artifacts; runtime observations are replayed from the recorded evidence, not re-executed here (except the M6 acceptance re-evaluation and the docker network check)."
 }

@@ -2,9 +2,8 @@
 
 | | |
 |---|---|
-| Canonical branch / commit | `milestone-7-shared-ingress-integration` @ `6fc53bd4e3114077b8779b16d5ff5e63339975a7` (tracked tree DIRTY: A  reports/implementation/m7-s2p-post-integration-acceptance.json
-A  reports/implementation/m7-s2p-post-integration-isol) |
-| M7 acceptance | **20/22 gates, accepted=False** (`reports/implementation/M7_ACCEPTANCE.json`, evaluated 2026-09-08T09:33:31.232944+00:00) |
+| Canonical branch / commit | `milestone-7-shared-ingress-integration` @ `e9d1bfe59f4a1185bab16454f5ca43eeb7b76eee` (tracked tree DIRTY: M reports/implementation/M7_ACCEPTANCE.json) |
+| M7 acceptance | **22/22 gates, accepted=True** (`reports/implementation/M7_ACCEPTANCE.json`, evaluated 2026-09-08T09:42:22.053097+00:00) |
 | Source-to-Pay closure (Stage A) | isolated run 20/20 accepted=true at `d87591000f359f1a58fc805c9667d84dc1871d09`; historical 18/20 (accepted=false, gates 02/03) at `b6e4976f9baebfe770dfa30794f6f61ea08ccb1b` preserved; tag `s2p-acceptance-closure-m7` |
 | Source-to-Pay acceptance from the integrated branch | True (20/20 gates, clean runs 3/3) at `6fc53bd4e3114077b8779b16d5ff5e63339975a7` |
 | Graph | 3065 nodes / 5266 edges / 45 families; Source-to-Pay namespace 27994 nodes / 34744 edges referenced by hash, 930 projected |
@@ -17,7 +16,7 @@ A  reports/implementation/m7-s2p-post-integration-isol) |
 | Cross-domain journey | PASS (24/24); three clean connected runs: True (('s2p-connected-1', 'PASS'), ('s2p-connected-2', 'PASS'), ('s2p-connected-3', 'PASS')) |
 | Beneficiary ownership | **REPRODUCED_AND_RESOLVED_BY_MISSING_INGRESS_CHECK** — `M7_OWNERSHIP_INVESTIGATION.md`; M6 D-7 journey now PASS |
 | Production unknowns | PU-1..PU-10 in `M7_PRODUCTION_UNKNOWNS.md` (route selection, PS-direct ownership path, tag-back scoping, app auth mode, sessions/OTP, SourceUpdater transport, S2P deployment, batch approval hop, dashboard approve variant, purposes/permissions) |
-| Artifacts | `M7_ACCEPTANCE.json`, `M7_ARTIFACT_HASHES.json` (142 files), `M7_RUNBOOK.md`, `M7_FIDELITY_MATRIX.md`, `M7_OWNERSHIP_INVESTIGATION.md`, `M7_INTEGRATION_TOPOLOGY.md`, `M7_PRODUCTION_UNKNOWNS.md`, `reports/architecture/M7_CANONICAL_SNAPSHOT.json` |
+| Artifacts | `M7_ACCEPTANCE.json`, `M7_ARTIFACT_HASHES.json` (143 files), `M7_RUNBOOK.md`, `M7_FIDELITY_MATRIX.md`, `M7_OWNERSHIP_INVESTIGATION.md`, `M7_INTEGRATION_TOPOLOGY.md`, `M7_PRODUCTION_UNKNOWNS.md`, `reports/architecture/M7_CANONICAL_SNAPSHOT.json` |
 
 ## What was built
 
@@ -99,7 +98,7 @@ A  reports/implementation/m7-s2p-post-integration-isol) |
 | M7-02 | PASS | Canonical branch has documented ancestry (M6 tag + S2P closure tag are ancestors; merge commit recorded) |
 | M7-03 | PASS | Source-to-Pay has a new isolated acceptance (20/20) and the historical 18/20 result is preserved verbatim |
 | M7-04 | PASS | M6 acceptance passes after integration (re-evaluated now) |
-| M7-05 | FAIL | Source-to-Pay acceptance passes after integration (3 clean runs from the integrated branch) |
+| M7-05 | PASS | Source-to-Pay acceptance passes after integration (3 clean runs from the integrated branch) |
 | M7-06 | PASS | Shared ingress boots from clean state (empty volumes + fresh secrets; api-ingress healthy with a passport sign |
 | M7-07 | PASS | Shared ingress contract inventory is source-evidenced (every served route has Route.php evidence; pinned api s |
 | M7-08 | PASS | No selected boundary is implemented in both the shared ingress and the old Source-to-Pay/M6 replacement withou |
@@ -116,7 +115,7 @@ A  reports/implementation/m7-s2p-post-integration-isol) |
 | M7-19 | PASS | All runtime and report artifacts are hash-bound (M7_ARTIFACT_HASHES.json verifies) |
 | M7-20 | PASS | No production connection, credential or customer data (arena network internal, gitleaks 0 findings on M7 sourc |
 | M7-21 | PASS | No unsupported production-fidelity claim (no parity phrases in the M7 reports; ownership classification is one |
-| M7-22 | FAIL | Final tracked tree is clean (excluding the acceptance + hash manifest this evaluation writes) |
+| M7-22 | PASS | Final tracked tree is clean (excluding the acceptance + hash manifest this evaluation writes) |
 
 Secret scan of the M7 sources and reports: gitleaks exit 0, 0 findings. Arena networks are `internal: true`;
 no production host, credential or customer data is used anywhere in M7.
