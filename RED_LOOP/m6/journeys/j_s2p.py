@@ -137,6 +137,19 @@ def pay_request(m, tax_id, uid, otp, token, amount=12500):
             "queue_if_low_balance": False, "amount": amount}
 
 
+def advance_to_next_month(ctx):
+    """The source clock (common.TimeNow injection, D-CLOCK) lives in the running vp-source process and only moves
+    forward; the accrual month is the clock's month, so remittance needs the first day of the FOLLOWING month."""
+    import datetime
+    st, h = s2p_http(ctx, "GET", "/health")
+    cur = datetime.datetime.strptime((h or {}).get("synthetic_clock", "2026-08-20T06:30:00Z"), "%Y-%m-%dT%H:%M:%SZ")
+    nxt = datetime.datetime(cur.year + (1 if cur.month == 12 else 0), 1 if cur.month == 12 else cur.month + 1, 1)
+    unix = int((nxt - datetime.datetime(1970, 1, 1)).total_seconds())
+    st, adv = s2p_http(ctx, "POST", "/_replica/clock", {"unix": unix})
+    ctx.ck("source_clock_advanced_past_the_accrual_month", st == 200, {"from": (h or {}).get("synthetic_clock"), "to": nxt.isoformat(), "status": st, "body": adv})
+    return unix
+
+
 def wait_for(fn, timeout=60, interval=1.0):
     return F.wait_until(fn, timeout=timeout, interval=interval)
 
@@ -177,8 +190,7 @@ def connected_journey(ctx, restart_ingress_between_pay_and_callback=False):
     pay = pay_request(m, tax_id, uid, otp.get("otp", ""), otp.get("token", ""))
     st, cur = s2p_http(ctx, "POST", "/_replica/pay", pay)
     ctx.ck("current_month_pay_is_rejected_by_the_source_month_guard", st == 422, {"status": st, "body": cur})
-    st, adv = s2p_http(ctx, "POST", "/_replica/clock", {"unix": 1788220800})
-    ctx.ck("source_clock_advanced_to_september", st == 200, {"status": st, "body": adv})
+    advance_to_next_month(ctx)
     # a fresh OTP: the source consumed the first one when it verified before the month guard? (it verifies inside Pay)
     otp = I.otp_for(ctx, m, uid, action="tax_payment")
     pay = pay_request(m, tax_id, uid, otp.get("otp", ""), otp.get("token", ""))
@@ -237,9 +249,18 @@ def s2p_failure(ctx):
     other = ctx.pool.get(I.VICTIM)
     uid = "ARENAS2PUSER02"
     otp = I.otp_for(ctx, m, uid, action="tax_payment")
+    rc, tax_before, _ = ctx.a.payouts_sql("SELECT count(*) FROM payouts WHERE merchant_id IN ('%s','%s') AND purpose='rzp_tax_pay'" % (m["merchant_id"], other["merchant_id"]), note="tax payouts before the negative controls")
     st, before, _ = I.ing(ctx, "GET", "/v1/contacts_internal?type=rzp_tax_pay", basic=I.app_basic("vendor_payments"), headers={"X-Razorpay-Account": other["merchant_id"]}, note="other merchant has no tax contact")
     ctx.ck("the_other_merchant_has_no_tax_contact", st == 200 and (before or {}).get("count") == 0, before)
-    pay = pay_request(other, "txpy_00000000000000", uid, otp.get("otp", ""), otp.get("token", ""))
+    # an accrual for the other merchant (the tag-back target is an id-only update in the pinned source, so a synthetic
+    # originating payout id is enough here), then the month boundary, then Pay with NO rzp_tax_pay contact registered
+    committed = kafka_committed(ctx)
+    s2p_publish(ctx, tds_entry(other, "pout_ARENA000NOCON1", amount=4200), "m7neg-" + other["merchant_id"].lower())
+    wait_for(lambda: kafka_committed(ctx) >= committed + 1, timeout=60)
+    rows = wait_for(lambda: s2p_sql(ctx, "SELECT id FROM tax_payments WHERE merchant_id='%s'" % other["merchant_id"]) or None, timeout=30) or []
+    ctx.ck("other_merchant_has_a_tax_payment_to_remit", len(rows) == 1, rows)
+    advance_to_next_month(ctx)
+    pay = pay_request(other, rows[0]["id"] if rows else "txpy_00000000000000", uid, otp.get("otp", ""), otp.get("token", ""))
     st, denied = s2p_http(ctx, "POST", "/_replica/pay", pay)
     ctx.ck("pay_without_a_tax_contact_is_rejected_by_the_source", st == 422 and "contact" in json.dumps(denied).lower(), {"status": st, "body": denied})
     contact, fa = register_tax_contact(ctx, m)
@@ -254,8 +275,8 @@ def s2p_failure(ctx):
     ctx.ck("merchant_credential_is_refused_on_the_internal_contact_route", st == 400, {"status": st, "body": r})
     st, r, _ = I.ing(ctx, "POST", "/v1/internalContactPayout", body, basic=I.app_basic("vendor_payments"), headers={"X-Razorpay-Account": m["merchant_id"]}, note="no idempotency key")
     ctx.ck("missing_idempotency_key_is_refused_for_vendor_payments", st == 400 and "Idempotency key is missing" in json.dumps(r), {"status": st, "body": r})
-    rc, cnt, _ = ctx.a.payouts_sql("SELECT count(*) FROM payouts WHERE merchant_id IN ('%s','%s') AND purpose='rzp_tax_pay'" % (m["merchant_id"], other["merchant_id"]), note="no tax payouts minted")
-    ctx.ck("no_tax_payout_was_minted_by_any_negative_control", (cnt or "").strip() == "0", cnt)
+    rc, cnt, _ = ctx.a.payouts_sql("SELECT count(*) FROM payouts WHERE merchant_id IN ('%s','%s') AND purpose='rzp_tax_pay'" % (m["merchant_id"], other["merchant_id"]), note="tax payouts after the negative controls")
+    ctx.ck("no_tax_payout_was_minted_by_any_negative_control", (cnt or "").strip() == (tax_before or "").strip(), {"before": tax_before, "after": cnt})
 
 
 @journey("cross-domain-s2p", "idempotency", priority="P0", profile=S2P,

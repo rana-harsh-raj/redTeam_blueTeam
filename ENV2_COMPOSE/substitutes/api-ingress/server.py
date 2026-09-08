@@ -1135,7 +1135,7 @@ class Handler(BaseHTTPRequestHandler):
             with _DB_LOCK, db() as c:
                 c.execute("INSERT OR REPLACE INTO idempotency(scope,key,route,request_hash,status,response,request_id,created_at) VALUES(?,?,?,?,?,?,?,?)",
                           (idem_scope, idem_key, r.name, request_hash(ctx.body), st, raw.decode("utf-8", "replace"), ctx.request_id, _now()))
-        audit(ctx.request_id, ctx.method, ctx.path, r.name, ident, tenant, url, st if url else None, st,
+        audit(ctx.request_id, ctx.method, ctx.path, r.name, ident, ctx.tenant, url, st if url else None, st,
               "served" if st < 400 else "denied_or_failed", {"upstream_body": raw.decode("utf-8", "replace")[:300]} if st >= 400 else None)
         return st, raw, ctype
 

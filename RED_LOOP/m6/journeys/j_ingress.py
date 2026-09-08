@@ -320,7 +320,7 @@ def ingress_batch(ctx):
     ctx.ck("batch_sim_targets_the_shared_ingress", "api-ingress" in json.dumps(health), health)
     ctx.a.mozart(m["merchant_id"], "success")
     rows = [bulk_client.payout_row(m["account_number"], 1100 + i, m["fund_account_id"], narration="m7 batch %d" % i) for i in range(2)]
-    batch = bulk_client.create_payout_batch(rows, m["merchant_id"], creator_id="ARENAUSERBATCH1")
+    batch = bulk_client.create_payout_batch(rows, m["merchant_id"], creator_id="ARENAUSER00B01")
     bid = batch.get("id") if isinstance(batch, dict) else batch
     ctx.ev["batch"] = batch
     ctx.ck("batch_created", bool(bid), batch)
