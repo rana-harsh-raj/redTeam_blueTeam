@@ -1,19 +1,19 @@
 # M11 — Critical Trust-Path Fidelity Upgrade — Final Report
 
-Generated 2026-09-09T19:19:46Z by scripts/m11/final_report.py from the artifacts named below. Branch `milestone-11-trust-path-fidelity` from tag `campaign-m10-control-plane`; git head `2fbbf2d95f15`.
+Generated 2026-09-09T19:20:08Z by scripts/m11/final_report.py from the artifacts named below. Branch `milestone-11-trust-path-fidelity` from tag `campaign-m10-control-plane`; git head `534a58c309f7`.
 
 ## Acceptance
 
 | accepted | gates | evaluated | snapshot | record |
 |---|---|---|---|---|
-| **False** | 16/17 | 2026-09-09T19:19:46.189107+00:00 | `8a52779f05275ea3` | reports/implementation/M11_ACCEPTANCE.json |
+| **True** | 17/17 | 2026-09-09T19:20:08.932880+00:00 | `8a52779f05275ea3` | reports/implementation/M11_ACCEPTANCE.json |
 
 - PASS **M11-01** real edge gateway (razorpay/edge Kong + terraform-kong prod-api routes) is the DEFAULT ingress of every derived profile
 - PASS **M11-02** highest feasible monolith auth path: boot attempt recorded with exact blockers; the monolith replacement verifies the gateway passport (kid edgev2) end to end
 - PASS **M11-03** real Shield (razorpay/shield, APP_MODE=rzpxprod) replaces shield-stub and decides payouts
 - PASS **M11-04** banking-accounts real where feasible (Direct merchants); account-service blocked with an exact reason
 - PASS **M11-05** real Workflow service (razorpay/workflows + Cadence) on LOCAL infrastructure drives maker-checker
-- FAIL **M11-06** every remaining substitute in the real variant carries a precise external blocker
+- PASS **M11-06** every remaining substitute in the real variant carries a precise external blocker
 - PASS **M11-07** canonical journey suite passes on the real variant (0 FAIL; every BLOCKED names its dependency)
 - PASS **M11-08** differential run (same suite on the substitute variant) exists and every difference is investigated (0 OPEN)
 - PASS **M11-09** snapshot, fidelity labels, recipes (pinned SHAs), locks and profiles updated: current snapshot verifies and carries the trust-path recipes

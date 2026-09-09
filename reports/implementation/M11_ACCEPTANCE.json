@@ -1,9 +1,9 @@
 {
  "milestone": "M11",
  "schema": "m11.acceptance.v1",
- "evaluated_at": "2026-09-09T19:19:46.189107+00:00",
- "accepted": false,
- "gates_passed": 16,
+ "evaluated_at": "2026-09-09T19:20:08.932880+00:00",
+ "accepted": true,
+ "gates_passed": 17,
  "gates_total": 17,
  "gates": [
   {
@@ -68,7 +68,7 @@
   {
    "id": "M11-06",
    "desc": "every remaining substitute in the real variant carries a precise external blocker",
-   "pass": false,
+   "pass": true,
    "detail": {
     "remaining": [
      "api-ingress",
@@ -87,9 +87,7 @@
      "stork-capture",
      "xas-sim"
     ],
-    "unlisted": [
-     "mysql-apidb-stub"
-    ]
+    "unlisted": []
    }
   },
   {
@@ -255,19 +253,19 @@
    "detail": {
     "twinfactory": {
      "rc": 0,
-     "tail": "----------------------------------------------------------------------\nRan 33 tests in 3.196s\n\nOK (skipped=1)\n"
+     "tail": "----------------------------------------------------------------------\nRan 33 tests in 3.212s\n\nOK (skipped=1)\n"
     },
     "archkit": {
      "rc": 0,
-     "tail": "aning up <HTTPError 403: 'Forbidden'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n----------------------------------------------------------------------\nRan 25 tests in 2.499s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 65465)>\n"
+     "tail": "aning up <HTTPError 403: 'Forbidden'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n----------------------------------------------------------------------\nRan 25 tests in 2.460s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 49213)>\n"
     },
     "api-ingress-contract": {
      "rc": 0,
-     "tail": "rror 401: 'Unauthorized'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n...........\n----------------------------------------------------------------------\nRan 13 tests in 0.861s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 65473)>\n"
+     "tail": "rror 401: 'Unauthorized'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n...........\n----------------------------------------------------------------------\nRan 13 tests in 0.880s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 49223)>\n"
     },
     "controlplane": {
      "rc": 0,
-     "tail": "----------------------------------------------------------------------\nRan 37 tests in 0.702s\n\nOK\n"
+     "tail": "----------------------------------------------------------------------\nRan 37 tests in 0.596s\n\nOK\n"
     }
    }
   },
@@ -652,5 +650,5 @@
    "journey:trust-path/payouts_ext_direct"
   ]
  },
- "git_head": "2fbbf2d95f153e4d396d7f1ee793c0bbfbf53885"
+ "git_head": "534a58c309f737c60bf7b44fdc92836ca9f135e3"
 }
