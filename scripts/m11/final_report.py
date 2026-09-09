@@ -146,9 +146,15 @@ def main():
         for lab in sorted(set(b) | set(c)):
             A("| %s | %s | %s | %s |" % (pop, lab, b.get(lab, 0), c.get(lab, 0)))
     A("")
-    A("Runtime profile (snapshot-derived): real variant `full` = %s services + %s jobs; substitute variant `full` = %s services + %s jobs. In the real variant kong-lite, shield-stub, bankingaccounts-stub and workflow-engine are not started; edge-kong, shield-web, banking-accounts-api, workflows-api, workflows-worker, cadence and their datastores are." % (
-        (real.get("profile") and ((jload(f.idir(real["instance_id"]) / "profile.json", {}).get("services") and len(jload(f.idir(real["instance_id"]) / "profile.json", {}).get("services"))) or "?")), len(jload(f.idir(real["instance_id"]) / "profile.json", {}).get("jobs") or []) if real else "?",
-        len(jload(f.idir(sub["instance_id"]) / "profile.json", {}).get("services") or []) if sub else "?", len(jload(f.idir(sub["instance_id"]) / "profile.json", {}).get("jobs") or []) if sub else "?"))
+    def profile_counts(variant):
+        r = subprocess.run([sys.executable, "-m", "twinfactory", "profile", "full", "--trust-path", variant, "--json"], capture_output=True, text=True, cwd=REPO, timeout=600)
+        try:
+            d = json.loads(r.stdout[r.stdout.index("{"):])
+            return len(d.get("services") or []), len(d.get("jobs") or [])
+        except (ValueError, IndexError):
+            return "?", "?"
+    rp, sp = profile_counts("real"), profile_counts("substitute")
+    A("Runtime profile (snapshot-derived, `full`): real variant = %s services + %s one-shot jobs; substitute variant = %s services + %s jobs. In the real variant kong-lite, shield-stub, bankingaccounts-stub and workflow-engine are not started; edge-kong, shield-web, banking-accounts-api, workflows-api, workflows-worker, cadence and their datastores are." % (rp[0], rp[1], sp[0], sp[1]))
     A("")
     A("Domain graph (reports/domain/GRAPH_STATS.json): %s nodes, fidelity histogram %s." % (graph.get("nodes"), json.dumps(graph.get("fidelity_histogram"))))
     A("")
@@ -178,14 +184,14 @@ def main():
     A("")
     A("## Measured resources (local)")
     A("")
-    A("| instance | label | VM | containers | CPU%% sum | mem MiB sum | VM root used GiB | images GiB | build s | boot s |")
+    A("| instance | label | VM | containers | CPU% sum | mem MiB sum | docker data used GiB | image cache GiB | build s | boot s |")
     A("|---|---|---|---|---|---|---|---|---|---|")
     for k, r in resources.items():
         A("| %s | %s | %s | %s | %s | %s | %s | %s | %s | %s |" % (r.get("instance_id"), r.get("label"), json.dumps((r.get("vm") or {}).get("sizing")), (r.get("containers") or {}).get("count"), (r.get("containers") or {}).get("cpu_pct_sum"),
-                                                          (r.get("containers") or {}).get("mem_mib_sum"), ((r.get("disk") or {}).get("vm_root") or {}).get("used_gib"), (r.get("images") or {}).get("total_gib"),
+                                                          (r.get("containers") or {}).get("mem_mib_sum"), ((r.get("disk") or {}).get("vm_docker_data") or (r.get("disk") or {}).get("vm_root") or {}).get("used_gib"), (r.get("images") or {}).get("total_gib"),
                                                           (r.get("timings") or {}).get("build_secs"), (r.get("timings") or {}).get("boot_secs")))
     A("")
-    A("Trust-path images (MiB): %s" % json.dumps((next(iter(resources.values()), {}).get("images") or {}).get("trust_path_images")))
+    A("Trust-path images (MiB): %s. Boot time of a full real-variant boot from empty volumes: see the clean-checkout record below (the m11-real row's boot figure is the resumed stage only)." % json.dumps((next(iter(resources.values()), {}).get("images") or {}).get("trust_path_images")))
     A("")
     A("## Monolith boot attempt")
     A("")

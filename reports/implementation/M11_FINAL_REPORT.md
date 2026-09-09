@@ -1,6 +1,6 @@
 # M11 — Critical Trust-Path Fidelity Upgrade — Final Report
 
-Generated 2026-09-09T19:20:08Z by scripts/m11/final_report.py from the artifacts named below. Branch `milestone-11-trust-path-fidelity` from tag `campaign-m10-control-plane`; git head `534a58c309f7`.
+Generated 2026-09-09T19:23:10Z by scripts/m11/final_report.py from the artifacts named below. Branch `milestone-11-trust-path-fidelity` from tag `campaign-m10-control-plane`; git head `8e4b45a00798`.
 
 ## Acceptance
 
@@ -71,7 +71,7 @@ Placement: everything local (this machine: 15 CPU / 24.0 GiB; twin VM {"cpus": 4
 | all_nodes | PRODUCTION_STATE_UNKNOWN | 42 | 42 |
 | all_nodes | SOURCE_MAPPED_NOT_RUNNING | 1371 | 1368 |
 
-Runtime profile (snapshot-derived): real variant `full` = None services + ? jobs; substitute variant `full` = ? services + ? jobs. In the real variant kong-lite, shield-stub, bankingaccounts-stub and workflow-engine are not started; edge-kong, shield-web, banking-accounts-api, workflows-api, workflows-worker, cadence and their datastores are.
+Runtime profile (snapshot-derived, `full`): real variant = 105 services + 13 one-shot jobs; substitute variant = 98 services + 5 jobs. In the real variant kong-lite, shield-stub, bankingaccounts-stub and workflow-engine are not started; edge-kong, shield-web, banking-accounts-api, workflows-api, workflows-worker, cadence and their datastores are.
 
 Domain graph (reports/domain/GRAPH_STATS.json): 3108 nodes, fidelity histogram {"graph_only": 466, "real_source_running": 839, "real_source_mapped_not_running": 1369, "high_fidelity_replacement": 355, "behavioural_placeholder": 77, "blocked_missing_access": 2}.
 
@@ -109,12 +109,12 @@ The 14 trust-path journeys (RED_LOOP/m6/journeys/j_trustpath.py) cover: merchant
 
 ## Measured resources (local)
 
-| instance | label | VM | containers | CPU%% sum | mem MiB sum | VM root used GiB | images GiB | build s | boot s |
+| instance | label | VM | containers | CPU% sum | mem MiB sum | docker data used GiB | image cache GiB | build s | boot s |
 |---|---|---|---|---|---|---|---|---|---|
-| m11-real | real variant, canonical suite running | {"cpus": 4, "disk_gib": 40, "memory_gib": 10} | 99 | 137.7 | 7204.4 | 0.9 | 2.66 | 59.7 | 32.1 |
-| m11-sub | substitute variant, canonical suite running | {"cpus": 4, "disk_gib": 40, "memory_gib": 8} | 92 | 171.7 | 5072.7 | 0.8 | 2.14 | 64.8 | 65.6 |
+| m11-real | real variant, canonical suite running | {"cpus": 4, "disk_gib": 40, "memory_gib": 10} | 99 | 137.7 | 7204.4 | 11.2 | 2.66 | 59.7 | 32.1 |
+| m11-sub | substitute variant, canonical suite running | {"cpus": 4, "disk_gib": 40, "memory_gib": 8} | 92 | 171.7 | 5072.7 | 8.1 | 2.14 | 64.8 | 65.6 |
 
-Trust-path images (MiB): {"rzp-arena/banking-accounts:v1-candidate": 42, "ubercadence/server:v1.4.1-auto-setup": 181, "rzp-arena/edge-kong:v1-candidate": 312, "rzp-arena/shield:v1-candidate": 73, "rzp-arena/workflows:v1-candidate": 30}
+Trust-path images (MiB): {"rzp-arena/banking-accounts:v1-candidate": 42, "ubercadence/server:v1.4.1-auto-setup": 181, "rzp-arena/edge-kong:v1-candidate": 312, "rzp-arena/shield:v1-candidate": 73, "rzp-arena/workflows:v1-candidate": 30}. Boot time of a full real-variant boot from empty volumes: see the clean-checkout record below (the m11-real row's boot figure is the resumed stage only).
 
 ## Monolith boot attempt
 
