@@ -36,6 +36,13 @@ def load_build_graph():
     return _mod("m6_build_graph", paths.REPO / "scripts/domain/build_graph.py")
 
 
+# M11: promoted trust-path services and their datastores in the overlay compose file -> graph nodes
+M11_SVC_MAP = {"edge-kong": "svc:edge-kong", "shield-web": "svc:shield", "banking-accounts-api": "svc:banking-accounts",
+               "workflows-api": "svc:workflows", "workflows-worker": "svc:workflows-workers",
+               "postgres-kong": "db:edge/postgres", "mysql-shield": "db:shield/mysql", "redis-shield": "db:shield/redis",
+               "mysql-bas": "db:banking-accounts/mysql", "mysql-workflows": "db:workflows/mysql", "cadence": "db:workflows/cadence"}
+
+
 def load_parts(parts_dir=paths.PARTS, exclude=("zz-runtime-overlay", "m6-journeys")):
     parts = []
     inputs = []
@@ -55,12 +62,20 @@ def compose_definition_part(graph_node_ids, compose_path=paths.COMPOSE, s2p_path
     criticality = criticality or {}
     import yaml
     ro = _mod("m6_runtime_overlay", paths.REPO / "scripts/domain/runtime_overlay.py")
-    comp = yaml.safe_load(compose_path.read_text())["services"]
+    comp = dict(yaml.safe_load(compose_path.read_text())["services"])
+    compose_file_of = {s: "ENV2_COMPOSE/docker-compose.yml" for s in comp}
+    if paths.COMPOSE_M11.is_file():   # M11: the real trust-path overlay is part of the canonical definition
+        for s, spec in (yaml.safe_load(paths.COMPOSE_M11.read_text()).get("services") or {}).items():
+            if s not in comp and set(spec.get("profiles") or []) & {"trustpath", "trustpath-migrations"}:
+                comp[s] = spec
+                compose_file_of[s] = "ENV2_COMPOSE/docker-compose.m11.yml"
     svc_map = dict(ro.SVC_MAP)
     svc_map.update({"api-ingress": "sub:api-ingress", "xas-sink": "sub:xas-sink", "mozart-mock": "sub:mozart-mock", "verifier": "sub:verifier"})  # M7 additions / lane-declared subs
+    svc_map.update(M11_SVC_MAP)
     s2p = yaml.safe_load(s2p_path.read_text())["services"] if s2p_path.is_file() else {}
     nodes, edges = [], []
-    core_images = ("rzp-arena/payouts:", "rzp-arena/ledger:", "rzp-arena/fts:", "rzp-arena/cfa:", "rzp-arena/xbalances:")
+    core_images = ("rzp-arena/payouts:", "rzp-arena/ledger:", "rzp-arena/fts:", "rzp-arena/cfa:", "rzp-arena/xbalances:",
+                   "rzp-arena/edge-kong:", "rzp-arena/shield:", "rzp-arena/banking-accounts:", "rzp-arena/workflows:")   # M11 promoted
     for svc, spec in sorted(comp.items()):
         env = spec.get("environment") or {}
         if isinstance(env, list):
@@ -89,16 +104,22 @@ def compose_definition_part(graph_node_ids, compose_path=paths.COMPOSE, s2p_path
         image = str(spec.get("image") or ("build:" + str((spec.get("build") or {}).get("context", "")) if spec.get("build") else ""))
         profiles = sorted(spec.get("profiles") or [])
         for nid in hit:
-            kind = {"svc": "service", "sub": "substitute", "worker": "worker"}[nid.split(":")[0]]
+            kind = {"svc": "service", "sub": "substitute", "worker": "worker", "db": "datastore"}[nid.split(":")[0]]
             n = {"id": nid, "kind": kind, "criticality": criticality.get(nid, "P0"), "confidence": "confirmed", "owner_domain": "twin",
                  "twin_ref": "compose:" + svc, "compose_service": svc, "profile": profiles[0] if profiles else None,
-                 "runtime_definition": {"compose_file": "ENV2_COMPOSE/docker-compose.yml", "service": svc, "profiles": profiles,
+                 "runtime_definition": {"compose_file": compose_file_of.get(svc, "ENV2_COMPOSE/docker-compose.yml"), "service": svc, "profiles": profiles,
                                         "image": image, "one_shot": svc == "ledger-scheduler"}}
             n["label"] = ro.NEW_SUBS.get(svc, {}).get("label", nid)
             if kind in ("service", "worker") and image.startswith(core_images):
                 n["fidelity"] = "real_source_running"
                 n["fidelity_basis"] = "compose_definition"
                 n["fidelity_evidence"] = "real pinned binary defined to run in the canonical runtime: compose service %s (image %s, profile %s)" % (svc, image.split(":")[0], ",".join(profiles))
+                if svc == "shield-web":
+                    n["fidelity_note"] = "real source ADAPTED: one unavailable external SDK module (fingerprint-sdk, 404) stubbed at build time; everything else is the pinned repository (ENV2_COMPOSE/build/m11/build-shield.sh)"
+            elif kind == "datastore" and compose_file_of.get(svc, "").endswith("m11.yml"):
+                n["fidelity"] = "real_source_running"
+                n["fidelity_basis"] = "compose_definition"
+                n["fidelity_evidence"] = "real datastore engine defined for the promoted service: compose service %s (image %s)" % (svc, image)
             elif svc in ro.NEW_SUBS:
                 n["fidelity"] = "high_fidelity_replacement"
                 n["fidelity_basis"] = "contract_declaration"

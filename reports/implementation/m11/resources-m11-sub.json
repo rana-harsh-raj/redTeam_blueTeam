@@ -1,0 +1,165 @@
+{
+ "kind": "m11_resources",
+ "instance_id": "m11-sub",
+ "label": "substitute variant, canonical suite running",
+ "measured_at": "2026-09-09T17:34:40.425474+00:00",
+ "placement": "local (this machine)",
+ "remote": {
+  "used": false,
+  "reason": "remote compute not available in this session (gcloud needs an interactive re-auth); every service fits the local machine"
+ },
+ "host": {
+  "cpus": 15,
+  "memory_gib": 24.0,
+  "os": "26.6.1"
+ },
+ "vm": {
+  "name": "twin-m11-sub",
+  "status": "Running",
+  "arch": "aarch64",
+  "cpus": 4,
+  "runtime": "docker",
+  "memory_gib": 8.0,
+  "disk_gib": 40.0,
+  "sizing": {
+   "cpus": 4,
+   "disk_gib": 40,
+   "memory_gib": 8
+  },
+  "host_process_rss_mib": 75.6
+ },
+ "containers": {
+  "count": 92,
+  "cpu_pct_sum": 171.7,
+  "mem_mib_sum": 5072.7,
+  "top_memory": [
+   {
+    "name": "twin_m11_sub-localstack-1",
+    "cpu_pct": 10.55,
+    "mem_mib": 429.8
+   },
+   {
+    "name": "twin_m11_sub-mysql-payouts-1",
+    "cpu_pct": 8.63,
+    "mem_mib": 400.4
+   },
+   {
+    "name": "twin_m11_sub-mysql-fts-1",
+    "cpu_pct": 4.81,
+    "mem_mib": 397.2
+   },
+   {
+    "name": "twin_m11_sub-mysql-apidb-stub-1",
+    "cpu_pct": 0.55,
+    "mem_mib": 372.6
+   },
+   {
+    "name": "twin_m11_sub-mysql-xbalances-1",
+    "cpu_pct": 2.1,
+    "mem_mib": 369.8
+   },
+   {
+    "name": "twin_m11_sub-kafka-1",
+    "cpu_pct": 2.7,
+    "mem_mib": 336.6
+   },
+   {
+    "name": "twin_m11_sub-payouts-api-1",
+    "cpu_pct": 12.11,
+    "mem_mib": 141.2
+   },
+   {
+    "name": "twin_m11_sub-mongo-cfa-1",
+    "cpu_pct": 12.87,
+    "mem_mib": 85.0
+   },
+   {
+    "name": "twin_m11_sub-ledger-worker-1",
+    "cpu_pct": 0.52,
+    "mem_mib": 60.2
+   },
+   {
+    "name": "twin_m11_sub-postgres-ledger-1",
+    "cpu_pct": 3.2,
+    "mem_mib": 58.6
+   },
+   {
+    "name": "twin_m11_sub-payouts-worker-payout-update-failure-handling-1",
+    "cpu_pct": 0.18,
+    "mem_mib": 47.9
+   },
+   {
+    "name": "twin_m11_sub-payouts-worker-fts-async-processing-1",
+    "cpu_pct": 1.21,
+    "mem_mib": 46.5
+   }
+  ],
+  "trust_path": [
+   {
+    "name": "twin_m11_sub-shield-stub-1",
+    "cpu_pct": 1.29,
+    "mem_mib": 11.7
+   }
+  ]
+ },
+ "disk": {
+  "docker_system_df": [
+   {
+    "Active": "29",
+    "Reclaimable": "87.52kB (0%)",
+    "Size": "7.379GB",
+    "TotalCount": "30",
+    "Type": "Images"
+   },
+   {
+    "Active": "92",
+    "Reclaimable": "12.29kB (0%)",
+    "Size": "1.823MB",
+    "TotalCount": "93",
+    "Type": "Containers"
+   },
+   {
+    "Active": "23",
+    "Reclaimable": "109.6kB (0%)",
+    "Size": "2.337GB",
+    "TotalCount": "29",
+    "Type": "Local Volumes"
+   },
+   {
+    "Active": "0",
+    "Reclaimable": "188.4kB",
+    "Size": "22.26MB",
+    "TotalCount": "31",
+    "Type": "Build Cache"
+   }
+  ],
+  "vm_root": {
+   "mount": "/",
+   "size_gib": 18.3,
+   "used_gib": 0.8,
+   "avail_gib": 17.5
+  },
+  "vm_docker_data": {
+   "mount": "/var/lib/docker",
+   "size_gib": 39.1,
+   "used_gib": 8.1,
+   "avail_gib": 29.0
+  }
+ },
+ "images": {
+  "count": 29,
+  "total_gib": 2.14,
+  "trust_path_images": {
+   "rzp-arena/kong-lite:v1-candidate": 20,
+   "rzp-arena/shield-stub:v1-candidate": 20
+  }
+ },
+ "timings": {
+  "boot_secs": 65.6,
+  "build_secs": 64.8,
+  "create_secs": 0.4,
+  "generate_secs": 2.2,
+  "images_secs": 38.3,
+  "provision_secs": 23.5
+ }
+}

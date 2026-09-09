@@ -423,7 +423,9 @@ def shared_restart(ctx):
                      timeout=45, interval=2)
     ctx.ck("an_fts_transfer_and_attempt_exist_before_the_restart", bool(t), t)
 
-    services = list(F.Arena.RESTARTABLE)
+    # the M6 worker trio (+ the shared ingress, M7); the M11 trust-path services on the allow-list (edge-kong, shield-web)
+    # have their own journey (trust-path/restart_cache_invalidation) and are absent from the substitute variant
+    services = [s for s in F.Arena.RESTARTABLE if s not in ("edge-kong", "shield-web")]
     rec = ctx.a.restart_workers(services)
     ctx.ev["container_restarts"] = rec
     ctx.ck("all_three_delegated_worker_containers_actually_restarted",

@@ -160,6 +160,16 @@ def dashboard_headers(ctx, role="owner"):
 
 
 def _cancel_as_dashboard(ctx, pid, remarks="m6 dashboard cancel"):
+    if F.TRUST["real_gateway"]:
+        # M11: the REAL edge gateway carries no arena control (production dashboard traffic reaches the monolith through the
+        # api-dashboard Kong service + dashboard app, neither granted); the dashboard identity is BasicAuth::proxyAuth at the
+        # monolith replacement -- mint a session for a user of this merchant and cancel on Route.php payout_cancel.
+        uid, tok, st0 = ctx.a.ingress_session(ctx.m["merchant_id"])
+        if st0 != 200 or not tok:
+            return st0, {"error": {"description": "dashboard session could not be minted at api-ingress"}}
+        st, body = ctx.a.ingress("POST", "/v1/payouts/pout_%s/cancel" % F.bare(pid), {"remarks": remarks}, basic="dashboard:" + tok,
+                                 note="dashboard (proxy-auth) cancel at the monolith replacement (real gateway variant)")
+        return st, body
     st, txt = ctx.a.kong("POST", "/v1/payouts/cancel_payout/" + F.bare(pid), ctx.auth,
                          {"remarks": remarks}, dashboard_headers(ctx),
                          note="dashboard (proxy-auth) cancel via the kong-lite arena control")

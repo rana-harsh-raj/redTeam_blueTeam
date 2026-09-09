@@ -3,10 +3,11 @@ graph LR
   db_arena_kafka["db:arena/kafka\nreal_source_running"]
   db_arena_localstack["db:arena/localstack\nreal_source_running"]
   db_arena_redis["db:arena/redis\nreal_source_running"]
-  db_banking_accounts_mysql["db:banking-accounts/mysql\ngraph_only"]
+  db_banking_accounts_mysql["db:banking-accounts/mysql\nreal_source_running"]
   db_batch_postgres["db:batch/postgres\ngraph_only"]
   db_cfa_mongo["db:cfa/mongo\nreal_source_running"]
   db_cfa_mongodb["db:cfa/mongodb\nreal_source_running"]
+  db_edge_postgres["db:edge/postgres\nreal_source_running"]
   db_fts_mysql["db:fts/mysql\nreal_source_running"]
   db_fts_redis["db:fts/redis\nreal_source_running"]
   db_ledger_postgres["db:ledger/postgres\nreal_source_running"]
@@ -80,8 +81,11 @@ graph LR
   db_s2p_s2p_vendor_experience_database_schema_f4cbd4ee4b1684ba["db:s2p/s2p-vendor-experience-database_schema-f4cbd4ee4b1684ba\nreal_source_mapped_not_running"]
   db_s2p_s2p_vendor_payments_database_schema_03b1bd5d7911d58b["db:s2p/s2p-vendor-payments-database_schema-03b1bd5d7911d58b\nreal_source_mapped_not_running"]
   db_s2p_s2p_vendor_payments_database_schema_a927496123c9231d["db:s2p/s2p-vendor-payments-database_schema-a927496123c9231d\nreal_source_mapped_not_running"]
+  db_shield_mysql["db:shield/mysql\nreal_source_running"]
+  db_shield_redis["db:shield/redis\nreal_source_running"]
   db_virtual_account_dynamodb["db:virtual-account/dynamodb\nreal_source_mapped_not_running"]
-  db_workflows_mysql["db:workflows/mysql\ngraph_only"]
+  db_workflows_cadence["db:workflows/cadence\nreal_source_running"]
+  db_workflows_mysql["db:workflows/mysql\nreal_source_running"]
   db_x_balances_mysql["db:x-balances/mysql\nreal_source_running"]
   db_x_balances_redis["db:x-balances/redis\nreal_source_running"]
   db_xas_mysql["db:xas/mysql\nhigh_fidelity_replacement"]
@@ -190,14 +194,14 @@ graph LR
   svc_admin_dashboard["svc:admin-dashboard\ngraph_only"]
   svc_api_monolith["svc:api-monolith\nreal_source_mapped_not_running"]
   svc_asv["svc:asv\ngraph_only"]
-  svc_banking_accounts["svc:banking-accounts\ngraph_only"]
+  svc_banking_accounts["svc:banking-accounts\nreal_source_running"]
   svc_batch["svc:batch\nhigh_fidelity_replacement"]
   svc_cfa["svc:cfa\nreal_source_running"]
   svc_cfa_migrate["svc:cfa-migrate\nreal_source_running"]
   svc_cfa_server["svc:cfa-server\nreal_source_running"]
   svc_charge_collections["svc:charge-collections\ngraph_only"]
   svc_dcs["svc:dcs\nreal_source_mapped_not_running"]
-  svc_edge_kong["svc:edge-kong\nreal_source_mapped_not_running"]
+  svc_edge_kong["svc:edge-kong\nreal_source_running"]
   svc_fts_migrate["svc:fts-migrate\nreal_source_running"]
   svc_fts_mock_server["svc:fts-mock-server\nreal_source_mapped_not_running"]
   svc_fts_web["svc:fts-web\nreal_source_running"]
@@ -215,15 +219,15 @@ graph LR
   svc_s2p_accounting_integrations["svc:s2p/accounting-integrations\nreal_source_mapped_not_running"]
   svc_s2p_vendor_experience["svc:s2p/vendor-experience\nreal_source_mapped_not_running"]
   svc_s2p_vendor_payments["svc:s2p/vendor-payments\nreal_source_running"]
-  svc_shield["svc:shield\ngraph_only"]
+  svc_shield["svc:shield\nreal_source_running"]
   svc_splitz["svc:splitz\nreal_source_mapped_not_running"]
   svc_stork["svc:stork\nreal_source_mapped_not_running"]
   svc_ups["svc:ups\ngraph_only"]
   svc_validx["svc:validx\nreal_source_mapped_not_running"]
   svc_vendor_payments["svc:vendor-payments\nreal_source_mapped_not_running"]
   svc_virtual_account["svc:virtual-account\nreal_source_mapped_not_running"]
-  svc_workflows["svc:workflows\nreal_source_mapped_not_running"]
-  svc_workflows_workers["svc:workflows-workers\ngraph_only"]
+  svc_workflows["svc:workflows\nreal_source_running"]
+  svc_workflows_workers["svc:workflows-workers\nreal_source_running"]
   svc_x_account_statements["svc:x-account-statements\ngraph_only"]
   svc_x_balances["svc:x-balances\nreal_source_running"]
   svc_x_dashboard["svc:x-dashboard\ngraph_only"]
@@ -293,9 +297,11 @@ graph LR
   db_s2p_s2p_vendor_experience_database_schema_f4cbd4ee4b1684ba -->|depends_on| svc_s2p_vendor_experience
   db_s2p_s2p_vendor_payments_database_schema_03b1bd5d7911d58b -->|depends_on| svc_s2p_vendor_payments
   db_s2p_s2p_vendor_payments_database_schema_a927496123c9231d -->|depends_on| svc_s2p_vendor_payments
+  db_workflows_cadence -->|depends_on| db_workflows_mysql
   sub_api_ingress -->|implements| svc_api_monolith
   sub_asv_stub -->|implements| ext_account_service
   sub_asv_stub -->|implements| svc_asv
+  sub_bankingaccounts_stub -->|implements| svc_banking_accounts
   sub_bankingaccounts_stub -->|implements| svc_banking_accounts
   sub_bankingaccounts_stub -->|implements| svc_banking_accounts
   sub_bankingaccounts_stub -->|implements| svc_banking_accounts
@@ -305,6 +311,7 @@ graph LR
   sub_dcs_stub -->|implements| svc_dcs
   sub_dcs_stub -->|implements| svc_dcs
   sub_kong_lite -->|calls| svc_cfa_server
+  sub_kong_lite -->|implements| svc_edge_kong
   sub_kong_lite -->|implements| svc_edge_kong
   sub_kong_lite -->|implements| svc_edge_kong
   sub_kong_lite -->|calls| svc_fts_web
@@ -326,12 +333,14 @@ graph LR
   sub_s2p_source_driver -->|implements| svc_s2p_vendor_payments
   sub_shield_stub -->|implements| svc_shield
   sub_shield_stub -->|implements| svc_shield
+  sub_shield_stub -->|implements| svc_shield
   sub_splitz_stub -->|implements| svc_splitz
   sub_splitz_stub -->|implements| svc_splitz
   sub_stork_capture -->|calls| ext_merchant_webhook_endpoint
   sub_stork_capture -->|implements| svc_stork
   sub_stork_capture -->|implements| svc_stork
   sub_workflow_engine -->|calls| svc_payouts_api
+  sub_workflow_engine -->|implements| svc_workflows
   sub_workflow_engine -->|implements| svc_workflows
   sub_workflow_engine -->|implements| svc_workflows
   sub_workflow_sim -->|implements| ext_workflows
@@ -346,6 +355,8 @@ graph LR
   svc_admin_dashboard -->|calls| svc_recon
   svc_api_monolith -->|calls| svc_validx
   svc_api_monolith -->|calls| svc_xperience
+  svc_banking_accounts -->|depends_on| db_banking_accounts_mysql
+  svc_banking_accounts -->|calls| sub_api_ingress
   svc_banking_accounts -->|calls| svc_fts_web
   svc_banking_accounts -->|calls| svc_mozart
   svc_banking_accounts -->|calls| svc_payouts_api
@@ -353,6 +364,9 @@ graph LR
   svc_cfa_server -->|depends_on| db_arena_localstack
   svc_cfa_server -->|depends_on| db_cfa_mongo
   svc_charge_collections -->|calls| svc_governor
+  svc_edge_kong -->|depends_on| db_edge_postgres
+  svc_edge_kong -->|calls| sub_api_ingress
+  svc_edge_kong -->|calls| svc_payouts_api
   svc_fts_web -->|depends_on| db_arena_redis
   svc_fts_web -->|depends_on| db_fts_mysql
   svc_fts_web -->|depends_on| db_fts_redis
@@ -416,22 +430,31 @@ graph LR
   svc_payouts_api -->|calls| sub_stork_capture
   svc_payouts_api -->|calls| sub_workflow_sim
   svc_payouts_api -->|calls| sub_xas_sim
+  svc_payouts_api -->|calls| svc_banking_accounts
   svc_payouts_api -->|calls| svc_charge_collections
   svc_payouts_api -->|calls| svc_dcs
   svc_payouts_api -->|calls| svc_fts_web
   svc_payouts_api -->|calls| svc_shield
+  svc_payouts_api -->|calls| svc_shield
   svc_payouts_api -->|calls| svc_splitz
   svc_payouts_api -->|calls| svc_stork
   svc_payouts_api -->|calls| svc_ups
+  svc_payouts_api -->|calls| svc_workflows
   svc_payouts_api -->|calls| svc_xbalances_server
   svc_payouts_worker -->|calls| ext_fts
   svc_payouts_worker -->|calls| ext_mozart
   svc_payouts_worker -->|calls| ext_stork
   svc_recon -->|calls| svc_splitz
+  svc_shield -->|depends_on| db_shield_mysql
+  svc_shield -->|depends_on| db_shield_redis
   svc_stork -->|calls| ext_merchant_webhook_endpoint
   svc_validx -->|calls| svc_fts_web
   svc_vendor_payments -->|calls| svc_api_monolith
   svc_virtual_account -->|calls| svc_mozart
+  svc_workflows -->|depends_on| db_workflows_cadence
+  svc_workflows -->|depends_on| db_workflows_mysql
+  svc_workflows_workers -->|depends_on| db_workflows_cadence
+  svc_workflows_workers -->|depends_on| db_workflows_mysql
   svc_workflows_workers -->|depends_on| ext_cadence
   svc_xbalances_server -->|depends_on| db_api_monolith_mysql
   svc_xbalances_server -->|depends_on| db_arena_localstack

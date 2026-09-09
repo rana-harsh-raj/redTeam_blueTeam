@@ -483,8 +483,11 @@ def provision_direct_merchant(campaign_id, role="direct", opening=10_000_000, ch
 
     # ---- 11 kong key (+ kong restart) ----------------------------------------
     err = P.register_kong_key(mid, secret, restart=restart)
-    d["restarts"].append("kong-lite")
+    d["restarts"].append("kong-lite" if P.trust_env()["ARENA_INGRESS_IMPL"] == "kong-lite" else "edge-kong(admin api)")
     step("kong.register", 0 if not err else 1, err)
+    tp = P.register_trust_path_merchant(mid, direct={"account_number": ids["account_number"], "balance_id": ids["balance_id"], "channel": ch})
+    step("trustpath.shield_rules", 0 if not tp["shield"] else 1, tp["shield"])
+    step("trustpath.bas_rows", 0 if not tp["bas"] else 1, tp["bas"])
     d["failed_steps"] = [s["step"] for s in steps if not s["ok"]]
     d["existed_steps"] = [s["step"] for s in steps if s.get("existed")]
     return d

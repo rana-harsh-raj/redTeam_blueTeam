@@ -18,7 +18,7 @@ import re
 from pathlib import Path
 
 from . import paths
-from .util import sh, CommandError, sha256_file, write_json, read_json, now
+from .util import sh, CommandError, sha256_file, write_json, read_json, now, hash_tree, digest_of
 
 PRIVATE_PREFIXES = ("rzp-arena/", "s2p-architecture-replica/")
 ALWAYS = ["curlimages/curl:latest", "python:3.12-alpine"]   # journey transport + materializer/cron-driver
@@ -39,8 +39,9 @@ class ImageCache:
     def get(self, ref):
         return self.index()["images"].get(ref)
 
-    def export(self, ref, env, source_label):
-        """docker save <ref> into the cache keyed by its image id; idempotent."""
+    def export(self, ref, env, source_label, meta=None):
+        """docker save <ref> into the cache keyed by its image id; idempotent. `meta` (e.g. the build-context
+        fingerprint of a compose-built image) is recorded on the index entry."""
         insp = inspect(ref, env)
         if not insp:
             raise RuntimeError("image %s not present on daemon %s" % (ref, env.get("DOCKER_HOST", "default")))
@@ -54,6 +55,7 @@ class ImageCache:
         idx["images"][ref] = {"image_id": iid, "repo_digests": insp.get("RepoDigests") or [], "tar": tar.name, "tar_sha256": sha256_file(tar),
                               "size_bytes": insp.get("Size"), "created": insp.get("Created"), "architecture": insp.get("Architecture"),
                               "exported_from": source_label, "exported_at": now()}
+        idx["images"][ref].update(meta or {})
         self._save(idx)
         return idx["images"][ref]
 
@@ -69,6 +71,41 @@ class ImageCache:
         if not insp or insp["Id"] != entry["image_id"]:
             raise RuntimeError("cache load of %s produced id %s, expected %s" % (ref, (insp or {}).get("Id"), entry["image_id"]))
         return entry
+
+
+def build_fingerprint(env2, build):
+    """Content fingerprint of what a compose `build:` block bakes into its image: the Dockerfile plus every COPY/ADD
+    source it names (files or trees, relative to the build context). A cache entry whose fingerprint differs from the
+    current sources is stale and is rebuilt -- an image tag alone (rzp-arena/<svc>:<ARENA_TAG>) says nothing about the
+    substitute source it was built from (M11 finding: the M9 cache served a pre-M11 api-ingress under the same tag).
+    Falls back to the whole context tree when no COPY/ADD source can be parsed."""
+    if not isinstance(build, dict):
+        return None
+    ctx = (Path(env2) / (build.get("context") or ".")).resolve()
+    dockerfile = ctx / (build.get("dockerfile") or "Dockerfile")
+    if not dockerfile.is_file():
+        return None
+    parts = {"Dockerfile": sha256_file(dockerfile)}
+    srcs = []
+    for line in dockerfile.read_text().splitlines():
+        m = re.match(r"^\s*(COPY|ADD)\s+(.*)$", line.strip())
+        if not m:
+            continue
+        toks = [x for x in m.group(2).split() if not x.startswith("--")]
+        if any(x.startswith("--from=") for x in m.group(2).split()):
+            continue
+        srcs += toks[:-1]
+    for s in srcs:
+        sp = ctx / s.rstrip("/")
+        if sp.is_file():
+            parts[s] = sha256_file(sp)
+        elif sp.is_dir():
+            parts[s] = digest_of(hash_tree(sp))
+        else:
+            parts[s] = "missing"
+    if not srcs:
+        parts["context"] = digest_of(hash_tree(ctx))
+    return digest_of(parts)
 
 
 def inspect(ref, env):
@@ -98,6 +135,8 @@ def resolve(inst, profile, env2, env, cache, log=None, builder=None):
     """Ensure every image the profile needs is present in the instance daemon; return {service: digest record}."""
     from .profiles import compose_profiles_for  # noqa
     files = ["docker-compose.s2p.yml", "docker-compose.twin.yml"] if profile["s2p"] else []
+    if profile.get("trust_path") == "real" and "trustpath" in (inst.get("compose_profiles") or []):
+        files = files + ["docker-compose.m11.yml"]
     images, doc = compose_images(env2, env, inst["compose_profiles"], files)
     needed = {}
     for svc in list(profile["services"]) + list(profile["jobs"]):
@@ -112,7 +151,20 @@ def resolve(inst, profile, env2, env, cache, log=None, builder=None):
         cached = cache.get(ref)
         present = inspect(ref, env)
         pinned = "@sha256:" in ref
-        if pinned and present:
+        build = doc["services"].get(svc, {}).get("build") if svc in doc["services"] else None
+        fp = build_fingerprint(env2, build) if build else None
+        stale = bool(fp) and bool(cached) and cached.get("build_fingerprint") != fp
+        if fp:
+            rec["build_fingerprint"] = fp
+        if stale:
+            # the cached image was built from different substitute sources (or predates fingerprinting): rebuild
+            cmd = ["docker", "compose", "--env-file", ".env.arena", "-f", "docker-compose.yml"] + sum([["-f", f] for f in files], []) + \
+                  sum([["--profile", p] for p in inst["compose_profiles"]], []) + ["build", svc]
+            sh(cmd, cwd=env2, env=env, timeout=1800, log=log)
+            entry = cache.export(ref, env, "compose-build:%s" % svc, meta={"build_fingerprint": fp})
+            rec.update({"source": "build-stale-cache", "image_id": entry["image_id"], "repo_digests": entry["repo_digests"],
+                        "replaced_image_id": cached.get("image_id")})
+        elif pinned and present:
             rec.update({"source": "present-pinned", "image_id": present["Id"], "repo_digests": present.get("RepoDigests") or [ref.split("@", 1)[1]]})
         elif pinned:
             sh(["docker", "pull", ref], env=env, timeout=1800, log=log)
@@ -138,7 +190,7 @@ def resolve(inst, profile, env2, env, cache, log=None, builder=None):
             cmd = ["docker", "compose", "--env-file", ".env.arena", "-f", "docker-compose.yml"] + sum([["-f", f] for f in files], []) + \
                   sum([["--profile", p] for p in inst["compose_profiles"]], []) + ["build", svc]
             sh(cmd, cwd=env2, env=env, timeout=1800, log=log)
-            entry = cache.export(ref, env, "compose-build:%s" % svc)
+            entry = cache.export(ref, env, "compose-build:%s" % svc, meta={"build_fingerprint": fp})
             rec.update({"source": "build", "image_id": entry["image_id"], "repo_digests": entry["repo_digests"]})
         elif builder:
             rec.update(builder(svc, ref, env, cache, log))

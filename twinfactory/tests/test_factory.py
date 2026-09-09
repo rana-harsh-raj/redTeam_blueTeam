@@ -31,16 +31,39 @@ def tearDownModule():
 
 class TestProfiles(unittest.TestCase):
     def test_full_is_every_recipe(self):
-        p = P.derive(INPUTS, "full")
-        self.assertEqual(len(p["services"]), len(INPUTS.recipes))
-        self.assertEqual(sorted(p["services"]), sorted(INPUTS.recipes))
-        self.assertTrue(p["s2p"])
+        # M11: `full` = every non-job recipe of the snapshot, then rule R12 keeps ONE implementation per trust-path role
+        jobs = {s for s, r in INPUTS.recipes.items() if (r.get("runtime") or {}).get("one_shot") and s != "ledger-scheduler"}
+        real_set = {s for sets in P.TRUST_ROLES.values() for s in sets["real"]}
+        sub_set = {s for sets in P.TRUST_ROLES.values() for s in sets["substitute"]}
+        p = P.derive(INPUTS, "full", "substitute")
+        self.assertEqual(sorted(p["services"]), sorted(set(INPUTS.recipes) - jobs - real_set))
+        self.assertEqual(len(p["services"]), 98)                    # the M9 canonical runtime shape, unchanged
         self.assertEqual(set(p["jobs"]), set(P.MIGRATION_JOBS))
+        self.assertEqual(p["trust_path"], "substitute")
+        r = P.derive(INPUTS, "full", "real")
+        self.assertEqual(sorted(r["services"]), sorted(set(INPUTS.recipes) - jobs - sub_set))
+        self.assertTrue(real_set <= set(r["services"]) and not (sub_set & set(r["services"])))
+        self.assertEqual(set(r["jobs"]), set(P.MIGRATION_JOBS) | set(P.TRUST_JOBS))
+        self.assertEqual(r["trust_path"], "real")
+        self.assertTrue(p["s2p"] and r["s2p"])
         self.assertEqual(p["architecture_snapshot_id"], INPUTS.snapshot_id)
         self.assertEqual(p["recipe_set_id"], INPUTS.recipe_set_id)
+        self.assertNotEqual(P.derive(INPUTS, "full", "real")["services"], P.derive(INPUTS, "full", "substitute")["services"])
+
+    def test_trust_variant_is_exclusive_per_role(self):
+        for variant in ("real", "substitute"):
+            for name in ("full", "critical-payouts", "focused-s2p"):
+                p = P.derive(INPUTS, name, variant)
+                for role, sets in P.TRUST_ROLES.items():
+                    other = "substitute" if variant == "real" else "real"
+                    self.assertFalse(set(sets[other]) & set(p["services"]), (variant, name, role))
+                    if variant == "real" and name != "focused-s2p":
+                        self.assertTrue(set(sets["real"]) <= set(p["services"]), (name, role))
+        with self.assertRaises(KeyError):
+            P.derive(INPUTS, "full", "hybrid")
 
     def test_focused_is_a_traced_subset(self):
-        p = P.derive(INPUTS, "critical-payouts")
+        p = P.derive(INPUTS, "critical-payouts", "substitute")
         self.assertEqual(p["name"], "focused:shared-payouts")
         self.assertLess(len(p["services"]), len(INPUTS.recipes))
         self.assertGreater(len(p["services"]), 20)
@@ -54,6 +77,14 @@ class TestProfiles(unittest.TestCase):
         self.assertFalse(p["s2p"])
         self.assertNotIn("s2p-vp-source", p["services"])
         self.assertIn("payouts-migrate", p["jobs"])
+        r = P.derive(INPUTS, "critical-payouts", "real")
+        for s in ("edge-kong", "edge-bridge", "postgres-kong", "shield-web", "banking-accounts-api", "workflows-api", "workflows-worker", "cadence"):
+            self.assertIn(s, r["services"], s)
+            self.assertTrue(any(x.startswith("R12:") or x.startswith("R3:") or x.startswith("R4:") or x.startswith("R2b:") or x.startswith("R11:") for x in r["services"][s]["reasons"]), s)
+        for s in ("kong-lite", "shield-stub", "bankingaccounts-stub", "workflow-engine"):
+            self.assertNotIn(s, r["services"])
+        for j in ("edge-kong-migrate", "edge-kong-config", "shield-migrate", "shield-seed", "bas-migrate", "bas-seed", "workflows-migrate", "workflows-seed"):
+            self.assertIn(j, r["jobs"])
 
     def test_focused_s2p_includes_overlay(self):
         p = P.derive(INPUTS, "focused-s2p")
@@ -70,7 +101,8 @@ class TestProfiles(unittest.TestCase):
             P.derive(INPUTS, "focused:no-such-family")
 
     def test_compose_profiles(self):
-        self.assertEqual(P.compose_profiles_for(P.derive(INPUTS, "full"), INPUTS), ["core", "datastores", "migrations", "s2p", "substitutes"])
+        self.assertEqual(P.compose_profiles_for(P.derive(INPUTS, "full", "substitute"), INPUTS), ["core", "datastores", "migrations", "s2p", "substitutes"])
+        self.assertEqual(P.compose_profiles_for(P.derive(INPUTS, "full", "real"), INPUTS), ["core", "datastores", "migrations", "s2p", "substitutes", "trustpath", "trustpath-migrations"])
 
 
 class TestPlan(unittest.TestCase):
@@ -250,7 +282,8 @@ class TestCli(unittest.TestCase):
             rc = main(["--home", str(TMP / "home"), "profiles"])
         self.assertEqual(rc, 0)
         out = json.loads(buf.getvalue())
-        self.assertEqual(out["profiles"]["full"]["services"], len(INPUTS.recipes))
+        self.assertEqual(out["profiles"]["full"]["services"], len(P.derive(INPUTS, "full", "real")["services"]))
+        self.assertEqual(out["profiles"]["full"]["trust_path"], "real")
         buf = io.StringIO()
         with contextlib.redirect_stdout(buf):
             rc = main(["--home", str(TMP / "home"), "profile", "critical-payouts", "--json"])

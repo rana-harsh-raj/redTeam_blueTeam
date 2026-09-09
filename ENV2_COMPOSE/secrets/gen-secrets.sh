@@ -95,6 +95,26 @@ openssl rsa -in "$TMP_KEY_DIR/passport_private.pem" -pubout -out "$TMP_KEY_DIR/p
 write_secret passport_private_key "$(cat "$TMP_KEY_DIR/passport_private.pem")"
 write_secret passport_public_key  "$(cat "$TMP_KEY_DIR/passport_public.pem")"
 
+# M11 trust path: the REAL edge gateway signs its passport with its own RS256 key (kong-plugin-upstream-jwt
+# private_key_location=/ssl/JWT_PRIVATE_KEY_V2, kid edgev2); the monolith replacement verifies it with the public half
+# (secrets-ingress) and every service that resolves passports fetches /jwks. Distinct from the api-ingress signer above.
+openssl genrsa -out "$TMP_KEY_DIR/edge_jwt_private.pem" 2048 >/dev/null 2>&1
+openssl rsa -in "$TMP_KEY_DIR/edge_jwt_private.pem" -pubout -out "$TMP_KEY_DIR/edge_jwt_public.pem" >/dev/null 2>&1
+write_secret edge_jwt_private_key "$(cat "$TMP_KEY_DIR/edge_jwt_private.pem")"
+write_secret edge_jwt_public_key  "$(cat "$TMP_KEY_DIR/edge_jwt_public.pem")"
+echo "==> M11 trust-path service credentials (real edge gateway, Shield, banking-accounts, Workflow service datastores)"
+write_secret kong_pg_password "$(rand_password)"                  # edge-kong -> postgres-kong (KONG_PG_PASSWORD)
+write_secret kong_session_secret "$(rand_password)"               # edge kong.conf KONG_SESSION_SECRET (session plugins; value is a production unknown)
+write_secret kong_api_internal_auth_password "$(rand_password)"   # edge user-auth plugin -> API internal app `edge` (KONG_API_INTERNAL_AUTH_PASSWORD)
+write_secret auth_bas_payouts "$(rand_password)"                  # banking-accounts [api].token == payouts [banking_account_service.auth].password (Api-Token header)
+write_secret auth_payouts_workflows "$(rand_password)"            # workflows [auth.payouts] == payouts [workflow.auth] (real variant; the substitute keeps workflow/workflow)
+write_secret auth_workflows_vendor_payments "$(rand_password)"    # workflows [auth.vendorPayments] (F-M11-1: unconfigured slot == anonymous access)
+write_secret auth_dcs_workflows "$(rand_password)"                # workflows [clients.dcs] password (dcs-stub accepts the login; value is a twin secret)
+bash "$SCRIPT_DIR/gen-tls.sh"                                     # twin CA + DCS TLS certificate (banking-accounts dials https://dcs-*.dev.razorpay.in)
+write_secret mysql_shield_root_password "$(rand_password)"
+write_secret mysql_bas_root_password "$(rand_password)"
+write_secret mysql_workflows_root_password "$(rand_password)"
+
 # Minimal JWKS derived from the public key's modulus/exponent, stdlib-python
 # style base64url encoding via openssl + python3 (python3 is a reasonable
 # dependency for a shell script even though config/generate.py itself must

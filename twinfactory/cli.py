@@ -30,13 +30,17 @@ def main(argv=None):
     ap = argparse.ArgumentParser(prog="twinfactory", description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--home", default=None, help="factory home (default $TWIN_FACTORY_HOME or ~/.twin-factory)")
     sub = ap.add_subparsers(dest="cmd")
-    p = sub.add_parser("profiles"); p.add_argument("--snapshot")
-    p = sub.add_parser("profile"); p.add_argument("name"); p.add_argument("--snapshot"); p.add_argument("--json", action="store_true")
+    p = sub.add_parser("profiles"); p.add_argument("--snapshot"); p.add_argument("--trust-path", default="real", choices=["real", "substitute"])
+    p = sub.add_parser("profile"); p.add_argument("name"); p.add_argument("--snapshot"); p.add_argument("--json", action="store_true"); p.add_argument("--trust-path", default="real", choices=["real", "substitute"])
     p = sub.add_parser("create"); p.add_argument("id"); p.add_argument("--profile", required=True); p.add_argument("--seed", required=True)
+    p.add_argument("--trust-path", default="real", choices=["real", "substitute"], help="M11: real promoted trust-path services (default) or the M6/M7 substitutes")
     p.add_argument("--backend", default="colima"); p.add_argument("--snapshot"); p.add_argument("--cpus", type=int); p.add_argument("--memory", type=int); p.add_argument("--disk", type=int)
     p.add_argument("--docker-host"); p.add_argument("--s2p-image"); p.add_argument("--force", action="store_true")
     for c in ("build", "start", "status", "health", "reset", "manifest", "events"):
         p = sub.add_parser(c); p.add_argument("id")
+        if c == "start":
+            p.add_argument("--resume-from", choices=["materialize", "datastores", "migrations", "seed", "substitutes", "trust_path", "core", "post_core", "bridge", "fingerprint", "s2p"],
+                           help="re-enter a FAILED boot at this stage (earlier stages' containers/volumes are kept)")
     p = sub.add_parser("stop"); p.add_argument("id"); p.add_argument("--boundary", action="store_true")
     p = sub.add_parser("destroy"); p.add_argument("id"); p.add_argument("--purge", action="store_true"); p.add_argument("--keep-boundary", action="store_true")
     p = sub.add_parser("snapshot-state"); p.add_argument("id"); p.add_argument("--label")
@@ -61,12 +65,12 @@ def main(argv=None):
         inp = f.inputs(a.snapshot)
         out = {"architecture_snapshot_id": inp.snapshot_id, "recipe_set_id": inp.recipe_set_id, "profiles": {}}
         for name in ["full"] + list(P.ALIASES):
-            pr = P.derive(inp, name); out["profiles"][name] = {"resolved": pr["name"], **pr["counts"], "s2p": pr["s2p"]}
+            pr = P.derive(inp, name, a.trust_path); out["profiles"][name] = {"resolved": pr["name"], **pr["counts"], "s2p": pr["s2p"], "trust_path": pr.get("trust_path")}
         out["focused_families"] = sorted(k.replace("family:", "") for k in inp.index.families)
         _print(out); return 0
     if a.cmd == "profile":
         from . import profiles as P
-        pr = P.derive(f.inputs(a.snapshot), a.name)
+        pr = P.derive(f.inputs(a.snapshot), a.name, a.trust_path)
         if a.json:
             _print(pr)
         else:
@@ -78,12 +82,12 @@ def main(argv=None):
     if a.cmd == "create":
         sizing = {"cpus": a.cpus, "memory_gib": a.memory, "disk_gib": a.disk}
         opts = {"docker_host": a.docker_host} if a.docker_host else None
-        m = f.create(a.id, a.profile, a.seed, a.backend, snapshot_id=a.snapshot, sizing=sizing, backend_options=opts, s2p_image=a.s2p_image, force=a.force)
-        _print({k: m[k] for k in ("instance_id", "state", "profile", "architecture_snapshot_id", "recipe_set_id", "seed", "seed_epoch", "compose_project", "kong_host_port", "arena_subnet", "exec_dir", "inputs_hash", "backend")}); return 0
+        m = f.create(a.id, a.profile, a.seed, a.backend, snapshot_id=a.snapshot, sizing=sizing, backend_options=opts, s2p_image=a.s2p_image, force=a.force, trust_path=a.trust_path)
+        _print({k: m[k] for k in ("instance_id", "state", "profile", "trust_path", "architecture_snapshot_id", "recipe_set_id", "seed", "seed_epoch", "compose_project", "kong_host_port", "arena_subnet", "exec_dir", "inputs_hash", "backend")}); return 0
     if a.cmd == "build":
         m = f.build(a.id); _print({"instance_id": m["instance_id"], "state": m["state"], "image_digests": m["image_digests"], "timings": m["timings"], "runtime_instance_id": m["runtime_instance_id"]}); return 0
     if a.cmd == "start":
-        m = f.start(a.id); _print({"instance_id": m["instance_id"], "state": m["state"], "boot_id": (m.get("boot") or {}).get("boot_id"), "timings": m["timings"], "runtime_instance_id": m["runtime_instance_id"]}); return 0
+        m = f.start(a.id, resume_from=getattr(a, "resume_from", None)); _print({"instance_id": m["instance_id"], "state": m["state"], "boot_id": (m.get("boot") or {}).get("boot_id"), "timings": m["timings"], "runtime_instance_id": m["runtime_instance_id"]}); return 0
     if a.cmd == "status":
         _print(f.status(a.id)); return 0
     if a.cmd == "health":

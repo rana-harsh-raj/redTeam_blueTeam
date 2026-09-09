@@ -12,7 +12,13 @@ from collections import Counter
 from . import paths
 from .canon import canonical_bytes, content_id, sha256_file
 
-CORE = {"payouts": "payouts", "ledger": "ledger", "fts": "fts", "cfa": "cfa", "xbalances": "x-balances"}
+CORE = {"payouts": "payouts", "ledger": "ledger", "fts": "fts", "cfa": "cfa", "xbalances": "x-balances",
+        # M11 promoted real services (ENV2_COMPOSE/build/m11): image prefix -> repository
+        "edge-kong": "edge", "shield": "shield", "banking-accounts": "banking-accounts", "workflows": "workflows"}
+M11_CORE = {"edge-kong", "shield", "banking-accounts", "workflows"}
+M11_JOBS = {"edge-kong-migrate", "edge-kong-config", "shield-migrate", "shield-seed", "bas-migrate", "bas-seed", "workflows-migrate", "workflows-seed"}
+M11_BUILD = {"edge-kong": "ENV2_COMPOSE/build/m11/edge-kong.Dockerfile", "shield": "ENV2_COMPOSE/build/m11/build-shield.sh",
+             "banking-accounts": "ENV2_COMPOSE/build/m11/build-banking-accounts.sh", "workflows": "ENV2_COMPOSE/build/m11/build-workflows.sh"}
 UNKNOWN = lambda reason: {"status": "UNKNOWN", "reason": reason}  # noqa: E731
 RESET = {
     "datastore": "volume removed by ENV2_COMPOSE/scripts/down.sh (compose down -v); re-seeded by scripts/up.sh",
@@ -42,6 +48,13 @@ def canonical_services():
     for name, spec in over["services"].items():
         if name not in base["services"]:
             svcs[name] = (spec, "ENV2_COMPOSE/docker-compose.s2p.yml")
+    if paths.COMPOSE_M11.is_file():   # M11: the real trust-path overlay services (profiles trustpath / trustpath-migrations)
+        m11 = yaml.safe_load(paths.COMPOSE_M11.read_text())
+        for name, spec in (m11.get("services") or {}).items():
+            if name not in base["services"] and set(spec.get("profiles") or []) & {"trustpath", "trustpath-migrations"}:
+                svcs[name] = (spec, "ENV2_COMPOSE/docker-compose.m11.yml")
+                over.setdefault("services", {})[name] = spec
+                over.setdefault("volumes", {}).update(m11.get("volumes") or {})
     return dict(sorted(svcs.items())), base, over
 
 
@@ -92,7 +105,7 @@ def _health(spec):
 
 
 def _core_target(image):
-    m = re.match(r"rzp-arena/([a-z]+):", image or "")
+    m = re.match(r"rzp-arena/([a-z\-]+):", image or "")
     return m.group(1) if m and m.group(1) in CORE else None
 
 
@@ -107,6 +120,18 @@ def _build(spec, name, image, build_host_text):
                 "dockerfile": "ENV2_COMPOSE/" + str(ctx).lstrip("./") + "/" + df, "dockerfile_sha256": sha256_file(dpath) if dpath.is_file() else None,
                 "build_args": {k: str(v) for k, v in sorted(args.items())}}
     t = _core_target(image)
+    if t in M11_CORE:
+        script = paths.REPO / M11_BUILD[t]
+        if t == "edge-kong":
+            return {"kind": "build-m11-image", "canonical": "cd <edge clone> && docker build -f ENV2_COMPOSE/build/m11/edge-kong.Dockerfile -t %s ." % image,
+                    "dockerfile": M11_BUILD[t], "dockerfile_sha256": sha256_file(script) if script.is_file() else None,
+                    "base_image": "kong:3.4.2-ubuntu (public; the source pins the same release from the c.rzp.io mirror)",
+                    "provenance": "razorpay/edge clone at the SourceLock sha: kong-plugins/, kong-utils/, kong.conf, luarocks_install.sh, GeoLite2-Country.mmdb copied verbatim"}
+        return {"kind": "build-m11-host", "canonical": "REPOS_ROOT=<clone root> OUT=<stage> bash %s && bash ENV2_COMPOSE/build/m11/package.sh %s <stage>" % (M11_BUILD[t], t),
+                "script": M11_BUILD[t], "script_sha256": sha256_file(script) if script.is_file() else None,
+                "dockerfile": "ENV2_COMPOSE/build/runtime-only.Dockerfile",
+                "adaptations": (["github.com/razorpay/fingerprint-sdk replaced by ENV2_COMPOSE/build/m11/fingerprint-sdk-stub (repository 404 to the build identity; 4 symbols)"] if t == "shield" else []),
+                "provenance": "host go build of the pinned clone (linux/arm64, CGO_ENABLED=0) packaged into a credential-free runtime image"}
     if t:
         steps = [l.strip() for l in build_host_text.splitlines() if ("go build" in l and ("$REPOS_ROOT/" + CORE[t] in l or "/" + CORE[t] + " " in l)) or ("docker build" in l and t in l)]
         return {"kind": "build-host", "canonical": "REPOS_ROOT=<accepted copies> ARENA_TAG=<tag> bash ENV2_COMPOSE/build/build-host.sh %s" % t,
@@ -189,6 +214,8 @@ def build_recipes(snapshot_body, index):
             reset = RESET[name]
         elif name.startswith("s2p-"):
             reset = RESET["s2p"]
+        elif cfile.endswith("docker-compose.m11.yml") and named:
+            reset = "M11 trust-path volume(s) %s removed with the instance (twinfactory destroy); migrations + seeds re-run on the next start" % ",".join(v["volume"] for v in named)
         elif named:
             reset = "named volume(s) %s removed by down.sh -v" % ",".join(v["volume"] for v in named)
         else:
@@ -218,12 +245,16 @@ def build_recipes(snapshot_body, index):
              "build": _build(spec, name, image, build_host_text),
              "runtime": {"image": image or None, "image_digest": UNKNOWN("image ids are build outputs, not committed inputs; see SNAPSHOT_MANIFEST.json image_digests for the observed local ids"),
                          "entrypoint": spec.get("entrypoint"), "command": spec.get("command"), "environment_keys": env_keys, "user": spec.get("user"),
-                         "one_shot": name == "ledger-scheduler"},
+                         "one_shot": name == "ledger-scheduler" or name in M11_JOBS},
              "health": _health(spec),
              "dependencies": deps,
              "networks": _networks(spec, doc),
              "state": {"volumes": vols, "stateful": bool(named), "datastores": datastores, "queues_topics": queues,
-                       "migrations": ("cd ENV2_COMPOSE && docker compose --profile migrations run --rm %s-migrate" % t) if t else None},
+                       "migrations": ({"edge-kong": "compose job edge-kong-migrate: kong migrations bootstrap/up/finish (core + every enabled plugin migration)",
+                                       "shield": "compose job shield-migrate: /app/shield-migrate (razorpay/shield migrations/, goose)",
+                                       "banking-accounts": "compose job bas-migrate: goose mysql up over internal/database/migrations/*.sql",
+                                       "workflows": "compose job workflows-migrate: ./workflows-migration up -env arena (cmd/migration, goose)"}.get(t)
+                                      if t in M11_CORE else (("cd ENV2_COMPOSE && docker compose --profile migrations run --rm %s-migrate" % t) if t else None))},
              "fixtures": sorted(set(fixtures)),
              "identities": {"identity_model": (node or {}).get("identity_model"), "compose_secrets": sorted(s for s in compose_secrets if s),
                             "secret_files_referenced": secret_refs,

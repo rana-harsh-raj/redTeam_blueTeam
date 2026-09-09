@@ -22,6 +22,8 @@ S2P_OVERLAY = S2P / "inventory" / "runtime-fidelity-overlay.json"
 INGRESS_CONTRACT = ENV2 / "substitutes" / "api-ingress" / "contract" / "routes.json"
 COMPOSE = ENV2 / "docker-compose.yml"
 COMPOSE_S2P = ENV2 / "docker-compose.s2p.yml"
+COMPOSE_M11 = ENV2 / "docker-compose.m11.yml"          # M11: real trust-path overlay (snapshot input)
+KONG_CONFIG = ENV2 / "trustpath" / "edge" / "kong-config.json"   # M11: derived from terraform-kong (snapshot input)
 M7_TAG = "twin-m7-shared-ingress-integration"
 
 

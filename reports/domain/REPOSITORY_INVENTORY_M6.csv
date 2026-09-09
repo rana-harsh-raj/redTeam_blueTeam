@@ -84,7 +84,7 @@ razorpay/workflow-service,repository,,,,,,,name does not exist; the repo is `wor
 razorpay/integrations-utils,repository,,,,,,,Go dependency of `mozart` | substitute: Mozart binary cannot be built ⇒ `mozart -mock` is unavailable; arena uses the Python `mozart-sim` substitute instead,blocked: 404 to this identity (ACCESS_DELTA 2026-09-04),,
 razorpay/integrations-go,repository,,,,,,,Go dependency of `mozart` | substitute: same,blocked: 404 to this identity (ACCESS_DELTA 2026-09-04),,
 razorpay/orchestrator,repository,,,,,,,Go dependency of `mozart` | substitute: same,blocked: 404 to this identity (ACCESS_DELTA 2026-09-04),,
-razorpay/shield,repository,,,,,,,Risk engine; payouts uses shield-sdk (cloned) + payouts/pkg/shield,"granted, not cloned (6.7 GB); shield-sdk used instead",,
+razorpay/shield,repository,514516f53d58dbb469521d59b22830cc3db15cb4,2026-09-09T12:55:08Z,False,go,/Users/rana.singh/rzp-payouts-clones/shield,https://github.com/razorpay/shield.git,Risk engine (payouts instance runs APP_MODE=rzpxprod); M11: cloned at master and promoted,cloned,intact,
 razorpay/kube-manifests/cde/payouts,deployment_artifact,9226a892fd767b0e31dd4282b0b4919298f53fda,,,yaml,/Users/rana.singh/rzp-payouts-clones/kube-manifests/cde/payouts,,"prod-equivalent payouts deployment values (api, ~25 workers, kafka consumers)",cloned,,
 razorpay/kube-manifests/cde/shadow-payouts,deployment_artifact,9226a892fd767b0e31dd4282b0b4919298f53fda,,,yaml,/Users/rana.singh/rzp-payouts-clones/kube-manifests/cde/shadow-payouts,,shadow payouts deployment,cloned,,
 razorpay/kube-manifests/templates/payouts,deployment_artifact,9226a892fd767b0e31dd4282b0b4919298f53fda,,,yaml,/Users/rana.singh/rzp-payouts-clones/kube-manifests/templates/payouts,,payouts helm template,cloned,,

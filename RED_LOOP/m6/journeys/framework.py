@@ -46,6 +46,8 @@ sys.path.insert(0, str(REPO / "RED_LOOP" / "surface"))
 from red_loop import config                     # noqa: E402
 from red_loop import provisioner as P            # noqa: E402
 from red_loop import provisioner_direct as D     # noqa: E402
+import trustpath_adapter as TP                   # noqa: E402  (M11: real trust-path awareness)
+TRUST = TP.trust()
 
 # Instance-aware roots. A disposable twin instance points these at its own
 # rendered workspace (ARENA_ENV2_ROOT / TWIN_RUNS_DIR / TWIN_REPORTS_DIR) so
@@ -89,11 +91,13 @@ FAMILIES = {
     # M7
     "shared-ingress": "family:shared-ingress",
     "cross-domain-s2p": "family:cross-domain-s2p",
+    # M11
+    "trust-path": "family:trust-path",
 }
 P0_FAMILIES = ("shared-payouts", "direct-payouts", "queued-low-balance", "scheduled-payouts",
                "failure-reversal-cancellation", "webhooks", "idempotency-retries", "accounting",
                "approval-workflow", "fetch-list", "source-updates", "async-workers",
-               "beneficiary-fund-accounts", "shared-ingress", "cross-domain-s2p")
+               "beneficiary-fund-accounts", "shared-ingress", "cross-domain-s2p", "trust-path")
 REQUIRED_P0_VARIANTS = ("success", "failure", "idempotency", "async_state")
 
 PASS, FAIL, EXPECTED_FAILURE, BLOCKED = "PASS", "FAIL", "EXPECTED_FAILURE", "BLOCKED"
@@ -187,6 +191,9 @@ class Arena:
     def __init__(self, ev):
         self.ev = ev
         self._secrets = set()
+        # M11: against the REAL Workflow service the wfe_* surface is served by the adapter (same method names,
+        # every real Twirp call + the engine-shaped mapping recorded)
+        self._wf = TP.RealWorkflows(self) if TRUST["real_workflows"] else None
 
     # -- recording -----------------------------------------------------------
     def hide(self, *values):
@@ -220,12 +227,44 @@ class Arena:
         return st, (jload(txt) if txt else None)
 
     def kong(self, method, path, auth, body=None, headers=None, note=None):
-        st, txt = P._kong_call(method, path, auth, body, headers)
+        """The merchant public API through the gateway. M11 real variant: the REAL edge gateway routes the production
+        route table (terraform-kong prod-api) to the monolith replacement, so the payouts-service-shaped paths kong-lite
+        used to proxy whole-prefix are addressed by their public (Route.php) shape:
+            POST /v1/payouts/cancel_payout/{id}  ->  POST /v1/payouts/pout_{id}/cancel   (payout_cancel)
+        The rewrite is recorded on the evidence (`gateway_path`)."""
+        sent = path
+        if TRUST["real_gateway"]:
+            m = re.match(r"^/v1/payouts/cancel_payout/(pout_)?([A-Za-z0-9]{14})$", path)
+            if m:
+                sent = "/v1/payouts/pout_%s/cancel" % m.group(2)
+        st, txt = P._kong_call(method, sent, auth, body, headers)
         safe_headers = {k: v for k, v in (headers or {}).items()}
-        self._rec("http", {"transport": "kong-lite (merchant public API)", "method": method,
-                           "url": P.KONG + path, "request": body, "headers": safe_headers,
-                           "status": st, "response": (txt or "")[:1500], "note": note})
+        self._rec("http", {"transport": ("edge-kong (REAL gateway, prod-api routes)" if TRUST["real_gateway"] else "kong-lite (merchant public API)"),
+                           "method": method, "url": P.KONG + sent, "gateway_path": sent if sent != path else None, "requested_path": path,
+                           "request": body, "headers": safe_headers, "status": st, "response": (txt or "")[:1500], "note": note})
         return st, txt
+
+    # -- M11: api-ingress control/dashboard plane (the monolith replacement, arena network) ------------------------
+    def ingress_admin_basic(self):
+        tok = (ENV2 / "secrets" / "ingress_admin_token.txt").read_text().strip()
+        self.hide(tok)
+        return "admin:" + tok
+
+    def ingress(self, method, path, body=None, basic=None, headers=None, note=None):
+        st, txt = self.http(method, "http://api-ingress:8080" + path, body, headers, basic=basic, timeout=30, note=note or ("api-ingress " + path))
+        return st, (jload(txt) if txt else None)
+
+    def ingress_session(self, mid, user_id=None, roles=None):
+        """BasicAuth::proxyAuth session (dashboard:<token>) minted through the ingress control plane."""
+        uid = user_id or ("ARENAUSR" + uuid.uuid4().hex[:6].upper())
+        body = {"merchant_id": mid, "user_id": uid}
+        if roles:
+            body["roles"] = list(roles)
+        st, doc = self.ingress("POST", "/_ingress/session", body, basic=self.ingress_admin_basic(), note="mint dashboard session (proxy auth)")
+        tok = (doc or {}).get("session_token", "")
+        if tok:
+            self.hide(tok)
+        return uid, tok, st
 
     # -- databases -----------------------------------------------------------
     def mysql(self, service, db, pw_file, sql, note=None):
@@ -486,6 +525,8 @@ class Arena:
         return tok
 
     def wfe(self, method, path, body=None, token=None, admin=False, note=None):
+        if self._wf is not None:
+            return self._wf.wfe(method, path, body, token, admin, note)
         """One call on the workflow engine. `admin` uses the admin token, `token` an actor
         bearer; both are redacted from the record."""
         headers = {}
@@ -503,6 +544,8 @@ class Arena:
         return st, (jload(txt) if txt else None)
 
     def wfe_health(self):
+        if self._wf is not None:
+            return self._wf.wfe_health()
         out = {}
         for path in ("/health", "/_arena/health"):
             st, body = self.wfe("GET", path, note="workflow-engine liveness " + path)
@@ -510,14 +553,20 @@ class Arena:
         return out
 
     def wfe_pending(self):
+        if self._wf is not None:
+            return self._wf.wfe_pending()
         st, body = self.wfe("GET", "/_arena/pending", note="workflow-engine pending workflows")
         return (body or {}).get("pending", [])
 
     def wfe_workflows(self):
+        if self._wf is not None:
+            return self._wf.wfe_workflows()
         st, body = self.wfe("GET", "/_arena/workflows", note="workflow-engine evidence plane")
         return (body or {}).get("workflows", [])
 
     def wfe_for_payout(self, pid):
+        if self._wf is not None:
+            return self._wf.wfe_for_payout(pid)
         want = "pout_" + bare(pid)
         for w in self.wfe_workflows():
             if w.get("payout_id") in (want, bare(pid)):
@@ -525,6 +574,8 @@ class Arena:
         return None
 
     def wfe_decide(self, pid, decision, queue_if_low_balance=None):
+        if self._wf is not None:
+            return self._wf.wfe_decide(pid, decision, queue_if_low_balance)
         body = {"payout_id": "pout_" + bare(pid), "decision": decision}
         if queue_if_low_balance is not None:
             body["queue_if_low_balance"] = bool(queue_if_low_balance)
@@ -532,6 +583,8 @@ class Arena:
                         note="operator control plane: fires the REAL payouts %s callback" % decision)
 
     def wfe_create_actor(self, org_id, name, roles):
+        if self._wf is not None:
+            return self._wf.wfe_create_actor(org_id, name, roles)
         """Admin plane. The bearer token is returned exactly once; it is registered as a
         secret before the call is recorded, so only its shape is ever written down."""
         tok = self.wfe_admin_token()
@@ -550,6 +603,8 @@ class Arena:
 
     def wfe_set_policy(self, org_id, required_approvals=1, separation=1,
                        eligible_approvers=None, expiry_seconds=86400):
+        if self._wf is not None:
+            return self._wf.wfe_set_policy(org_id, required_approvals, separation, eligible_approvers, expiry_seconds)
         return self.wfe("POST", "/admin/policies",
                         {"org_id": org_id, "entity_type": "payout",
                          "required_approvals": int(required_approvals),
@@ -559,11 +614,15 @@ class Arena:
                         admin=True, note="workflow-engine admin: approval policy")
 
     def wfe_actor(self, token, action, wf_id, version=None):
+        if self._wf is not None:
+            return self._wf.wfe_actor(token, action, wf_id, version)
         body = {} if version is None else {"version": version}
         return self.wfe("POST", "/v1/workflows/%s/%s" % (wf_id, action), body, token=token,
                         note="actor plane: %s by a real approver identity" % action)
 
     def wfe_audit(self, token, wf_id):
+        if self._wf is not None:
+            return self._wf.wfe_audit(token, wf_id)
         st, body = self.wfe("GET", "/v1/workflows/%s/audit" % wf_id, token=token,
                             note="actor plane: append-only audit trail")
         return (body or {}).get("events", [])
@@ -759,6 +818,7 @@ return n
     # The ONLY containers this lane may restart, and only inside
     # journey:shared-payouts/restart with M6_ALLOW_RESTART=1.
     RESTARTABLE = ("api-ingress",   # M7: the shared ingress (state on the ingress-data volume)
+                   "edge-kong", "shield-web",   # M11: the real gateway (Kong Postgres state) and the real Shield (MySQL rules)
                    "payouts-worker-fts-async-processing", "payouts-worker-webhook-event",
                    "fts-worker-fire-transfer-status-webhook")
 
@@ -1130,6 +1190,12 @@ class Ctx:
         return st, jload(txt) or txt
 
     def free_payout_attrs(self):
+        if TRUST["real_gateway"]:
+            # Route.php admin_get_free_payouts_attributes (Route::$admin): not a merchant route on the real gateway;
+            # read through the monolith replacement's admin identity (contract/routes.json)
+            st, doc = self.a.ingress("GET", "/v1/admin/payouts/%s/free_payout" % self.m["balance_id"], basic=self.a.ingress_admin_basic(),
+                                     note="free payout attributes (admin route on api-ingress; kong-lite proxied the PS-internal path)")
+            return st, doc
         st, txt = self.a.kong("GET", "/v1/payouts/free_payout/" + self.m["balance_id"], self.auth,
                               note="free payout attributes")
         return st, jload(txt) or txt

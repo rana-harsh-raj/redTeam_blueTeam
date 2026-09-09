@@ -25,6 +25,7 @@ Control-plane only. The red agent never imports or reaches this module.
 import base64
 import hashlib
 import json
+from pathlib import Path
 import os
 import subprocess
 import time
@@ -482,6 +483,8 @@ def provision_funded_merchant(campaign_id, role="attacker", opening=10000000):
     # 8 kong key registration + restart
     reg_err = register_kong_key(mid, secret)
     step("kong.register", 0 if not reg_err else 1, reg_err)
+    tp = register_trust_path_merchant(mid)          # M11 real variant: Shield rules for this merchant (no-op otherwise)
+    step("trustpath.shield_rules", 0 if not tp["shield"] else 1, tp["shield"])
 
     result["contact_id"] = contact
     # 9 self-verify: confirm the merchant can actually create a payout through kong,
@@ -595,9 +598,67 @@ def _register_monolith_fund_account(merchant_id, ids, contact_id, restart=True):
     return None
 
 
+def trust_env():
+    """M11: the instance's trust-path selection (ENV2_COMPOSE/.env.arena, written by twinfactory / the M6 default)."""
+    out = {"ARENA_TRUST_PATH": "substitute", "ARENA_INGRESS_IMPL": "kong-lite", "ARENA_WORKFLOW_HOST": "http://workflow-engine:8093"}
+    try:
+        for line in (config.ENV2 / ".env.arena").read_text().splitlines():
+            if "=" in line and not line.startswith("#"):
+                k, v = line.split("=", 1)
+                if k.strip() in out:
+                    out[k.strip()] = v.strip()
+    except OSError:
+        pass
+    for k in out:
+        if os.environ.get(k):
+            out[k] = os.environ[k]
+    return out
+
+
+def _kong_admin(method, path, body=None):
+    """Kong Admin API call from the host: `docker exec` + curl inside the edge-kong container (the admin listener is
+    arena-internal only). Returns (status, json|text)."""
+    cmd = ["docker", "exec", cname("edge-kong"), "curl", "-s", "-o", "/dev/stdout", "-w", "\n__STATUS__%{http_code}", "-X", method,
+           "-H", "Content-Type: application/json", "http://127.0.0.1:8001" + path]
+    if body is not None:
+        cmd += ["--data-binary", json.dumps(body)]
+    out = subprocess.run(cmd, capture_output=True, text=True, timeout=40)
+    txt = out.stdout
+    if "__STATUS__" not in txt:
+        return "ERR", (out.stderr or txt)[:300]
+    payload, code = txt.rsplit("__STATUS__", 1)
+    try:
+        doc = json.loads(payload) if payload.strip() else {}
+    except ValueError:
+        doc = payload[:300]
+    return int(code.strip() or 0), doc
+
+
+def register_edge_kong_merchant(merchant_id, secret, roles=()):
+    """M11: register a merchant with the REAL gateway exactly as trustpath/edge/provision_kong.py does at boot --
+    one consumer (username = merchant id) and one basic-auth-x credential per key id (tags m~l / m~t, r~<role>),
+    hashed by the plugin itself (sha512(password .. consumer_id)). Idempotent."""
+    st, doc = _kong_admin("PUT", "/consumers/" + merchant_id, {"username": merchant_id, "tags": ["tenant~razorpay"]})
+    if st not in (200, 201) or not isinstance(doc, dict) or not doc.get("id"):
+        return "kong consumer upsert failed: %s %s" % (st, str(doc)[:200])
+    cid = doc["id"]
+    st, existing = _kong_admin("GET", "/consumers/%s/basic-auth-x" % cid)
+    for cred in (existing.get("data", []) if isinstance(existing, dict) else []):
+        if cred.get("username") in ("rzp_live_" + merchant_id, "rzp_test_" + merchant_id):
+            _kong_admin("DELETE", "/consumers/%s/basic-auth-x/%s" % (cid, cred["id"]))
+    role_tags = ["r~%s" % r for r in (roles or []) if r]
+    for username, mode in (("rzp_live_" + merchant_id, "m~l"), ("rzp_test_" + merchant_id, "m~t")):
+        st, doc = _kong_admin("POST", "/consumers/%s/basic-auth-x" % cid, {"username": username, "password": secret, "tags": [mode] + role_tags})
+        if st not in (200, 201):
+            return "kong credential create failed for %s: %s %s" % (username, st, str(doc)[:200])
+    return None
+
+
 def register_kong_key(merchant_id, secret, secret_file=None, restart=True):
-    """Add a merchant key to kong-lite's merchants.json + secret volume and
-    restart kong so it reloads. Returns None on success, else an error string."""
+    """Add a merchant key to the gateway. Substitute variant: kong-lite's merchants.json + secret volume + restart.
+    Real variant (M11, ARENA_INGRESS_IMPL=edge-kong): the same seed/secret files (api-ingress, the monolith replacement,
+    still authenticates the credential from them) plus a consumer + basic-auth-x credentials in the REAL Kong through
+    its Admin API -- no restart. Returns None on success, else an error string."""
     secret_file = secret_file or ("merchant_fresh_%s" % merchant_id.lower())
     merchants_path = config.ENV2 / "seeds" / "generated" / "merchants.json"
     try:
@@ -617,6 +678,8 @@ def register_kong_key(merchant_id, secret, secret_file=None, restart=True):
                         capture_output=True, text=True, timeout=40)
     if cp.returncode != 0:
         return "secret volume copy failed: %s" % cp.stderr[:200]
+    if trust_env()["ARENA_INGRESS_IMPL"] == "edge-kong":
+        return register_edge_kong_merchant(merchant_id, secret)
     if restart:
         rs = subprocess.run(["docker", "restart", cname("kong-lite")],
                             capture_output=True, text=True, timeout=40)
@@ -624,6 +687,64 @@ def register_kong_key(merchant_id, secret, secret_file=None, restart=True):
             return "kong restart failed: %s" % rs.stderr[:200]
         time.sleep(4)
     return None
+
+
+def register_trust_path_merchant(merchant_id, direct=None):
+    """M11 real variant: per-merchant state the promoted services need (idempotent).
+      shield-web ........ the arena rules through Shield's rule API (trustpath/shield/seed_rules.py merchant)
+      banking-accounts .. businesses + banking_accounts rows for a Direct merchant (render_seed.py --merchant)
+    Returns {"shield": err|None, "bas": err|None}."""
+    out = {"shield": None, "bas": None, "workflows": None}
+    if trust_env()["ARENA_TRUST_PATH"] != "real":
+        return out
+    # workflows: one payout-approval Config (checker role approver, 1 approval) through the ConfigAPI, the same recipe as
+    # the boot seed (trustpath/workflows/seed_configs.py); FindByOwnerDetails(owner=merchant, rx_live, org) must find it
+    try:
+        org = "100000razorpay"
+        try:
+            doc = json.loads((config.ENV2 / "seeds" / "generated" / "monolith" / "merchants.json").read_text())
+            org = ((doc.get("merchants") or {}).get(merchant_id) or {}).get("merchant", {}).get("org_id") or org
+        except (OSError, ValueError):
+            pass
+        cmd = ["docker", "run", "--rm", "--network", arena_network(), "--user", "10001:10001",
+               "-v", "%s:/app/seed_configs.py:ro" % (config.ENV2 / "trustpath" / "workflows" / "seed_configs.py"),
+               "-v", "%s:/app/config:ro" % ("rzp-arena-config-workflows" + os.environ.get("ARENA_SUFFIX", "")),
+               "-e", "WORKFLOWS_URL=http://workflows-api:9400", "-e", "WORKFLOWS_CONFIG_TOML=/app/config/dev.toml",
+               "python:3.12-alpine", "python3", "/app/seed_configs.py", "merchant", merchant_id, org]
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
+        if r.returncode != 0:
+            out["workflows"] = (r.stderr or r.stdout)[-300:]
+    except Exception as e:  # noqa: BLE001
+        out["workflows"] = str(e)[:300]
+    try:
+        shield_pw = (config.ENV2 / "secrets" / "auth_shield_payouts.txt").read_text().strip()
+        cmd = ["docker", "run", "--rm", "--network", arena_network(), "--user", "10001:10001",
+               "-v", "%s:/app/seed_rules.py:ro" % (config.ENV2 / "trustpath" / "shield" / "seed_rules.py"),
+               "-e", "SHIELD_URL=http://shield-web:8090", "-e", "SHIELDAUTHUSER_PAYOUT_USERNAME=payouts", "-e", "SHIELDAUTHUSER_PAYOUT_PASSWORD=" + shield_pw,
+               "python:3.12-alpine", "python3", "/app/seed_rules.py", "merchant", merchant_id]
+        r = subprocess.run(cmd, capture_output=True, text=True, timeout=120)
+        if r.returncode != 0:
+            out["shield"] = (r.stderr or r.stdout)[-300:]
+    except Exception as e:  # noqa: BLE001
+        out["shield"] = str(e)[:300]
+    if direct:
+        try:
+            import tempfile
+            sql = Path(tempfile.mkdtemp(prefix="bas-seed-")) / "bas.sql"
+            r = subprocess.run(["python3", str(config.ENV2 / "trustpath" / "bankingaccounts" / "render_seed.py"), "--merchant", merchant_id,
+                                "--account-number", str(direct["account_number"]), "--balance-id", str(direct["balance_id"]), "--channel", str(direct.get("channel") or "rbl"),
+                                "--out", str(sql)], capture_output=True, text=True, timeout=60)
+            if r.returncode != 0:
+                out["bas"] = (r.stderr or r.stdout)[-300:]
+            else:
+                pw = (config.ENV2 / "secrets" / "mysql_bas_root_password.txt").read_text().strip()
+                r = subprocess.run(["docker", "exec", "-i", cname("mysql-bas"), "mysql", "-uroot", "-p" + pw, "banking_account"],
+                                   input=sql.read_text(), capture_output=True, text=True, timeout=60)
+                if r.returncode != 0:
+                    out["bas"] = (r.stderr or r.stdout)[-300:]
+        except Exception as e:  # noqa: BLE001
+            out["bas"] = str(e)[:300]
+    return out
 
 
 def verify_merchant(descriptor):

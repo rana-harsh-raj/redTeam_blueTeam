@@ -30,7 +30,8 @@ import uuid
 from pathlib import Path
 
 REPO = Path(__file__).resolve().parents[2]
-ENV2 = REPO / "ENV2_COMPOSE"
+# M11: honour ARENA_ENV2_ROOT (a factory twin's own ENV2 copy + secrets); the repo checkout is only the single-arena default
+ENV2 = Path(os.environ.get("ARENA_ENV2_ROOT") or (REPO / "ENV2_COMPOSE")).resolve()
 CURL_IMAGE = os.environ.get("ARENA_CURL_IMAGE", "curlimages/curl:latest")
 LEDGER_URL = os.environ.get("ARENA_LEDGER_URL", "http://ledger-api:8080")
 DA_EVENTS = ["da_payout_processed", "da_payout_reversed", "da_fee_payout_processed", "da_fee_payout_reversed",

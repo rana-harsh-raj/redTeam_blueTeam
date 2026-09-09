@@ -17,7 +17,7 @@ import uuid
 
 ROOT = Path(__file__).resolve().parents[1]
 IMAGE = 'python:3.12-alpine'
-CONFIG_GROUPS = ('payouts', 'ledger', 'fts', 'cfa', 'xbalances', 'mozart-mock')
+CONFIG_GROUPS = ('payouts', 'ledger', 'fts', 'cfa', 'xbalances', 'mozart-mock', 'shield', 'bankingaccounts', 'workflows')  # M11: real trust-path services
 _ARENA_SUFFIX = os.environ.get('ARENA_SUFFIX', '')  # M3.1: honour disposable-instance namespacing
 VOLUMES = {**{'config-' + group: 'rzp-arena-config-' + group + _ARENA_SUFFIX for group in CONFIG_GROUPS},
            'secrets-kong': 'rzp-arena-secrets-kong' + _ARENA_SUFFIX,
@@ -31,7 +31,10 @@ VOLUMES = {**{'config-' + group: 'rzp-arena-config-' + group + _ARENA_SUFFIX for
            # container's filesystem.
            'secrets-workflow': 'rzp-arena-secrets-workflow' + _ARENA_SUFFIX,
            # M7: api-ingress app/admin identities + its monolith-stub credential (merchant keys stay in secrets-kong)
-           'secrets-ingress': 'rzp-arena-secrets-ingress' + _ARENA_SUFFIX}
+           'secrets-ingress': 'rzp-arena-secrets-ingress' + _ARENA_SUFFIX,
+           # M11: the real edge gateway's RS256 signer (mounted at /ssl, the path terraform-kong pins)
+           'secrets-edge': 'rzp-arena-secrets-edge' + _ARENA_SUFFIX,
+           'secrets-dcs-tls': 'rzp-arena-secrets-dcs-tls' + _ARENA_SUFFIX}
 OWNER_LABEL = 'io.rzp-arena.generated'
 
 INSTALL = '''import base64,hashlib,json,os,pathlib,shutil,sys
@@ -133,7 +136,16 @@ def source_groups():
         'auth_monolith_shared':read_source(ROOT/'secrets/auth_monolith_shared.txt'),
         'admin_token':read_source(ROOT/'secrets/ingress_admin_token.txt'),
         **{name:read_source(ROOT/'secrets'/(name+'.txt')) for name in
-           ('app_vendor_payments','app_xpayroll','app_batch','app_workflows','app_merchant_dashboard')}}
+           ('app_vendor_payments','app_xpayroll','app_batch','app_workflows','app_merchant_dashboard')},
+        # M11: verify the real edge gateway's passport (kid edgev2) + publish /jwks
+        'edge_jwt_public_key':read_source(ROOT/'secrets/edge_jwt_public_key.txt')}
+    groups['secrets-edge']={'JWT_PRIVATE_KEY_V2':read_source(ROOT/'secrets/edge_jwt_private_key.txt'),
+                            'JWT_PUBLIC_KEY_V2':read_source(ROOT/'secrets/edge_jwt_public_key.txt')}
+    # M11: TLS for the production DCS hostnames dcs-stub answers (see secrets/gen-tls.sh); ca.crt is what
+    # banking-accounts trusts (SSL_CERT_FILE), server.* is what dcs-stub serves
+    groups['secrets-dcs-tls']={'ca.crt':read_source(ROOT/'secrets/arena_tls_ca_cert.txt'),
+                               'server.crt':read_source(ROOT/'secrets/dcs_tls_cert.txt'),
+                               'server.key':read_source(ROOT/'secrets/dcs_tls_key.txt')}
     groups['secrets-monolith']={
         'monolith_basic_auth':read_source(ROOT/'secrets/verifier-bridge/monolith'),
         **{name:read_source(ROOT/'secrets'/(name+'.txt')) for name in
@@ -193,12 +205,21 @@ def materialize(group, files, volume, project, image=IMAGE):
     return evidence
 
 
-def main():
+def main(only=None):
+    """`only`: materialize just these groups (e.g. ['config-workflows']) -- a re-render of one service's config while the
+    rest of the arena keeps running; the in-use check still applies to the selected volumes (stop that service first)."""
     os.umask(0o077)
     groups=source_groups()  # validate all host inputs before creating volumes
+    if only:
+        unknown=[g for g in only if g not in groups]
+        if unknown:
+            raise ValueError('unknown materialization group(s): '+', '.join(unknown))
+        groups={g:groups[g] for g in only}
     run(['docker','image','inspect',IMAGE])  # refuse runtime image pulls
-    config=json.loads(run(['docker','compose','--env-file',str(ROOT/'.env.arena'),
-        '-f',str(ROOT/'docker-compose.yml'),'--profile','*','config','--format','json']).stdout)
+    compose_files=['-f',str(ROOT/'docker-compose.yml')]
+    if (ROOT/'docker-compose.m11.yml').is_file():   # M11: the trust-path overlay declares the config-shield/-bankingaccounts/-workflows + secrets-edge volumes
+        compose_files+=['-f',str(ROOT/'docker-compose.m11.yml')]
+    config=json.loads(run(['docker','compose','--env-file',str(ROOT/'.env.arena')]+compose_files+['--profile','*','config','--format','json']).stdout)
     for group,volume in VOLUMES.items():
         if config.get('volumes',{}).get(group,{}).get('name')!=volume:
             raise ValueError('Compose volume declaration missing or inconsistent: '+group)
@@ -233,10 +254,12 @@ def destroy():
 
 if __name__=='__main__':
     try:
-        if sys.argv[1:]==['--destroy']:
+        if sys.argv[1:2]==['--only']:
+            main(only=[g for g in sys.argv[2:] if g])
+        elif sys.argv[1:]==['--destroy']:
             destroy()
         elif sys.argv[1:]:
-            raise SystemExit('usage: materialize.py [--destroy]')
+            raise SystemExit('usage: materialize.py [--destroy | --only <group>...]')
         else:
             main()
     except subprocess.SubprocessError:

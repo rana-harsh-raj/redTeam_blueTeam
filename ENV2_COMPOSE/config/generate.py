@@ -145,7 +145,34 @@ SERVICE_FILES = {
         ("env.arena.toml", "env.arena.toml", "token"),
         ("env.arena-migration.toml", "env.arena-migration.toml", "token"),
     ],
+    # M11 real trust-path services (rendered in both variants so the config volumes always exist)
+    "shield": [                     # razorpay/shield conf/: the payouts instance runs APP_MODE=rzpxprod (app/app.go setupProvidersForRzpx)
+        ("default.toml", "default.toml", "sanitize"),
+        # shield/pkg/config ALWAYS reads conf/dev.toml as the base and merges conf/$APP_MODE.toml over it; production's
+        # dockerconf/entrypoint.sh materializes that base with `cp conf/default.toml conf/dev.toml` -- same here.
+        ("default.toml", "dev.toml", "sanitize"),
+        ("rzpxprod.toml", "rzpxprod.toml", "sanitize"),   # verbatim; its env|X placeholders are answered by shield.env
+    ],
+    "bankingaccounts": [            # razorpay/banking-accounts config/: default.toml + APP_ENV=arena overlay
+        ("default.toml", "default.toml", "sanitize"),
+        ("arena.toml", "arena.toml", "token"),
+    ],
+    "workflows": [                  # razorpay/workflows config/: default.toml + the twin overlay rendered as dev.toml
+        ("default.toml", "default.toml", "sanitize"),
+        # The service runs as APP_ENV=dev: internal/dcs/service.go derives the DCS environment from boot.GetEnv() and
+        # goutils/dcs config/env.go accepts only its named environments ("dev" -> https://dcs-live.dev.razorpay.in, the
+        # hostname dcs-stub answers over TLS). The overlay template stays arena.toml in the repo; it is rendered as dev.toml.
+        ("arena.toml", "dev.toml", "token"),
+    ],
 }
+
+# M11: which implementation of the critical trust path the arena runs. `real` = the promoted services
+# (edge-kong, shield-web, banking-accounts-api, workflows-api/worker) -- `substitute` = the M6/M7 stand-ins
+# (kong-lite, shield-stub, bankingaccounts-stub, workflow-engine). twinfactory sets it per instance.
+TRUST_PATH = os.environ.get("ARENA_TRUST_PATH", "substitute")
+if TRUST_PATH not in ("real", "substitute"):
+    raise SystemExit("ARENA_TRUST_PATH must be real|substitute, got %r" % TRUST_PATH)
+PASSPORT_API_PROD_KEY = os.path.join(BASE_DIR, "payouts", "passport_api_prod_public_key.pem")
 
 # mozart-mock keeps the ORIGINAL single-{{TOKEN}}-template convention
 # (config/templates/mozart-mock.toml.tmpl, UNCHANGED per task instruction),
@@ -241,6 +268,33 @@ def build_token_map(arena, secrets):
     # this script (it did NOT until M6 -- `docker compose --env-file` only feeds
     # compose's ${VAR} interpolation, never this process).
     tokens["WORKFLOW_HOST"] = os.environ.get("ARENA_WORKFLOW_HOST", "http://127.0.0.1:1")
+
+    # M11 trust-path tokens (see TRUST_PATH). Passport key slots follow payouts pkg/passport/handler.go
+    # getJwtKeysIdentifier: exactly two kids -- [passport.api] (the monolith's, production kid `apiv1`) and
+    # [passport.edge] (the edge gateway's, production kid `edgev2` per terraform-kong upstream-jwt key_id).
+    def toml_key(pem):
+        return (pem or "").replace("\n", "\\n")
+    if TRUST_PATH == "real":
+        tokens["TRUST.variant"] = "real"
+        tokens["TRUST.shield_url"] = "http://shield-web:8090"
+        tokens["TRUST.bas_url"] = "http://banking-accounts-api:8000/v0.2"     # prod: https://banking-account.razorpay.in/v0.2
+        tokens["TRUST.bas_token"] = secrets.get("auth_bas_payouts", "")
+        tokens["TRUST.passport_api_kid"] = "apiv1"
+        tokens["TRUST.passport_api_key"] = toml_key(secrets.get("passport_public_key", ""))   # the monolith replacement (api-ingress) signs with the arena key
+        tokens["TRUST.passport_edge_kid"] = "edgev2"
+        tokens["TRUST.passport_edge_key"] = toml_key(secrets.get("edge_jwt_public_key", ""))
+        tokens["TRUST.workflow_auth_pass"] = secrets.get("auth_payouts_workflows", "")
+    else:
+        tokens["TRUST.variant"] = "substitute"
+        tokens["TRUST.shield_url"] = tokens.get("SVC.shield_stub.url", "")
+        tokens["TRUST.bas_url"] = "http://bankingaccounts-stub:8080"
+        tokens["TRUST.bas_token"] = "RANDOM_BAS_PASSWORD"
+        tokens["TRUST.passport_api_kid"] = "apiv1"
+        prod_key = open(PASSPORT_API_PROD_KEY).read().strip() if os.path.exists(PASSPORT_API_PROD_KEY) else ""
+        tokens["TRUST.passport_api_key"] = toml_key(prod_key)                                   # the pinned production public key (M7 template value)
+        tokens["TRUST.passport_edge_kid"] = "arena-passport-1"
+        tokens["TRUST.passport_edge_key"] = toml_key(secrets.get("passport_public_key", ""))
+        tokens["TRUST.workflow_auth_pass"] = "workflow"
 
     # M4 (T10): merchant whitelist for payouts [configs.account_statement_source_event] (the REAL
     # x_account_statement_source_event producer gate). Empty = every Direct merchant (source semantics:
@@ -376,6 +430,34 @@ def build_env_overrides(svc, tokens):
         return {}  # spike booted payouts with no env vars; TOML overlay is sufficient
     if svc == "cfa":
         return {}  # QUEUE_DRIVER=sqs_local is set on cfa-worker only (compose); cfa-server hardcodes "sqs"
+    if svc == "shield":
+        # razorpay/shield conf/rzpxprod.toml carries env|X placeholders (production injects them from kubestash);
+        # shield/pkg/config uses viper AutomaticEnv with "." -> "_", so every key below is also a direct override.
+        s = tokens
+        return {
+            "DB_HOST": "mysql-shield", "DB_REPLICA_HOST": "mysql-shield", "DB_PORT": "3306", "DB_NAME": "shield",
+            "DB_USER_USERNAME": "root", "DB_USER_PASSWORD": s["SECRET.mysql_shield_root_password"],
+            "DB_PARTITIONUSER_USERNAME": "root", "DB_PARTITIONUSER_PASSWORD": s["SECRET.mysql_shield_root_password"],
+            "REDIS_HOST": "redis-shield", "REDIS_PORT": "7000", "REDIS_PASSWORD": "", "REDIS_DATABASE": "0",
+            "APP_LISTENPORT": "8090", "PROM_LISTENPORT": "8091",   # the image runs as appuser (no cap_net_bind_service); prod listens on 80
+            "QUEUE_DRIVER": "redis", "QUEUE_NAME": "arena-shield-queue", "QUEUE_SQSREGION": "ap-south-1", "QUEUE_SQSPREFIX": "", "QUEUE_SQSENDPOINT": "http://localstack:4566",
+            "WORKER_NAME": "arena-shield-worker", "CREATERULEANALYTICS": "arena-shield-rule-analytics",
+            "SHIELDAUTHUSER_PAYOUT_USERNAME": "payouts", "SHIELDAUTHUSER_PAYOUT_PASSWORD": s["SECRET.auth_shield_payouts"],   # == payouts [shield.auth]
+            "SHIELDAUTHUSER_API_USERNAME": "api", "SHIELDAUTHUSER_API_PASSWORD": s["SECRET.auth_monolith_shared"],
+            "SHIELDAUTHUSER_SHIELD_USERNAME": "shield", "SHIELDAUTHUSER_SHIELD_PASSWORD": s["SECRET.auth_shield_payouts"],
+            "SHIELDAUTHUSER_ACS_USERNAME": "", "SHIELDAUTHUSER_ACS_PASSWORD": "", "SHIELDAUTHUSER_CMS_USERNAME": "", "SHIELDAUTHUSER_CMS_PASSWORD": "",
+            "CMS_AUTH_KEY": "", "CMS_AUTH_SECRET": "", "ACS_AUTH_KEY": "", "ACS_AUTH_SECRET": "", "SPLITZ_AUTH_SECRET": "arena", "DECRYPT_TOKENKEY": "arena-decrypt-token-key-00000001",
+            "FINGERPRINT_ENCRYPTION_KEY": "arena-fingerprint-encryption-key01", "FINGERPRINT_SECRET_KEY": "arena-fingerprint-secret-key0000001",
+            "DCS_USERNAME": "shield", "DCS_PASSWORD": "arena", "DCS_MOCK": "true",
+            "EVENTS_KAFKA_ENABLE": "false", "EVENTS_MSKAFKA_ENABLE": "false",
+            "GEOFENCE_S3_BUCKET": "arena-shield-geofence", "GEOFENCE_S3_REGION": "ap-south-1", "GEOFENCE_S3_ENDPOINT": "http://localstack:4566",
+            "AWS_ACCESS_KEY_ID": "ARENA_LOCALSTACK", "AWS_SECRET_ACCESS_KEY": "arena-localstack-synthetic", "AWS_REGION": "ap-south-1",
+            "TELEMETRY_ENABLED": "false", "JAEGER_ENABLED": "false",
+        }
+    if svc == "bankingaccounts":
+        return {}   # everything is in the arena.toml overlay (viper env overrides unused)
+    if svc == "workflows":
+        return {}   # everything is in the arena.toml overlay
     return {}
 
 

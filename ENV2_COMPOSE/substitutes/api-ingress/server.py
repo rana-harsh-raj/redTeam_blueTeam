@@ -50,8 +50,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 sys.path.insert(0, "/app")
-from _common.rsa_sign import (b64url, parse_rsa_private_key_der, pem_to_der,  # noqa: E402
-                              rsa_sign_pkcs1v15_sha256)
+from _common.rsa_sign import (b64url, parse_rsa_private_key_der, parse_rsa_public_key_der, pem_to_der,  # noqa: E402
+                              rsa_sign_pkcs1v15_sha256, rsa_verify_pkcs1v15_sha256)
 
 SERVICE_NAME = os.environ.get("STUB_NAME", "api-ingress")
 LISTEN_PORT = int(os.environ.get("STUB_PORT", "8080"))
@@ -67,6 +67,16 @@ SECRETS_KONG_DIR = os.environ.get("SECRETS_KONG_DIR", "/run/secrets/kong")
 SECRETS_INGRESS_DIR = os.environ.get("SECRETS_INGRESS_DIR", "/run/secrets/ingress")
 CONTRACT_FILE = os.environ.get("INGRESS_CONTRACT_FILE", os.path.join(os.path.dirname(os.path.abspath(__file__)), "contract", "routes.json"))
 PASSPORT_IDENTIFIER = os.environ.get("PASSPORT_IDENTIFIER", "arena-passport-1")
+# M11: the REAL edge gateway (edge-kong, kong-plugin-upstream-jwt) mints an edge passport (kid `edgev2`, header
+# X-Passport-JWT-V1, X-PASSPORT-USABLE from kong-plugin-passport-enabler) toward the monolith. The monolith decodes and
+# validates it (app/Http/Middleware/DecodePassportJwt.php + app/Http/Edge/PassportUtil.php: identified/mode/consumer,
+# usable only on PRIVATE/PUBLIC routes when X-PASSPORT-USABLE is true) while still authenticating the credential itself
+# (BasicAuth::privateAuth). The ingress reproduces exactly that: verify-if-present, credential remains authoritative,
+# a passport that names a different consumer than the credential is a 401. INGRESS_EDGE_PASSPORT_REQUIRED=1 is a twin
+# control (not a monolith rule) that refuses merchant-key requests which did not come through the gateway.
+EDGE_PASSPORT_KID = os.environ.get("EDGE_PASSPORT_KID", "edgev2")
+EDGE_PASSPORT_REQUIRED = os.environ.get("INGRESS_EDGE_PASSPORT_REQUIRED", "0") == "1"
+EDGE_PASSPORT_USABLE_ROUTE_TYPES = {"merchant", "user"}   # PassportUtil::ALLOWED_ROUTE_TYPES = [Route::PRIVATE, Route::PUBLIC]
 PASSPORT_ORG = os.environ.get("PASSPORT_ORG", "ARENAORG000001")
 PASSPORT_PRODUCT = os.environ.get("PASSPORT_PRODUCT", "banking")
 PASSPORT_ISS = os.environ.get("PASSPORT_ISS", "https://identity.arena.invalid")
@@ -90,7 +100,9 @@ STRIPPED_HEADERS = {"authorization", "x-merchant-id", "x-entity-id", "x-razorpay
                     "x-payout-actor-type", "x-payout-actor-property-key", "x-payout-actor-property-value",
                     "app-user-id", "user-session-id", "x-creator-id", "x-creator-type", "x-batch-id",
                     "x-payouts-service-proxy", "host", "content-length", "connection", "accept-encoding",
-                    "x-razorpay-merchantid", "x-admin-token"}
+                    "x-razorpay-merchantid", "x-admin-token",
+                    # M11: gateway-added headers stay at the monolith hop (kong-plugin-passport-enabler / basic-auth-x / upstream-jwt baggage)
+                    "x-passport-usable", "x-authentication-result", "baggage"}
 MERCHANT_KEY_RE = re.compile(r"^rzp_(test|live)_([A-Za-z0-9]{14})$")
 ID_RE = re.compile(r"^[A-Za-z0-9_.\-]{1,64}$")
 TAX_PAYMENT_ID_RE = re.compile(r"^txpy_[A-Za-z0-9]{14}$")
@@ -173,6 +185,7 @@ class Registry:
     def __init__(self):
         self.lock = threading.Lock()
         self.keys = {}          # key_id -> {merchant_id, mode, secret, roles}
+        self.edge_pub = None    # M11: (n, e, size) of the edge gateway's passport signer
         self.merchants = {}     # merchant_id -> monolith merchant record
         self.apps = {}          # app secret -> app name
         self.admin_token = ""
@@ -247,6 +260,15 @@ class Registry:
                 self.passport = parse_rsa_private_key_der(pem_to_der(key_pem))
             except Exception as e:  # noqa: BLE001
                 _log("passport key unparseable: %r" % e)
+        # M11: the edge gateway's passport public key (secrets/edge_jwt_public_key; kid EDGE_PASSPORT_KID)
+        self.edge_pub = None
+        edge_pem = _read(os.path.join(SECRETS_INGRESS_DIR, "edge_jwt_public_key"))
+        if edge_pem:
+            try:
+                n, e = parse_rsa_public_key_der(pem_to_der(edge_pem))
+                self.edge_pub = (n, e, (n.bit_length() + 7) // 8)
+            except Exception as e:  # noqa: BLE001
+                _log("edge passport public key unparseable: %r" % e)
 
     def _load_seed_fund_accounts(self):
         """Seed fund accounts become explicit ownership records (source='seed'). A seed record without an
@@ -304,6 +326,88 @@ def mint_passport(consumer_type, consumer_id, mode="live", roles=None, impersona
 
 def basic(user, password):
     return "Basic " + base64.b64encode(("%s:%s" % (user, password)).encode()).decode()
+
+
+def b64url_decode(s):
+    return base64.urlsafe_b64decode(s + "=" * (-len(s) % 4))
+
+
+def _pub_from_private():
+    """(n, e) of the ingress's own passport signer, for the JWKS the twin publishes (edge-base hosts /jwks in production)."""
+    if not REG.passport:
+        return None
+    n, d, size = REG.passport
+    return n, 65537
+
+
+def jwks_doc():
+    """`GET /jwks`: the twin's passport key set in the production JWKS shape (terraform-kong/prod/edge/jwks.json):
+    the monolith-replacement key (kid PASSPORT_IDENTIFIER) and the edge gateway key (kid EDGE_PASSPORT_KID)."""
+    keys = []
+    def enc(i):
+        raw = i.to_bytes((i.bit_length() + 7) // 8, "big")
+        return base64.urlsafe_b64encode(raw).rstrip(b"=").decode()
+    pk = _pub_from_private()
+    if pk:
+        keys.append({"kty": "RSA", "alg": "RS256", "use": "sig", "kid": PASSPORT_IDENTIFIER, "n": enc(pk[0]), "e": enc(pk[1])})
+    if REG.edge_pub:
+        n, e = REG.edge_pub[0], REG.edge_pub[1]
+        keys.append({"kty": "RSA", "alg": "RS256", "use": "sig", "kid": EDGE_PASSPORT_KID, "n": enc(n), "e": enc(e)})
+    return {"keys": keys}
+
+
+def verify_edge_passport(ctx):
+    """DecodePassportJwt.php: parse X-Passport-JWT-V1 when present; PassportUtil::validatePassport: identified, mode,
+    consumer id/type, impersonation consumer id/type when present. Signature: RS256 against the edge key by kid."""
+    jwt = ctx.headers.get("x-passport-jwt-v1")
+    if not jwt:
+        return None
+    out = {"present": True, "valid": False, "usable_header": (ctx.headers.get("x-passport-usable", "") or "").lower() == "true"}
+    try:
+        h64, p64, s64 = jwt.split(".")
+        header = json.loads(b64url_decode(h64))
+        claims = json.loads(b64url_decode(p64))
+    except Exception:  # noqa: BLE001
+        out["reason"] = "malformed"
+        return out
+    out["kid"] = header.get("kid")
+    if header.get("alg") != "RS256" or header.get("kid") != EDGE_PASSPORT_KID:
+        out["reason"] = "unknown_kid_or_alg"
+        return out
+    if not REG.edge_pub:
+        out["reason"] = "no_edge_public_key"
+        return out
+    n, e, size = REG.edge_pub
+    try:
+        ok = rsa_verify_pkcs1v15_sha256((h64 + "." + p64).encode(), b64url_decode(s64), n, e, size)
+    except Exception:  # noqa: BLE001
+        ok = False
+    if not ok:
+        out["reason"] = "bad_signature"
+        return out
+    now = _now()
+    if claims.get("exp") is not None and int(claims["exp"]) < now:
+        out["reason"] = "expired"
+        return out
+    if claims.get("nbf") is not None and int(claims["nbf"]) > now + 60:
+        out["reason"] = "not_yet_valid"
+        return out
+    consumer = claims.get("consumer") or {}
+    imp = claims.get("impersonation") or {}
+    errors = []
+    if not claims.get("identified"):
+        errors.append("identified")
+    if not claims.get("mode"):
+        errors.append("mode")
+    if not consumer.get("id") or not consumer.get("type"):
+        errors.append("consumer")
+    if imp and (not imp.get("type") or not (imp.get("consumer") or {}).get("id") or not (imp.get("consumer") or {}).get("type")):
+        errors.append("impersonation")
+    out.update({"valid": not errors, "reason": ",".join(errors) or None, "issuer": claims.get("iss"), "mode": claims.get("mode"),
+                "authenticated": bool(claims.get("authenticated")), "consumer": {"id": consumer.get("id"), "type": consumer.get("type")},
+                "impersonation": ({"type": imp.get("type"), "consumer": imp.get("consumer")} if imp else None),
+                "roles": claims.get("roles"), "jti": claims.get("jti")})
+    return out
 
 
 # ---------------------------------------------------------------------------
@@ -375,6 +479,7 @@ class Ctx:
         self.identity = None      # {"type": merchant|user|application|admin, "id":..., ...}
         self.tenant = None        # authoritative merchant id for this request (or None)
         self.route = None
+        self.edge_passport = None   # M11: verified edge-gateway passport summary (verify_edge_passport)
 
     def read_body(self):
         length = int(self.headers.get("content-length", "0") or 0)
@@ -910,13 +1015,17 @@ def control(ctx):
     p, m = ctx.path, ctx.method
     if p in ("/health", "/ping") and m == "GET":
         return 200, {"status": "ok", "service": SERVICE_NAME}
+    if p == "/jwks" and m == "GET":       # M11: passport key set (goutils passport v4 InitHandler fetches <jwksHost>/jwks)
+        return 200, jwks_doc()
     if p == "/_ingress/health" and m == "GET":
         with _DB_LOCK, db() as c:
             counts = {k: c.execute("SELECT count(*) FROM %s" % k).fetchone()[0] for k in ("resources", "banking_accounts", "sessions", "otps", "idempotency", "audit", "payout_details", "internal_payouts", "callbacks")}
             boot = c.execute("SELECT value FROM meta WHERE name='boot_id'").fetchone()
         return 200, {"status": "ok", "service": SERVICE_NAME, "schema_version": SCHEMA_VERSION, "boot_id": boot[0] if boot else None,
                      "api_keys": len(REG.keys), "merchants": len(REG.merchants), "app_identities": sorted(REG.apps.values()),
-                     "passport_signer": bool(REG.passport), "ps_api_url": PS_API_URL, "monolith_stub_url": MONOLITH_STUB_URL,
+                     "passport_signer": bool(REG.passport), "passport_kid": PASSPORT_IDENTIFIER,
+                     "edge_passport_verifier": bool(REG.edge_pub), "edge_passport_kid": EDGE_PASSPORT_KID, "edge_passport_required": EDGE_PASSPORT_REQUIRED,
+                     "ps_api_url": PS_API_URL, "monolith_stub_url": MONOLITH_STUB_URL,
                      "s2p_vp_source_url": S2P_VP_SOURCE_URL or None, "contract_routes": len(CONTRACT), "served_routes": len(ROUTES), "tables": counts}
     if p == "/_ingress/contract" and m == "GET":
         return 200, {"served": [{"name": r.name, "method": r.method, "pattern": r.rx.pattern, "contexts": sorted(r.contexts),
@@ -1046,7 +1155,7 @@ class Handler(BaseHTTPRequestHandler):
             return self._send(413, {"error": {"code": "BAD_REQUEST_ERROR", "description": "body too large"}})
         REG.reload()
         try:
-            if ctx.path.startswith("/_ingress") or ctx.path in ("/health", "/ping"):
+            if ctx.path.startswith("/_ingress") or ctx.path in ("/health", "/ping", "/jwks"):
                 st, payload = control(ctx)
                 return self._send(st, payload, extra={"X-Request-ID": ctx.request_id})
             st, raw, ctype = self._business(ctx)
@@ -1068,6 +1177,23 @@ class Handler(BaseHTTPRequestHandler):
             audit(ctx.request_id, ctx.method, ctx.path, None, ident, None, None, None, st, ident["type"])
             return st, json.dumps(payload).encode(), "application/json"
         ctx.identity = ident
+        # --- M11: edge gateway passport (DecodePassportJwt + PassportUtil) ---
+        ep = verify_edge_passport(ctx)
+        ctx.edge_passport = ep
+        if ep and not ep["valid"]:
+            # DecodePassportJwt.php: a passport that does not parse/validate is logged (PASSPORT_JWT_PARSE_FAILED) and
+            # NOT used; the request continues on its credential. A client cannot inject one through the real gateway
+            # (upstream-jwt overwrites the header), so this only matters for direct arena-network callers.
+            audit(ctx.request_id, ctx.method, ctx.path, None, ident, None, None, None, None, "edge_passport_ignored", ep)
+            ep = None
+        if ep and ident["type"] == "merchant":
+            c = ep["consumer"]
+            if c["type"] != "merchant" or c["id"] != ident["merchant_id"] or (ep.get("mode") and ep["mode"] != ident.get("mode")):
+                audit(ctx.request_id, ctx.method, ctx.path, None, ident, None, None, None, 401, "edge_passport_identity_mismatch", ep)
+                return UNAUTHORIZED[0], json.dumps(UNAUTHORIZED[1]).encode(), "application/json"
+        if EDGE_PASSPORT_REQUIRED and ident["type"] == "merchant" and not (ep and ep["valid"]):
+            audit(ctx.request_id, ctx.method, ctx.path, None, ident, None, None, None, 401, "edge_passport_required", ep)
+            return UNAUTHORIZED[0], json.dumps(UNAUTHORIZED[1]).encode(), "application/json"
         tenant, terr = resolve_tenant(ctx)
         if terr:
             audit(ctx.request_id, ctx.method, ctx.path, None, ident, None, None, None, terr[0], "unknown_account_header")
@@ -1135,8 +1261,11 @@ class Handler(BaseHTTPRequestHandler):
             with _DB_LOCK, db() as c:
                 c.execute("INSERT OR REPLACE INTO idempotency(scope,key,route,request_hash,status,response,request_id,created_at) VALUES(?,?,?,?,?,?,?,?)",
                           (idem_scope, idem_key, r.name, request_hash(ctx.body), st, raw.decode("utf-8", "replace"), ctx.request_id, _now()))
+        detail = {"upstream_body": raw.decode("utf-8", "replace")[:300]} if st >= 400 else {}
+        if ctx.edge_passport:
+            detail["edge_passport"] = {k: ctx.edge_passport.get(k) for k in ("valid", "kid", "usable_header", "mode", "consumer", "impersonation", "jti")}
         audit(ctx.request_id, ctx.method, ctx.path, r.name, ident, ctx.tenant, url, st if url else None, st,
-              "served" if st < 400 else "denied_or_failed", {"upstream_body": raw.decode("utf-8", "replace")[:300]} if st >= 400 else None)
+              "served" if st < 400 else "denied_or_failed", detail or None)
         return st, raw, ctype
 
     do_GET = _dispatch

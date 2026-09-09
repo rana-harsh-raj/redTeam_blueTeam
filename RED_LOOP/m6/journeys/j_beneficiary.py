@@ -105,9 +105,13 @@ def _cfa_docs(ctx, mid, fa_id):
 
 
 def _monolith_fa(ctx, fa_id):
-    st, body = ctx.a.jhttp("GET", F.MONOLITH + "/fund_accounts_internal/" + fa_id,
-                           basic=F.D._mono_basic(),
-                           note="the fund-account route payouts actually reads")
+    """The record payouts actually reads. Since M7 the monolith's GET fund_accounts_internal/{id} is served by the shared
+    ingress (substitutes/api-ingress, FundAccount/Service.php fetch: findByPublicIdAndMerchant) to the payouts_service
+    identity (rzp_live + [api.auth] secret) scoped by X-Razorpay-Account; monolith-stub retired that route (its
+    owner-less record was the M6 D-7 cross-tenant mechanism)."""
+    st, body = ctx.a.jhttp("GET", "http://api-ingress:8080/v1/fund_accounts_internal/fa_" + F.bare(fa_id),
+                           headers={"X-Razorpay-Account": ctx.m["merchant_id"]}, basic=F.D._mono_basic(),
+                           note="the fund-account route payouts actually reads (api-ingress, payouts_service identity)")
     return st, body
 
 

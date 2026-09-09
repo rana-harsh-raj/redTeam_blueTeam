@@ -29,6 +29,26 @@ RULES = OrderedDict([
     ("R9", "Source-to-Pay overlay closure (s2p-vp-source needs api-ingress + its private datastores)"),
     ("R10", "declared worker fleet of an included real-binary service (svc -depends_on-> worker in the graph)"),
     ("R11", "compose-declared worker fleet of an included real binary: every real-binary recipe running the same image (the binary's worker roles are declared in the compose definition, e.g. fts `-command=rbl::check_transfer_status`; the graph covers only source-analysed queues)"),
+    ("R12", "trust-path variant (M11): for every promoted role (gateway, shield, banking-accounts, workflows) exactly one implementation set is kept -- `real` (the promoted source-running services of docker-compose.m11.yml, with their own datastores) or `substitute` (the M6/M7 stand-ins); whichever the graph pulled in is swapped for the requested variant"),
+])
+# M11: role -> {variant: services}. The real set's datastores/helpers ride along with the service.
+TRUST_ROLES = OrderedDict([
+    ("gateway", {"real": ["edge-kong", "edge-bridge", "postgres-kong"], "substitute": ["kong-lite"]}),
+    ("shield", {"real": ["shield-web", "mysql-shield", "redis-shield"], "substitute": ["shield-stub"]}),
+    ("banking-accounts", {"real": ["banking-accounts-api", "mysql-bas"], "substitute": ["bankingaccounts-stub"]}),
+    ("workflows", {"real": ["workflows-api", "workflows-worker", "cadence", "mysql-workflows"], "substitute": ["workflow-engine", "workflow-sim"]}),
+])
+TRUST_VARIANTS = ("real", "substitute")
+# one-shot jobs of the real variant: (image, datastore it needs, service it provisions)
+TRUST_JOBS = OrderedDict([
+    ("edge-kong-migrate", ("rzp-arena/edge-kong", "postgres-kong", "edge-kong")),
+    ("edge-kong-config", ("python:3.12-alpine", "postgres-kong", "edge-kong")),
+    ("shield-migrate", ("rzp-arena/shield", "mysql-shield", "shield-web")),
+    ("bas-migrate", ("rzp-arena/banking-accounts", "mysql-bas", "banking-accounts-api")),
+    ("workflows-migrate", ("rzp-arena/workflows", "mysql-workflows", "workflows-api")),
+    ("shield-seed", ("python:3.12-alpine", "mysql-shield", "shield-web")),
+    ("bas-seed", ("mysql:8.0", "mysql-bas", "banking-accounts-api")),
+    ("workflows-seed", ("python:3.12-alpine", "mysql-workflows", "workflows-api")),
 ])
 MIGRATION_JOBS = {"payouts-migrate": ("rzp-arena/payouts", "mysql-payouts"), "ledger-migrate": ("rzp-arena/ledger", "postgres-ledger"),
                   "fts-migrate": ("rzp-arena/fts", "mysql-fts"), "cfa-migrate": ("rzp-arena/cfa", "mongo-cfa"),
@@ -45,7 +65,10 @@ JOURNEY_MODULES = {"shared-payouts": "j_shared", "cross-domain-s2p": "j_s2p", "d
                    "beneficiary-fund-accounts": "j_beneficiary"}
 HOST_RE = re.compile(r"https?://([a-z0-9][a-z0-9-]*):(\d+)")
 HOSTPORT_RE = re.compile(r'"([a-z][a-z0-9-]*):(\d{4,5})"')
-TOKEN_RE = re.compile(r"\{\{(SVC\.[a-z0-9_]+\.(?:host|url)|MOZART\.(?:host|url)|WORKFLOW_HOST)\}\}")
+TOKEN_RE = re.compile(r"\{\{(SVC\.[a-z0-9_]+\.(?:host|url)|MOZART\.(?:host|url)|WORKFLOW_HOST|TRUST\.[a-z_]+)\}\}")
+# M11: variant tokens of config/generate.py resolve to BOTH implementations so the role is "touched" and rule R12 keeps one
+TRUST_TOKEN_HOSTS = {"TRUST.shield_url": ("shield-web", "shield-stub"), "TRUST.bas_url": ("banking-accounts-api", "bankingaccounts-stub"),
+                     "WORKFLOW_HOST": ("workflows-api", "workflow-engine")}
 
 
 def _arena_services():
@@ -81,6 +104,9 @@ def _twin_ref_service(node):
 def _compose_docs():
     base = yaml.safe_load(paths.COMPOSE.read_text())
     over = yaml.safe_load(paths.COMPOSE_S2P.read_text())
+    if paths.COMPOSE_M11.is_file():   # M11 overlay services take part in the R6 host closure
+        for k, v in (yaml.safe_load(paths.COMPOSE_M11.read_text()).get("services") or {}).items():
+            over.setdefault("services", {}).setdefault(k, v)
     return base, over
 
 
@@ -111,6 +137,8 @@ def _template_hosts(service):
                 hosts.add(svc_map.get(tok.split(".")[1], ""))
             elif tok.startswith("MOZART."):
                 hosts.add(mz.group(1) if mz else "mozart-sim")
+            elif tok in TRUST_TOKEN_HOSTS:
+                hosts.update(TRUST_TOKEN_HOSTS[tok])
     # the workflow host is rendered from .env.arena (ARENA_WORKFLOW_HOST) into payouts arena.toml
     if fam == "payouts":
         env = (paths.ENV2 / ".env.arena").read_text()
@@ -135,16 +163,55 @@ def harness_targets(family_slug):
     return found
 
 
-def full_profile(inputs):
+def apply_trust_variant(services, inputs, trust_path, trace=None):
+    """R12: keep exactly one implementation per promoted role. Returns the (possibly re-sorted) services dict."""
+    if trust_path not in TRUST_VARIANTS:
+        raise KeyError("unknown trust-path variant %r (real | substitute)" % trust_path)
+    other = "substitute" if trust_path == "real" else "real"
+    for role, sets in TRUST_ROLES.items():
+        touched = any(s in services for s in sets["real"] + sets["substitute"])
+        if not touched:
+            continue
+        for s in sets[other]:
+            if s in services:
+                services.pop(s)
+                if trace is not None:
+                    trace[s].append("R12: %s implementation of role %s removed (variant %s)" % (other, role, trust_path))
+        for s in sets[trust_path]:
+            if s in inputs.recipes and s not in services:
+                services[s] = {"category": inputs.recipes[s]["category"], "reasons": []}
+                if trace is not None:
+                    trace[s].append("R12: %s implementation of role %s (variant %s)" % (trust_path, role, trust_path))
+    return OrderedDict(sorted(services.items()))
+
+
+def trust_jobs_for(services, inputs):
+    jobs = []
+    for j, (img, ds, svc) in TRUST_JOBS.items():
+        if j in inputs.recipes and ds in services and svc in services:
+            jobs.append(j)
+    return jobs
+
+
+def full_profile(inputs, trust_path="real"):
     services = OrderedDict()
     for sid in sorted(inputs.recipes):
+        if (inputs.recipes[sid].get("runtime") or {}).get("one_shot") and sid != "ledger-scheduler":
+            continue   # M11 one-shot migration/provisioning jobs are jobs, not services
         services[sid] = {"category": inputs.recipes[sid]["category"], "reasons": ["FULL: canonical recipe of snapshot %s" % inputs.snapshot_id[:12]]}
-    jobs = [j for j, (img, ds) in MIGRATION_JOBS.items() if ds in services]
-    return Profile({"name": "full", "kind": "runtime_profile", "schema_version": "m9.1", "architecture_snapshot_id": inputs.snapshot_id,
+    trace = defaultdict(list)
+    services = apply_trust_variant(services, inputs, trust_path, trace)
+    for s, why in trace.items():
+        if s in services:
+            services[s]["reasons"] = services[s]["reasons"] + why
+    jobs = [j for j, (img, ds) in MIGRATION_JOBS.items() if ds in services] + trust_jobs_for(services, inputs)
+    return Profile({"name": "full", "kind": "runtime_profile", "schema_version": "m11.1", "architecture_snapshot_id": inputs.snapshot_id,
                     "recipe_set_id": inputs.recipe_set_id, "services": services, "jobs": jobs, "s2p": any(s.startswith("s2p-") for s in services),
+                    "trust_path": trust_path,
                     "families": sorted({f for r in inputs.recipes.values() for f in (r.get("families") or [])}),
                     "journeys": ["journey:shared-payouts/success", "journey:cross-domain-s2p/success"],
-                    "derivation": {"rules": {"FULL": "every canonical ServiceRecipe of the snapshot (%d) + migration jobs + Source-to-Pay overlay" % len(services)}},
+                    "derivation": {"rules": {"FULL": "every canonical ServiceRecipe of the snapshot (%d) + migration jobs + Source-to-Pay overlay" % len(services), "R12": RULES["R12"]},
+                                   "trust_path": trust_path, "removed_by_R12": sorted(s for s in trace if s not in services)},
                     "counts": _counts(services, jobs)})
 
 
@@ -155,7 +222,7 @@ def _counts(services, jobs):
     return {"services": len(services), "jobs": len(jobs), "by_category": dict(sorted(c.items()))}
 
 
-def focused_profile(inputs, family_slug):
+def focused_profile(inputs, family_slug, trust_path="real"):
     ix = inputs.index
     fid = "family:" + family_slug
     if fid not in ix.families:
@@ -260,34 +327,47 @@ def focused_profile(inputs, family_slug):
             if svc.startswith("s2p-") or svc == "s2p-vp-source":
                 for dep in inputs.recipes["s2p-vp-source"]["dependencies"]["compose_depends_on"]:
                     changed |= add(dep, "R9", "Source-to-Pay overlay closure for s2p-vp-source")
+    services = apply_trust_variant(services, inputs, trust_path, trace)
     for svc in services:
         services[svc]["reasons"] = trace[svc]
     jobs = [j for j, (img, ds) in MIGRATION_JOBS.items() if ds in services and any(inputs.recipes[s]["runtime"].get("image", "").startswith(img) for s in services)]
     for j in jobs:
         trace[j].append("R8: migration job for %s (image %s)" % (MIGRATION_JOBS[j][1], MIGRATION_JOBS[j][0]))
+    for j in trust_jobs_for(services, inputs):
+        jobs.append(j)
+        trace[j].append("R12: one-shot job of the real %s implementation" % TRUST_JOBS[j][2])
     services = OrderedDict(sorted(services.items()))
-    return Profile({"name": "focused:" + family_slug, "kind": "runtime_profile", "schema_version": "m9.1", "architecture_snapshot_id": inputs.snapshot_id,
+    return Profile({"name": "focused:" + family_slug, "kind": "runtime_profile", "schema_version": "m11.1", "architecture_snapshot_id": inputs.snapshot_id,
                     "recipe_set_id": inputs.recipe_set_id, "services": services, "jobs": jobs, "s2p": any(s.startswith("s2p-") for s in services),
+                    "trust_path": trust_path,
                     "families": [fid] + sorted(proves), "journeys": journeys,
                     "derivation": {"rules": dict(RULES), "family": fid, "journey_definitions": journeys, "proves_families": sorted(proves),
-                                   "jobs": {j: trace[j] for j in jobs}},
+                                   "jobs": {j: trace[j] for j in jobs}, "trust_path": trust_path},
                     "counts": _counts(services, jobs)})
 
 
-def derive(inputs, name):
+def derive(inputs, name, trust_path="real"):
     name = ALIASES.get(name, name)
     if name == "full":
-        return full_profile(inputs)
+        return full_profile(inputs, trust_path)
     if name.startswith("focused:"):
-        return focused_profile(inputs, name.split(":", 1)[1])
+        return focused_profile(inputs, name.split(":", 1)[1], trust_path)
     raise KeyError("unknown profile %r (full | focused:<family> | %s)" % (name, " | ".join(ALIASES)))
 
 
+def trust_services(profile):
+    """Services of the real trust-path overlay present in a profile (docker-compose.m11.yml)."""
+    real = {s for sets in TRUST_ROLES.values() for s in sets["real"]}
+    return [s for s in profile["services"] if s in real]
+
+
 def compose_profiles_for(profile, inputs):
-    """Which compose --profile flags the service set needs (datastores/substitutes/core/migrations/s2p)."""
+    """Which compose --profile flags the service set needs (datastores/substitutes/core/migrations/s2p/trustpath)."""
     ps = set()
     for s in profile["services"]:
         ps.update(inputs.recipes[s].get("profiles") or [])
     if profile["jobs"]:
         ps.add("migrations")
+    if trust_services(profile):
+        ps.update(("trustpath", "trustpath-migrations"))
     return sorted(ps)

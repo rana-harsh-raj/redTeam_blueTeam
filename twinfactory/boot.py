@@ -17,6 +17,12 @@ from . import paths
 from .util import sh, CommandError, now, write_json, read_json
 
 DATASTORES = ("mysql-payouts", "mysql-fts", "mysql-xbalances", "mysql-apidb-stub", "postgres-ledger", "mongo-cfa", "redis", "localstack", "kafka")
+# M11 real trust path (docker-compose.m11.yml): datastores -> migration jobs -> services -> provisioning/seed jobs
+TRUST_DATASTORES = ("postgres-kong", "mysql-shield", "redis-shield", "mysql-bas", "mysql-workflows", "cadence")
+TRUST_MIGRATIONS = ("edge-kong-migrate", "shield-migrate", "bas-migrate", "workflows-migrate")
+TRUST_SERVICES = ("edge-kong", "edge-bridge", "shield-web", "banking-accounts-api", "workflows-api", "workflows-worker")
+TRUST_PROVISION = ("edge-kong-config", "shield-seed", "bas-seed", "workflows-seed")
+TRUST_PROFILES = ("trustpath", "trustpath-migrations")
 SUB_HEALTH = ("kong-lite", "api-ingress", "monolith-stub", "dcs-stub", "splitz-stub", "shield-stub", "pricing-stub", "asv-stub", "stork-capture",
               "merchant-webhook-sink", "xas-sim", "workflow-engine", "batch-sim", "bankingaccounts-stub", "ledger-gate", "workflow-sim", "xas-sink")
 SEEDS = {  # datastore -> (generated seed file, loader)
@@ -46,6 +52,7 @@ class Boot:
         self.log_dir.mkdir(parents=True, exist_ok=True)
         self.docker_env = dict(docker_env)
         self.secrets_env = dict(secrets_env or {})
+        self.trust = profile.get("trust_path", "substitute") == "real" and any(s in self.services for s in TRUST_SERVICES)
         self.steps = []
         self.crashes = []
         self.n = 0
@@ -56,11 +63,15 @@ class Boot:
         e.update(self.docker_env)
         e.update({"COMPOSE_PROJECT_NAME": self.inst["compose_project"], "ARENA_SUFFIX": self.inst["arena_suffix"], "ARENA_INSTANCE": self.inst["instance_id"],
                   "ARENA_SUBNET": self.inst["arena_subnet"], "INGRESS_SUBNET": self.inst["ingress_subnet"], "KONG_LITE_HOST_PORT": str(self.inst["kong_host_port"]),
-                  "ARENA_TAG": self.inst["arena_tag"], "ARENA_WORKFLOW_HOST": "http://workflow-engine:8093", "ARENA_MOZART_IMPL": "mozart-sim",
+                  "ARENA_TAG": self.inst["arena_tag"], "ARENA_MOZART_IMPL": "mozart-sim",
                   "ARENA_ROUTE_PROFILE": "monolith", "ARENA_SEED_EPOCH": str(self.inst["seed_epoch"]), "S2P_SOURCE_IMAGE": self.inst.get("s2p_image") or "",
                   "PYTHONDONTWRITEBYTECODE": "1"})
+        e.update(trust_env(self.trust))
         if secrets:
             e.update(self.secrets_env)
+            pw = self.env2 / "secrets" / "mysql_workflows_root_password.txt"
+            if self.trust and pw.is_file():
+                e["ARENA_MYSQL_WORKFLOWS_ROOT_PASSWORD"] = pw.read_text().strip()   # cadence auto-setup MYSQL_PWD (compose interpolation only)
         if extra:
             e.update(extra)
         return e
@@ -69,10 +80,16 @@ class Boot:
         cmd = ["docker", "compose", "--env-file", ".env.arena", "-f", "docker-compose.yml"]
         if s2p:
             cmd += ["-f", "docker-compose.s2p.yml", "-f", "docker-compose.twin.yml"]
+        if self.trust:
+            cmd += ["-f", "docker-compose.m11.yml"]
         for p in profiles:
             cmd += ["--profile", p]
         if s2p:
             cmd += ["--profile", "s2p"]
+        if self.trust:
+            for p in TRUST_PROFILES:
+                if p not in profiles:
+                    cmd += ["--profile", p]
         return cmd
 
     # ---- step runner ----
@@ -90,7 +107,7 @@ class Boot:
 
     def compose(self, name, *args, s2p=False, timeout=1800, check=True, input=None, profiles=None, retries=0):
         cmd = self.compose_cmd(s2p=s2p, profiles=profiles or ("datastores", "migrations", "substitutes", "core", "verify")) + list(args)
-        rec = self.step(name, cmd, timeout=timeout, check=check and retries == 0, input=input, secrets=s2p)
+        rec = self.step(name, cmd, timeout=timeout, check=check and retries == 0, input=input, secrets=s2p or self.trust)
         attempt = 0
         while rec["rc"] != 0 and attempt < retries:
             # a fresh dockerd occasionally races when many containers are created at once ("RWLayer ... unexpectedly nil");
@@ -101,7 +118,7 @@ class Boot:
             ids = [x for x in (r["stdout"] or "").split() if x]
             if ids:
                 sh(["docker", "rm", "-f", *ids], env=self.env(), check=False, timeout=120)
-            rec = self.step(name + "-retry%d" % attempt, cmd, timeout=timeout, check=check and attempt == retries, input=input, secrets=s2p)
+            rec = self.step(name + "-retry%d" % attempt, cmd, timeout=timeout, check=check and attempt == retries, input=input, secrets=s2p or self.trust)
         return rec
 
     def container_id(self, service):
@@ -158,6 +175,8 @@ class Boot:
             self.step("gen-secrets", ["bash", "secrets/gen-secrets.sh"])
             self.write_s2p_secrets()
         self.step("config-generate", ["python3", "config/generate.py"])
+        if self.trust:   # M11: banking-accounts seed rows for the arena's Direct merchants (loaded by the bas-seed job)
+            self.step("trust-bas-seed-render", ["python3", "trustpath/bankingaccounts/render_seed.py"])
         self.step("preflight", ["python3", "preflight/preflight.py"])
 
     def write_s2p_secrets(self):
@@ -184,6 +203,8 @@ class Boot:
 
     def migrations(self):
         for job in self.jobs:
+            if job in TRUST_MIGRATIONS or job in TRUST_PROVISION:
+                continue   # M11 jobs run in trust_path() once their own datastores are up
             self.compose("migrate-" + job, "run", "--rm", "--no-deps", job, profiles=("datastores", "migrations"), timeout=900)
         for ds, (patch, db, pw) in SCHEMA_PATCHES.items():
             if ds in self.services:
@@ -219,8 +240,29 @@ class Boot:
             r = self.compose("stork-subscriptions", "logs", "stork-capture", check=False, profiles=("datastores", "substitutes"))
             self.steps[-1]["stork_loaded"] = bool(re.search(r"loaded \d+ webhook subscription", r["stdout"]))
 
+    def trust_path(self):
+        """M11: the real trust-path services (docker-compose.m11.yml) -- their datastores, the repositories' own migrations,
+        the services, then the gateway provisioning (terraform-derived routes/plugins + merchant consumers) and the
+        seed jobs. Skipped entirely for the substitute variant."""
+        if not self.trust:
+            return
+        ds = [d for d in TRUST_DATASTORES if d in self.services]
+        if ds:
+            self.compose("trust-datastores-up", "up", "-d", "--no-build", *ds, profiles=("datastores",) + TRUST_PROFILES, retries=2)
+            self.wait_healthy(ds, timeout=600, name="trust-datastores-health")
+        for job in TRUST_MIGRATIONS:
+            if job in self.jobs:
+                self.compose("migrate-" + job, "run", "--rm", "--no-deps", job, profiles=("datastores",) + TRUST_PROFILES, timeout=900)
+        svcs = [s for s in TRUST_SERVICES if s in self.services]
+        if svcs:
+            self.compose("trust-services-up", "up", "-d", "--no-build", *svcs, profiles=("datastores", "substitutes") + TRUST_PROFILES, retries=2)
+            self.wait_healthy(svcs, timeout=420, name="trust-services-health")
+        for job in TRUST_PROVISION:
+            if job in self.jobs:
+                self.compose("provision-" + job, "run", "--rm", "--no-deps", job, profiles=("datastores", "substitutes") + TRUST_PROFILES, timeout=900)
+
     def core(self):
-        core = sorted(s for s in self.services if self.profile["services"][s]["category"] == "core-real-binary")
+        core = sorted(s for s in self.services if self.profile["services"][s]["category"] == "core-real-binary" and s not in TRUST_SERVICES)
         if not core:
             return
         self.compose("core-up", "up", "-d", "--no-build", *core, profiles=("datastores", "substitutes", "core"), timeout=900, retries=2)
@@ -254,7 +296,7 @@ class Boot:
                 self.step("reservation-readiness", ["python3", "scripts/reservation-readiness.py"], check=False)
 
     def bridge(self, action="start"):
-        if "kong-lite" not in self.services:
+        if "kong-lite" not in self.services and "edge-kong" not in self.services:
             return
         args = ["python3", "scripts/ingress.py", action]
         if action == "start":
@@ -282,21 +324,39 @@ class Boot:
         r = self.step("s2p-health", ["docker", "exec", self.container_id("s2p-vp-source"), "/service", "health"], check=False)
         self.steps[-1]["vp_source_health_rc"] = r["rc"]
 
-    def full(self):
-        """Boot a BUILT instance (seeds/secrets/config already generated by the build phase) from empty volumes."""
+    STAGES = ("materialize", "datastores", "migrations", "seed", "substitutes", "trust_path", "core", "post_core", "bridge", "fingerprint", "s2p")
+
+    def full(self, resume_from=None):
+        """Boot a BUILT instance (seeds/secrets/config already generated by the build phase) from empty volumes.
+        `resume_from=<stage>` re-enters the same sequence at that stage after a failed boot whose earlier stages
+        completed (containers/volumes still present); every step is recorded as usual, prefixed by the resume marker."""
         t0 = time.time()
-        self.materialize()
-        self.datastores()
-        self.migrations()
-        self.seed()
-        self.substitutes()
-        self.core()
-        self.post_core()
-        self.bridge("start")
-        fp = self.fingerprint()
-        self.s2p()
+        stages = list(self.STAGES)
+        if resume_from:
+            if resume_from not in stages:
+                raise ValueError("unknown boot stage %r (one of %s)" % (resume_from, ", ".join(stages)))
+            stages = stages[stages.index(resume_from):]
+            self.steps.append({"name": "resume-from", "cmd": ["boot.full", "resume_from=" + resume_from], "rc": 0, "secs": 0, "at": now(),
+                               "stdout": "stages: " + ", ".join(stages), "stderr": ""})
+        fp = {}
+        for st in stages:
+            if st == "bridge":
+                self.bridge("start")
+            elif st == "fingerprint":
+                fp = self.fingerprint()
+            else:
+                getattr(self, st)()
         return {"boot_id": fp.get("boot_id"), "config_digest": fp.get("config_digest"), "secs": round(time.time() - t0, 1), "steps": self.steps,
-                "crash_restarts": self.crashes, "finished_at": now()}
+                "crash_restarts": self.crashes, "finished_at": now(), "resumed_from": resume_from}
+
+
+def trust_env(real):
+    """The .env.arena / process-environment values that select the trust-path implementation (M11)."""
+    if real:
+        return {"ARENA_TRUST_PATH": "real", "ARENA_INGRESS_IMPL": "edge-kong", "ARENA_WORKFLOW_HOST": "http://workflows-api:9400",
+                "ARENA_PASSPORT_API_KID": "apiv1", "ARENA_EDGE_PASSPORT_REQUIRED": "0"}
+    return {"ARENA_TRUST_PATH": "substitute", "ARENA_INGRESS_IMPL": "kong-lite", "ARENA_WORKFLOW_HOST": "http://workflow-engine:8093",
+            "ARENA_PASSPORT_API_KID": "arena-passport-1", "ARENA_EDGE_PASSPORT_REQUIRED": "0"}
 
 
 def load_s2p_secrets(env2):

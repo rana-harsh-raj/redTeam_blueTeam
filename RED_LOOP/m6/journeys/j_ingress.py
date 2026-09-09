@@ -315,6 +315,9 @@ def ingress_batch(ctx):
     import bulk_client
     m = ctx.m
     st, health = ctx.a.jhttp("GET", "http://batch-sim:8094/health", note="batch-sim health")
+    if st != 200:
+        ctx.blocked("batch-sim reachable on the arena network (compose service `batch-sim`, profile `substitutes`; the M9 "
+                    "critical-payouts / focused profiles do not derive it)", {"status": st, "body": str(health)[:200]})
     mode = (health or {}).get("upstream_mode") or (health or {}).get("ps_api_url")
     ctx.ev["batch_sim_health"] = health
     ctx.ck("batch_sim_targets_the_shared_ingress", "api-ingress" in json.dumps(health), health)

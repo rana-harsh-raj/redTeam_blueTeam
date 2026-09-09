@@ -279,7 +279,7 @@
     Mock        = true
 
 [banking_account_service]
-    host = "http://bankingaccounts-stub:8080"   # arena substitute (was a blackhole placeholder)
+    host = "{{TRUST.bas_url}}"   # M11: real banking-accounts-api (/v0.2, as prod https://banking-account.razorpay.in/v0.2) or bankingaccounts-stub
     timeout = "2000ms"
     keepAliveTimeout = "10000ms"
     httpClientName = "payouts"
@@ -289,7 +289,7 @@
     httpmaxjitterinterval = "2ms"
     [banking_account_service.auth]
         username = "payouts"
-        password = "RANDOM_BAS_PASSWORD"
+        password = "{{TRUST.bas_token}}"   # sent as the Api-Token header (pkg/bankingAccountService/client.go) == banking-accounts [api].token
     [banking_account_service.httpclient.resiliency]
         maxconcurrentrequests = 100
         requestvolumethreshold = 20
@@ -315,7 +315,7 @@
     httpmaxjitterinterval = "2ms"
     [workflow.auth]
         username = "workflow"
-        password = "workflow"
+        password = "{{TRUST.workflow_auth_pass}}"   # real variant: workflows [auth.payouts] secret; substitute: workflow-engine's literal
     [workflow.httpclient.resiliency]
         maxconcurrentrequests = 100
         requestvolumethreshold = 20
@@ -345,7 +345,7 @@
         timeout = "200ms"
 
 [shield]
-    host = "{{SVC.shield_stub.url}}"
+    host = "{{TRUST.shield_url}}"   # M11: real shield-web (APP_MODE=rzpxprod) or shield-stub, per ARENA_TRUST_PATH
 
     timeout = 200
     keepAliveTimeout = 30000
@@ -456,12 +456,17 @@
 
 [passport]
     [passport.api]
-        identifier = "apiv1"
-        publicKey  = "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA7YsDUUnin5mzRewJeh+C\nz7HUCFHDYrQpOgrcxocYJHpuVZW0JT5I6mYq/TNcCt6X+Jcp4Y0DbSQ5V/9uGz+4\niPpmCV6FKrHdjxO/SWfAENY8omhzoeUnyFpR5jITgLQhfVvtU+4XGwztjhx46Zp0\noymkEQ4+4URVOWQTSvjupLkyfiSpYW/w0Pkw/1CZs9/p8SF4D2uidlctgm8ZDH8y\nqqakMudZvdFsYOeBNJ/8s8MkDcSggbpG550EK9OC4podVZ2b6R+6RG1Vo1898LgY\n9ze3gsBBQlB2O61EyWqflX73HdgB19cbg0bDz7T8ogutoBKTONqPX5lbrh+8/YNK\n+13sA9c30LObfxCPVImJxA2x+jc+681QhQ01nuNpt95PcJIUowdG2Y8YmIfLb5xG\nJzCTTwDvj531njQX6g6grdt97ZgPL6UdrxpEPtJULUp+2gOd5OKKy2B4F+9dMnDo\ndJ7HSZZ9w1i10zd+h4q+YKjjpV8m8+9s6rJsS4yJnP0km5RyZ85Rf1A66o4FeDzW\nMjUmvtlznHNvY1vT0Niukn2IJPmME+xaUZaUXPQ6WAaHdIzVvULhIVrXq3BkfaNs\nxF826+QxL/wnMr6SYW91SJvtp5nKBIcYZ7XHV5PvH6fDJyh6r1anofyK/cXdoyfW\nMwA/g8hfqPX7vJlWpw1xuf0CAwEAAQ==\n-----END PUBLIC KEY-----"
+        # M11: slot = the API monolith's passport signer (production kid `apiv1`). substitute variant: the pinned
+        # production public key (passport_api_prod_public_key.pem, never usable here); real variant: the arena key the
+        # monolith replacement (api-ingress) signs with. See config/generate.py TRUST_PATH.
+        identifier = "{{TRUST.passport_api_kid}}"
+        publicKey  = "{{TRUST.passport_api_key}}"
     [passport.edge]
-        identifier = "arena-passport-1"
-        publicKey  = "{{SECRET.passport_public_key_toml}}"   # arena: kid + key of kong-lite\'s per-arena RS256 signer
-
+        # slot = the edge gateway's signer: real variant kid `edgev2` (terraform-kong upstream-jwt key_id) + the
+        # edge-kong RS256 key; substitute variant kid `arena-passport-1` + kong-lite's key (unchanged M7 behaviour)
+        identifier = "{{TRUST.passport_edge_kid}}"
+        publicKey  = "{{TRUST.passport_edge_key}}"
+    
 
 [consumer_task]
     name = "fts"

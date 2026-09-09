@@ -1,0 +1,1911 @@
+{
+  "kind": "twin_kong_config",
+  "schema_version": "m11.1",
+  "derived_from": {
+    "repository": "razorpay/terraform-kong",
+    "sha": "8ffe965bce7868d150344433d3bfbf3e630e228b",
+    "files": [
+      "prod/api/api.tf",
+      "prod/api/variables.tf",
+      "templates/common/regex.yaml",
+      "templates/payouts/payouts-ext.tf",
+      "module/plugins.tf",
+      "module/service.tf",
+      "prod/edge/consumers.tf"
+    ]
+  },
+  "consumers": {
+    "anonymous": {
+      "username": "anonymous",
+      "source": "prod/edge/consumers.tf resource kong_consumer.anonymous"
+    },
+    "merchants": {
+      "note": "one consumer per arena merchant, username = merchant id (kong-utils common.lua extract_consumer_details: a username without '~' is a merchant), tags m~l / m~t (parse_tags) and r~<role>; one basicauth_x_credentials row per key id (username = rzp_<mode>_<merchant id>, password hashed by the plugin: sha512(password .. consumer_id)). Seeded from ENV2_COMPOSE/seeds/generated/merchants.json + secrets/merchant-keys by trustpath/edge/provision_kong.py because the production key-sync path into Kong is not in any granted repository (production unknown PU-M11-1)."
+    }
+  },
+  "route_hosts": {
+    "twin": {
+      "prod-api": null,
+      "payouts-ext": [
+        "payouts-ext.razorpay.com"
+      ]
+    },
+    "note": "prod-api routes carry no `hosts` in the twin (no DNS: the twin's public port is api.razorpay.com's position); the payouts-ext routes carry their PRODUCTION hosts so the overlapping GET /v1/payouts/{id} path resolves exactly as in production (by host). Every production host list is recorded per service in hosts_in_production."
+  },
+  "services": {
+    "prod-api": {
+      "source": "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)",
+      "twin_upstream": {
+        "host": "api-ingress",
+        "port": 8080,
+        "protocol": "http",
+        "note": "CONTRACT_FAITHFUL_REPLACEMENT of the API monolith ingress (the monolith itself cannot be booted here, see M11_FINAL_REPORT.md)"
+      },
+      "service": {
+        "name": "prod-api",
+        "protocol": "http",
+        "host": "api-ingress",
+        "port": 8080,
+        "path": "/",
+        "retries": 0,
+        "connect_timeout": 60000,
+        "write_timeout": 600000,
+        "read_timeout": 600000
+      },
+      "hosts_in_production": [],
+      "service_plugins": [
+        {
+          "name": "upstream-jwt",
+          "config": {
+            "issuer": "edge",
+            "private_key_location": "/ssl/JWT_PRIVATE_KEY_V2",
+            "public_key_location": "/ssl/JWT_PUBLIC_KEY_V2",
+            "header": "X-Passport-JWT-V1",
+            "include_credential_type": false,
+            "key_id": "edgev2",
+            "shadow_mode": false
+          },
+          "source": "prod/api/api.tf plugins.upstream-jwt (shadow_mode: schema default true only logs a missing key; the twin sets false so a missing key fails loudly -- documented deviation)"
+        },
+        {
+          "name": "basic-auth-x",
+          "config": {
+            "anonymous": "__ANONYMOUS_CONSUMER_ID__",
+            "hide_credentials": false
+          },
+          "source": "prod/api/api.tf plugins.basic-auth-x (anonymous = prod/edge consumer `anonymous`)"
+        }
+      ],
+      "routes": {
+        "payout_create": {
+          "paths": [
+            "~/v1/payouts/?$"
+          ],
+          "methods": [
+            "POST"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "payout_create-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:663",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "payout_fetch_by_id": {
+          "paths": [
+            "~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$"
+          ],
+          "methods": [
+            "GET"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "payout_fetch_by_id-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:655",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "payout_fetch_multiple": {
+          "paths": [
+            "~/v1/payouts/?$"
+          ],
+          "methods": [
+            "GET"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "payout_fetch_multiple-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:1172",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "payout_approve": {
+          "paths": [
+            "~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/approve/?$"
+          ],
+          "methods": [
+            "POST"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "payout_approve-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:695",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "payout_reject": {
+          "paths": [
+            "~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/reject/?$"
+          ],
+          "methods": [
+            "POST"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "payout_reject-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:751",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "payout_cancel": {
+          "paths": [
+            "~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/cancel/?$"
+          ],
+          "methods": [
+            "POST"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "payout_cancel-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:703",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "payout_create_with_otp": {
+          "paths": [
+            "~/v1/payouts_with_otp/?$"
+          ],
+          "methods": [
+            "POST"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "payout_create_with_otp-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:719",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "payout_purpose_get": {
+          "paths": [
+            "~/v1/payouts/purposes/?$"
+          ],
+          "methods": [
+            "GET"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "payout_purpose_get-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:735",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "payouts_batch_create": {
+          "paths": [
+            "~/v1/payouts_batch/?$"
+          ],
+          "methods": [
+            "POST"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "payouts_batch_create-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:759",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "contact_create": {
+          "paths": [
+            "~/v1/contacts/?$"
+          ],
+          "methods": [
+            "POST"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "contact_create-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:164",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "contact_get": {
+          "paths": [
+            "~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$"
+          ],
+          "methods": [
+            "GET"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "contact_get-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:791",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "contact_list": {
+          "paths": [
+            "~/v1/contacts/?$"
+          ],
+          "methods": [
+            "GET"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "contact_list-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:139",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "contact_update": {
+          "paths": [
+            "~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$"
+          ],
+          "methods": [
+            "PATCH"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "contact_update-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:799",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "fund_account_create": {
+          "paths": [
+            "~/v1/fund_accounts/?$"
+          ],
+          "methods": [
+            "POST"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "fund_account_create-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:156",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "fund_account_get": {
+          "paths": [
+            "~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$"
+          ],
+          "methods": [
+            "GET"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "fund_account_get-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:172",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "fund_account_list": {
+          "paths": [
+            "~/v1/fund_accounts/?$"
+          ],
+          "methods": [
+            "GET"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "fund_account_list-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:992",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        },
+        "fund_account_update": {
+          "paths": [
+            "~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$"
+          ],
+          "methods": [
+            "PATCH"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": 1.0,
+          "impersonation_mode": null,
+          "passport_enabler_config": "global",
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "fund_account_update-prod-api",
+          "source": "terraform-kong/prod/api/api.tf:131",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 1.0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "passport-enabler",
+              "config": {
+                "conditions": [
+                  {
+                    "rollout": 1,
+                    "priority": 1,
+                    "match": {
+                      "auth_flows": [
+                        "basic-auth-x:merchant",
+                        "basic-auth-x:impersonation-grant",
+                        "jwt-x:",
+                        "basic-auth-x:partner"
+                      ]
+                    }
+                  }
+                ]
+              },
+              "source": "module/plugins.tf resource kong_plugin.passport_enabler + prod/api/variables.tf local.passport_enabler_global_config"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": null
+        }
+      }
+    },
+    "payouts-ext": {
+      "source": "terraform-kong/templates/payouts/payouts-ext.tf (prod/payouts/config.tf: target payouts.razorpay.com:443 = the Payouts service)",
+      "twin_upstream": {
+        "host": "payouts-api",
+        "port": 9400,
+        "protocol": "http"
+      },
+      "service": {
+        "name": "payouts-ext",
+        "protocol": "http",
+        "host": "payouts-api",
+        "port": 9400,
+        "path": "/",
+        "retries": 0,
+        "connect_timeout": 2000,
+        "write_timeout": 5000,
+        "read_timeout": 5000
+      },
+      "hosts_in_production": [
+        "payouts-ext.razorpay.com"
+      ],
+      "service_plugins": [
+        {
+          "name": "upstream-jwt",
+          "config": {
+            "issuer": "edge",
+            "private_key_location": "/ssl/JWT_PRIVATE_KEY_V2",
+            "public_key_location": "/ssl/JWT_PUBLIC_KEY_V2",
+            "header": "X-Passport-JWT-V1",
+            "include_credential_type": false,
+            "key_id": "edgev2",
+            "shadow_mode": false
+          },
+          "source": "module/plugins.tf local.create_upstream_jwt (default upstream-jwt when authenticated_paths exist)"
+        }
+      ],
+      "routes": {
+        "payout_get_by_id": {
+          "paths": [
+            "~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$"
+          ],
+          "methods": [
+            "GET"
+          ],
+          "rollout": 1.0,
+          "impersonation_rollout": null,
+          "impersonation_mode": null,
+          "passport_enabler_config": null,
+          "hide_credentials": false,
+          "ip_restrictions_rollout": null,
+          "class": "authenticated_paths",
+          "kong_route_name": "payout_get_by_id-payouts-ext",
+          "source": "terraform-kong/templates/payouts/payouts-ext.tf:21",
+          "plugins": [
+            {
+              "name": "consumer-authentication",
+              "config": {
+                "basic-auth-x": {
+                  "hide_credentials": false
+                },
+                "jwt-x": {
+                  "default_secret_key": "authservice",
+                  "default_es_secret_key": "authservice_es",
+                  "claims_to_verify": [
+                    "exp",
+                    "nbf"
+                  ],
+                  "secret_is_base64": false
+                },
+                "anonymous": "anonymous",
+                "rollout": 1.0
+              },
+              "source": "module/plugins.tf resource kong_plugin.consumer_authenticator"
+            },
+            {
+              "name": "basic-auth-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_basic_auth (route-level skip of the service-level basic-auth-x)"
+            },
+            {
+              "name": "jwt-x",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_jwt_x"
+            },
+            {
+              "name": "impersonation-grant",
+              "config": {
+                "skip": false,
+                "anonymous": "anonymous",
+                "rollout": 0,
+                "merchant_rollout": 0,
+                "whitelisted": false
+              },
+              "source": "module/plugins.tf resource kong_plugin.impersonation_grant_authenticated_paths"
+            },
+            {
+              "name": "consumer-identifier",
+              "config": {
+                "skip": true
+              },
+              "source": "module/plugins.tf resource kong_plugin.disabled_consumer_identifier"
+            },
+            {
+              "name": "ip-restriction-x",
+              "config": {
+                "ip_restrictions_rollout": 0
+              },
+              "source": "module/plugins.tf resource kong_plugin.ip-restriction-x"
+            }
+          ],
+          "hosts": [
+            "payouts-ext.razorpay.com"
+          ]
+        }
+      }
+    }
+  },
+  "not_provisioned": {
+    "global_plugins": {
+      "source": "prod/edge/global-plugins.tf",
+      "names": [
+        "prometheus",
+        "prometheus-x",
+        "log-tracer",
+        "zipkin-x",
+        "rate-limiter-non-contextual",
+        "rate-limiter-contextual",
+        "lake-events",
+        "response-transformer",
+        "geo-router",
+        "otel"
+      ],
+      "reason": "observability / rate-limiting globals, not on the authentication path; the rate limiters need the Redis cluster + limits config that is a production unknown (PU-M11-2)"
+    },
+    "api-internal_service": {
+      "reason": "internal-app traffic (rzp_live + app secret, X-Razorpay-Account) reaches the monolith through the api-internal Kong service as plain `paths` (prod/api/api-internal.tf); the twin's internal apps call api-ingress directly, as they did in M7"
+    },
+    "api-dashboard-merchant_service": {
+      "reason": "dashboard traffic goes Kong (user-session) -> dashboard app -> API proxy auth; the dashboard app is not cloned. Dashboard/session identity stays the api-ingress `dashboard:<session>` proxy-auth contract (BasicAuth::proxyAuth)"
+    }
+  },
+  "missing_wanted_routes": []
+}

@@ -84,7 +84,7 @@ class TestCompiler(unittest.TestCase):
 
     def test_static_semantics_and_no_journey_results(self):
         js = [n for n in BODY["graph"]["nodes"] if n["kind"] == "journey"]
-        self.assertEqual(len(js), 202)
+        self.assertEqual(len(js), 216)      # M11: + the 14 trust-path journeys
         for n in js:
             self.assertNotIn("result", n); self.assertNotIn("merchant_id", n); self.assertNotIn("evidence", n)
         subs = {n["id"]: n for n in BODY["graph"]["nodes"] if n["kind"] == "substitute"}
@@ -102,8 +102,8 @@ class TestCompiler(unittest.TestCase):
                     self.assertIn(f, v, k)
                 self.assertIn(v["population"], BODY["populations"])
                 self.assertEqual(v["denominator"], BODY["populations"][v["population"]]["count"])
-        self.assertEqual(BODY["populations"]["p0_critical_kinds"]["count"], 364)
-        self.assertEqual(BODY["populations"]["p0_non_journey"]["count"], 525)
+        self.assertEqual(BODY["populations"]["p0_critical_kinds"]["count"], 390)   # M11: +26 promoted trust-path nodes (M8: 364)
+        self.assertEqual(BODY["populations"]["p0_non_journey"]["count"], 554)      # M8: 525
 
     def test_unknown_registry_consolidated_with_origins(self):
         reg = BODY["production_unknowns"]
@@ -129,10 +129,19 @@ class TestCompiler(unittest.TestCase):
 class TestImportM7(unittest.TestCase):
     def test_projection_matches_m7_and_classifies_every_delta(self):
         proj = STORE.imports(SID)["m7"]["projection"]
-        self.assertTrue(proj["node_ids_equal"])
+        # M11: every M7 node is still present; the only additions are the m11-trust-path lane's (promoted services,
+        # their datastores, identities and gateway routes) and every extra edge touches one of them
+        self.assertTrue(proj["m7_nodes_all_present"])
+        self.assertFalse(proj["node_ids_equal"])
+        self.assertEqual(proj["nodes_only_in_m7"], [])
+        self.assertEqual(sorted(proj["nodes_only_in_static"]), sorted(proj["m11_additions"]))
         self.assertEqual(proj["edges_only_in_m7"], [])
-        self.assertEqual(len(proj["edges_only_in_static"]), 1)
+        m11 = set(proj["m11_additions"]) | {"svc:edge-kong", "svc:shield", "svc:banking-accounts", "svc:workflows", "svc:workflows-workers", "sub:api-ingress", "svc:payouts-api",
+                                            "sub:kong-lite", "sub:shield-stub", "sub:bankingaccounts-stub", "sub:workflow-engine"}
+        extra = [e for e in proj["edges_only_in_static"] if not ({e[0], e[1]} & m11)]
+        self.assertEqual(len(extra), 1, extra)          # the single M8-era extra edge
         self.assertTrue(all(d["reason"] != "unclassified delta" for d in proj["fidelity_deltas"]))
+        self.assertTrue(any(d["id"] == "svc:workflows" and d["static_fidelity"] == "real_source_running" for d in proj["fidelity_deltas"]))
         self.assertEqual(proj["m7_files"]["reports/architecture/M7_CANONICAL_SNAPSHOT.json"], "d88a26342e10eea4c18971f2765ecc2e05364d7716cc113733f7d76233709651")
 
     def test_m7_files_untouched(self):
@@ -154,7 +163,18 @@ class TestImportM7(unittest.TestCase):
 class TestRecipes(unittest.TestCase):
     def test_98_recipes_with_explicit_unknowns(self):
         idx = STORE.recipes(SID)
-        self.assertEqual(idx["count"], 98)
+        self.assertEqual(idx["count"], 118)   # M8: 98 canonical + M11: 20 real trust-path overlay recipes (11 services + 8 one-shot jobs + edge-bridge)
+        by = idx["by_category"]
+        self.assertEqual(by["core-real-binary"], 67 + 9)   # M8 + edge-kong(+migrate), shield-web(+migrate), banking-accounts-api(+migrate), workflows-api/worker(+migrate)
+        self.assertEqual(by["datastore-or-infra"], 9 + 11)  # M8 + 6 trust-path datastores, edge-bridge, edge-kong-config and 3 seed jobs
+        for name, kind in (("edge-kong", "build-m11-image"), ("shield-web", "build-m11-host"), ("banking-accounts-api", "build-m11-host"), ("workflows-api", "build-m11-host")):
+            r = STORE.recipe(name, SID)
+            self.assertEqual(r["build"]["kind"], kind, name)
+            self.assertEqual(r["category"], "core-real-binary")
+            self.assertEqual(r["compose_file"], "ENV2_COMPOSE/docker-compose.m11.yml")
+            self.assertEqual(r["source"]["kind"], "pinned-repository")
+        self.assertTrue(STORE.recipe("shield-migrate", SID)["runtime"]["one_shot"])
+        self.assertIn("fingerprint-sdk", STORE.recipe("shield-web", SID)["build"]["adaptations"][0])
         for r in idx["recipes"]:
             self.assertIn("runtime.image_digest", r["unknowns"])
         r = STORE.recipe("payouts-api", SID)
@@ -209,7 +229,8 @@ class TestQuery(unittest.TestCase):
         self.assertEqual(a["items"], b["items"])
         self.assertLessEqual(a["count"], 5)
         sp = self.q.shortest_path("identity:merchant-api-key", "table:payouts/payouts")
-        self.assertTrue(sp["found"]); self.assertEqual(sp["items"][0]["hops"], 6)
+        self.assertTrue(sp["found"]); self.assertEqual(sp["items"][0]["hops"], 4)   # M11: the real gateway routes shorten the merchant-key -> payouts table path (M8: 6)
+        self.assertEqual(sp["items"], self.q.shortest_path("identity:merchant-api-key", "table:payouts/payouts")["items"])
         n = self.q.neighbors("svc:payouts-api", depth=3, limit=20)
         self.assertEqual(n["count"], 20); self.assertTrue(n["truncated"])
 

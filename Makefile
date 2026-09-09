@@ -223,6 +223,30 @@ m9-acceptance:     ## evaluate the M9 gates -> reports/implementation/M9_ACCEPTA
 m9-report:         ## render reports/implementation/M9_FINAL_REPORT.md from the machine records
 	@python3 -m twinfactory report
 
+.PHONY: m11-kong-config m11-part m11-create m11-journeys m11-differential m11-resources m11-monolith-attempt m11-clean-checkout m11-acceptance m11-report m11-hashes
+m11-kong-config:   ## derive the twin Kong route table from terraform-kong (prod-api + payouts-ext) -> ENV2_COMPOSE/trustpath/edge/kong-config.json
+	@python3 scripts/m11/derive_kong_config.py
+m11-part:          ## graph part for the promoted trust path -> reports/domain/parts/m11-trust-path.json
+	@python3 scripts/m11/trust_path_part.py
+m11-create:        ## ID=<id> [PROFILE=critical-payouts] [TRUST=real|substitute] SEED=<seed>: create+build+start a variant twin
+	@python3 -m twinfactory create $(ID) --profile $(or $(PROFILE),critical-payouts) --seed $(SEED) --trust-path $(or $(TRUST),real) && python3 -m twinfactory build $(ID) && python3 -m twinfactory start $(ID)
+m11-journeys:      ## ID=<id> [ARGS=--family trust-path]: run the canonical suite (or a selection) on a twin
+	@python3 -m twinfactory journeys $(ID) $(ARGS)
+m11-differential:  ## REAL=<run_dir> SUB=<run_dir>: compare the same suite across variants -> M11_DIFFERENTIAL.md
+	@python3 scripts/m11/differential.py --real $(REAL) --substitute $(SUB)
+m11-resources:     ## ID=<id> [LABEL=<text>]: measure CPU/memory/disk/images/timings of a running twin
+	@python3 scripts/m11/measure_resources.py $(ID) --label "$(LABEL)"
+m11-monolith-attempt: ## probe + record the API monolith boot blockers
+	@python3 scripts/m11/monolith_boot_attempt.py
+m11-clean-checkout: ## clone HEAD into a temp dir and provision a real-variant twin from it
+	@python3 scripts/m11/clean_checkout.py
+m11-acceptance:    ## evaluate the M11 gates -> reports/implementation/M11_ACCEPTANCE.json
+	@python3 scripts/m11/acceptance.py
+m11-report:        ## render M11_FINAL_REPORT.md from the artifacts
+	@python3 scripts/m11/final_report.py
+m11-hashes:        ## bind the M11 artifacts -> M11_ARTIFACT_HASHES.json (ARGS=--verify to check)
+	@python3 scripts/m11/hashes.py $(ARGS)
+
 .PHONY: m10-test m10-proof m10-acceptance m10-report m10-status m10-ls
 m10-test:          ## control-plane deterministic tests (no docker, no gateway)
 	@python3 -m unittest discover -s controlplane/tests -t .

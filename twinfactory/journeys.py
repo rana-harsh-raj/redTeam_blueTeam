@@ -26,6 +26,8 @@ def journey_env(factory, m):
         "TWIN_INSTANCE_ID": m["instance_id"], "TWIN_RUNTIME_INSTANCE_ID": m.get("runtime_instance_id") or "",
         "M6_ALLOW_RESTART": "1", "PYTHONDONTWRITEBYTECODE": "1",
     })
+    from .boot import trust_env
+    e.update(trust_env(m.get("trust_path") == "real"))
     s2p = load_s2p_secrets(env2)
     if s2p.get("S2P_MYSQL_PASSWORD"):
         e["S2P_MYSQL_USER"] = "s2p"

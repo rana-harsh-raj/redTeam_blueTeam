@@ -253,6 +253,8 @@ def main():
     doc = {"schema_version": 1, "lane": "I4 business-journeys", "milestone": "M6",
            "generated_at": F.now(), "run_dir": F.rel_to_repo(run_dir),
            "git_head": F.git_head(), "fingerprint": F.fingerprint(),
+           "trust_path": ("real" if F.TRUST["real"] else "substitute"),      # M11: which trust-path variant ran
+           "trust_impl": {k: F.TRUST[k] for k in ("ARENA_TRUST_PATH", "ARENA_INGRESS_IMPL", "ARENA_WORKFLOW_HOST")},
            "campaign_prefix": campaign,
            "instance": inst,
            "merchants": pool.setup_log,

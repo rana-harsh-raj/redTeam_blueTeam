@@ -129,11 +129,31 @@ class StubHandler(BaseHTTPRequestHandler):
         self._dispatch("PUT")
 
 
+def _tls_listener(routes):
+    """M11: optional TLS listener (STUB_TLS_CERT/STUB_TLS_KEY, STUB_TLS_PORT default 443) for stubs that impersonate a
+    production https hostname through a network alias (dcs-stub for banking-accounts' DCS client, secrets/gen-tls.sh)."""
+    cert, key = os.environ.get("STUB_TLS_CERT"), os.environ.get("STUB_TLS_KEY")
+    if not (cert and key):
+        return None
+    import ssl
+    import threading
+    port = int(os.environ.get("STUB_TLS_PORT", "443"))
+    ctx = ssl.SSLContext(ssl.PROTOCOL_TLS_SERVER)
+    ctx.load_cert_chain(cert, key)
+    tls = ThreadingHTTPServer(("0.0.0.0", port), StubHandler)
+    tls.socket = ctx.wrap_socket(tls.socket, server_side=True)
+    th = threading.Thread(target=tls.serve_forever, daemon=True)
+    th.start()
+    _log("TLS listening on 0.0.0.0:%d (cert %s)" % (port, cert))
+    return tls
+
+
 def serve(routes):
     StubHandler.routes = routes
     addr = ("0.0.0.0", LISTEN_PORT)
     httpd = ThreadingHTTPServer(addr, StubHandler)
     _log("listening on %s (routes=%d)" % (str(addr), len(routes)))
+    _tls_listener(routes)
     try:
         httpd.serve_forever()
     except KeyboardInterrupt:

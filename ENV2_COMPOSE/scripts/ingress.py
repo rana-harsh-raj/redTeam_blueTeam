@@ -30,7 +30,13 @@ MAX_BODY = 1048576
 # M6 kong-lite ARENA-CONTROL headers (dashboard/proxy passport opt-in, see
 # substitutes/kong-lite/CONTRACT.md); kong-lite strips the X-Arena-* headers before upstream.
 FORWARDED_HEADERS=('authorization','content-type','x-payout-idempotency','x-request-id',
-                   'x-arena-passport-consumer-type','x-arena-user-id','x-dashboard-user-role')
+                   'x-arena-passport-consumer-type','x-arena-user-id','x-dashboard-user-role',
+                   # M11: identity headers a client may TRY to inject; the gateway must strip/replace them (trust-path
+                   # journeys assert it), so the bridge forwards them verbatim instead of silently dropping them
+                   'x-passport-jwt-v1','x-passport-usable','x-razorpay-account','x-authentication-result','x-forwarded-for')
+# M11: response headers the bridge relays so a caller can tell who answered (the gateway itself or an upstream through
+# it): Kong's Via / X-Kong-* / WWW-Authenticate, and the upstream Server header renamed (the bridge is the server here)
+RELAYED_RESPONSE_HEADERS=('via','x-kong-upstream-latency','x-kong-proxy-latency','x-kong-request-id','www-authenticate','x-request-id')
 PROXY = '''import sys,json,base64,urllib.request,urllib.error
 class NoRedirect(urllib.request.HTTPRedirectHandler):
  def redirect_request(self,*args,**kwargs): return None
@@ -38,14 +44,53 @@ opener=urllib.request.build_opener(urllib.request.ProxyHandler({}),NoRedirect())
 def response(f):
  body=f.read(4194305)
  if len(body)>4194304: raise ValueError('Kong response too large')
- print(json.dumps({'status':f.code,'body':base64.b64encode(body).decode(),'content_type':f.headers.get('Content-Type','application/json')}))
+ relay={k.lower():v for k,v in f.headers.items() if k.lower() in RELAY}
+ if f.headers.get('Server'): relay['x-upstream-server']=f.headers.get('Server')
+ print(json.dumps({'status':f.code,'body':base64.b64encode(body).decode(),'content_type':f.headers.get('Content-Type','application/json'),'headers':relay}))
 x=json.load(sys.stdin)
+RELAY=set(x.get('relay') or [])
 r=urllib.request.Request('http://127.0.0.1:8080'+x['path'],data=base64.b64decode(x['body']) if x['body'] else None,method=x['method'],headers=x['headers'])
 try:
  with opener.open(r,timeout=25) as f: response(f)
 except urllib.error.HTTPError as f: response(f)
 '''
 COMPOSE = ['docker','compose','--env-file',str(ROOT/'.env.arena'),'-f',str(ROOT/'docker-compose.yml'),'--profile','datastores','--profile','substitutes']
+
+
+def _env_arena():
+    out={}
+    try:
+        for line in (ROOT/'.env.arena').read_text().splitlines():
+            if '=' in line and not line.startswith('#'):
+                k,v=line.split('=',1); out[k.strip()]=v.strip()
+    except OSError:
+        pass
+    return out
+
+
+# M11: which gateway the bridge crosses into. ARENA_INGRESS_IMPL=edge-kong (the REAL Kong gateway, docker-compose.m11.yml)
+# routes every request through the `edge-bridge` helper on the ingress network to Kong's proxy listener; kong-lite
+# (default) keeps the M6/M7 path. The bridge's own contract (loopback only, allowed paths, header allow-list) is unchanged.
+_ENV=_env_arena()
+INGRESS_IMPL=_ENV.get('ARENA_INGRESS_IMPL','kong-lite')
+if INGRESS_IMPL=='edge-kong':
+    EXEC_SERVICE='edge-bridge'
+    UPSTREAM='http://edge-kong:8000'
+    COMPOSE=COMPOSE+['-f',str(ROOT/'docker-compose.m11.yml'),'--profile','trustpath']
+else:
+    EXEC_SERVICE='kong-lite'
+    UPSTREAM='http://127.0.0.1:8080'
+PROXY=PROXY.replace("'http://127.0.0.1:8080'", repr(UPSTREAM))
+# M11: production hosts the real gateway's route table distinguishes (payouts-ext); read from the derived Kong config
+UPSTREAM_HOSTS=set()
+if INGRESS_IMPL=='edge-kong':
+    try:
+        _kc=json.loads((ROOT/'trustpath'/'edge'/'kong-config.json').read_text())
+        for _s in (_kc.get('services') or {}).values():
+            for _r in (_s.get('routes') or {}).values():
+                UPSTREAM_HOSTS.update(_r.get('hosts') or [])
+    except (OSError,ValueError):
+        pass
 
 
 class NoRedirect(urllib.request.HTTPRedirectHandler):
@@ -78,7 +123,12 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self,*args): pass
     def proxy(self):
         hosts = self.headers.get_all('Host', [])
-        if len(hosts) != 1 or hosts[0] not in (f'127.0.0.1:{self.server.server_port}',f'localhost:{self.server.server_port}'):
+        upstream_host = None
+        if len(hosts) == 1 and hosts[0] in UPSTREAM_HOSTS:
+            # M11: a production host the REAL gateway routes by (kong-config.json route_hosts, e.g. payouts-ext.razorpay.com)
+            # is forwarded as the upstream Host; every other non-loopback Host is still refused (DNS-rebinding guard)
+            upstream_host = hosts[0]
+        elif len(hosts) != 1 or hosts[0] not in (f'127.0.0.1:{self.server.server_port}',f'localhost:{self.server.server_port}'):
             self.send_error(403,'loopback Host required');return
         origins = self.headers.get_all('Origin', [])
         if origins and (len(origins) != 1 or origins[0] != 'http://' + hosts[0]):
@@ -104,13 +154,19 @@ class Handler(BaseHTTPRequestHandler):
         if len(body) != length:
             self.send_error(400,'incomplete request body');return
         request={'path':self.path,'method':self.command,'body':base64.b64encode(body).decode(),
-            'headers':{k:v for k,v in self.headers.items() if k.lower() in FORWARDED_HEADERS}}
+            'headers':{k:v for k,v in self.headers.items() if k.lower() in FORWARDED_HEADERS},'relay':list(RELAYED_RESPONSE_HEADERS)}
+        if upstream_host:
+            request['headers']['Host']=upstream_host
         try:
-            res=subprocess.run(COMPOSE+['exec','-T','kong-lite','python3','-c',PROXY],input=json.dumps(request),text=True,capture_output=True,timeout=30,check=True)
+            res=subprocess.run(COMPOSE+['exec','-T',EXEC_SERVICE,'python3','-c',PROXY],input=json.dumps(request),text=True,capture_output=True,timeout=30,check=True)
             response=json.loads(res.stdout); raw=base64.b64decode(response['body'],validate=True)
             if not 100 <= int(response['status']) <= 599 or '\n' in response['content_type'] or '\r' in response['content_type']:
                 raise ValueError('invalid Kong response')
-            self.send_response(response['status']);self.send_header('Content-Type',response['content_type']);self.send_header('Content-Length',str(len(raw)));self.end_headers();self.wfile.write(raw)
+            self.send_response(response['status']);self.send_header('Content-Type',response['content_type']);self.send_header('Content-Length',str(len(raw)))
+            for k,v in (response.get('headers') or {}).items():
+                if isinstance(k,str) and isinstance(v,str) and k.lower() in RELAYED_RESPONSE_HEADERS+('x-upstream-server',) and '\n' not in v and '\r' not in v:
+                    self.send_header(k,v)
+            self.end_headers();self.wfile.write(raw)
         except (subprocess.SubprocessError,ValueError,OSError,KeyError,TypeError):
             self.send_error(502,'local Kong unavailable')
     do_GET=proxy

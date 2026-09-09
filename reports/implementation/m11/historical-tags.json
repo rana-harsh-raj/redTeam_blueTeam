@@ -1,0 +1,13 @@
+{
+ "arch-m8-snapshot-query": "a84a668720692be0ba71b187e149dea4bfc85c66",
+ "assurance-m4.1-reproducible": "ef4ba7264df224e4b782f2671ce8b1eb3079b3d0",
+ "assurance-m5-autonomous-discovery": "2613f383297c7c3b5c0831c26c5c7472494b6e7b",
+ "campaign-m10-control-plane": "d17722b0a083a6e4b6d7c7267c3fc6b124f5db73",
+ "red-loop-m3.1": "3a044f83ed0eda6ead71585f07c450af2ed7978f",
+ "red-loop-m4": "3ae177328341ec4512bdb7de8ce454ce67a35513",
+ "s2p-acceptance-closure-m7": "4505e62dce58561793429c62174c2941c97f6eb0",
+ "twin-m6-complete-domain": "76024aed5ae8474d29bd2b0b2e48c97c429eda52",
+ "twin-m7-shared-ingress-integration": "37ac47db1e630c44e54707694aa84f44301f0b19",
+ "twin-m9-isolated-factory": "addd10e1bd00e148bcd97aac6036ff0a68cc0d2b",
+ "twin-v1.0": "78def24eb57112c0dc39a6ae9062b1f0d1c711fb"
+}

@@ -1,0 +1,223 @@
+[app]
+    env = "rzpxprod"
+    payoutDualWriteEnabled = false
+    useNewStore = false
+    debugMode = false
+    geographies = "IN"
+
+[jaeger]
+    enabled = false
+    port = "6831"
+
+[db]
+    host = "env|DB_HOST"
+    replica_host = "env|DB_REPLICA_HOST"
+    name = "shield"
+    maxIdleConnections = "5"
+    maxOpenConnections = "10"
+    maxLifetime = "120"
+    [db.user]
+        username = "env|DB_USER_USERNAME"
+        password = "env|DB_USER_PASSWORD"
+    [db.partitionUser]
+        username = "env|DB_PARTITIONUSER_USERNAME"
+        password = "env|DB_PARTITIONUSER_PASSWORD"
+
+[goUtilsDb]
+    maxOpenConnections = 2
+    maxIdleConnections = 1
+
+[redis]
+    database = 0
+    host = "env|REDIS_HOST"
+    port = "6379"
+
+[payoutRedis]
+    host = "rzp-payouts-shield-prod-cluster.ec.razorpay.vpc"
+    port = "6379"
+    password = ""
+    maxRetryAttempts = 5
+    poolSize = 10
+    poolTimeout = 5
+    minIdleConns = 5
+
+[riskCache]
+    retryAttempts = 5
+    retryIntervalSecs = 5
+    monitorCheckIntervalSecs = 480
+    monitorMaxJitterSecs = 240
+    startMonitorWaitTimeSecs = 240
+
+[shieldAuthUser]
+    [shieldAuthUser.shield]
+        username = "env|SHIELDAUTHUSER_SHIELD_USERNAME"
+        password = "env|SHIELDAUTHUSER_SHIELD_PASSWORD"
+    [shieldAuthUser.acs]
+        username = "env|SHIELDAUTHUSER_ACS_USERNAME"
+        password = "env|SHIELDAUTHUSER_ACS_PASSWORD"
+    [shieldAuthUser.cms]
+        username = "env|SHIELDAUTHUSER_CMS_USERNAME"
+        password = "env|SHIELDAUTHUSER_CMS_PASSWORD"
+    [shieldAuthUser.api]
+        username = "env|SHIELDAUTHUSER_API_USERNAME"
+        password = "env|SHIELDAUTHUSER_API_PASSWORD"
+    [shieldAuthUser.apiOld]
+        username = ""
+        password = ""
+    [shieldAuthUser.harvester]
+        username = ""
+        password = ""
+    [shieldAuthUser.lumberjack]
+        username = ""
+        password = ""
+    [shieldAuthUser.nbPlus]
+        username = ""
+        password = ""
+    [shieldAuthUser.cps]
+        username = ""
+        password = ""
+    [shieldAuthUser.pcp]
+        username = ""
+        password = ""
+    [shieldAuthUser.scrooge]
+        username = ""
+        password = ""
+    [shieldAuthUser.upi]
+        username = ""
+        password = ""
+    [shieldAuthUser.payout]
+        username = ""
+        password = ""
+    [shieldAuthUser.wafService]
+        username = ""
+        password = ""
+
+[queue]
+    driver = "sqs"
+    name = "env|QUEUE_NAME"
+    sqsRegion = "env|QUEUE_SQSREGION"
+    sqsPrefix = "env|QUEUE_SQSPREFIX"
+    sqsEndpoint = "env|QUEUE_SQSENDPOINT"
+    sqsVisibilityTimeout = 60
+    sqsMaxRetries = 5
+
+[worker]
+    name = "env|WORKER_NAME"
+    maxConcurrency = 5
+    waitTime = 1
+    retryDelay = 30
+
+[throttle]
+    cardFingerprintThresholdKey = "500"
+    upithresholdKey = "100"
+
+[cms]
+    baseUrl = "http://case-management-service.case-management-service.svc.cluster.local:8080"
+    maxRetryAttempts = 3
+    timeoutMs = 2000
+    [cms.auth]
+        key = "env|CMS_AUTH_KEY"
+        secret = "env|CMS_AUTH_SECRET"
+
+[acs]
+    baseUrl = "https://cas-admin-prod.razorpayx.com"
+    maxRetryAttempts = 3
+    timeoutMs = 2000
+    [acs.auth]
+        key = "env|ACS_AUTH_KEY"
+        secret = "env|ACS_AUTH_SECRET"
+
+[frm]
+    merchantIDs = "PV33wWQaEdNLg1"
+    baseUrl = "https://shield-frm.razorpayx.com"
+
+[splitz]
+    baseUrl = "https://splitz.razorpay.com"
+    timeoutMs = 500
+    travelModelExperimentId = "MDb7FtDzN0yAZK"
+    itrmv2ExperimentId = "P1VljHWLf5sjZG"
+    itrmv2EnablerExperimentId = "RlDBR8TrvojEie"
+    [splitz.auth]
+        key = "shield"
+        secret = "env|SPLITZ_AUTH_SECRET"
+    itrmEnabledCohort = 5
+    cybersourceDisabledCohort = 2
+
+[itrmV2]
+    [itrmV2.redis]
+        [itrmV2.redis.pipeline]
+            concurrency = 5
+            batchSize = 20
+
+[report]
+    defaultRecipients = "payments-onlinepayments-txn-risk@razorpay.com"
+
+[decrypt]
+    tokenKey = "env|DECRYPT_TOKENKEY"
+
+[events]
+    diagnosticEventsMerchantIds = "100000Razorpay"
+    enableDiagnosticEvents = false
+    log = false
+    processableModes = "live"
+    enableMSKafka = false
+    enablePush = "off"
+    enableFeedbackTxnEventsPush = "off"
+    [events.kafka]
+        enable = true
+        broker = "prod-noncde-kafka.razorpay.com:9090"
+    [events.mskafka]
+        enable = false
+        broker = ""
+        topicPrefix = ""
+
+[createRuleAnalytics]
+    name = "env|CREATERULEANALYTICS"
+
+[fingerprint]
+    encryptionKey    = "env|FINGERPRINT_ENCRYPTION_KEY"
+    secretKey        = "env|FINGERPRINT_SECRET_KEY"
+
+[watchtower]
+    host = "https://watchtower2.concierge.razorpay.com"
+
+[blockOverride]
+    rampPercentage = 15
+
+[taskExecutor]
+    concurrency = 1
+    shutdown_timeout = 30
+    app_name = "shield"
+    [taskExecutor.queues]
+        critical = 10
+        default = 1
+
+[dcs]
+    username = "env|DCS_USERNAME"
+    password = "env|DCS_PASSWORD"
+    mock = true
+    mode = "live"
+    CacheEvictionTimeInSeconds = 3600
+
+[telemetry]
+    enabled          = false
+    serviceName      = "shield"
+    serviceNamespace = "rzp/payments"
+    environment      = "production"
+    exporterHost     = "localhost"
+    exporterPort     = "4318"
+    samplingRatio    = 1.0
+    httpSkipPaths    = ["/commit.txt", "/metrics", "/v1/status"]
+    disableClientSpans = false   # pin vs goutils default drift
+
+# clients: this file merges over conf/default.toml (dockerconf/entrypoint.sh copies
+# default.toml to the conf/dev.toml the loader uses as its base), so only the whole-call
+# budgets that differ from that file live here.
+[clients]
+    # Without this override cms would inherit conf/default.toml's 10000 and this env's
+    # whole-call budget would go from 2s to 10s — a 5x widening on a production env.
+    [clients.downstreams.cms]
+        requestTimeoutMs = 2000    # [cms].timeoutMs
+
+[preAuth]
+    enabled = false

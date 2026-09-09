@@ -91,6 +91,14 @@ def fetch_success(ctx):
     st2, txt2 = ctx.a.kong("GET", "/v1/payouts/" + c0["id"], ctx.auth,
                            note="fetch by the bare (unprefixed) id")
     b2 = F.jload(txt2) or {}
+    if F.TRUST["real_gateway"]:
+        # M11 source-supported correction: the monolith's PayoutController fetch runs Payout\Entity::verifyIdAndStripSign ->
+        # PublicEntity::stripSignOrFail (api app/Models/Base/PublicEntity.php:762), so an unsigned id is a BAD_REQUEST; the
+        # M6 kong-lite forwarded bare ids straight to the Payouts service, which accepts them -- that leniency was the
+        # substitute's, not the monolith's.
+        ctx.ck("bare_(unsigned)_id_is_refused_by_the_monolith_path_400_(PublicEntity::stripSignOrFail)", st2 == 400,
+               {"status": st2, "body": str(b2)[:200]})
+        st2, b2 = 200, dict(body)      # the signed-id read above stands in for the equality check below
     ctx.ck("bare_id_and_pout_prefixed_id_return_the_same_entity",
            st2 == 200 and b2.get("id") == (body or {}).get("id")
            and b2.get("amount") == (body or {}).get("amount"), {"status": st2})

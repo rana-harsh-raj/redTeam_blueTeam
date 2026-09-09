@@ -28,7 +28,7 @@ EXCLUDE_FILES = {"SAFETY_PREFLIGHT.md", "EGRESS_AUDIT.md", "jwks.json", ".env.se
 # static-definition trees hashed into inputs_hash (credential-free); mirrors ENV2_COMPOSE/scripts/fingerprint.py TREES
 INPUT_TREES = ("config/templates", "config/routes.py", "config/generate.py", "config/arena.yaml", "seeds", "substitutes", "scripts",
                "build", "preflight", "secrets/gen-secrets.sh", "secrets/materialize.py", "docker-compose.yml", "docker-compose.s2p.yml",
-               "docker-compose.twin.yml", "verifier", "network")
+               "docker-compose.twin.yml", "docker-compose.m11.yml", "trustpath", "verifier", "network")
 
 
 def _copy_env2(dst):
@@ -147,13 +147,18 @@ def render_env_arena(exec_dir, plan, epoch, s2p_image, arena_tag, extra=None):
         "S2P_SOURCE_IMAGE=%s" % (s2p_image or ""),
         "S2P_MYSQL_USER=s2p",
     ]
+    # M11: trust-path implementation selection (read by config/generate.py, scripts/ingress.py, the journey runner)
+    from .boot import trust_env
+    for k, v in sorted(trust_env((extra or {}).get("ARENA_TRUST_PATH", "real") == "real").items()):
+        lines.append("%s=%s" % (k, v))
+    extra = {k: v for k, v in (extra or {}).items() if k != "ARENA_TRUST_PATH"}
     for k, v in sorted((extra or {}).items()):
         lines.append("%s=%s" % (k, v))
     (env2 / ".env.arena").write_text("\n".join(lines) + "\n")
     return env2 / ".env.arena"
 
 
-def render(exec_dir, plan, epoch, s2p_image, arena_tag):
+def render(exec_dir, plan, epoch, s2p_image, arena_tag, trust_path="real"):
     exec_dir = Path(exec_dir)
     exec_dir.mkdir(parents=True, exist_ok=True)
     for d in ("logs", "evidence", "journeys", "state", "inputs"):
@@ -164,7 +169,7 @@ def render(exec_dir, plan, epoch, s2p_image, arena_tag):
     fts_cfg, _ = _copy_fts_config(exec_dir)
     s2p_inputs = _copy_s2p_inputs(exec_dir)
     patched = _patch_subnet_defaults(env2 / "docker-compose.yml", plan["arena_subnet"], plan["ingress_subnet"])
-    render_env_arena(exec_dir, plan, epoch, s2p_image, arena_tag)
+    render_env_arena(exec_dir, plan, epoch, s2p_image, arena_tag, extra={"ARENA_TRUST_PATH": trust_path})
     inputs_hash = inputs_digest(exec_dir)
     rec = {"exec_dir": str(exec_dir), "env2_root": str(env2), "migrations": migrations, "fts_config": fts_cfg, "s2p_inputs": s2p_inputs,
            "compose_subnet_defaults_rewritten": patched, "inputs_hash": inputs_hash["digest"], "inputs_file_count": inputs_hash["count"],

@@ -62,7 +62,10 @@ def _probe(ctx):
         capture_output=True, text=True, timeout=30)
     probe["payouts_workflow_host"] = (out.stdout + out.stderr).strip()[:200]
     probe["workflow_host_is_dead_address"] = "127.0.0.1:1" in probe["payouts_workflow_host"]
-    probe["workflow_host_is_engine"] = "workflow-engine:8093" in probe["payouts_workflow_host"]
+    # M11: the REAL Workflow service (razorpay/workflows Twirp API) serves the same wfe_* surface through the adapter
+    probe["workflow_impl"] = "workflows-api (razorpay/workflows)" if F.TRUST["real_workflows"] else "workflow-engine (M5 reconstruction)"
+    probe["workflow_host_is_engine"] = ("workflow-engine:8093" in probe["payouts_workflow_host"]) or \
+        (F.TRUST["real_workflows"] and "workflows-api:9400" in probe["payouts_workflow_host"])
     probe["engine_health"] = ctx.a.wfe_health()
     st, body = ctx.a.jhttp("GET", F.WORKFLOW_SIM + "/_arena/health",
                            note="workflow-sim (M2 stand-in, still running, no longer wired)")
@@ -79,7 +82,7 @@ def _require_engine(ctx):
         ctx.blocked(
             "payouts-api pointed at a reachable workflow engine. Observed: %s ; engine /health "
             "and /_arena/health -> %s. Needs ARENA_WORKFLOW_HOST=http://workflow-engine:8093 "
-            "(ENV2_COMPOSE/.env.arena, the M6 default) plus a healthy workflow-engine container."
+            "(ENV2_COMPOSE/.env.arena, the M6 default) or http://workflows-api:9400 (M11 real variant) plus a healthy container."
             % (probe["payouts_workflow_host"], probe["engine_health"]),
             {"probe": probe, "then": "rerun run.py --family approval-workflow"})
     return probe
@@ -352,40 +355,72 @@ def approval_maker_checker(ctx):
     if not (maker.get("token") and checker.get("token")):
         ctx.blocked("workflow-engine admin plane could not mint actor tokens (status %s/%s)"
                     % (sta, stb), {"maker": maker, "checker": checker})
-    # the maker raises the request through the actor plane
-    st, wfr = ctx.a.wfe("POST", "/v1/workflows",
-                        {"entity_id": "pout_m6mc" + uuid.uuid4().hex[:8], "amount": 5000},
-                        token=maker["token"], note="maker raises a workflow (requester role)")
-    ctx.ev["maker_workflow"] = {"status": st, "body": wfr}
-    ctx.ck("maker_raised_the_workflow", st in (200, 201) and (wfr or {}).get("id"), wfr)
-    wid = (wfr or {}).get("id")
+    if F.TRUST["real_workflows"]:
+        # M11: the real service's Cadence workflow calls payouts back for every state (clients.payouts_live), so the
+        # maker's request must be a REAL payout: the merchant (maker) creates it through the gateway and payouts raises
+        # the workflow (WfCreate, creator = the merchant); a synthetic entity id would fail its callback (500) and never
+        # reach a terminal domain_status.
+        cr, row, wf = _create_pending(ctx, 5000, "wf-maker-checker")
+        wid = (wf or {}).get("workflow_id")
+        ctx.ev["maker_workflow"] = {"status": cr.get("status"), "payout": cr.get("id"), "workflow": wf}
+        ctx.ck("maker_raised_the_workflow", bool(wid) and (wf or {}).get("state") == "pending", wf)
+    else:
+        # the maker raises the request through the actor plane
+        st, wfr = ctx.a.wfe("POST", "/v1/workflows",
+                            {"entity_id": "pout_m6mc" + uuid.uuid4().hex[:8], "amount": 5000},
+                            token=maker["token"], note="maker raises a workflow (requester role)")
+        ctx.ev["maker_workflow"] = {"status": st, "body": wfr}
+        ctx.ck("maker_raised_the_workflow", st in (200, 201) and (wfr or {}).get("id"), wfr)
+        wid = (wfr or {}).get("id")
     st1, b1 = ctx.a.wfe_actor(maker["token"], "approve", wid)
-    ctx.ck("the_maker's_own_approval_is_REFUSED_403_separation_violation",
-           st1 == 403, {"status": st1, "body": b1})
-    ctx.ck("refusal_names_the_separation_rule",
-           "separation" in str(b1).lower(), b1)
-    st2, b2 = ctx.a.wfe("GET", "/v1/workflows/%s" % wid, token=maker["token"],
-                        note="workflow state after the refused self-approval")
-    ctx.ck("workflow_still_pending_after_the_refused_self_approval",
-           (b2 or {}).get("state") == "pending", b2)
-    st3, b3 = ctx.a.wfe_actor(checker["token"], "approve", wid)
-    ctx.ck("a_distinct_checker_CAN_approve", st3 == 200, {"status": st3, "body": b3})
-    ctx.ck("workflow_is_approved", (b3 or {}).get("state") == "approved", b3)
-    audit = ctx.a.wfe_audit(checker["token"], wid)
-    ctx.ev["audit"] = audit
-    ctx.ck("the_append_only_audit_trail_records_the_approval_with_its_actor_identity",
-           any(a.get("action") == "approved" and a.get("actor_id") == checker["actor_id"]
-               for a in audit), audit)
-    ctx.ck("the_refused_self_approval_left_no_approval_row_in_the_trail",
-           not any(a.get("action") == "approved" and a.get("actor_id") == maker["actor_id"]
+    if F.TRUST["real_workflows"]:
+        # M11 source-supported correction: razorpay/workflows has NO maker != checker rule (internal/action: any actor
+        # presenting the checker state's role property advances the state; approveStateIfApplicable only auto-approves
+        # behind a DCS feature when the creator's role equals the checker role). The M5 reconstruction's 403
+        # separation_violation was an assumption; the real service accepts the creator's own approval.
+        ctx.ck("real_workflow_service_accepts_the_makers_own_approval_(no_separation_rule_in_razorpay/workflows)",
+               st1 == 200, {"status": st1, "body": b1})
+        ctx.note("separation is not enforced by the real Workflow service (source: internal/action, internal/workflow state "
+                 "machine); recorded as a difference from the M5 reconstruction in M11_DIFFERENTIAL.md")
+        st2, b2 = ctx.a.wfe("GET", "/v1/workflows/%s" % wid, token=maker["token"],
+                            note="workflow state after the maker's approval")
+        ctx.ck("workflow_is_approved_by_that_single_approval", (b2 or {}).get("state") == "approved", b2)
+        st3, b3 = ctx.a.wfe_actor(checker["token"], "approve", wid)
+        ctx.ck("a_second_approval_on_the_terminal_workflow_is_refused_409", st3 == 409, {"status": st3, "body": b3})
+        audit = ctx.a.wfe_audit(checker["token"], wid)
+        ctx.ev["audit"] = audit
+        ctx.ck("the_action_trail_records_the_approval_with_the_makers_actor_id",
+               any(a.get("action") == "approved" and a.get("actor_id") == maker["actor_id"] for a in audit), audit)
+    else:
+        ctx.ck("the_maker's_own_approval_is_REFUSED_403_separation_violation",
+               st1 == 403, {"status": st1, "body": b1})
+        ctx.ck("refusal_names_the_separation_rule",
+               "separation" in str(b1).lower(), b1)
+        st2, b2 = ctx.a.wfe("GET", "/v1/workflows/%s" % wid, token=maker["token"],
+                            note="workflow state after the refused self-approval")
+        ctx.ck("workflow_still_pending_after_the_refused_self_approval",
+               (b2 or {}).get("state") == "pending", b2)
+        st3, b3 = ctx.a.wfe_actor(checker["token"], "approve", wid)
+        ctx.ck("a_distinct_checker_CAN_approve", st3 == 200, {"status": st3, "body": b3})
+        ctx.ck("workflow_is_approved", (b3 or {}).get("state") == "approved", b3)
+        audit = ctx.a.wfe_audit(checker["token"], wid)
+        ctx.ev["audit"] = audit
+        ctx.ck("the_append_only_audit_trail_records_the_approval_with_its_actor_identity",
+               any(a.get("action") == "approved" and a.get("actor_id") == checker["actor_id"]
                    for a in audit), audit)
+        ctx.ck("the_refused_self_approval_left_no_approval_row_in_the_trail",
+               not any(a.get("action") == "approved" and a.get("actor_id") == maker["actor_id"]
+                       for a in audit), audit)
     # cross-tenant: a token minted for THIS merchant cannot read another merchant's workflow
     other = ctx.state.get("wf_engine_other_org_wf")
-    if other:
+    if other and not F.TRUST["real_workflows"]:
         st4, b4 = ctx.a.wfe("GET", "/v1/workflows/%s" % other, token=checker["token"],
                             note="cross-org read attempt with this merchant's actor token")
         ctx.ck("cross_merchant_workflow_read_refused_403_cross_org", st4 in (403, 404),
                {"status": st4, "body": b4})
+    elif other:
+        ctx.note("cross-org read scoping is a caller (dashboard/monolith) concern for the real Workflow service: its API is "
+                 "service-authenticated (payouts identity), actor ids are claims -- no per-actor read scoping exists in razorpay/workflows")
     ctx.state["wf_engine_other_org_wf"] = wid
 
 
@@ -429,21 +464,42 @@ def approval_n_of_m(ctx):
                (ctx.a.payout(pid) or {}).get("status") == "pending", ctx.a.payout(pid))
         # the SAME actor approving again must not count twice
         st2, b2 = ctx.a.wfe_actor(a1["token"], "approve", wid)
-        ctx.ck("a_repeat_approval_by_the_same_actor_does_not_reach_the_threshold",
-               (b2 or {}).get("state") == "pending" and int((b2 or {}).get("approvals") or 0) == 1,
-               {"status": st2, "body": b2})
-        ctx.ck("still_pending_after_the_duplicate_approval",
-               (ctx.a.payout(pid) or {}).get("status") == "pending", ctx.a.payout(pid))
-        # an actor outside the eligible set is refused
-        stc, a3 = ctx.a.wfe_create_actor(org, "m6-checker-outsider", ["approver"])
-        if a3.get("token"):
+        if F.TRUST["real_workflows"]:
+            # M11: what the real service does with a repeat approval by the same actor id is OBSERVED and recorded
+            # (razorpay/workflows internal/action counts approvals per state; distinct-actor de-duplication is a
+            # production unknown until observed)
+            ctx.ev["repeat_approval_same_actor"] = {"status": st2, "body": b2, "payout": ctx.a.payout(pid)}
+            # observed on the real service: a repeat approval by the same actor on the same state is refused
+            # (ActionAPI -> not_found "record not found"); it is neither counted nor accepted
+            ctx.ck("repeat_approval_by_the_same_actor_is_refused_or_not_counted_(observed_real_semantics)",
+                   st2 in (403, 404, 409) or ((b2 or {}).get("state") == "pending" and int((b2 or {}).get("approvals") or 0) == 1),
+                   ctx.ev["repeat_approval_same_actor"])
+            if (b2 or {}).get("state") == "approved":
+                ctx.note("DIFFERENCE: the real Workflow service counted the same actor twice (state approved after two "
+                         "approvals by one actor id). Recorded for M11_DIFFERENTIAL.md; the payout-side checks below adapt.")
+        else:
+            ctx.ck("a_repeat_approval_by_the_same_actor_does_not_reach_the_threshold",
+                   (b2 or {}).get("state") == "pending" and int((b2 or {}).get("approvals") or 0) == 1,
+                   {"status": st2, "body": b2})
+            ctx.ck("still_pending_after_the_duplicate_approval",
+                   (ctx.a.payout(pid) or {}).get("status") == "pending", ctx.a.payout(pid))
+        # an actor outside the eligible set is refused (eligible sets are a reconstruction concept; the real service
+        # admits any actor presenting the checker role -> role mismatch is the real refusal)
+        stc, a3 = ctx.a.wfe_create_actor(org, "m6-checker-outsider", ["approver"] if not F.TRUST["real_workflows"] else ["viewer"])
+        if a3.get("token") and (b2 or {}).get("state") == "pending":
             st_o, b_o = ctx.a.wfe_actor(a3["token"], "approve", wid)
-            ctx.ck("an_approver_outside_the_eligible_set_is_refused_403_not_eligible",
-                   st_o == 403, {"status": st_o, "body": b_o})
+            if F.TRUST["real_workflows"]:
+                ctx.ck("an_actor_without_the_checker_role_is_refused_by_the_real_service", st_o in (403, 409) and (b_o or {}).get("state", "pending") == "pending", {"status": st_o, "body": b_o})
+            else:
+                ctx.ck("an_approver_outside_the_eligible_set_is_refused_403_not_eligible",
+                       st_o == 403, {"status": st_o, "body": b_o})
         st3, b3 = ctx.a.wfe_actor(a2["token"], "approve", wid)
         ctx.ev["second_approval"] = {"status": st3, "body": b3}
-        ctx.ck("second_distinct_approval_accepted_and_terminal",
-               st3 == 200 and (b3 or {}).get("state") == "approved", b3)
+        if F.TRUST["real_workflows"] and (b2 or {}).get("state") == "approved":
+            ctx.ck("second_actor_finds_the_workflow_already_terminal_(409)", st3 == 409, b3)
+        else:
+            ctx.ck("second_distinct_approval_accepted_and_terminal",
+                   st3 == 200 and (b3 or {}).get("state") == "approved", b3)
         endrow = ctx.wait_status(pid, "initiated", timeout=90)
         ctx.ck("only_the_Nth_approval_fired_the_payouts_callback(payout left pending)",
                (endrow or {}).get("status") == "initiated", endrow)
@@ -453,8 +509,11 @@ def approval_n_of_m(ctx):
         audit = ctx.a.wfe_audit(a2["token"], wid)
         ctx.ev["audit"] = audit
         approvers = {a.get("actor_id") for a in audit if a.get("action") == "approved"}
-        ctx.ck("audit_trail_shows_exactly_the_two_distinct_approver_identities",
-               approvers == {a1["actor_id"], a2["actor_id"]}, {"approvers": sorted(approvers)})
+        if F.TRUST["real_workflows"] and (b2 or {}).get("state") == "approved":
+            ctx.ck("action_trail_shows_the_approvals_that_reached_the_threshold", a1["actor_id"] in approvers, {"approvers": sorted(approvers)})
+        else:
+            ctx.ck("audit_trail_shows_exactly_the_two_distinct_approver_identities",
+                   approvers == {a1["actor_id"], a2["actor_id"]}, {"approvers": sorted(approvers)})
         ctx.a.finish_bank(pid, "success")
         ctx.ck("completes_after_the_full_approval_set",
                (ctx.wait_status(pid, "processed", timeout=120) or {}).get("status") == "processed",

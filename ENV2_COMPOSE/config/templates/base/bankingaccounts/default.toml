@@ -1,0 +1,316 @@
+[app]
+    serverMode = "debug"
+    port = ":8000"
+    metricsPort = ":8001"
+
+[database]
+    dialect = "mysql"
+    username = "root"
+    password = "123"
+    protocol = "tcp"
+    url = "127.0.0.1"
+    port = "3306"
+    name = "banking_account"
+
+[logger]
+    log_level = "debug"
+    sentry_dsn = ""
+    sentry_enabled = false
+    sentry_log_level = ""
+    context_string = "data"
+
+[sentry]
+    enabled = false
+    dsn = ""
+    debug = false
+
+[aws_s3]
+    access_key = "test"
+    access_secret = "test"
+    access_token = ""
+    end_point = "http://localhost:4566"
+    region = ""
+    bucket = ""
+
+[ufh]
+    stub = true
+    DefaultMerchant = "100000Razorpay"
+    endPoint = "https://ufh.int.dev.razorpay.in/v1/"
+    userName = "bas"
+    password = ""
+    type = "ADMIN_DASHBOARD"
+    [ufh.ConnectionConfig]
+        timeout = 5000
+    [ufh.ResiliencyConfig]
+        maxConcurrentRequests = 100
+    [ufh.RetryConfig]
+        RetryCount = 2
+
+[zoho]
+    stub = false
+    host = "https://accounts.zoho.com"
+    clientId = "TEST_CLIENT"
+    clientSecret = "TEST_SECRET"
+    refreshToken = "TEST_TOKEN"
+    [zoho.ConnectionConfig]
+        timeout = 5000
+    [zoho.ResiliencyConfig]
+        maxConcurrentRequests = 1000
+    [zoho.RetryConfig]
+        RetryCount = 3
+    [[zoho.AdminIdToStaffIdConfig]]
+        adminId = "HobnAxjzPlwQIv"
+        staffId = "4156555000000075076"
+    [[zoho.AdminIdToStaffIdConfig]]
+        adminId = "HobnMYmTwDJvzQ"
+        staffId = "4156555000000075086"
+
+
+[cache]
+    stub   = false
+    driver = "redis"
+    [cache.redis]
+        host = "localhost"
+        port = 6379
+        database = 0
+        password = ""
+
+[mozart]
+    stub = true
+    [mozart.Client]
+        host = "http://localhost:38080"
+        username = "bas"
+        password = "bas"
+    [mozart.ConnectionConfig]
+        timeout = 5000
+    [mozart.ResiliencyConfig]
+        maxConcurrentRequests = 1000
+    [mozart.RetryConfig]
+        RetryCount = 3
+
+[dark_mozart]
+    stub = true
+    host = "http://localhost:38080"
+
+[api]
+    stub = false
+    token = "RANDOM_BAS_PASSWORD"
+    host = ""
+    username = ""
+    password = "RANDOM_BAS_PASSWORD"
+    [api.connectionconfig]
+        timeout = 5000  # ms; override via API_CONNECTIONCONFIG_TIMEOUT env var
+
+[mob]
+    stub = false
+    host = "https://master-onboarding.int.dev.razorpay.in"
+    username = "bas"
+    password = ""
+
+[fts]
+    stub = false
+    host = "https://fts-live.dev.razorpay.in/v1"
+    username = "api_user"
+    password = "hm4Fp15eBAxaHj3M0UB6"
+
+[payouts]
+    stub = false
+    host = "https://payouts.dev.razorpay.in"
+    username = "banking_accounts_user"
+    password = "banking_accounts_pw"
+
+[balances]
+    stub = false
+    host = "https://x-balances.dev.razorpay.in"
+    username = "env|SERVER_AUTH_BANKINGACCOUNTS_USERNAME"
+    password = "env|SERVER_AUTH_BANKINGACCOUNTS_PASSWORD1"
+
+[account_statements]
+    host = "https://x-account-statements.dev.razorpay.in"
+    username = "internal"
+    password = "internal"
+    stub = false
+
+[bvs]
+    stub = false
+    host = "https://bvs.int.dev.razorpay.in"
+    username = "dummy"
+    password = "dummy"
+    clientId = "BAS"
+
+[banks_config]
+    [banks_config.icici]
+        aggr_id = "BAAS0020"
+        aggr_name = "RAZORPAY"
+        beneficiary_api_key = "random_beneficiary_secret"
+        mozart_identifier = "V2"
+
+    [banks_config.axis]
+        client_id = "random_client_id"
+        client_secret = "random_client_secret"
+        encryption_iv = "random_encryption_iv"
+        encryption_key = "random_encryption_key"
+        mozart_identifier = "V1"
+
+    [banks_config.yesbank]
+        aes_key = "random_aes_key"
+        mozart_identifier = "V1"
+        mozart_identifier_V3 = "V3"
+
+    [banks_config.idfc]
+        transferClientId = "random_transferClientId"
+        transferKid = "random_transferKid"
+        transferSource = "random_transferSource"
+        hexEncryptionKey = "random_hexEncryptionKey"
+        mozart_identifier = "V1"
+
+    [banks_config.slice]
+        clientId = "random_clientId"
+        privateKey = "random_privateKey"
+        partnerId = "random_partnerId"
+        encryptionKey = "random_encryptionKey"
+        mozart_identifier = "V2"
+
+[hubspot]
+    stub = false
+    host = "https://api.hubapi.com/contacts/v1"
+    token = "dummy-token"
+
+[segment]
+    stub = false
+    host = "https://api.segment.io/v1"
+    token = "dummy-token"
+
+[events]
+    enabled = true
+    debug = true
+    [events.KafkaProducerConfig]
+        retryBackoff = 1
+        topic = "events.banking-account.v0.live"
+        maxRetry = 1
+        maxMessages = 200
+        brokers = ["prod-noncde-kafka.razorpay.com:9090"]
+        enableTls = true
+        debugEnabled = true
+        caCertificate = "dummy-cert"
+        userCertificate = "dummy-cert"
+        userKey = "dummy-key"
+
+[LeadAllocation]
+    [[LeadAllocation.SplitProportions]]
+        AllocationStrategy = "PROPORTIONAL_SPLIT_ON_TIE_V1"
+        [[LeadAllocation.SplitProportions.BankProportions]]
+            Bank = "ICICI"
+            AccountType = "CA_DIRECT"
+            Proportion = 0
+        [[LeadAllocation.SplitProportions.BankProportions]]
+            Bank = "RBL"
+            AccountType = "CA_DIRECT"
+            Proportion = 1
+    [[LeadAllocation.SplitProportions]]
+        AllocationStrategy = "PROPORTIONAL_SPLIT_ON_TIE_FOR_MOBILE"
+        [[LeadAllocation.SplitProportions.BankProportions]]
+            Bank = "ICICI"
+            AccountType = "CA_DIRECT"
+            Proportion = 0
+        [[LeadAllocation.SplitProportions.BankProportions]]
+            Bank = "RBL"
+            AccountType = "CA_DIRECT"
+            Proportion = 1
+    [[LeadAllocation.SplitProportions]]
+        AllocationStrategy = "WHITE_LISTED_FOR_ICICI"
+        [[LeadAllocation.SplitProportions.BankProportions]]
+            Bank = "ICICI"
+            AccountType = "CA_DIRECT"
+            Proportion = 1
+        [[LeadAllocation.SplitProportions.BankProportions]]
+            Bank = "RBL"
+            AccountType = "CA_DIRECT"
+            Proportion = 0
+    [[LeadAllocation.SplitProportions]]
+        AllocationStrategy = "WHITE_LISTED_FOR_RBL"
+        [[LeadAllocation.SplitProportions.BankProportions]]
+            Bank = "ICICI"
+            AccountType = "CA_DIRECT"
+            Proportion = 0
+        [[LeadAllocation.SplitProportions.BankProportions]]
+            Bank = "RBL"
+            AccountType = "CA_DIRECT"
+            Proportion = 1
+
+# Metro is a service used for pub/sub between microservices
+[metro]
+    enabled = false
+    stub = true
+    host = "metro-grpc.int.stage.razorpay.in"
+    username = "banking-accounts__c23211"
+    password = "q12hhRqoMI0p9w143213"
+    project = "banking-accounts"
+    [[metro.topics]]
+        type = "ca_status_updates"
+        topic = "projects/banking-accounts/topics/ca-status-updates"
+
+# Outbox is used for processing Metro messages using the Outbox pattern
+[outbox]
+    processorPoolSize = 1
+	jobProcessingTimeoutMs = 5000
+	maxAttempts = 3
+	failedJobFetchBatchSize = 5
+	pendingJobFetchBatchSize = 5
+	retryExhaustedJobFetchBatchSize = 5
+	waitTimeMsAfterEmptyRead = 10000
+	[outbox.BackOffPolicy]
+	    initialIntervalMs = 10
+	    multiplier = 10
+	    jitterMs = 10
+
+[rbl]
+    password_encryption_secret = ""
+
+[tracing]
+    serviceName             = "banking-accounts"
+    enabled                 = true
+    logSpans                = false
+    host                    = "localhost"
+    port                    = 6831
+
+[dcs]
+    username = "banking-accounts"
+    password = ""
+    env = "dev"
+
+[clients]
+    [clients.api]
+        username = "api"
+        password = "api"
+
+[Queue]
+    Driver = "sqs"
+    [Queue.Sqs]
+        Region = ""
+        Endpoint = ""
+        Prefix = ""
+        UseAnonymousCredentials = false
+        MaxRetries = 3
+        VisibilityTimeout = 300 # 5 minutes
+        WaitTimeout = 20  # 20 seconds
+    [Queue.Sqs.Httpclient]
+        ConnectTimeoutMs = 60001
+        ConnKeepAliveMs = 0
+        ExpectContinueTimeoutMs = 60001
+        IdleConnTimeoutMs = 0
+        MaxAllIdleConns = 0
+        MaxHostIdleConns = 100
+        ResponseHeaderTimeoutMs = 60001
+        TLSHandshakeTimeoutMs = 60001
+
+[passport]
+    jwksHost          = "https://edge-base.dev.razorpay.in"
+    timeout           = 2000
+    attempts          = 2
+    delay             = 200
+    mock              = true
+
+[features]
+    onboard_merchant_to_ps = true
+    fail_on_payouts_onboarding_error = false

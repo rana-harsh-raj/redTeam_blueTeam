@@ -37,6 +37,10 @@ def build_projection(body):
                 reason = "M7 classified by observed container state at overlay time; the static snapshot classifies by compose definition (one-shot jobs count as defined)"
             elif b["kind"] == "journey":
                 reason = "M7 journey fidelity was derived from the run result; the static snapshot carries the driver-declared execution fidelity"
+            elif "m11-trust-path" in (a.get("lanes") or []):
+                reason = "M11 promoted this component: the real source runs in the canonical runtime (m11-trust-path lane + docker-compose.m11.yml compose definition); M7 saw a substitute or a mapped-only repository"
+            elif str(i).startswith("journey:trust-path/"):
+                reason = "M11 added the trust-path journey family (RED_LOOP/m6/journeys/j_trustpath.py, 14 journeys executed on both variants); M7 had no such journeys"
             else:
                 reason = "unclassified delta"
             deltas.append({"id": i, "kind": b["kind"], "m7_fidelity": b.get("fidelity"), "static_fidelity": a.get("fidelity"), "reason": reason})
@@ -44,7 +48,9 @@ def build_projection(body):
     return {"kind": "m7_projection", "schema_version": "m8.1", "m7_tag": paths.M7_TAG,
             "m7_files": {paths.rel(p): _sha(p) for p in (paths.M7_SNAPSHOT, paths.M7_STATS, paths.M7_ACCEPTANCE, paths.M7_HASHES, paths.M7_UNKNOWNS_MD)},
             "m7_snapshot_git_head": m7.get("git_head"), "m7_generated_at": m7.get("generated_at"),
-            "node_ids_equal": set(A) == set(B), "nodes_only_in_static": sorted(set(A) - set(B)), "nodes_only_in_m7": sorted(set(B) - set(A)),
+            "node_ids_equal": set(A) == set(B), "m7_nodes_all_present": set(B) <= set(A),
+            "nodes_only_in_static": sorted(set(A) - set(B)), "nodes_only_in_m7": sorted(set(B) - set(A)),
+            "m11_additions": sorted(i for i in set(A) - set(B) if "m11-trust-path" in (A[i].get("lanes") or []) or str(i).startswith("journey:trust-path/")),
             "edges_only_in_static": sorted(list(x) for x in ea - eb), "edges_only_in_m7": sorted(list(x) for x in eb - ea),
             "fidelity_deltas": deltas, "fidelity_delta_count": len(deltas),
             "label_deltas": label_deltas, "label_delta_count": len(label_deltas),

@@ -104,9 +104,9 @@ class Factory:
         self._event(m, "state", state=state)
 
     # ---- create ----
-    def create(self, instance_id, profile_name, seed, backend_name="colima", snapshot_id=None, sizing=None, backend_options=None, s2p_image=None, force=False):
+    def create(self, instance_id, profile_name, seed, backend_name="colima", snapshot_id=None, sizing=None, backend_options=None, s2p_image=None, force=False, trust_path="real"):
         inputs = self.inputs(snapshot_id)
-        prof = P.derive(inputs, profile_name)
+        prof = P.derive(inputs, profile_name, trust_path)
         recs = self.registry.records()
         if any(r["instance_id"] == PL.derive_names(instance_id)["instance_id"] for r in recs) and not force:
             raise RuntimeError("instance %s already exists in the registry (destroy it first or use force)" % instance_id)
@@ -124,12 +124,13 @@ class Factory:
         if prof["s2p"] and not img:
             raise RuntimeError("profile needs the Source-to-Pay runtime image but none is recorded (build it with RED_LOOP/m7/s2p_stack.py build or seed the image cache)")
         t0 = time.time()
-        ws = W.render(exec_dir, pl, epoch, img, _arena_tag())
+        ws = W.render(exec_dir, pl, epoch, img, _arena_tag(), trust_path=prof.get("trust_path", trust_path))
         bk = B.get_backend(backend_name, backend_options)
         m = dict(pl)
         m.update({"kind": "twin_instance_manifest", "schema_version": "m9.1", "created_at": now(), "state": "created",
                   "architecture_snapshot_id": inputs.snapshot_id, "recipe_set_id": inputs.recipe_set_id, "profile": prof["name"],
-                  "profile_digest": content_id({"services": prof["services"], "jobs": prof["jobs"], "s2p": prof["s2p"]}),
+                  "trust_path": prof.get("trust_path", trust_path),
+                  "profile_digest": content_id({"services": prof["services"], "jobs": prof["jobs"], "s2p": prof["s2p"], "trust_path": prof.get("trust_path", trust_path)}),
                   "compose_profiles": P.compose_profiles_for(prof, inputs), "seed": str(seed), "seed_epoch": epoch, "arena_tag": _arena_tag(),
                   "s2p_image": img, "backend": {"kind": bk.kind, "isolation_boundary": bk.isolation_boundary, "options": dict(backend_options or {}),
                                                 "profile": pl["backend_profile"]},
@@ -139,7 +140,7 @@ class Factory:
                   "runtime_instance_id": None, "image_digests": None, "rendered_config_hash": None, "secrets_manifest_digest": None})
         write_json(exec_dir / "profile.json", prof)
         self.save_manifest(m)
-        self._event(m, "create", profile=prof["name"], seed=str(seed), backend=bk.kind)
+        self._event(m, "create", profile=prof["name"], seed=str(seed), backend=bk.kind, trust_path=prof.get("trust_path", trust_path))
         return m
 
     # ---- build: provision boundary, resolve/load images, record digests ----
@@ -176,7 +177,7 @@ class Factory:
         return m
 
     # ---- start: full boot from empty state (first start) or restart of an existing stopped instance ----
-    def start(self, instance_id, regen_secrets=None):
+    def start(self, instance_id, regen_secrets=None, resume_from=None):
         m = self.manifest(instance_id)
         if m["state"] not in ("built", "stopped", "running", "failed"):
             raise RuntimeError("instance %s is %s; build it first" % (instance_id, m["state"]))
@@ -187,6 +188,8 @@ class Factory:
             m["backend"]["restart"] = bk.start(m)
         boot = self.boot(m, prof)
         t0 = time.time()
+        if resume_from and m["state"] != "failed":
+            raise RuntimeError("--resume-from applies to a FAILED boot only (instance %s is %s)" % (instance_id, m["state"]))
         if m["state"] == "stopped" and m.get("boot"):
             # containers and volumes exist: resume them, then re-arm the host bridge
             boot.compose("resume-arena", "start", check=False)
@@ -199,7 +202,7 @@ class Factory:
             m["boot"]["last_resume_steps"] = boot.steps
         else:
             try:
-                info = boot.full()
+                info = boot.full(resume_from=resume_from)
             except Exception as e:  # noqa: BLE001
                 m["boot"] = {"failed": True, "error": str(e)[:2000], "steps": boot.steps, "at": now()}
                 self._set_state(m, "failed")
@@ -217,13 +220,13 @@ class Factory:
 
     def _runtime_record(self, m):
         body = {"kind": "RuntimeInstance", "schema_version": "m9.1", "instance_id": m["instance_id"], "architecture_snapshot_id": m["architecture_snapshot_id"],
-                "recipe_set_id": m["recipe_set_id"], "profile": m["profile"], "profile_digest": m["profile_digest"], "seed": m["seed"], "seed_epoch": m["seed_epoch"],
+                "recipe_set_id": m["recipe_set_id"], "profile": m["profile"], "trust_path": m.get("trust_path", "substitute"), "profile_digest": m["profile_digest"], "seed": m["seed"], "seed_epoch": m["seed_epoch"],
                 "backend": {"kind": m["backend"]["kind"], "isolation_boundary": m["backend"]["isolation_boundary"], "profile": m["backend"]["profile"],
                             "daemon_id": (m["backend"].get("identity") or {}).get("daemon_id")},
                 "inputs_hash": m["inputs_hash"], "rendered_config_hash": m.get("rendered_config_hash"), "secrets_manifest_digest": m.get("secrets_manifest_digest"),
                 "image_digests": m.get("image_digests"), "compose_project": m["compose_project"], "arena_suffix": m["arena_suffix"],
                 "networks": [m["arena_network"], m["ingress_network"]] + ([m["s2p_network"]] if self.profile(m)["s2p"] else []),
-                "subnets": [m["arena_subnet"], m["ingress_subnet"]], "published_ports": {"kong-lite": m["kong_host_port"]},
+                "subnets": [m["arena_subnet"], m["ingress_subnet"]], "published_ports": {("edge-kong" if m.get("trust_path") == "real" else "kong-lite"): m["kong_host_port"]},
                 "boot_id": (m.get("boot") or {}).get("boot_id"), "arena_tag": m["arena_tag"], "s2p_image": m.get("s2p_image"),
                 "source_checkout_head": m.get("source_checkout_head")}
         rid = content_id(body)
@@ -439,7 +442,7 @@ class Factory:
     def reproduce(self, instance_id, new_id, backend_name=None):
         src = self.manifest(instance_id)
         m = self.create(new_id, src["profile"], src["seed"], backend_name or src["backend"]["kind"], snapshot_id=src["architecture_snapshot_id"],
-                        sizing=src.get("sizing"), backend_options=src["backend"].get("options"), s2p_image=src.get("s2p_image"))
+                        sizing=src.get("sizing"), backend_options=src["backend"].get("options"), s2p_image=src.get("s2p_image"), trust_path=src.get("trust_path", "substitute"))
         m["reproduced_from"] = {"instance_id": src["instance_id"], "runtime_instance_id": src.get("runtime_instance_id"), "inputs_hash": src["inputs_hash"]}
         self.save_manifest(m)
         return m

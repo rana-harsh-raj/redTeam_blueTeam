@@ -1,0 +1,219 @@
+{
+ "kind": "m11_resources",
+ "instance_id": "m11-real",
+ "label": "real variant, canonical suite running",
+ "measured_at": "2026-09-09T17:34:32.915429+00:00",
+ "placement": "local (this machine)",
+ "remote": {
+  "used": false,
+  "reason": "remote compute not available in this session (gcloud needs an interactive re-auth); every service fits the local machine"
+ },
+ "host": {
+  "cpus": 15,
+  "memory_gib": 24.0,
+  "os": "26.6.1"
+ },
+ "vm": {
+  "name": "twin-m11-real",
+  "status": "Running",
+  "arch": "aarch64",
+  "cpus": 4,
+  "runtime": "docker",
+  "memory_gib": 10.0,
+  "disk_gib": 40.0,
+  "sizing": {
+   "cpus": 4,
+   "disk_gib": 40,
+   "memory_gib": 10
+  },
+  "host_process_rss_mib": 71.5
+ },
+ "containers": {
+  "count": 99,
+  "cpu_pct_sum": 137.7,
+  "mem_mib_sum": 7204.4,
+  "top_memory": [
+   {
+    "name": "twin_m11_real-kafka-1",
+    "cpu_pct": 10.12,
+    "mem_mib": 669.7
+   },
+   {
+    "name": "twin_m11_real-mysql-workflows-1",
+    "cpu_pct": 3.1,
+    "mem_mib": 446.8
+   },
+   {
+    "name": "twin_m11_real-mysql-payouts-1",
+    "cpu_pct": 4.69,
+    "mem_mib": 434.6
+   },
+   {
+    "name": "twin_m11_real-localstack-1",
+    "cpu_pct": 11.14,
+    "mem_mib": 429.3
+   },
+   {
+    "name": "twin_m11_real-mysql-fts-1",
+    "cpu_pct": 1.69,
+    "mem_mib": 407.6
+   },
+   {
+    "name": "twin_m11_real-mysql-shield-1",
+    "cpu_pct": 0.51,
+    "mem_mib": 397.2
+   },
+   {
+    "name": "twin_m11_real-mysql-apidb-stub-1",
+    "cpu_pct": 0.53,
+    "mem_mib": 380.0
+   },
+   {
+    "name": "twin_m11_real-mysql-bas-1",
+    "cpu_pct": 0.58,
+    "mem_mib": 379.2
+   },
+   {
+    "name": "twin_m11_real-mysql-xbalances-1",
+    "cpu_pct": 0.48,
+    "mem_mib": 369.9
+   },
+   {
+    "name": "twin_m11_real-edge-kong-1",
+    "cpu_pct": 1.55,
+    "mem_mib": 212.8
+   },
+   {
+    "name": "twin_m11_real-cadence-1",
+    "cpu_pct": 3.03,
+    "mem_mib": 132.8
+   },
+   {
+    "name": "twin_m11_real-payouts-api-1",
+    "cpu_pct": 6.96,
+    "mem_mib": 101.5
+   }
+  ],
+  "trust_path": [
+   {
+    "name": "twin_m11_real-mysql-workflows-1",
+    "cpu_pct": 3.1,
+    "mem_mib": 446.8
+   },
+   {
+    "name": "twin_m11_real-mysql-shield-1",
+    "cpu_pct": 0.51,
+    "mem_mib": 397.2
+   },
+   {
+    "name": "twin_m11_real-mysql-bas-1",
+    "cpu_pct": 0.58,
+    "mem_mib": 379.2
+   },
+   {
+    "name": "twin_m11_real-edge-kong-1",
+    "cpu_pct": 1.55,
+    "mem_mib": 212.8
+   },
+   {
+    "name": "twin_m11_real-cadence-1",
+    "cpu_pct": 3.03,
+    "mem_mib": 132.8
+   },
+   {
+    "name": "twin_m11_real-banking-accounts-api-1",
+    "cpu_pct": 0.1,
+    "mem_mib": 48.7
+   },
+   {
+    "name": "twin_m11_real-postgres-kong-1",
+    "cpu_pct": 3.87,
+    "mem_mib": 33.7
+   },
+   {
+    "name": "twin_m11_real-shield-web-1",
+    "cpu_pct": 1.46,
+    "mem_mib": 32.6
+   },
+   {
+    "name": "twin_m11_real-workflows-worker-1",
+    "cpu_pct": 1.5,
+    "mem_mib": 19.9
+   },
+   {
+    "name": "twin_m11_real-workflows-api-1",
+    "cpu_pct": 0.85,
+    "mem_mib": 19.8
+   },
+   {
+    "name": "twin_m11_real-redis-shield-1",
+    "cpu_pct": 0.41,
+    "mem_mib": 5.8
+   }
+  ]
+ },
+ "disk": {
+  "docker_system_df": [
+   {
+    "Active": "29",
+    "Reclaimable": "87.52kB (0%)",
+    "Size": "9.99GB",
+    "TotalCount": "30",
+    "Type": "Images"
+   },
+   {
+    "Active": "99",
+    "Reclaimable": "12.29kB (0%)",
+    "Size": "2.015MB",
+    "TotalCount": "100",
+    "Type": "Containers"
+   },
+   {
+    "Active": "31",
+    "Reclaimable": "2.441kB (0%)",
+    "Size": "3.087GB",
+    "TotalCount": "33",
+    "Type": "Local Volumes"
+   },
+   {
+    "Active": "0",
+    "Reclaimable": "1.066MB",
+    "Size": "37.91MB",
+    "TotalCount": "75",
+    "Type": "Build Cache"
+   }
+  ],
+  "vm_root": {
+   "mount": "/",
+   "size_gib": 18.3,
+   "used_gib": 0.9,
+   "avail_gib": 17.5
+  },
+  "vm_docker_data": {
+   "mount": "/var/lib/docker",
+   "size_gib": 39.1,
+   "used_gib": 11.2,
+   "avail_gib": 25.8
+  }
+ },
+ "images": {
+  "count": 29,
+  "total_gib": 2.66,
+  "trust_path_images": {
+   "rzp-arena/banking-accounts:v1-candidate": 42,
+   "ubercadence/server:v1.4.1-auto-setup": 181,
+   "rzp-arena/edge-kong:v1-candidate": 312,
+   "rzp-arena/shield:v1-candidate": 73,
+   "rzp-arena/workflows:v1-candidate": 30
+  }
+ },
+ "timings": {
+  "boot_secs": 32.1,
+  "build_secs": 59.7,
+  "create_secs": 0.3,
+  "generate_secs": 1.6,
+  "images_reresolve_secs": 10.7,
+  "images_secs": 35.9,
+  "provision_secs": 21.6
+ }
+}

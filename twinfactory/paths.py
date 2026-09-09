@@ -15,6 +15,7 @@ LOCAL_REPOS = REPO / ".local" / "twin-repos" / "accepted"
 COMPOSE = ENV2 / "docker-compose.yml"
 COMPOSE_S2P = ENV2 / "docker-compose.s2p.yml"
 COMPOSE_TWIN = ENV2 / "docker-compose.twin.yml"
+COMPOSE_M11 = ENV2 / "docker-compose.m11.yml"   # M11: real trust-path overlay (edge gateway, Shield, banking-accounts, Workflow service)
 S2P_IMAGE_ENV = S2P / ".build" / "runtime-image.env"
 
 
