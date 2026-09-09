@@ -20,7 +20,7 @@ def build_world(snapshot_id=None):
     from archkit.store import SnapshotStore
     from archkit.query import Query
     store = SnapshotStore()
-    sid = snapshot_id or store.current_id()
+    sid = store.resolve(snapshot_id or "current")
     return WorldModel(Query(store, sid)), sid
 
 
@@ -38,12 +38,12 @@ class SubprocessExecutor:
     """Runs each worker as a twin-scoped subprocess (real per-twin isolation).
     Verify tasks run through the engine's injected verifier (twin-scoped judge)."""
 
-    def __init__(self, engine, fake_model=False, fake_finders=None, fake_broker=None,
+    def __init__(self, engine, fake_model=False, fake_finders=None, fake_broker=False,
                  python=None):
         self.engine = engine
         self.fake_model = fake_model
         self.fake_finders = fake_finders or []
-        self.fake_broker = fake_broker or {}
+        self.fake_broker = bool(fake_broker)
         self.python = python or sys.executable
         self.procs = {}     # worker_id -> Popen (for external kill injection)
 
@@ -68,7 +68,8 @@ class SubprocessExecutor:
         if self.fake_model:
             env["CONTROLPLANE_FAKE_MODEL"] = "1"
             env["CONTROLPLANE_FAKE_FINDERS"] = ",".join(self.fake_finders)
-            env["CONTROLPLANE_FAKE_BROKER"] = json.dumps(self.fake_broker)
+        if self.fake_broker:
+            env["CONTROLPLANE_FAKE_BROKER"] = "1"
         cmd = [self.python, "-m", "controlplane.worker_main",
                eng.control.campaign_id, worker_id]
         proc = subprocess.Popen(cmd, cwd=str(paths.REPO), env=env)
@@ -117,7 +118,7 @@ def make_live_verification(twin_pool, python=None):
 
 
 def build_engine(control, manifest, snapshot_id=None, fake_model=False, fake_finders=None,
-                 fake_broker=None, worker_concurrency=2, lease_ttl=180,
+                 fake_broker=False, worker_concurrency=2, lease_ttl=180,
                  plan_max_theses=8, director_model=False, clock=time.time):
     world, sid = build_world(snapshot_id or manifest.get("architecture_snapshot_id"))
     router = ModelRouter(manifest["model_pool"], store=control)

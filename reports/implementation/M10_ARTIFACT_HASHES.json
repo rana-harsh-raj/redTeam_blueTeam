@@ -1,18 +1,19 @@
 {
-  "generated_at": "2026-09-09T09:02:19Z",
-  "count": 34,
+  "generated_at": "2026-09-09T09:41:59Z",
+  "count": 35,
   "files": {
     "controlplane/__init__.py": "7d8335c825976bbe941d58b154cd6c20951a00c0297ea3b6260846f7f2c0c68f",
     "controlplane/__main__.py": "84a7e4f8687d47e7fb81a80a5cea84d179c973fec45daf90f3c5d860e9f3ae69",
     "controlplane/acceptance.py": "e2a821778ac6f60e11d41a93494eaa89fa1b1ebdfed0352fc86228007adcd6e8",
     "controlplane/budget.py": "e956198e25d18278a24acc00bc286465127947e9fc34e64b6f6d8690a02a4feb",
-    "controlplane/build.py": "1792428b39ad92243ec19e8a0651a61738ba0c370c16e60f0160a4e8960d8a5a",
+    "controlplane/build.py": "e6ff34aeb3e5ca35d15fc7503c2d1311374d2764045e5089eff43256ac3033d3",
     "controlplane/cells.py": "7c6686b8f7cb16d51892ccb52f8fe5a77b3fd360c152c3703eef6aadcd4dc1e9",
-    "controlplane/cli.py": "0b90c274f8644e948eecbf2fabe8d11f43238e5e4ee0ebc6eba51ffc08c4955f",
+    "controlplane/cli.py": "9ed6a0b641e59fbdaa75c77ca55afb59d1fe486e0971fa49e59f6227724f9f4a",
     "controlplane/context.py": "ce5b080bde84b13dcaa5417a603f598326c822f3e30b6ce6fddf98182bcd3fdb",
     "controlplane/director.py": "122717d8961355f8a4bfc960c13f8fef297664008d4d88bde0be507e04cd1cab",
     "controlplane/engine.py": "5ac7dad8ef828fe0f18f509879f048e423488a9af129b96c14a60c5d5edfe983",
     "controlplane/fakes.py": "6f571c343c45157e648a7fa354083324a23bfa56fa25902cb96f2014a887745b",
+    "controlplane/live_proof.py": "0fbcfd464d0e7f4b033b819ddcac3c7e74123bde1351f14a1b3a54bfdfcbe1fe",
     "controlplane/manifest.py": "ace05ba104082361afbfc1e5a14b1f5f827dcd73a6f66253e6fb89f971931465",
     "controlplane/models.py": "e7de32f29944d51bdbc114f1b1d70486c3cb77d3b814ae5dd50420dc5f9105ca",
     "controlplane/paths.py": "966492b00b1682cc57a36f63786e915ea992298dd3febe2f99c7d9049cafd25e",
@@ -33,8 +34,8 @@
     "controlplane/verify_main.py": "40ff1cd0bba3e83833ab5cdea55a7ccad0cadebf7fc731ff0bb7f466701093c8",
     "controlplane/views.py": "f2a695d3651efd90ee9dc35014cae66af1447c4ab4bb2b7f51aa6d2f5497a615",
     "controlplane/worker.py": "8c09f70609184a68592149e0fa96b057459c7339261c988a2f58ab90e0617dfc",
-    "controlplane/worker_main.py": "ce83effa2205d78489037fb322e2c2c6c21d4e57c3ae6522ccc2f48d08318150",
-    "reports/implementation/M10_FINAL_REPORT.md": "1a977b460fa988c116e8d5d255d064d93a344bd0b56071746f0c9b5a9faa1d3b",
+    "controlplane/worker_main.py": "b2368bf7fedde8798c2274e933dc3d49a8423da9cdb98015ea8d4b0aa9a5d6b1",
+    "reports/implementation/M10_FINAL_REPORT.md": "0ec1492333097df11c5b38e713bc8c7c9ede7cb3274b36eaae402e0244c7901d",
     "reports/implementation/M10_RUNBOOK.md": "50ab1bde15e93151ddd7415ce6617dc46a0cabb9d5b3f77ba3728f1c90418536"
   }
 }

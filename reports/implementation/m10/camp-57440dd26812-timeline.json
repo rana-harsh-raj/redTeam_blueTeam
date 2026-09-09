@@ -1,0 +1,1531 @@
+{
+  "campaign_id": "camp-57440dd26812",
+  "manifest_content_id": "57440dd26812ab6f3245d6e10005d3192ebe080f50d5c9587a34fa06992ed0ca",
+  "generated_at": "2026-09-09T09:35:00Z",
+  "phases": [
+    {
+      "seq": 4,
+      "ts": "2026-09-09T09:16:28Z",
+      "phase": "campaign_started"
+    },
+    {
+      "seq": 364,
+      "ts": "2026-09-09T09:20:57Z",
+      "phase": "campaign_completed"
+    },
+    {
+      "seq": 366,
+      "ts": "2026-09-09T09:20:57Z",
+      "phase": "campaign_resumed"
+    },
+    {
+      "seq": 367,
+      "ts": "2026-09-09T09:20:57Z",
+      "phase": "campaign_resumed"
+    },
+    {
+      "seq": 906,
+      "ts": "2026-09-09T09:24:05Z",
+      "phase": "campaign_completed"
+    }
+  ],
+  "events": [
+    {
+      "seq": 4,
+      "ts": "2026-09-09T09:16:28Z",
+      "event": "campaign_started",
+      "twins": [
+        "alpha-m10",
+        "beta-m10"
+      ]
+    },
+    {
+      "seq": 6,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-001",
+      "subject": "identity:trust-boundary:payouts-service",
+      "priority": 5
+    },
+    {
+      "seq": 8,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-002",
+      "subject": "family:accounting",
+      "priority": 4
+    },
+    {
+      "seq": 10,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-003",
+      "subject": "family:approval-workflow",
+      "priority": 4
+    },
+    {
+      "seq": 12,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-004",
+      "subject": "family:async-workers",
+      "priority": 4
+    },
+    {
+      "seq": 14,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "planning_cycle",
+      "cycle": 1,
+      "new_theses": 4
+    },
+    {
+      "seq": 16,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "cell_created",
+      "cell_id": "CELL-001",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:node",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 18,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "task_created",
+      "task_id": "TASK-001",
+      "thesis_id": "TH-001",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-001",
+      "replica_index": 0
+    },
+    {
+      "seq": 20,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "cell_created",
+      "cell_id": "CELL-002",
+      "twin": "beta-m10",
+      "focus": "beta-m10:node",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 22,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "task_created",
+      "task_id": "TASK-002",
+      "thesis_id": "TH-001",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-002",
+      "replica_index": 1
+    },
+    {
+      "seq": 25,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "cell_created",
+      "cell_id": "CELL-003",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Ledger accounting (shared / VA-to-VA / FAV / Direct-account journals)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 27,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "task_created",
+      "task_id": "TASK-003",
+      "thesis_id": "TH-002",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-003",
+      "replica_index": 0
+    },
+    {
+      "seq": 29,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "cell_created",
+      "cell_id": "CELL-004",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Ledger accounting (shared / VA-to-VA / FAV / Direct-account journals)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 31,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "task_created",
+      "task_id": "TASK-004",
+      "thesis_id": "TH-002",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-004",
+      "replica_index": 1
+    },
+    {
+      "seq": 34,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "cell_created",
+      "cell_id": "CELL-005",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Maker-checker approval workflow (payouts + bulk payouts)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 36,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "task_created",
+      "task_id": "TASK-005",
+      "thesis_id": "TH-003",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-005",
+      "replica_index": 0
+    },
+    {
+      "seq": 38,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "cell_created",
+      "cell_id": "CELL-006",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Maker-checker approval workflow (payouts + bulk payouts)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 40,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "task_created",
+      "task_id": "TASK-006",
+      "thesis_id": "TH-003",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-006",
+      "replica_index": 1
+    },
+    {
+      "seq": 43,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "cell_created",
+      "cell_id": "CELL-007",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Async worker fabric (SQS jobs)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 45,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "task_created",
+      "task_id": "TASK-007",
+      "thesis_id": "TH-004",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-007",
+      "replica_index": 0
+    },
+    {
+      "seq": 47,
+      "ts": "2026-09-09T09:16:35Z",
+      "event": "cell_created",
+      "cell_id": "CELL-008",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Async worker fabric (SQS jobs)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 49,
+      "ts": "2026-09-09T09:16:36Z",
+      "event": "task_created",
+      "task_id": "TASK-008",
+      "thesis_id": "TH-004",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-008",
+      "replica_index": 1
+    },
+    {
+      "seq": 83,
+      "ts": "2026-09-09T09:17:24Z",
+      "event": "lease_expired",
+      "lease_id": "L-5ce4da729f",
+      "hypothesis_id": "TASK-001",
+      "owner": "W-001"
+    },
+    {
+      "seq": 86,
+      "ts": "2026-09-09T09:17:24Z",
+      "event": "task_recovered",
+      "task_id": "TASK-001",
+      "reason": "lease_expired",
+      "owner": "W-001"
+    },
+    {
+      "seq": 88,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-005",
+      "subject": "family:balance-refresh-reservations",
+      "priority": 4
+    },
+    {
+      "seq": 90,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-006",
+      "subject": "family:bank-channel-routing",
+      "priority": 4
+    },
+    {
+      "seq": 92,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-007",
+      "subject": "family:beneficiary-fund-accounts",
+      "priority": 4
+    },
+    {
+      "seq": 94,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-008",
+      "subject": "family:bulk-payouts",
+      "priority": 4
+    },
+    {
+      "seq": 96,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "planning_cycle",
+      "cycle": 2,
+      "new_theses": 4
+    },
+    {
+      "seq": 98,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "cell_created",
+      "cell_id": "CELL-009",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Direct-account balance refresh, MAR and in-flight reservations",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 100,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "task_created",
+      "task_id": "TASK-009",
+      "thesis_id": "TH-005",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-009",
+      "replica_index": 0
+    },
+    {
+      "seq": 102,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "cell_created",
+      "cell_id": "CELL-010",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Direct-account balance refresh, MAR and in-flight reservations",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 104,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "task_created",
+      "task_id": "TASK-010",
+      "thesis_id": "TH-005",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-010",
+      "replica_index": 1
+    },
+    {
+      "seq": 107,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "cell_created",
+      "cell_id": "CELL-011",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Bank and channel routing",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 109,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "task_created",
+      "task_id": "TASK-011",
+      "thesis_id": "TH-006",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-011",
+      "replica_index": 0
+    },
+    {
+      "seq": 111,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "cell_created",
+      "cell_id": "CELL-012",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Bank and channel routing",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 113,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "task_created",
+      "task_id": "TASK-012",
+      "thesis_id": "TH-006",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-012",
+      "replica_index": 1
+    },
+    {
+      "seq": 116,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "cell_created",
+      "cell_id": "CELL-013",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Contacts and fund accounts (beneficiaries)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 118,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "task_created",
+      "task_id": "TASK-013",
+      "thesis_id": "TH-007",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-013",
+      "replica_index": 0
+    },
+    {
+      "seq": 120,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "cell_created",
+      "cell_id": "CELL-014",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Contacts and fund accounts (beneficiaries)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 122,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "task_created",
+      "task_id": "TASK-014",
+      "thesis_id": "TH-007",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-014",
+      "replica_index": 1
+    },
+    {
+      "seq": 125,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "cell_created",
+      "cell_id": "CELL-015",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Bulk payouts (file upload -> batch -> per-row payout create / bulk approve)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 127,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "task_created",
+      "task_id": "TASK-015",
+      "thesis_id": "TH-008",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-015",
+      "replica_index": 0
+    },
+    {
+      "seq": 129,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "cell_created",
+      "cell_id": "CELL-016",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Bulk payouts (file upload -> batch -> per-row payout create / bulk approve)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 131,
+      "ts": "2026-09-09T09:17:37Z",
+      "event": "task_created",
+      "task_id": "TASK-016",
+      "thesis_id": "TH-008",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-016",
+      "replica_index": 1
+    },
+    {
+      "seq": 175,
+      "ts": "2026-09-09T09:19:10Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-001"
+    },
+    {
+      "seq": 217,
+      "ts": "2026-09-09T09:19:46Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-001",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 219,
+      "ts": "2026-09-09T09:19:46Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-002",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 221,
+      "ts": "2026-09-09T09:19:46Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-002"
+    },
+    {
+      "seq": 263,
+      "ts": "2026-09-09T09:20:16Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-003",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 265,
+      "ts": "2026-09-09T09:20:16Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-004",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 267,
+      "ts": "2026-09-09T09:20:16Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-003"
+    },
+    {
+      "seq": 309,
+      "ts": "2026-09-09T09:20:42Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-005",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 311,
+      "ts": "2026-09-09T09:20:42Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-006",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 313,
+      "ts": "2026-09-09T09:20:42Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-004"
+    },
+    {
+      "seq": 355,
+      "ts": "2026-09-09T09:20:57Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-007",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 357,
+      "ts": "2026-09-09T09:20:57Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-008",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 359,
+      "ts": "2026-09-09T09:20:57Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-005"
+    },
+    {
+      "seq": 364,
+      "ts": "2026-09-09T09:20:57Z",
+      "event": "campaign_completed",
+      "stop_reason": "completed",
+      "consumption": {
+        "actions": 44,
+        "model_calls": 44,
+        "prompt_tokens": 5280,
+        "completion_tokens": 2640,
+        "wall_seconds": 269.1,
+        "estimated_usd": 0.2772,
+        "by_model": {
+          "claude-opus-4-8": {
+            "calls": 44,
+            "prompt_tokens": 5280,
+            "completion_tokens": 2640
+          }
+        }
+      }
+    },
+    {
+      "seq": 366,
+      "ts": "2026-09-09T09:20:57Z",
+      "event": "campaign_resumed",
+      "freed_leases": 0,
+      "state_hash": "285f2780be65d070212b321f1cd3c2fb30d8182cdf25394cadb5d4791128f702"
+    },
+    {
+      "seq": 367,
+      "ts": "2026-09-09T09:20:57Z",
+      "event": "campaign_resumed",
+      "resume_from": "running",
+      "state_hash": "285f2780be65d070212b321f1cd3c2fb30d8182cdf25394cadb5d4791128f702"
+    },
+    {
+      "seq": 409,
+      "ts": "2026-09-09T09:21:16Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-009",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 411,
+      "ts": "2026-09-09T09:21:16Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-010",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 413,
+      "ts": "2026-09-09T09:21:16Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-006"
+    },
+    {
+      "seq": 457,
+      "ts": "2026-09-09T09:21:32Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-011",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 459,
+      "ts": "2026-09-09T09:21:32Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-012",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 461,
+      "ts": "2026-09-09T09:21:32Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-007"
+    },
+    {
+      "seq": 483,
+      "ts": "2026-09-09T09:21:49Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-013",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 485,
+      "ts": "2026-09-09T09:21:49Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-014",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 487,
+      "ts": "2026-09-09T09:21:49Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-008"
+    },
+    {
+      "seq": 489,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-009",
+      "subject": "family:cross-domain-s2p",
+      "priority": 4
+    },
+    {
+      "seq": 491,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-010",
+      "subject": "family:direct-payouts",
+      "priority": 4
+    },
+    {
+      "seq": 493,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-011",
+      "subject": "family:failure-reversal-cancellation",
+      "priority": 4
+    },
+    {
+      "seq": 495,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-012",
+      "subject": "family:fetch-list",
+      "priority": 4
+    },
+    {
+      "seq": 497,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "planning_cycle",
+      "cycle": 3,
+      "new_theses": 4
+    },
+    {
+      "seq": 499,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "cell_created",
+      "cell_id": "CELL-017",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Cross-domain Source-to-Pay TDS remittance (M7)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 501,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "task_created",
+      "task_id": "TASK-017",
+      "thesis_id": "TH-009",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-017",
+      "replica_index": 0
+    },
+    {
+      "seq": 503,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "cell_created",
+      "cell_id": "CELL-018",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Cross-domain Source-to-Pay TDS remittance (M7)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 505,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "task_created",
+      "task_id": "TASK-018",
+      "thesis_id": "TH-009",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-018",
+      "replica_index": 1
+    },
+    {
+      "seq": 508,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "cell_created",
+      "cell_id": "CELL-019",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Direct (current-account) payouts",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 510,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "task_created",
+      "task_id": "TASK-019",
+      "thesis_id": "TH-010",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-019",
+      "replica_index": 0
+    },
+    {
+      "seq": 512,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "cell_created",
+      "cell_id": "CELL-020",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Direct (current-account) payouts",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 514,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "task_created",
+      "task_id": "TASK-020",
+      "thesis_id": "TH-010",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-020",
+      "replica_index": 1
+    },
+    {
+      "seq": 517,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "cell_created",
+      "cell_id": "CELL-021",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Failure, reversal and cancellation",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 519,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "task_created",
+      "task_id": "TASK-021",
+      "thesis_id": "TH-011",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-021",
+      "replica_index": 0
+    },
+    {
+      "seq": 521,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "cell_created",
+      "cell_id": "CELL-022",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Failure, reversal and cancellation",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 523,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "task_created",
+      "task_id": "TASK-022",
+      "thesis_id": "TH-011",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-022",
+      "replica_index": 1
+    },
+    {
+      "seq": 526,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "cell_created",
+      "cell_id": "CELL-023",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Payout fetch / list / status-details / search",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 528,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "task_created",
+      "task_id": "TASK-023",
+      "thesis_id": "TH-012",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-023",
+      "replica_index": 0
+    },
+    {
+      "seq": 530,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "cell_created",
+      "cell_id": "CELL-024",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Payout fetch / list / status-details / search",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 532,
+      "ts": "2026-09-09T09:22:05Z",
+      "event": "task_created",
+      "task_id": "TASK-024",
+      "thesis_id": "TH-012",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-024",
+      "replica_index": 1
+    },
+    {
+      "seq": 575,
+      "ts": "2026-09-09T09:22:15Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-015",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 577,
+      "ts": "2026-09-09T09:22:15Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-016",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 579,
+      "ts": "2026-09-09T09:22:15Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-009"
+    },
+    {
+      "seq": 621,
+      "ts": "2026-09-09T09:22:45Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-017",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 623,
+      "ts": "2026-09-09T09:22:45Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-018",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 625,
+      "ts": "2026-09-09T09:22:45Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-010"
+    },
+    {
+      "seq": 667,
+      "ts": "2026-09-09T09:22:59Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-019",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 669,
+      "ts": "2026-09-09T09:22:59Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-020",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 671,
+      "ts": "2026-09-09T09:22:59Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-011"
+    },
+    {
+      "seq": 715,
+      "ts": "2026-09-09T09:23:13Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-021",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 717,
+      "ts": "2026-09-09T09:23:13Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-022",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 719,
+      "ts": "2026-09-09T09:23:13Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-012"
+    },
+    {
+      "seq": 721,
+      "ts": "2026-09-09T09:23:26Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-013",
+      "subject": "family:fts-status-propagation",
+      "priority": 4
+    },
+    {
+      "seq": 723,
+      "ts": "2026-09-09T09:23:26Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-014",
+      "subject": "family:fund-transfer-execution",
+      "priority": 4
+    },
+    {
+      "seq": 725,
+      "ts": "2026-09-09T09:23:26Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-015",
+      "subject": "family:idempotency-retries",
+      "priority": 4
+    },
+    {
+      "seq": 727,
+      "ts": "2026-09-09T09:23:26Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-016",
+      "subject": "family:internal-service-routes",
+      "priority": 4
+    },
+    {
+      "seq": 729,
+      "ts": "2026-09-09T09:23:26Z",
+      "event": "planning_cycle",
+      "cycle": 4,
+      "new_theses": 4
+    },
+    {
+      "seq": 731,
+      "ts": "2026-09-09T09:23:26Z",
+      "event": "cell_created",
+      "cell_id": "CELL-025",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:FTS -> Payouts status propagation (HTTP webhook / monolith relay / Kafka / source-update)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 733,
+      "ts": "2026-09-09T09:23:26Z",
+      "event": "task_created",
+      "task_id": "TASK-025",
+      "thesis_id": "TH-013",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-025",
+      "replica_index": 0
+    },
+    {
+      "seq": 735,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "cell_created",
+      "cell_id": "CELL-026",
+      "twin": "beta-m10",
+      "focus": "beta-m10:FTS -> Payouts status propagation (HTTP webhook / monolith relay / Kafka / source-update)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 737,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "task_created",
+      "task_id": "TASK-026",
+      "thesis_id": "TH-013",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-026",
+      "replica_index": 1
+    },
+    {
+      "seq": 740,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "cell_created",
+      "cell_id": "CELL-027",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Fund transfer execution (FTS transfer -> attempt -> Mozart -> bank)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 742,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "task_created",
+      "task_id": "TASK-027",
+      "thesis_id": "TH-014",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-027",
+      "replica_index": 0
+    },
+    {
+      "seq": 744,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "cell_created",
+      "cell_id": "CELL-028",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Fund transfer execution (FTS transfer -> attempt -> Mozart -> bank)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 746,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "task_created",
+      "task_id": "TASK-028",
+      "thesis_id": "TH-014",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-028",
+      "replica_index": 1
+    },
+    {
+      "seq": 749,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "cell_created",
+      "cell_id": "CELL-029",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Idempotency keys, duplicate prevention and retries",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 751,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "task_created",
+      "task_id": "TASK-029",
+      "thesis_id": "TH-015",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-029",
+      "replica_index": 0
+    },
+    {
+      "seq": 753,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "cell_created",
+      "cell_id": "CELL-030",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Idempotency keys, duplicate prevention and retries",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 755,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "task_created",
+      "task_id": "TASK-030",
+      "thesis_id": "TH-015",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-030",
+      "replica_index": 1
+    },
+    {
+      "seq": 758,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "cell_created",
+      "cell_id": "CELL-031",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Service-to-service internal routes and their credentials",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 760,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "task_created",
+      "task_id": "TASK-031",
+      "thesis_id": "TH-016",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-031",
+      "replica_index": 0
+    },
+    {
+      "seq": 762,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "cell_created",
+      "cell_id": "CELL-032",
+      "twin": "beta-m10",
+      "focus": "beta-m10:Service-to-service internal routes and their credentials",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 764,
+      "ts": "2026-09-09T09:23:27Z",
+      "event": "task_created",
+      "task_id": "TASK-032",
+      "thesis_id": "TH-016",
+      "twin": "beta-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-032",
+      "replica_index": 1
+    },
+    {
+      "seq": 807,
+      "ts": "2026-09-09T09:23:34Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-023",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 809,
+      "ts": "2026-09-09T09:23:34Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-024",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 811,
+      "ts": "2026-09-09T09:23:34Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-013"
+    },
+    {
+      "seq": 853,
+      "ts": "2026-09-09T09:23:50Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-025",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 855,
+      "ts": "2026-09-09T09:23:50Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-026",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 857,
+      "ts": "2026-09-09T09:23:50Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-014"
+    },
+    {
+      "seq": 899,
+      "ts": "2026-09-09T09:24:05Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-027",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 901,
+      "ts": "2026-09-09T09:24:05Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-028",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 903,
+      "ts": "2026-09-09T09:24:05Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-015"
+    },
+    {
+      "seq": 906,
+      "ts": "2026-09-09T09:24:05Z",
+      "event": "campaign_completed",
+      "stop_reason": "action_budget_exhausted",
+      "consumption": {
+        "actions": 120,
+        "model_calls": 120,
+        "prompt_tokens": 14400,
+        "completion_tokens": 7200,
+        "wall_seconds": 457.0,
+        "estimated_usd": 0.756,
+        "by_model": {
+          "claude-opus-4-8": {
+            "calls": 120,
+            "prompt_tokens": 14400,
+            "completion_tokens": 7200
+          }
+        }
+      }
+    },
+    {
+      "seq": 908,
+      "ts": "2026-09-09T09:24:30Z",
+      "event": "twin_unhealthy",
+      "instance_id": "beta-m10",
+      "detail": {
+        "instance_id": "beta-m10",
+        "state": "stopped",
+        "profile": "focused:shared-payouts",
+        "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+        "runtime_instance_id": "df69458af634674395a9e36c02d5f57216d5c4487a03586340acce9776219eba",
+        "backend": {
+          "kind": "colima",
+          "profile": "twin-beta-m10",
+          "vm": {
+            "name": "twin-beta-m10",
+            "status": "Running",
+            "arch": "aarch64",
+            "cpus": 4,
+            "memory": 8589934592,
+            "disk": 42949672960,
+            "runtime": "docker"
+          },
+          "identity": {
+            "reachable": true,
+            "daemon_id": "02983b10-e810-4bab-a76e-6363e323a4ea",
+            "name": "colima-twin-beta-m10",
+            "server_version": "29.5.2",
+            "ncpu": 4,
+            "mem_total": 8307097600,
+            "os": "Ubuntu 24.04.4 LTS",
+            "kernel": "6.8.0-117-generic",
+            "docker_root": "/var/lib/docker",
+            "docker_host": "unix:///Users/rana.singh/.colima/twin-beta-m10/docker.sock"
+          }
+        },
+        "compose_project": "twin_beta_m10",
+        "kong_host_port": 18727,
+        "exec_dir": "/Users/rana.singh/.twin-factory/instances/beta-m10",
+        "at": "2026-09-09T09:24:29Z",
+        "containers": {
+          "total": 93,
+          "running": 0,
+          "healthy": 0,
+          "unhealthy": [],
+          "not_running": [
+            "api-ingress",
+            "asv-stub",
+            "bankingaccounts-stub",
+            "cfa-server",
+            "cfa-worker-contact",
+            "cfa-worker-fa",
+            "cron-driver",
+            "dcs-stub",
+            "fts-web",
+            "fts-worker-check-transfer-status",
+            "fts-worker-default",
+            "fts-worker-fire-transfer-status-webhook",
+            "fts-worker-hv-fire-transfer-status-webhook",
+            "fts-worker-hv-initiate-transfer",
+            "fts-worker-initiate-transfer",
+            "fts-worker-rbl-check-transfer-status",
+            "fts-worker-rbl-direct-check-transfer-status",
+            "fts-worker-rbl-direct-imps-check-transfer-status",
+            "fts-worker-rbl-direct-imps-hv-initiate-transfer",
+            "fts-worker-rbl-direct-imps-initiate-transfer",
+            "fts-worker-rbl-direct-initiate-transfer",
+            "fts-worker-rbl-direct-slow-lane-initiate-transfer",
+            "fts-worker-rbl-direct-upi-check-transfer-status",
+            "fts-worker-rbl-direct-upi-initiate-transfer",
+            "fts-worker-rbl-imps-check-transfer-status",
+            "fts-worker-rbl-imps-initiate-transfer",
+            "fts-worker-rbl-initiate-transfer",
+            "fts-worker-rbl-upi-check-transfer-status",
+            "fts-worker-rbl-upi-hv-check-transfer-status",
+            "fts-worker-rbl-upi-hv-initiate-transfer",
+            "fts-worker-rbl-upi-initiate-transfer",
+            "fts-worker-retry-transfer",
+            "fts-worker-retry-transfer-preprocessor",
+            "fts-worker-retry-transfer-source-update",
+            "fts-worker-slow-lane-initiate-transfer",
+            "kafka",
+            "kong-lite",
+            "ledger-api",
+            "ledger-gate",
+            "ledger-scheduler",
+            "ledger-worker",
+            "ledger-worker-balance-update",
+            "ledger-worker-entry-details-create",
+            "ledger-worker-entry-details-create-pg",
+            "ledger-worker-journal-create",
+            "localstack",
+            "merchant-webhook-sink",
+            "mongo-cfa",
+            "monolith-stub",
+            "mozart-sim",
+            "mysql-apidb-stub",
+            "mysql-fts",
+            "mysql-payouts",
+            "mysql-xbalances",
+            "payouts-api",
+            "payouts-kafka-fts-status-updates-consumer",
+            "payouts-kafka-fts-status-updates-retry-consumer",
+            "payouts-worker-api-queue-for-async-dual-write-direct-push",
+            "payouts-worker-async-dual-write",
+            "payouts-worker-batch-submitted-merchants",
+            "payouts-worker-bulk-payouts",
+            "payouts-worker-data-consistency-checker",
+            "payouts-worker-data-consistency-event",
+            "payouts-worker-fts-async-hv-processing",
+            "payouts-worker-fts-async-processing",
+            "payouts-worker-fund-management-payout-check",
+            "payouts-worker-fund-management-payout-initiate",
+            "payouts-worker-generic-processing",
+            "payouts-worker-on-hold-payout",
+            "payouts-worker-partner-bank-hold-payouts",
+            "payouts-worker-payout-create-failure-handling",
+            "payouts-worker-payout-source-updater",
+            "payouts-worker-payout-update-failure-handling",
+            "payouts-worker-payout-usage-event-processing",
+            "payouts-worker-queued-payout",
+            "payouts-worker-rbl-banking-account-statement",
+            "payouts-worker-schedule-payout",
+            "payouts-worker-transaction-create",
+            "payouts-worker-webhook-event",
+            "payouts-worker-x-account-statement-source-event",
+            "payouts-worker-x-balance-payouts-event",
+            "payouts-worker-x-balances-balance-refresh",
+            "postgres-ledger",
+            "pricing-stub",
+            "redis",
+            "shield-stub",
+            "splitz-stub",
+            "stork-capture",
+            "workflow-engine",
+            "workflow-sim",
+            "xas-sim",
+            "xbalances-server",
+            "xbalances-worker"
+          ]
+        },
+        "bridge": {
+          "ok": false,
+          "port": 18727,
+          "error": "<urlopen error [Errno 61] Connection refused>"
+        },
+        "healthy": false
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "campaign_id": "camp-57440dd26812",
+      "control_state": {
+        "phase": "running",
+        "planning_cycles": 1,
+        "started_at": "2026-09-09T09:16:28Z",
+        "started_epoch": 1788945388.020961,
+        "twin_cursor": 8
+      },
+      "counts": {
+        "budget": 0,
+        "candidates": 0,
+        "cells": 8,
+        "events": 33,
+        "handoffs": 0,
+        "hypotheses_v2": 1,
+        "leases": 3,
+        "model_calls": 4,
+        "narrative": 0,
+        "planning": 1,
+        "recoveries": 0,
+        "tasks": 11,
+        "theses": 8,
+        "tool_calls": 4,
+        "twins": 2,
+        "verifications": 0,
+        "workers": 4
+      },
+      "extra": {
+        "tick": 0
+      },
+      "phase": "tick",
+      "state_hash": "428ec1ee6e31628194e931774b6580db9f00a9309cbceed1cafdde7cdc674f4b",
+      "ts": "2026-09-09T09:17:24Z"
+    },
+    {
+      "campaign_id": "camp-57440dd26812",
+      "control_state": {
+        "finished_at": "2026-09-09T09:20:57Z",
+        "phase": "completed",
+        "planning_cycles": 2,
+        "started_at": "2026-09-09T09:16:28Z",
+        "started_epoch": 1788945388.020961,
+        "stop_reason": "completed",
+        "twin_cursor": 16
+      },
+      "counts": {
+        "budget": 3,
+        "candidates": 0,
+        "cells": 24,
+        "events": 128,
+        "handoffs": 0,
+        "hypotheses_v2": 6,
+        "leases": 24,
+        "model_calls": 44,
+        "narrative": 0,
+        "planning": 2,
+        "recoveries": 0,
+        "tasks": 40,
+        "theses": 21,
+        "tool_calls": 44,
+        "twins": 2,
+        "verifications": 0,
+        "workers": 24
+      },
+      "extra": {
+        "stop_reason": "completed"
+      },
+      "phase": "final",
+      "state_hash": "285f2780be65d070212b321f1cd3c2fb30d8182cdf25394cadb5d4791128f702",
+      "ts": "2026-09-09T09:20:57Z"
+    },
+    {
+      "campaign_id": "camp-57440dd26812",
+      "control_state": {
+        "finished_at": "2026-09-09T09:20:57Z",
+        "phase": "running",
+        "planning_cycles": 2,
+        "started_at": "2026-09-09T09:16:28Z",
+        "started_epoch": 1788945388.020961,
+        "stop_reason": "completed",
+        "twin_cursor": 16
+      },
+      "counts": {
+        "budget": 3,
+        "candidates": 0,
+        "cells": 26,
+        "events": 147,
+        "handoffs": 0,
+        "hypotheses_v2": 7,
+        "leases": 28,
+        "model_calls": 52,
+        "narrative": 0,
+        "planning": 2,
+        "recoveries": 0,
+        "tasks": 44,
+        "theses": 22,
+        "tool_calls": 52,
+        "twins": 2,
+        "verifications": 0,
+        "workers": 28
+      },
+      "extra": {
+        "tick": 0
+      },
+      "phase": "tick",
+      "state_hash": "ec465c26e951f4ffa6725f042addd1c2c763792c0f4bb43c271bc5494d575b41",
+      "ts": "2026-09-09T09:21:16Z"
+    },
+    {
+      "campaign_id": "camp-57440dd26812",
+      "control_state": {
+        "finished_at": "2026-09-09T09:20:57Z",
+        "phase": "running",
+        "planning_cycles": 3,
+        "started_at": "2026-09-09T09:16:28Z",
+        "started_epoch": 1788945388.020961,
+        "stop_reason": "completed",
+        "twin_cursor": 24
+      },
+      "counts": {
+        "budget": 4,
+        "candidates": 0,
+        "cells": 44,
+        "events": 234,
+        "handoffs": 0,
+        "hypotheses_v2": 11,
+        "leases": 46,
+        "model_calls": 88,
+        "narrative": 0,
+        "planning": 3,
+        "recoveries": 0,
+        "tasks": 70,
+        "theses": 35,
+        "tool_calls": 88,
+        "twins": 2,
+        "verifications": 0,
+        "workers": 46
+      },
+      "extra": {
+        "tick": 5
+      },
+      "phase": "tick",
+      "state_hash": "2e119c8522b53d9874e7de4ec1ab908a72f922681282314c999b70eda61cd271",
+      "ts": "2026-09-09T09:22:59Z"
+    },
+    {
+      "campaign_id": "camp-57440dd26812",
+      "control_state": {
+        "finished_at": "2026-09-09T09:24:05Z",
+        "phase": "completed",
+        "planning_cycles": 4,
+        "started_at": "2026-09-09T09:16:28Z",
+        "started_epoch": 1788945388.020961,
+        "stop_reason": "action_budget_exhausted",
+        "twin_cursor": 32
+      },
+      "counts": {
+        "budget": 6,
+        "candidates": 0,
+        "cells": 60,
+        "events": 312,
+        "handoffs": 0,
+        "hypotheses_v2": 15,
+        "leases": 62,
+        "model_calls": 120,
+        "narrative": 0,
+        "planning": 4,
+        "recoveries": 0,
+        "tasks": 94,
+        "theses": 47,
+        "tool_calls": 120,
+        "twins": 2,
+        "verifications": 0,
+        "workers": 62
+      },
+      "extra": {
+        "stop_reason": "action_budget_exhausted"
+      },
+      "phase": "final",
+      "state_hash": "5239524d2d641deca290b4400719cfbd57e98e1d0fabadd9ba493b6ee32ec681",
+      "ts": "2026-09-09T09:24:05Z"
+    }
+  ]
+}

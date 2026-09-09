@@ -1,0 +1,142 @@
+{
+  "coverage": {
+    "snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+    "planning_cycles": 4,
+    "theses_total": 16,
+    "theses_by_status": {
+      "exhausted": 15,
+      "scheduled": 1
+    },
+    "distinct_subjects": 16,
+    "subjects": [
+      "family:accounting",
+      "family:approval-workflow",
+      "family:async-workers",
+      "family:balance-refresh-reservations",
+      "family:bank-channel-routing",
+      "family:beneficiary-fund-accounts",
+      "family:bulk-payouts",
+      "family:cross-domain-s2p",
+      "family:direct-payouts",
+      "family:failure-reversal-cancellation",
+      "family:fetch-list",
+      "family:fts-status-propagation",
+      "family:fund-transfer-execution",
+      "family:idempotency-retries",
+      "family:internal-service-routes",
+      "identity:trust-boundary:payouts-service"
+    ],
+    "tasks_total": 32,
+    "tasks_by_status": {
+      "done": 30,
+      "ready": 2
+    },
+    "tasks_by_kind": {
+      "probe": 32
+    },
+    "hypotheses_total": 15,
+    "hypotheses_by_state": {
+      "proposed": 15
+    },
+    "candidates_total": 0,
+    "candidates_by_status": {},
+    "duplicate_suppressed": 15
+  },
+  "allocation": {
+    "twins": [
+      {
+        "instance_id": "alpha-m10",
+        "current_instance_id": "alpha-m10",
+        "status": "assigned",
+        "starting_access_profile": "merchant_ordinary",
+        "allocation": {
+          "tasks": 16,
+          "cells": 16,
+          "candidates": 0
+        }
+      },
+      {
+        "instance_id": "beta-m10",
+        "current_instance_id": "beta-m10",
+        "status": "assigned",
+        "starting_access_profile": "merchant_fresh",
+        "allocation": {
+          "tasks": 16,
+          "cells": 16,
+          "candidates": 0
+        }
+      }
+    ],
+    "cells_total": 32,
+    "cells_by_status": {
+      "retired": 28,
+      "active": 4
+    },
+    "replication_groups": 16,
+    "independent_replicas": 16
+  },
+  "cost": {
+    "actions": 120,
+    "model_calls": 120,
+    "prompt_tokens": 14400,
+    "completion_tokens": 7200,
+    "wall_seconds": 457.0,
+    "estimated_usd": 0.756,
+    "by_model": {
+      "claude-opus-4-8": {
+        "calls": 120,
+        "prompt_tokens": 14400,
+        "completion_tokens": 7200
+      }
+    },
+    "budget_status": "action_budget_exhausted",
+    "budgets": {
+      "max_actions": 120,
+      "max_model_calls": 6000,
+      "max_usd": null,
+      "max_wall_seconds": 1000000000,
+      "planning_cycles_min": 2
+    }
+  },
+  "results": {
+    "candidates_total": 0,
+    "verified": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "unverified_or_pending": 0,
+    "verifications": 0,
+    "decorrelated_verifications": 0,
+    "self_verifications": 0,
+    "duplicate_hypotheses_suppressed": 15
+  },
+  "recovery_events": {
+    "worker_failures_recovered": 1,
+    "lease_expiries": 1,
+    "director_restarts": 2,
+    "model_fallbacks": 0,
+    "twin_recoveries": 0,
+    "twins_reproduced": 0
+  },
+  "tool_usage": {
+    "record_hypothesis": 30,
+    "merchant_request": 30,
+    "record_observation": 30,
+    "conclude": 30
+  },
+  "model_usage": {
+    "claude-opus-4-8": {
+      "calls": 120,
+      "prompt_tokens": 14400,
+      "completion_tokens": 7200
+    }
+  },
+  "control_state": {
+    "finished_at": "2026-09-09T09:24:05Z",
+    "phase": "completed",
+    "planning_cycles": 4,
+    "started_at": "2026-09-09T09:16:28Z",
+    "started_epoch": 1788945388.020961,
+    "stop_reason": "action_budget_exhausted",
+    "twin_cursor": 32
+  }
+}

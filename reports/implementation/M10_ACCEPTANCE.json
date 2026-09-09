@@ -2,7 +2,7 @@
   "milestone": "M10",
   "schema": "m10.1",
   "controlplane_version": "1.0.0",
-  "evaluated_at": "2026-09-09T09:02:19Z",
+  "evaluated_at": "2026-09-09T09:41:59Z",
   "accepted": true,
   "gates_passed": 21,
   "gates_total": 21,
@@ -12,7 +12,7 @@
       "desc": "campaign manifest is immutable and content-addressed",
       "pass": true,
       "detail": {
-        "content_id": "00ce19d9d937e79641f1bca56e284cbefbe42851c2b03be06a7d04801c37932a"
+        "content_id": "cf86a7236780a0d7efb63e9b7e656626da2a7cbbf7ceb94e373e9cf0de7dac16"
       }
     },
     {
@@ -145,7 +145,7 @@
         },
         "archkit": {
           "ok": true,
-          "summary": "<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 61493)>"
+          "summary": "<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 62085)>"
         },
         "twinfactory": {
           "ok": true,
@@ -166,12 +166,12 @@
       "desc": "machine-computed acceptance reproducible; artifacts hashed",
       "pass": true,
       "detail": {
-        "files": 34
+        "files": 35
       }
     }
   ],
-  "proof_campaign_id": "camp-00ce19d9d937",
-  "manifest_content_id": "00ce19d9d937e79641f1bca56e284cbefbe42851c2b03be06a7d04801c37932a",
+  "proof_campaign_id": "camp-cf86a7236780",
+  "manifest_content_id": "cf86a7236780a0d7efb63e9b7e656626da2a7cbbf7ceb94e373e9cf0de7dac16",
   "coverage": {
     "snapshot_id": "snap-fake-main",
     "planning_cycles": 4,
@@ -255,7 +255,7 @@
     },
     "archkit": {
       "ok": true,
-      "summary": "<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 61493)>"
+      "summary": "<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 62085)>"
     },
     "twinfactory": {
       "ok": true,
@@ -270,5 +270,5 @@
       "summary": "OK"
     }
   },
-  "git_head": "addd10e1bd00e148bcd97aac6036ff0a68cc0d2b"
+  "git_head": "342f1417d86056059e3bf12c3916b347b0ace99d"
 }

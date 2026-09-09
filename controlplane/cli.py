@@ -70,7 +70,7 @@ def cmd_start(a):
     if a.fake:
         from .fakes import build_fake_engine
         finders = set((a.fake_finders or "").split(",")) - {""}
-        fixtures = json.loads(a.fake_broker) if a.fake_broker else None
+        fixtures = json.loads(a.fake_broker_json) if getattr(a, "fake_broker_json", None) else None
         eng, _ = build_fake_engine(control, manifest, clock=clock,
                                    find_candidate_for=finders or None, broker_fixtures=fixtures,
                                    worker_concurrency=a.worker_concurrency,
@@ -80,6 +80,7 @@ def cmd_start(a):
         from .build import build_engine
         eng = build_engine(control, manifest, fake_model=a.fake_model,
                            fake_finders=list((a.fake_finders or "").split(",")) if a.fake_finders else None,
+                           fake_broker=getattr(a, "fake_broker_flag", False),
                            worker_concurrency=a.worker_concurrency, lease_ttl=a.lease_ttl,
                            plan_max_theses=a.plan_max_theses, director_model=a.director_model)
     if a.resume:
@@ -214,7 +215,8 @@ def main(argv=None):
         s.add_argument("--fake-model", action="store_true", dest="fake_model",
                        help="real twins + deterministic model policy (declared action budget)")
         s.add_argument("--fake-finders", default=None)
-        s.add_argument("--fake-broker", default=None)
+        s.add_argument("--fake-broker", action="store_true", dest="fake_broker_flag", help="in-process fake broker (plumbing tests; no twin)")
+        s.add_argument("--fake-broker-json", default=None, dest="fake_broker_json", help="fully-fake engine broker fixtures (JSON)")
         s.add_argument("--director-model", action="store_true", dest="director_model")
         s.add_argument("--worker-concurrency", type=int, default=2, dest="worker_concurrency")
         s.add_argument("--plan-max-theses", type=int, default=8, dest="plan_max_theses")
