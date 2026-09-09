@@ -88,8 +88,11 @@ def evaluate(skip_suites=False, real_run=None, sub_run=None):
     gates = []
     f = Factory()
     insts = {}
-    for m in f.registry.records():
-        insts[m["instance_id"]] = m
+    for rec in f.registry.records():        # registry rows are a projection; the manifest carries trust_path/images/secrets
+        try:
+            insts[rec["instance_id"]] = f.manifest(rec["instance_id"])
+        except Exception:  # noqa: BLE001
+            insts[rec["instance_id"]] = rec
     real_inst = next((m for m in insts.values() if m.get("trust_path") == "real" and m.get("state") in ("running", "stopped")), None)
     sub_inst = next((m for m in insts.values() if m.get("trust_path") == "substitute" and m.get("state") in ("running", "stopped")), None)
     real_run = real_run if real_run else (str(latest_run(f.idir(real_inst["instance_id"]))) if real_inst else None)
@@ -105,18 +108,13 @@ def evaluate(skip_suites=False, real_run=None, sub_run=None):
     snap_summary = jload(REPO / "reports" / "architecture" / "snapshots" / (snap_id or "x") / "summary.json", {})
     recipes_dir = REPO / "reports" / "architecture" / "snapshots" / (snap_id or "x") / "recipes"
     recipe_names = {p.stem for p in recipes_dir.glob("*.json")} if recipes_dir.is_dir() else set()
-    prof_json = None
-    rc, out, _ = sh([sys.executable, "-m", "twinfactory", "profiles", "--trust-path", "real"], cwd=REPO)
-    try:
-        prof_json = json.loads(out)
-    except ValueError:
-        prof_json = {}
-    full_real = (prof_json.get("profiles") or {}).get("full") or {}
-    rc2, out2, _ = sh([sys.executable, "-m", "twinfactory", "profiles", "--trust-path", "substitute"], cwd=REPO)
-    try:
-        full_sub = (json.loads(out2).get("profiles") or {}).get("full") or {}
-    except ValueError:
-        full_sub = {}
+    def profile_doc(variant):
+        rc, out, _ = sh([sys.executable, "-m", "twinfactory", "profile", "full", "--trust-path", variant, "--json"], cwd=REPO)
+        try:
+            return json.loads(out[out.index("{"):])
+        except (ValueError, IndexError):
+            return {}
+    full_real, full_sub = profile_doc("real"), profile_doc("substitute")
     trust_real = {"edge-kong", "shield-web", "banking-accounts-api", "workflows-api", "workflows-worker", "cadence"}
     real_services = set(full_real.get("services") or [])
     sub_services = set(full_sub.get("services") or [])
@@ -131,10 +129,15 @@ def evaluate(skip_suites=False, real_run=None, sub_run=None):
         return found
 
     # ---- gates ----
+    rc, dflt, _ = sh([sys.executable, "-m", "twinfactory", "profile", "full", "--json"], cwd=REPO)     # no --trust-path: the DEFAULT
+    try:
+        default_variant = json.loads(dflt[dflt.index("{"):]).get("trust_path")
+    except (ValueError, IndexError):
+        default_variant = None
     gate(gates, "M11-01", "real edge gateway (razorpay/edge Kong + terraform-kong prod-api routes) is the DEFAULT ingress of every derived profile",
-         full_real.get("trust_path") == "real" and "edge-kong" in real_services and "kong-lite" not in real_services and kong_cfg.get("kind") == "twin_kong_config"
+         default_variant == "real" and full_real.get("trust_path") == "real" and "edge-kong" in real_services and "kong-lite" not in real_services and kong_cfg.get("kind") == "twin_kong_config"
          and sum(len(s.get("routes", {})) for s in (kong_cfg.get("services") or {}).values()) >= 18 and (real_inst or {}).get("trust_path") == "real",
-         {"default_trust_path": full_real.get("trust_path"), "routes": sum(len(s.get("routes", {})) for s in (kong_cfg.get("services") or {}).values()),
+         {"default_trust_path": default_variant, "routes": sum(len(s.get("routes", {})) for s in (kong_cfg.get("services") or {}).values()),
           "instance": (real_inst or {}).get("instance_id"), "route_hosts": (kong_cfg.get("route_hosts") or {}).get("twin")})
     gate(gates, "M11-02", "highest feasible monolith auth path: boot attempt recorded with exact blockers; the monolith replacement verifies the gateway passport (kid edgev2) end to end",
          monolith.get("verdict", {}).get("bootable_here") is False and len(monolith.get("verdict", {}).get("blockers") or []) >= 2
