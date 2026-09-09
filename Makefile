@@ -222,3 +222,17 @@ m9-acceptance:     ## evaluate the M9 gates -> reports/implementation/M9_ACCEPTA
 	@python3 -m twinfactory acceptance
 m9-report:         ## render reports/implementation/M9_FINAL_REPORT.md from the machine records
 	@python3 -m twinfactory report
+
+.PHONY: m10-test m10-proof m10-acceptance m10-report m10-status m10-ls
+m10-test:          ## control-plane deterministic tests (no docker, no gateway)
+	@python3 -m unittest discover -s controlplane/tests -t .
+m10-proof:         ## run the reproducible model-free/docker-free proof campaign
+	@python3 -c "import sys; sys.path.insert(0,'.'); from controlplane import proof; import tempfile; r=proof.run_full_proof(tempfile.mkdtemp()); print('proof stop:', r['stop_reason'])"
+m10-acceptance:    ## evaluate the M10 gates -> reports/implementation/M10_ACCEPTANCE.json
+	@python3 -m controlplane.acceptance $(ARGS)
+m10-report:        ## render the final report from a campaign (CID=<campaign_id>)
+	@python3 -m controlplane report $(CID)
+m10-status:        ## campaign status (CID=<campaign_id>)
+	@python3 -m controlplane status $(CID)
+m10-ls:            ## list campaigns
+	@python3 -m controlplane ls

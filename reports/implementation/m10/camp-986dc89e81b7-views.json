@@ -1,0 +1,132 @@
+{
+  "coverage": {
+    "snapshot_id": "snap-fake-main",
+    "planning_cycles": 4,
+    "theses_total": 5,
+    "theses_by_status": {
+      "exhausted": 5
+    },
+    "distinct_subjects": 5,
+    "subjects": [
+      "family:shared-payouts",
+      "identity:trust-boundary:payouts-service",
+      "svc:fts",
+      "svc:ledger",
+      "svc:payouts-api"
+    ],
+    "tasks_total": 20,
+    "tasks_by_status": {
+      "done": 20
+    },
+    "tasks_by_kind": {
+      "probe": 10,
+      "verify": 10
+    },
+    "hypotheses_total": 5,
+    "hypotheses_by_state": {
+      "proposed": 5
+    },
+    "candidates_total": 10,
+    "candidates_by_status": {
+      "verified": 10
+    },
+    "duplicate_suppressed": 5
+  },
+  "allocation": {
+    "twins": [
+      {
+        "instance_id": "alpha",
+        "current_instance_id": "alpha",
+        "status": "assigned",
+        "starting_access_profile": "merchant_ordinary",
+        "allocation": {
+          "tasks": 10,
+          "cells": 3,
+          "candidates": 5
+        }
+      },
+      {
+        "instance_id": "beta",
+        "current_instance_id": "beta-r",
+        "status": "recovered",
+        "starting_access_profile": "merchant_fresh",
+        "allocation": {
+          "tasks": 3,
+          "cells": 1,
+          "candidates": 2
+        }
+      }
+    ],
+    "cells_total": 10,
+    "cells_by_status": {
+      "retired": 10
+    },
+    "replication_groups": 15,
+    "independent_replicas": 5
+  },
+  "cost": {
+    "actions": 50,
+    "model_calls": 50,
+    "prompt_tokens": 6000,
+    "completion_tokens": 3000,
+    "wall_seconds": 120.0,
+    "estimated_usd": 0.075,
+    "by_model": {
+      "gpt-5.5": {
+        "calls": 50,
+        "prompt_tokens": 6000,
+        "completion_tokens": 3000
+      }
+    },
+    "budget_status": "within_budget",
+    "budgets": {
+      "max_actions": 2000,
+      "max_model_calls": 6000,
+      "max_usd": null,
+      "max_wall_seconds": 1000000000,
+      "planning_cycles_min": 2
+    }
+  },
+  "results": {
+    "candidates_total": 10,
+    "verified": 10,
+    "rejected": 0,
+    "invalid": 0,
+    "unverified_or_pending": 0,
+    "verifications": 10,
+    "decorrelated_verifications": 10,
+    "self_verifications": 0,
+    "duplicate_hypotheses_suppressed": 5
+  },
+  "recovery_events": {
+    "worker_failures_recovered": 1,
+    "lease_expiries": 1,
+    "director_restarts": 2,
+    "model_fallbacks": 10,
+    "twin_recoveries": 2,
+    "twins_reproduced": 2
+  },
+  "tool_usage": {
+    "record_hypothesis": 10,
+    "merchant_request": 10,
+    "record_observation": 10,
+    "claim_candidate": 10,
+    "conclude": 10
+  },
+  "model_usage": {
+    "gpt-5.5": {
+      "calls": 50,
+      "prompt_tokens": 6000,
+      "completion_tokens": 3000
+    }
+  },
+  "control_state": {
+    "finished_at": "2026-09-09T09:00:48Z",
+    "phase": "completed",
+    "planning_cycles": 4,
+    "started_at": "2026-09-09T09:00:47Z",
+    "started_epoch": 1000.0,
+    "stop_reason": "no_open_work",
+    "twin_cursor": 10
+  }
+}

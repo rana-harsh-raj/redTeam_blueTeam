@@ -1,0 +1,274 @@
+{
+  "milestone": "M10",
+  "schema": "m10.1",
+  "controlplane_version": "1.0.0",
+  "evaluated_at": "2026-09-09T09:02:19Z",
+  "accepted": true,
+  "gates_passed": 21,
+  "gates_total": 21,
+  "gates": [
+    {
+      "id": "M10-01",
+      "desc": "campaign manifest is immutable and content-addressed",
+      "pass": true,
+      "detail": {
+        "content_id": "00ce19d9d937e79641f1bca56e284cbefbe42851c2b03be06a7d04801c37932a"
+      }
+    },
+    {
+      "id": "M10-02",
+      "desc": "human sets only mode/mandate/budgets/policy \u2014 no assigned target/vuln/path field",
+      "pass": true,
+      "detail": {
+        "assignment_fields_present": []
+      }
+    },
+    {
+      "id": "M10-03",
+      "desc": "Director autonomously generated theses over >=2 planning cycles",
+      "pass": true,
+      "detail": {
+        "planning_cycles": 4,
+        "theses": 5
+      }
+    },
+    {
+      "id": "M10-04",
+      "desc": "scheduling: tasks from theses, dynamic cells, durable leases",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-05",
+      "desc": "two isolated twins participated in one campaign",
+      "pass": true,
+      "detail": {
+        "twins_tasked": [
+          "alpha",
+          "beta",
+          "beta-r"
+        ]
+      }
+    },
+    {
+      "id": "M10-06",
+      "desc": "durable, resumable, snapshot/instance-addressed",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-07",
+      "desc": "injected worker failure recovered via lease expiry + requeue",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-08",
+      "desc": "Director kill + restart resumed from durable state",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-09",
+      "desc": "model timeout handled by fallback",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-10",
+      "desc": "failed twin recovered/reproduced via twinfactory and re-homed",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-11",
+      "desc": "semantic hypothesis dedup + deliberate independent replication",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-12",
+      "desc": "all model and tool activity recorded and tagged",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-13",
+      "desc": "no self-verification; verifier is decorrelated and not the claimant",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-14",
+      "desc": "verification is evidence-gated (candidates not auto-promoted)",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-15",
+      "desc": "budgets enforced",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-16",
+      "desc": "external kill switch stops the campaign",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-17",
+      "desc": "unattended completion with zero human task assignments",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-18",
+      "desc": "role-specific bounded context packets sourced from archkit",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-19",
+      "desc": "pause/resume/drain/terminate operations present and demonstrated",
+      "pass": true,
+      "detail": null
+    },
+    {
+      "id": "M10-20",
+      "desc": "control-plane + existing (archkit/twinfactory/snapshot/RED_LOOP) suites green",
+      "pass": true,
+      "detail": {
+        "controlplane": {
+          "ok": true,
+          "summary": "OK"
+        },
+        "archkit": {
+          "ok": true,
+          "summary": "<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 61493)>"
+        },
+        "twinfactory": {
+          "ok": true,
+          "summary": "OK (skipped=1)"
+        },
+        "snapshot": {
+          "ok": true,
+          "summary": "OK"
+        },
+        "red_loop": {
+          "ok": true,
+          "summary": "OK"
+        }
+      }
+    },
+    {
+      "id": "M10-21",
+      "desc": "machine-computed acceptance reproducible; artifacts hashed",
+      "pass": true,
+      "detail": {
+        "files": 34
+      }
+    }
+  ],
+  "proof_campaign_id": "camp-00ce19d9d937",
+  "manifest_content_id": "00ce19d9d937e79641f1bca56e284cbefbe42851c2b03be06a7d04801c37932a",
+  "coverage": {
+    "snapshot_id": "snap-fake-main",
+    "planning_cycles": 4,
+    "theses_total": 5,
+    "theses_by_status": {
+      "exhausted": 5
+    },
+    "distinct_subjects": 5,
+    "subjects": [
+      "family:shared-payouts",
+      "identity:trust-boundary:payouts-service",
+      "svc:fts",
+      "svc:ledger",
+      "svc:payouts-api"
+    ],
+    "tasks_total": 20,
+    "tasks_by_status": {
+      "done": 20
+    },
+    "tasks_by_kind": {
+      "probe": 10,
+      "verify": 10
+    },
+    "hypotheses_total": 5,
+    "hypotheses_by_state": {
+      "proposed": 5
+    },
+    "candidates_total": 10,
+    "candidates_by_status": {
+      "verified": 10
+    },
+    "duplicate_suppressed": 5
+  },
+  "allocation": {
+    "twins": [
+      {
+        "instance_id": "alpha",
+        "current_instance_id": "alpha",
+        "status": "assigned",
+        "starting_access_profile": "merchant_ordinary",
+        "allocation": {
+          "tasks": 10,
+          "cells": 3,
+          "candidates": 5
+        }
+      },
+      {
+        "instance_id": "beta",
+        "current_instance_id": "beta-r",
+        "status": "recovered",
+        "starting_access_profile": "merchant_fresh",
+        "allocation": {
+          "tasks": 3,
+          "cells": 1,
+          "candidates": 2
+        }
+      }
+    ],
+    "cells_total": 10,
+    "cells_by_status": {
+      "retired": 10
+    },
+    "replication_groups": 15,
+    "independent_replicas": 5
+  },
+  "results": {
+    "candidates_total": 10,
+    "verified": 10,
+    "rejected": 0,
+    "invalid": 0,
+    "unverified_or_pending": 0,
+    "verifications": 10,
+    "decorrelated_verifications": 10,
+    "self_verifications": 0,
+    "duplicate_hypotheses_suppressed": 5
+  },
+  "suites": {
+    "controlplane": {
+      "ok": true,
+      "summary": "OK"
+    },
+    "archkit": {
+      "ok": true,
+      "summary": "<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 61493)>"
+    },
+    "twinfactory": {
+      "ok": true,
+      "summary": "OK (skipped=1)"
+    },
+    "snapshot": {
+      "ok": true,
+      "summary": "OK"
+    },
+    "red_loop": {
+      "ok": true,
+      "summary": "OK"
+    }
+  },
+  "git_head": "addd10e1bd00e148bcd97aac6036ff0a68cc0d2b"
+}
