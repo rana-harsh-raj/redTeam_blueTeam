@@ -108,10 +108,11 @@ def evaluate(skip_suites=False, real_run=None, sub_run=None):
     snap_summary = jload(REPO / "reports" / "architecture" / "snapshots" / (snap_id or "x") / "summary.json", {})
     recipes_dir = REPO / "reports" / "architecture" / "snapshots" / (snap_id or "x") / "recipes"
     recipe_names = {p.stem for p in recipes_dir.glob("*.json")} if recipes_dir.is_dir() else set()
-    def profile_doc(variant):
-        rc, out, _ = sh([sys.executable, "-m", "twinfactory", "profile", "full", "--trust-path", variant, "--json"], cwd=REPO)
+    def profile_doc(variant=None):
+        cmd = [sys.executable, "-m", "twinfactory", "profile", "full", "--json"] + (["--trust-path", variant] if variant else [])
+        r = subprocess.run(cmd, capture_output=True, text=True, cwd=REPO, timeout=600)     # full stdout (sh() keeps only a tail)
         try:
-            return json.loads(out[out.index("{"):])
+            return json.loads(r.stdout[r.stdout.index("{"):])
         except (ValueError, IndexError):
             return {}
     full_real, full_sub = profile_doc("real"), profile_doc("substitute")
@@ -129,11 +130,7 @@ def evaluate(skip_suites=False, real_run=None, sub_run=None):
         return found
 
     # ---- gates ----
-    rc, dflt, _ = sh([sys.executable, "-m", "twinfactory", "profile", "full", "--json"], cwd=REPO)     # no --trust-path: the DEFAULT
-    try:
-        default_variant = json.loads(dflt[dflt.index("{"):]).get("trust_path")
-    except (ValueError, IndexError):
-        default_variant = None
+    default_variant = profile_doc(None).get("trust_path")     # no --trust-path: the DEFAULT
     gate(gates, "M11-01", "real edge gateway (razorpay/edge Kong + terraform-kong prod-api routes) is the DEFAULT ingress of every derived profile",
          default_variant == "real" and full_real.get("trust_path") == "real" and "edge-kong" in real_services and "kong-lite" not in real_services and kong_cfg.get("kind") == "twin_kong_config"
          and sum(len(s.get("routes", {})) for s in (kong_cfg.get("services") or {}).values()) >= 18 and (real_inst or {}).get("trust_path") == "real",

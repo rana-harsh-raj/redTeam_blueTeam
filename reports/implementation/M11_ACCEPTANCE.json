@@ -1,9 +1,9 @@
 {
  "milestone": "M11",
  "schema": "m11.acceptance.v1",
- "evaluated_at": "2026-09-09T19:18:11.993642+00:00",
+ "evaluated_at": "2026-09-09T19:19:08.179744+00:00",
  "accepted": false,
- "gates_passed": 8,
+ "gates_passed": 11,
  "gates_total": 17,
  "gates": [
   {
@@ -13,7 +13,7 @@
    "detail": {
     "default_trust_path": null,
     "routes": 18,
-    "instance": null,
+    "instance": "m11-real",
     "route_hosts": {
      "prod-api": null,
      "payouts-ext": [
@@ -203,27 +203,32 @@
   {
    "id": "M11-13",
    "desc": "clean working tree at evaluation (only this acceptance record may differ)",
-   "pass": false,
+   "pass": true,
    "detail": {
-    "dirty": [
-     " M reports/implementation/m11/clean-checkout.json"
-    ]
+    "dirty": []
    }
   },
   {
    "id": "M11-14",
    "desc": "secrets hygiene: no generated secret values tracked; instance secrets materialized uid 10001 / 0400",
-   "pass": false,
+   "pass": true,
    "detail": {
     "tracked_secret_files": [],
-    "secrets_manifest_count": null
+    "secrets_manifest_count": 176
    }
   },
   {
    "id": "M11-15",
    "desc": "immutable images: every trust-path image is recorded by image id in the instance manifest and the factory cache",
-   "pass": false,
-   "detail": {}
+   "pass": true,
+   "detail": {
+    "banking-accounts-api": "sha256:00e4285aa644",
+    "cadence": "sha256:cbe9ea2edd91",
+    "edge-kong": "sha256:7718235ac0b1",
+    "shield-web": "sha256:202a9b63f2c9",
+    "workflows-api": "sha256:0336f9583e71",
+    "workflows-worker": "sha256:0336f9583e71"
+   }
   },
   {
    "id": "M11-16",
@@ -232,19 +237,19 @@
    "detail": {
     "twinfactory": {
      "rc": 0,
-     "tail": "----------------------------------------------------------------------\nRan 33 tests in 3.209s\n\nOK (skipped=1)\n"
+     "tail": "----------------------------------------------------------------------\nRan 33 tests in 4.278s\n\nOK (skipped=1)\n"
     },
     "archkit": {
      "rc": 0,
-     "tail": "aning up <HTTPError 403: 'Forbidden'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n----------------------------------------------------------------------\nRan 25 tests in 2.463s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 65077)>\n"
+     "tail": "aning up <HTTPError 403: 'Forbidden'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n----------------------------------------------------------------------\nRan 25 tests in 2.617s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 65253)>\n"
     },
     "api-ingress-contract": {
      "rc": 0,
-     "tail": "rror 401: 'Unauthorized'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n...........\n----------------------------------------------------------------------\nRan 13 tests in 0.895s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 65087)>\n"
+     "tail": "rror 401: 'Unauthorized'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n...........\n----------------------------------------------------------------------\nRan 13 tests in 0.876s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 65263)>\n"
     },
     "controlplane": {
      "rc": 0,
-     "tail": "----------------------------------------------------------------------\nRan 37 tests in 0.714s\n\nOK\n"
+     "tail": "----------------------------------------------------------------------\nRan 37 tests in 1.011s\n\nOK\n"
     }
    }
   },
@@ -258,8 +263,8 @@
   }
  ],
  "snapshot_id": "8a52779f05275ea3aaa375e1e44678a33257e02a7ff6a2f4bb7bbf8723cb4db4",
- "real_instance": null,
- "substitute_instance": null,
+ "real_instance": "m11-real",
+ "substitute_instance": "m11-sub",
  "real_run": {
   "run_dir": "/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T173309Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T182343Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T184745Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T185350Z",
   "total": 125,
@@ -629,5 +634,5 @@
    "journey:trust-path/payouts_ext_direct"
   ]
  },
- "git_head": "9c9622c7c28ec53ccefda187fa4c5957e0553ea6"
+ "git_head": "0b427d3fb40b8f7ebd072ccb7b439f5f66617223"
 }
