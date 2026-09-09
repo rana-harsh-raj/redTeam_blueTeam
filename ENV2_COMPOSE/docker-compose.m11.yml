@@ -379,7 +379,7 @@ services:
     volumes:
       - config-workflows:/app/config:ro
     environment:
-      APP_ENV: arena
+      APP_ENV: dev           # the twin overlay is rendered as config/dev.toml (see config/generate.py workflows)
       WORKDIR: /app          # pkg/config: $WORKDIR/config
     <<: *runtime-security
     entrypoint: ["/app/workflows-migration", "up", "-env", "dev"]
