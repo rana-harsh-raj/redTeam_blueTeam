@@ -24,7 +24,7 @@ OUT = REPO / "reports" / "implementation" / "m11" / "clean-checkout.json"
 def sh(cmd, cwd, timeout=3600, env=None):
     t0 = time.time()
     r = subprocess.run(cmd, cwd=cwd, capture_output=True, text=True, timeout=timeout, env=env)
-    return {"cmd": " ".join(str(c) for c in cmd), "rc": r.returncode, "secs": round(time.time() - t0, 1), "tail": (r.stdout + r.stderr)[-600:]}
+    return {"cmd": " ".join(str(c) for c in cmd), "rc": r.returncode, "secs": round(time.time() - t0, 1), "tail": (r.stdout + r.stderr)[-600:], "_stdout": r.stdout}
 
 
 def main():
@@ -49,9 +49,10 @@ def main():
         steps.append(sh([py, "-m", "twinfactory", "start", a.id], cwd=co, env=env, timeout=5400))
     if steps[-1]["rc"] == 0:
         h = sh([py, "-m", "twinfactory", "health", a.id], cwd=co, env=env)
+        full = h.pop("_stdout", "")
         steps.append(h)
         try:
-            hd = json.loads(h["tail"][h["tail"].index("{"):]) if "{" in h["tail"] else {}
+            hd = json.loads(full[full.index("{"):]) if "{" in full else {}
         except ValueError:
             hd = {}
         doc["healthy"] = hd.get("healthy")
@@ -61,6 +62,9 @@ def main():
         steps.append(smoke)
         doc["smoke_rc"] = smoke["rc"]
         doc["ok"] = bool(hd.get("healthy")) and smoke["rc"] == 0
+    for s in steps:
+        s.pop("_stdout", None)
+    doc["timings"] = {s["cmd"].split(" ")[-1] if "twinfactory" not in s["cmd"] else s["cmd"].split("twinfactory ")[1].split(" ")[0]: s["secs"] for s in steps}
     doc["secs"] = round(sum(s["secs"] for s in steps), 1)
     doc["note"] = "factory image cache shared (content-addressed); config/secrets/seeds/Kong provisioning/migrations produced from the fresh checkout"
     if not a.keep:
