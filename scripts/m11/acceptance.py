@@ -21,6 +21,7 @@ REMAINING_SUBSTITUTES = {
     "api-ingress": "API monolith (razorpay/api, PHP/Laravel) cannot be booted: no php/composer on this machine, 18/23 private composer VCS repositories unreadable, all Dockerfile base images on harbor.razorpay.com need registry credentials (reports/implementation/m11/monolith-boot-attempt.json). Stays CONTRACT_FAITHFUL_REPLACEMENT; now verifies the real gateway passport (kid edgev2) and publishes /jwks.",
     "asv-stub": "razorpay/account-service is not a granted repository (clone 404 for this identity) -- no source to run.",
     "monolith-stub": "the monolith's data-plane responsibilities (merchant config, balances DB) are part of the same unbootable PHP monolith (see api-ingress).",
+    "mysql-apidb-stub": "the API monolith's own MySQL (merchants, balances, banking_accounts, features) -- the schema and rows the unbootable PHP monolith would own; seeded from the arena merchant seed (see api-ingress / monolith-stub).",
     "dcs-stub": "razorpay/dcs (config service) is not in the granted set as a runnable service; the real banking-accounts client dials https://dcs-*.dev.razorpay.in unmodified and the twin answers those hostnames with dcs-stub over TLS (secrets/gen-tls.sh).",
     "splitz-stub": "razorpay/splitz is not a granted repository.",
     "pricing-stub": "the pricing service repository is not granted.",

@@ -1,13 +1,30 @@
 # M11 — Critical Trust-Path Fidelity Upgrade — Final Report
 
-Generated 2026-09-09T18:55:59Z by scripts/m11/final_report.py from the artifacts named below. Branch `milestone-11-trust-path-fidelity` from tag `campaign-m10-control-plane`; git head `d17722b0a083`.
+Generated 2026-09-09T19:19:46Z by scripts/m11/final_report.py from the artifacts named below. Branch `milestone-11-trust-path-fidelity` from tag `campaign-m10-control-plane`; git head `2fbbf2d95f15`.
 
 ## Acceptance
 
 | accepted | gates | evaluated | snapshot | record |
 |---|---|---|---|---|
-| **None** | None/None | None | `` | reports/implementation/M11_ACCEPTANCE.json |
+| **False** | 16/17 | 2026-09-09T19:19:46.189107+00:00 | `8a52779f05275ea3` | reports/implementation/M11_ACCEPTANCE.json |
 
+- PASS **M11-01** real edge gateway (razorpay/edge Kong + terraform-kong prod-api routes) is the DEFAULT ingress of every derived profile
+- PASS **M11-02** highest feasible monolith auth path: boot attempt recorded with exact blockers; the monolith replacement verifies the gateway passport (kid edgev2) end to end
+- PASS **M11-03** real Shield (razorpay/shield, APP_MODE=rzpxprod) replaces shield-stub and decides payouts
+- PASS **M11-04** banking-accounts real where feasible (Direct merchants); account-service blocked with an exact reason
+- PASS **M11-05** real Workflow service (razorpay/workflows + Cadence) on LOCAL infrastructure drives maker-checker
+- FAIL **M11-06** every remaining substitute in the real variant carries a precise external blocker
+- PASS **M11-07** canonical journey suite passes on the real variant (0 FAIL; every BLOCKED names its dependency)
+- PASS **M11-08** differential run (same suite on the substitute variant) exists and every difference is investigated (0 OPEN)
+- PASS **M11-09** snapshot, fidelity labels, recipes (pinned SHAs), locks and profiles updated: current snapshot verifies and carries the trust-path recipes
+- PASS **M11-10** clean checkout reproduces the real-variant twin (create + build + start from a fresh clone)
+- PASS **M11-11** resource usage measured (local CPU/memory/disk/build/boot; remote recorded as not used with the reason)
+- PASS **M11-12** historical tags unchanged (every pre-M11 tag still points at its recorded commit)
+- PASS **M11-13** clean working tree at evaluation (only this acceptance record may differ)
+- PASS **M11-14** secrets hygiene: no generated secret values tracked; instance secrets materialized uid 10001 / 0400
+- PASS **M11-15** immutable images: every trust-path image is recorded by image id in the instance manifest and the factory cache
+- PASS **M11-16** twinfactory / archkit / api-ingress contract / controlplane suites green (controlplane package unchanged)
+- PASS **M11-17** controlplane package unchanged since campaign-m10-control-plane
 
 ## What is real, adapted, replaced, still substituted, unknown
 
@@ -23,7 +40,7 @@ Generated 2026-09-09T18:55:59Z by scripts/m11/final_report.py from the artifacts
 | Internal application ingress | **REAL PATH SHAPE (api-internal not provisioned)** | internal apps call the monolith replacement directly with rzp_live + app secret + X-Razorpay-Account | production api-internal Kong service carries plain paths (no edge authentication) -- not provisioned; equivalent to the direct call |
 | External banks / SMS / OTP | **SYNTHETIC BY MANDATE** | mozart-sim, xas-sim/xas-sink, synthetic OTP | allowed to stay synthetic |
 
-Remaining substitutes in the real variant, each with its external blocker: see gate M11-06 in the acceptance record (0 listed).
+Remaining substitutes in the real variant, each with its external blocker: see gate M11-06 in the acceptance record (15 listed).
 
 ## Trust path as run
 
@@ -62,12 +79,12 @@ Domain graph (reports/domain/GRAPH_STATS.json): 3108 nodes, fidelity histogram {
 
 | variant | instance | run dir | total | PASS | FAIL | BLOCKED | EXPECTED_FAILURE |
 |---|---|---|---|---|---|---|---|
-| real | None | `None` | None | None | 0 | 0 | 0 |
-| substitute | None | `None` | None | None | 0 | 0 | 0 |
+| real | m11-real | `/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T173309Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T182343Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T184745Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T185350Z` | 125 | 113 | 0 | 10 | 2 |
+| substitute | m11-sub | `/Users/rana.singh/.twin-factory/instances/m11-sub/journeys/run-20260909T173302Z,/Users/rana.singh/.twin-factory/instances/m11-sub/journeys/run-20260909T182343Z` | 125 | 107 | 5 | 12 | 1 |
 
 Differential (reports/implementation/M11_DIFFERENTIAL.md): 125 journeys compared, 108 identical, 17 with differences, 0 OPEN.
 
-Blocked journeys on the real variant (each names its dependency): none
+Blocked journeys on the real variant (each names its dependency): journey:bulk-payouts/success -> batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com; journey:bulk-payouts/failure -> batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com; journey:bulk-payouts/idempotency -> batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com; journey:bulk-payouts/cancel_or_reverse -> batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com; journey:bulk-payouts/async_state -> batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com; journey:shared-ingress/batch -> batch-sim reachable on the arena network (compose service `batch-sim`, profile `substitutes`; the M9 critical-payouts / ; journey:cross-domain-s2p/success -> S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source; journey:cross-domain-s2p/failure -> S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source; journey:cross-domain-s2p/idempotency -> journey:cross-domain-s2p/success must run first (it establishes the tax payment and remittance); journey:cross-domain-s2p/async_state -> S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source
 
 The 14 trust-path journeys (RED_LOOP/m6/journeys/j_trustpath.py) cover: merchant API-key auth, identity propagation (gateway-signed passport, forgery attempt), dashboard/session identity (as far as source permits), internal app auth, route-level authorization, cross-merchant denial, beneficiary/fund-account ownership, service-to-service identity (Shield/BAS/Workflow/PS), maker-checker create/approve/reject/separation, restart & cache invalidation, duplicate/idempotency, Shield rules, BAS lookup, payouts-ext.
 
@@ -105,7 +122,7 @@ bootable here: **False** -- no PHP interpreter / composer on this machine (and n
 
 ## Clean-checkout reproduction
 
-{"ok": null, "checkout": null, "instance_id": null, "state": null, "trust_path": null, "healthy": null, "secs": null, "note": null}
+{"ok": true, "checkout": "/var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/m11-clean-c5uiuljh", "instance_id": "m11-clean", "state": "running", "trust_path": "real", "healthy": true, "secs": 241.8, "note": "factory image cache shared (content-addressed); config/secrets/seeds/Kong provisioning/migrations produced from the fresh checkout"}
 
 ## Production unknowns (explicit)
 

@@ -1,17 +1,17 @@
 {
  "milestone": "M11",
  "schema": "m11.acceptance.v1",
- "evaluated_at": "2026-09-09T19:19:08.179744+00:00",
+ "evaluated_at": "2026-09-09T19:19:46.189107+00:00",
  "accepted": false,
- "gates_passed": 11,
+ "gates_passed": 16,
  "gates_total": 17,
  "gates": [
   {
    "id": "M11-01",
    "desc": "real edge gateway (razorpay/edge Kong + terraform-kong prod-api routes) is the DEFAULT ingress of every derived profile",
-   "pass": false,
+   "pass": true,
    "detail": {
-    "default_trust_path": null,
+    "default_trust_path": "real",
     "routes": 18,
     "instance": "m11-real",
     "route_hosts": {
@@ -39,7 +39,7 @@
   {
    "id": "M11-03",
    "desc": "real Shield (razorpay/shield, APP_MODE=rzpxprod) replaces shield-stub and decides payouts",
-   "pass": false,
+   "pass": true,
    "detail": {
     "shield_rules": "PASS"
    }
@@ -47,7 +47,7 @@
   {
    "id": "M11-04",
    "desc": "banking-accounts real where feasible (Direct merchants); account-service blocked with an exact reason",
-   "pass": false,
+   "pass": true,
    "detail": {
     "bas_lookup": "PASS",
     "asv": "razorpay/account-service is not a granted repository (clone 404 for this identity) -- no source to run."
@@ -56,7 +56,7 @@
   {
    "id": "M11-05",
    "desc": "real Workflow service (razorpay/workflows + Cadence) on LOCAL infrastructure drives maker-checker",
-   "pass": false,
+   "pass": true,
    "detail": {
     "maker_checker": "PASS",
     "placement": [
@@ -70,8 +70,26 @@
    "desc": "every remaining substitute in the real variant carries a precise external blocker",
    "pass": false,
    "detail": {
-    "remaining": [],
-    "unlisted": []
+    "remaining": [
+     "api-ingress",
+     "asv-stub",
+     "batch-sim",
+     "cron-driver",
+     "dcs-stub",
+     "edge-bridge",
+     "ledger-gate",
+     "merchant-webhook-sink",
+     "monolith-stub",
+     "mozart-sim",
+     "mysql-apidb-stub",
+     "pricing-stub",
+     "splitz-stub",
+     "stork-capture",
+     "xas-sim"
+    ],
+    "unlisted": [
+     "mysql-apidb-stub"
+    ]
    }
   },
   {
@@ -153,7 +171,7 @@
   {
    "id": "M11-09",
    "desc": "snapshot, fidelity labels, recipes (pinned SHAs), locks and profiles updated: current snapshot verifies and carries the trust-path recipes",
-   "pass": false,
+   "pass": true,
    "detail": {
     "snapshot": "8a52779f05275ea3aaa375e1e44678a33257e02a7ff6a2f4bb7bbf8723cb4db4",
     "verify": {
@@ -163,7 +181,7 @@
      "changed_or_missing": []
     },
     "recipes": 119,
-    "substitute_profile_services": 0
+    "substitute_profile_services": 98
    }
   },
   {
@@ -237,19 +255,19 @@
    "detail": {
     "twinfactory": {
      "rc": 0,
-     "tail": "----------------------------------------------------------------------\nRan 33 tests in 4.278s\n\nOK (skipped=1)\n"
+     "tail": "----------------------------------------------------------------------\nRan 33 tests in 3.196s\n\nOK (skipped=1)\n"
     },
     "archkit": {
      "rc": 0,
-     "tail": "aning up <HTTPError 403: 'Forbidden'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n----------------------------------------------------------------------\nRan 25 tests in 2.617s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 65253)>\n"
+     "tail": "aning up <HTTPError 403: 'Forbidden'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n----------------------------------------------------------------------\nRan 25 tests in 2.499s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 65465)>\n"
     },
     "api-ingress-contract": {
      "rc": 0,
-     "tail": "rror 401: 'Unauthorized'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n...........\n----------------------------------------------------------------------\nRan 13 tests in 0.876s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 65263)>\n"
+     "tail": "rror 401: 'Unauthorized'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n...........\n----------------------------------------------------------------------\nRan 13 tests in 0.861s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 65473)>\n"
     },
     "controlplane": {
      "rc": 0,
-     "tail": "----------------------------------------------------------------------\nRan 37 tests in 1.011s\n\nOK\n"
+     "tail": "----------------------------------------------------------------------\nRan 37 tests in 0.702s\n\nOK\n"
     }
    }
   },
@@ -634,5 +652,5 @@
    "journey:trust-path/payouts_ext_direct"
   ]
  },
- "git_head": "0b427d3fb40b8f7ebd072ccb7b439f5f66617223"
+ "git_head": "2fbbf2d95f153e4d396d7f1ee793c0bbfbf53885"
 }
