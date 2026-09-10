@@ -1,0 +1,3985 @@
+{
+  "fields": [
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "bank_identifier",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL",
+          "file": "internal/database/migrations/20220120172736_create_bank_accounts_table.go",
+          "type": "varchar(64)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220120172736_create_bank_accounts_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin PRIMARY KEY",
+          "file": "internal/database/migrations/20220120172736_create_bank_accounts_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "identifier_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL",
+          "file": "internal/database/migrations/20220120172736_create_bank_accounts_table.go",
+          "type": "varchar(32)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "ifsc_code",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
+          "file": "internal/database/migrations/20220120172736_create_bank_accounts_table.go",
+          "type": "char(11)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220120172736_create_bank_accounts_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_number",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "char(40)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "balance_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "channel",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": "  DEFAULT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "counter_migrated",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "tinyint(1)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "fts_fund_account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin PRIMARY KEY",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "payout_service_enabled",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "tinyint(1)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "status",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": "  NOT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "banking_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/migrations/20220526144631_create_counters_table.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "counters"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "balance_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
+          "file": "internal/database/migrations/20220526144631_create_counters_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "counters"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220526144631_create_counters_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "counters"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "free_payouts_consumed",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " DEFAULT 0",
+          "file": "internal/database/migrations/20220526144631_create_counters_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "counters"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "free_payouts_consumed_last_reset_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " UNSIGNED  NOT NULL",
+          "file": "internal/database/migrations/20220526144631_create_counters_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "counters"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin PRIMARY KEY",
+          "file": "internal/database/migrations/20220526144631_create_counters_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "counters"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220526144631_create_counters_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "counters"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
+          "file": "internal/database/migrations/20220120161944_create_fund_accounts_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220120161944_create_fund_accounts_table.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220120161944_create_fund_accounts_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin PRIMARY KEY",
+          "file": "internal/database/migrations/20220120161944_create_fund_accounts_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220120161944_create_fund_accounts_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20210617163439_create_payout_purpose_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "payout_purpose"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin PRIMARY KEY",
+          "file": "internal/database/migrations/20210617163439_create_payout_purpose_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "payout_purpose"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
+          "file": "internal/database/migrations/20210617163439_create_payout_purpose_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "payout_purpose"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "purpose_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": "",
+          "file": "internal/database/migrations/20210617163439_create_payout_purpose_table.go",
+          "type": "json"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "payout_purpose"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20210617163439_create_payout_purpose_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "payout_purpose"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "config_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " COLLATE utf8_bin NOT NULL",
+          "file": "internal/database/migrations/20210824110700_create_workflow_config_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_config"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "config_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " COLLATE utf8_bin NOT NULL",
+          "file": "internal/database/migrations/20210824110700_create_workflow_config_table.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_config"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20210824110700_create_workflow_config_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_config"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "enabled",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL DEFAULT '0'",
+          "file": "internal/database/migrations/20210824110700_create_workflow_config_table.go",
+          "type": "tinyint(1)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_config"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin PRIMARY KEY",
+          "file": "internal/database/migrations/20210824110700_create_workflow_config_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_config"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " COLLATE utf8_bin NOT NULL",
+          "file": "internal/database/migrations/20210824110700_create_workflow_config_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_config"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "org_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " COLLATE utf8_bin DEFAULT NULL",
+          "file": "internal/database/migrations/20210824110700_create_workflow_config_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_config"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20210824110700_create_workflow_config_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_config"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "actor_role",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "count_of_approvals_needed",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " DEFAULT 1 NOT NULL",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "group_name",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin PRIMARY KEY",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "state_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "state_status",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " NOT NULL",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "int"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "workflow_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "constraints": " CHARACTER SET utf8mb4 COLLATE utf8mb4_bin NOT NULL",
+          "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "payouts",
+      "status": "migration declaration located",
+      "table": "workflow_state_map"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00018_account_type_mappings_table_create.go",
+          "type": "enum('CURRENT','NODAL')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "account_type_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00018_account_type_mappings_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "account_type_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_by",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00018_account_type_mappings_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "account_type_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00018_account_type_mappings_table_create.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "account_type_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "mode",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00018_account_type_mappings_table_create.go",
+          "type": "enum('IMPS','NEFT','RTGS','IFT', 'UPI','CT','WALLET_TRANSFER')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "account_type_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "product",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00018_account_type_mappings_table_create.go",
+          "type": "enum('PAYOUT','PAYOUT_REFUND','SETTLEMENT','REFUND','PENNY_TESTING','ES_ON_DEMAND','CA_PAYOUT')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "account_type_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00018_account_type_mappings_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "account_type_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_number",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "varchar(40)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "enum('SAVING','CURRENT','NODAL')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "bank_identifier",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL COMMENT 'Bank identifier code'",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "char(15)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "beneficiary_city",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "varchar(30)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "beneficiary_country",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "varchar(4)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "beneficiary_name",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "beneficiary_state",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "varchar(2)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL AUTO_INCREMENT",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "identifier_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL COMMENT 'Bank identifier code type, eg SWIFT, BIC, IFSC'",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "char(10)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "ifsc_code",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "char(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "is_virtual_account",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "tinyint(1)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "product",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00001_bank_accounts_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "bank_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "varchar(50)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "channel",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "varchar(50)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL AUTO_INCREMENT",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "integration_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "varchar (50)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "mode",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "varchar (50)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "mozart_identifier",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "varchar(40)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "source_account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT 'POOL' NOT NULL",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "varchar(14)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "source_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL COMMENT 'unique identification for test txns jobs'",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "varchar(14)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "status",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "tinyint(1)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00022_channel_information_status_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "channel_information_status"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "channel",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+          "type": "varchar(50)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "direct_account_routing_rules"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "direct_account_routing_rules"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_by",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+          "type": "varchar(50)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "direct_account_routing_rules"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL AUTO_INCREMENT",
+          "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+          "type": "int"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "direct_account_routing_rules"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "direct_account_routing_rules"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "mode",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL COMMENT 'mode to be used for routing'",
+          "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+          "type": "varchar(50)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "direct_account_routing_rules"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "mozart_identifier",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL COMMENT 'this will be the identifier based on which mozart integration will be used'",
+          "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+          "type": "varchar(50)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "direct_account_routing_rules"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "product",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+          "type": "varchar(50)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "direct_account_routing_rules"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "source_account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL COMMENT 'primary key of source account'",
+          "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "direct_account_routing_rules"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "direct_account_routing_rules"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL COMMENT 'id of the entity mentioned in account_type'",
+          "file": "internal/migrations/00003_fund_accounts_table_create.go",
+          "type": "int(14)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL COMMENT 'this will refer to the entity which holds the account details'",
+          "file": "internal/migrations/00003_fund_accounts_table_create.go",
+          "type": "enum('BANK_ACCOUNT','VPA','CARD', 'WALLET','NON_SAVED_CARD','REMITTER_ACCOUNT')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00003_fund_accounts_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "default_channel",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL COMMENT 'If set, then this channel will be used to transfer money to this fund account'",
+          "file": "internal/migrations/00003_fund_accounts_table_create.go",
+          "type": "enum('AXIS', 'CITI', 'HDFC', 'ICICI', 'RBL', 'YESBANK', 'M2P', 'MCS', 'OCBC')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL AUTO_INCREMENT",
+          "file": "internal/migrations/00003_fund_accounts_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00003_fund_accounts_table_create.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "product",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00003_fund_accounts_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00003_fund_accounts_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "fund_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00017_preferred_routing_weights_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "preferred_routing_weights"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_by",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00017_preferred_routing_weights_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "preferred_routing_weights"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "mode",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00017_preferred_routing_weights_table_create.go",
+          "type": "enum('IMPS','NEFT','RTGS','IFT', 'UPI','CT', 'WALLET_TRANSFER')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "preferred_routing_weights"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "preferred_routing_weight",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00017_preferred_routing_weights_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "preferred_routing_weights"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "product",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00017_preferred_routing_weights_table_create.go",
+          "type": "enum('PAYOUT','PAYOUT_REFUND','SETTLEMENT','REFUND','PENNY_TESTING','ES_ON_DEMAND','CA_PAYOUT')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "preferred_routing_weights"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "source_account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL COMMENT 'primary key of source account'",
+          "file": "internal/migrations/00017_preferred_routing_weights_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "preferred_routing_weights"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00017_preferred_routing_weights_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "preferred_routing_weights"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL COMMENT 'type of underlying merchant account type POOL, DIRECT'",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "channel",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_by",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "creation_reason",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT '' NOT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "deletion_reason",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "integration_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT 'API' NOT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "enum('API','FILE')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "char(14)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "mode",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL COMMENT 'mode to be used for routing'",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "enum('IMPS','NEFT','RTGS','IFT', 'UPI','CT', 'DUITNOW', 'IBG')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "mozart_identifier",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL COMMENT 'this will be the identifier based on which mozart integration will be used'",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "varchar(40)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "operation",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "enum('TRANSFER','BENEFICIARY')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "priority",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "product",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "routing_enabled",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "tinyint(1)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "source_account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL COMMENT 'primary key of source account'",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "source_account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL COMMENT 'type of source account NODAL, CURRENT'",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "title",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_account_mappings"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "varchar(255)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "bank_account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL COMMENT 'type of bank account NODAL, CURRENT'",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "enum('NODAL','CURRENT', 'CORP_CARD')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "channel",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "enum('AXIS', 'CITI', 'HDFC', 'ICICI', 'RBL', 'YESBANK', 'M2P', 'MCS', 'OCBC')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "configuration",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NULL COMMENT 'this will have configuration data related to source account. it should always be in json format'",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "TEXT"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "credentials",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NULL COMMENT 'this will have credentials data required for sending request. it should always be in json format'",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "TEXT"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "fund_account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " unsigned NOT NULL AUTO_INCREMENT",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "mozart_identifier",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL COMMENT 'this will be the identifier based on which mozart integration will be used'",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "varchar(40)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "product",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "enum('PAYOUT','PAYOUT_REFUND','SETTLEMENT','REFUND','PENNY_TESTING','ES_ON_DEMAND','CA_PAYOUT','CUSTOMER_WALLET','CUSTOMER_PAYOUT')"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "constraints": " NOT NULL",
+          "file": "internal/migrations/00007_source_accounts_table_create.go",
+          "type": "int(11)"
+        }
+      ],
+      "repository": "fts",
+      "status": "migration declaration located",
+      "table": "source_accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_category",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "VARCHAR(20)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_name",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "VARCHAR(255)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "business_category",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "VARCHAR(20)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "currency",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "CHAR(3)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "deleted_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": "",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "description",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "text"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "entities",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "jsonb"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " PRIMARY KEY",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "parent_account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "tenant",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": "ADD declaration; later alterations may exist",
+          "file": "internal/database/rx_migrations/20210826041040_add_tenant_in_account_details.go",
+          "type": "VARCHAR(50) DEFAULT NULL"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "use_split_accounts",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": "ADD declaration; later alterations may exist",
+          "file": "internal/database/rx_migrations/20221211115222_alter_use_split_accounts_column_in_account_details.go",
+          "type": "SMALLINT DEFAULT 0"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "account_details"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "balance",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/rx_migrations/20201001011117_create_accounts.go",
+          "type": "NUMERIC(20,6)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011117_create_accounts.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "deleted_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": "",
+          "file": "internal/database/rx_migrations/20201001011117_create_accounts.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " PRIMARY KEY",
+          "file": "internal/database/rx_migrations/20201001011117_create_accounts.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011117_create_accounts.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "min_balance",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/rx_migrations/20201001011117_create_accounts.go",
+          "type": "NUMERIC(20,6)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "negative_balance",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " DEFAULT NULL",
+          "file": "internal/database/rx_migrations/20201001011117_create_accounts.go",
+          "type": "NUMERIC(20,6)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "status",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011117_create_accounts.go",
+          "type": "VARCHAR(20)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011117_create_accounts.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "accounts"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "amount",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011143_create_journal.go",
+          "type": "NUMERIC(20,6)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "base_amount",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011143_create_journal.go",
+          "type": "NUMERIC(20,6)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011143_create_journal.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "currency",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011143_create_journal.go",
+          "type": "CHAR(3)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " PRIMARY KEY",
+          "file": "internal/database/rx_migrations/20201001011143_create_journal.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011143_create_journal.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "tenant",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": "ADD declaration; later alterations may exist",
+          "file": "internal/database/rx_migrations/20210826041041_add_tenant_in_journal.go",
+          "type": "VARCHAR(50) DEFAULT NULL"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "transaction_date",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011143_create_journal.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "transactor_event",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": "renamed from transactor_type;  NOT NULL",
+          "file": "internal/database/rx_migrations/20210925113658_rename_transactor_type_to_transactor_event_in_journal_go.go",
+          "type": "VARCHAR(60)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "transactor_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011143_create_journal.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011143_create_journal.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "journal"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "ledger_entries"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "amount",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+          "type": "NUMERIC(20,6)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "ledger_entries"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "base_amount",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+          "type": "NUMERIC(20,6)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "ledger_entries"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "ledger_entries"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "currency",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+          "type": "CHAR(3)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "ledger_entries"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " PRIMARY KEY",
+          "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "ledger_entries"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "journal_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "ledger_entries"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+          "type": "CHAR(14)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "ledger_entries"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+          "type": "varchar(20)"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "ledger_entries"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "constraints": " NOT NULL",
+          "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+          "type": "INTEGER"
+        }
+      ],
+      "repository": "ledger",
+      "status": "migration declaration located",
+      "table": "ledger_entries"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_number",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": " NOT NULL DEFAULT ''",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "VARCHAR(255)"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "account_type",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": " NOT NULL DEFAULT ''",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "VARCHAR(50)"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "balance",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": "       NOT NULL DEFAULT 0",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "BIGINT"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "channel",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": "  NOT NULL DEFAULT ''",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "VARCHAR(50)"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "created_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": "       NOT NULL DEFAULT 0",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "BIGINT"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "currency",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": "  NOT NULL DEFAULT ''",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "VARCHAR(10)"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "fts_fund_account_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": " NOT NULL DEFAULT ''",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "VARCHAR(255)"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": "  NOT NULL PRIMARY KEY",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "VARCHAR(14)"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "last_attempted_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": " NOT NULL DEFAULT 0",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "BIGINT"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "last_change_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": " NOT NULL DEFAULT 0",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "BIGINT"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "last_fetched_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": " NOT NULL DEFAULT 0",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "BIGINT"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "merchant_id",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": " NOT NULL DEFAULT ''",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "VARCHAR(255)"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "metadata",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": "   DEFAULT NULL",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "JSON"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "priority",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": "       NOT NULL DEFAULT 0",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "BIGINT"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "status",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": "  NOT NULL DEFAULT ''",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "VARCHAR(50)"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    },
+    {
+      "classification": "exact declaration reference; representative generated value",
+      "column": "updated_at",
+      "generation_rule": "namespace-expanded synthetic schema template",
+      "migration_declarations": [
+        {
+          "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+          "constraints": "       NOT NULL DEFAULT 0",
+          "file": "internal/database/migrations/20250127224555_balance.go",
+          "type": "BIGINT"
+        }
+      ],
+      "repository": "x-balances",
+      "status": "migration declaration located",
+      "table": "balance"
+    }
+  ],
+  "method": "Static CREATE/ALTER declaration inventory for every generated INSERT column. Dynamic SQL, down migrations and later ALTER semantics require effective-schema validation; not a proof of final physical DDL.",
+  "migration_sources": [
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20200615182810_create_payouts_table.go",
+      "repository": "payouts",
+      "sha256": "2eb7eaee99a776d7bdc9147fce290e9905e1b522b6050b903be482c36a86b674"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20200826172412_create_state_change_log_table.go",
+      "repository": "payouts",
+      "sha256": "9f220ba7af1df14c5b76c69ae61e1a6bba1048210f91bf0b27ec9c9e94e35d53"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20200922102712_create_banking_accounts_table.go",
+      "repository": "payouts",
+      "sha256": "4b3823bd235618c2b2cbec9f88ceafb5a7bc45b60a139c1b8a13412efa3dc997"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20201113232006_create_reversals_table.go",
+      "repository": "payouts",
+      "sha256": "e0728528406571973a061d04d4382f33b190a604793863673af8d2b7ae7e99e2"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20210304093129_create_payout_sources_table.go",
+      "repository": "payouts",
+      "sha256": "7c6d320168d468d4f74510391984b7de77a4f02a52d3d0367df401f1e4c38c28"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20210524161952_create_payout_logs_table.go",
+      "repository": "payouts",
+      "sha256": "ec724c10542e0f2422a30df59aecb166f998d18e947bfd051a6c8c0cd0cf9361"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20210617163439_create_payout_purpose_table.go",
+      "repository": "payouts",
+      "sha256": "f6dc57c0bccc55014ecf2015ba3b2bb1ff84f45c55b244671c3f36d75da8ca75"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20210824110700_create_workflow_config_table.go",
+      "repository": "payouts",
+      "sha256": "01b9081283c9f53a6565ab526a2ce7e9ee02bc7b59fd1ecf84b88a484b72572a"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20210824110739_create_workflow_entity_map_table.go",
+      "repository": "payouts",
+      "sha256": "b082b3e4732373cc3f554690c6c5b48e39a7ee442ee6d9e64e49616b18ba5606"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20210902153752_create_payout_details_table.go",
+      "repository": "payouts",
+      "sha256": "6c205f7274f2f4d12e0b6f7f0ce14836778fed6ce24c5c21a20721ddb9dd6d0b"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20211026104754_create_payout_status_details_table.go",
+      "repository": "payouts",
+      "sha256": "22f9b438dda59dc27142ad65e7a5076405ccae385d9ff1eec69e0465696edaa8"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20220120161944_create_fund_accounts_table.go",
+      "repository": "payouts",
+      "sha256": "943f1e22c7c97b71ba7373be77d4f9698071149441cffe4a34a564f64b059407"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20220120172736_create_bank_accounts_table.go",
+      "repository": "payouts",
+      "sha256": "fed825f2b5f79af1e3bf0fd4ec5364ec5eadbb82df3d66021868bd9d9209e0cc"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20220526144631_create_counters_table.go",
+      "repository": "payouts",
+      "sha256": "d5fed506fae30b5c4d95baec2703aa6737b209e6fa8a4d55fd3e1dc051f2b018"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20220608002625_create_settings_table.go",
+      "repository": "payouts",
+      "sha256": "46784a4157c2c60573353018c16b710908426cd8fec4056f292b030195e64132"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20220616173226_create_payout_meta_temporary_table.go",
+      "repository": "payouts",
+      "sha256": "ed2d189a23949c4777919eeec89de2ff54a258a43857d8b5889553cc87816ae0"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20220616173230_create_payout_meta_permanent_table.go",
+      "repository": "payouts",
+      "sha256": "6ca612ed56dc9d5ba178c47642a659c33e3de97220bebf90ba7aa1bcfb64f5aa"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20220822132631_create_counter_transactions_table.go",
+      "repository": "payouts",
+      "sha256": "a5abbdbae8c7b2338e36b7f811240e309124c60e941a5b0d8d191336ccab6253"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20220912025953_create_workflow_state_map_table.go",
+      "repository": "payouts",
+      "sha256": "635e66451fd9473d9af63f2aa7864b0f2b185888f4e226eea543ce6994cb5a94"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20221004002554_create_idempotency_keys_table.go",
+      "repository": "payouts",
+      "sha256": "b04b747f9ea7f9e18125f191d22639d5a7cbb27951e0cd9cb8f59d518ccd2308"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20230124225130_create_payout_attempts_table.go",
+      "repository": "payouts",
+      "sha256": "0da7d093375532078526df09fe5621a423c880508c481a37e2a18961eedd98a4"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20230128010157_banking_account_statement_table.go",
+      "repository": "payouts",
+      "sha256": "07200bfcaec9076928121442c0611531fc0730121969cefe415d0a3049dfc3d8"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20230128010223_banking_account_statement_details_table.go",
+      "repository": "payouts",
+      "sha256": "897fec4dea56049698e01b1e559843bdcabfe43abcbb4c9bef3750d599d04978"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20240504145035_event_outbox_table.go",
+      "repository": "payouts",
+      "sha256": "65f76c5745373899742a7ca941ef88c3c44115f34d187c5d77dd2ef0d7570ab1"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20240625175332_delete_duplicate_bas.go",
+      "repository": "payouts",
+      "sha256": "9b841d18fa02bccd1106a260cc133846be77391ae1a9594f19f5563ec16feced"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20240830164301_bulk_idempotency_keys.go",
+      "repository": "payouts",
+      "sha256": "2d5b8bea69634e4c72c8f38accf7f7e4714f0b576bf2cbf91c5901aa27e98a98"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20241126054126_duplicate_prevention_config.go",
+      "repository": "payouts",
+      "sha256": "0d0cfffe8e8fcd1ddd185f650463b6f567716bf4656e3fc5b75427bd9f1b7d50"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20250115000001_create_payouts_temp_table.go",
+      "repository": "payouts",
+      "sha256": "3346d2019ebd1c5c55fdf2025529f30041bdee8906f5dda28c429d17b21bb1d8"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20250115000003_create_fund_transfer_attempts_temp_table.go",
+      "repository": "payouts",
+      "sha256": "695abe744bc07bd195bc7c023ce1a3e3ca899bf0ef1bd8a3f394f15d59fb4a62"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20250311053125_create_merchant_configurations_table.go",
+      "repository": "payouts",
+      "sha256": "24ef0a3f5cd9e00a879fdf6176474b20e262d2137d95dde3d1992d9cd27c92db"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20250528222337_create_idempotency_key_exclusions_table.go",
+      "repository": "payouts",
+      "sha256": "ccaf61f6a0e1ef7f4937eb579c7c0c138011139e15a193ca79b8cf7d6d5b9b0e"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20251106120000_create_source_request_id_mapping_table.go",
+      "repository": "payouts",
+      "sha256": "df377aa34f6b0b433f766cc46fad1d4d8019afb6b2e9c1f197a8f892a526c006"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20260305000000_add_gateway_ref_no_to_payouts.go",
+      "repository": "payouts",
+      "sha256": "b481cd8f2ab4093797c8d25eb50c9697bd61efa8571e34686d430bcdad8185c1"
+    },
+    {
+      "commit": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+      "file": "internal/database/migrations/20260720000001_alter_fts_transfer_id_to_bigint.go",
+      "repository": "payouts",
+      "sha256": "b45d15947ca05a4857922de12456cbc3170fd5ae5cb3285960c5d2316f4117bf"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00001_bank_accounts_table_create.go",
+      "repository": "fts",
+      "sha256": "0e301b7e0f9113320bf625340ad791d6d90008d6b54406e0475c79f2648623da"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00002_vpas_table_create.go",
+      "repository": "fts",
+      "sha256": "ed983b8ace28e6cfbf06ca9911c9873f8a220993eb175b895ad55f7e40e931b1"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00003_fund_accounts_table_create.go",
+      "repository": "fts",
+      "sha256": "b31b2d6bcd5feb4b8faa0cfc91868718b8e5803564db3db4e7280519e9af4322"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00004_beneficiary_status_table_create.go",
+      "repository": "fts",
+      "sha256": "3d6664a39069bcddf9e5f3ae548127707e162b03e963865c307079c09f85cdc0"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00005_transfers_table_create.go",
+      "repository": "fts",
+      "sha256": "f82689f1c4554c91d4939e9355e6dd6b886e8f2b8fbfc508e47d4c3d0ee66e60"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00006_attempts_table_create.go",
+      "repository": "fts",
+      "sha256": "5dc6a9fa390ef050e31b4521f2cc135bd0165bee2e45651c2ff96b9529ebbc03"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00007_source_accounts_table_create.go",
+      "repository": "fts",
+      "sha256": "37e603e3da442c1cb2630aca17039072d3312cb07c13a7aa8ec606e173e7f33a"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00008_state_change_log_table_create.go",
+      "repository": "fts",
+      "sha256": "91b7a6caade3c034508fca87be49608b424c3f1636f33df026ec270646cf9328"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00009_cards_table_create.go",
+      "repository": "fts",
+      "sha256": "4fd8ef5c13418361af62c197139da97871031b890b998b8a0865eae67c0df2ec"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00010_channel_health_events_table_create.go",
+      "repository": "fts",
+      "sha256": "534ff2d1e007715f921c52908a07350dbfdc7db6b4afdd33fb01c4c8c8cd0518"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00011_source_account_mappings_table_create.go",
+      "repository": "fts",
+      "sha256": "eba279e9b5d2dee35d01143d12a86ae85a899d4f456cd413306bc2cb99e7ca6e"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00012_batches_table_create.go",
+      "repository": "fts",
+      "sha256": "f06ed9083c13269858a1220c53948a388a53ad140698e36f97006abae8630e14"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00014_bene_health_table_create.go",
+      "repository": "fts",
+      "sha256": "d36ea864d3b541dd630cc23bb25cb70d530e2c8185c397673f4000cd5787c32d"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00015_event_tags_table_create.go",
+      "repository": "fts",
+      "sha256": "d7233c409be32224911fe791104e7c0f33c5a491122af48495658ec164b5c266"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00016_wallets_table_create.go",
+      "repository": "fts",
+      "sha256": "e2f5aae97525d27fcc1d50e7d064809a92fdd77fd7a6ec4d928695729f104606"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00017_preferred_routing_weights_table_create.go",
+      "repository": "fts",
+      "sha256": "50efe14f4cf1144ef6ca3b690abf2f2bff846705060fc2de452042307a453e67"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00018_account_type_mappings_table_create.go",
+      "repository": "fts",
+      "sha256": "98f29188f6beb9e411b5aa7b861a381227c01983cb06c2cdeb1bc50fbd7bb8f6"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00019_merchant_configuration.go",
+      "repository": "fts",
+      "sha256": "dfb2a6fa53941d1f7ca38b7236c34e1dff1f9ae77ebe9abcf3b43446d67d3ed8"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00020_direct_account_routing_rules_table_create.go",
+      "repository": "fts",
+      "sha256": "78e3a4b66cc6178df8d07772baa5bcd16dc5ab6fafddf4b1a446c98fda8ea36f"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00021_attempts_unique_keys_table_create.go",
+      "repository": "fts",
+      "sha256": "97d62fd7868f976cb2d9fc96b487683c658e33fe0e78e856c4900b415febc5a5"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00022_channel_information_status_table_create.go",
+      "repository": "fts",
+      "sha256": "6a1e7614ddf770cc463867ed93d1d1698de971544c84c5542022a935830f06bc"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00023_trigger_status_table_create.go",
+      "repository": "fts",
+      "sha256": "9f8fd80bd750aeb2522b6284aa70aaad79c21f143d08824d425da26a259be28a"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00024_schedules_table_create.go",
+      "repository": "fts",
+      "sha256": "42d3bebd6e5f173ac301a4813b35e68311ccf031e2243360b0effd1cee314c1a"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00025_channel_information_status_logs_table_create.go",
+      "repository": "fts",
+      "sha256": "1e65eb48d7f2ba5402cd910489941be2debc07c4f69116437609dca1b379a27d"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00026_trigger_status_logs_table_create.go",
+      "repository": "fts",
+      "sha256": "cedbfc172d5442bb85131fcf894c260a68fc5af9df8c1c1c3da8049967f0793f"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00027_fail_fast_status_table_create.go",
+      "repository": "fts",
+      "sha256": "f58264ca2a5371ada7d193b965de157d869c119db6be867c23a5d2a7d529e857"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00028_fail_fast_status_logs_table_create.go",
+      "repository": "fts",
+      "sha256": "eba5a17d3fdfb81b79f7a2e39aeaea088aeccde42035845043c5229b86c8ad5a"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00029_bank_account_meta_table_create.go",
+      "repository": "fts",
+      "sha256": "0f18a9ffb241ec1ca4ecc14eaf7ec287c487d524242e320538b3cc495b9d6f90"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00030_key_value_store_table_create.go",
+      "repository": "fts",
+      "sha256": "67f06e5e681b195a1cceea055f36009b36f6deac1a8598451f36e356a1950e23"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00031_key_value_store_logs_table_create.go",
+      "repository": "fts",
+      "sha256": "05ba680f9ea74f7072c2309d9d400590b85d3b5b9daa025cd37d355067cbccb2"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00032_entity_meta_table_create.go",
+      "repository": "fts",
+      "sha256": "0e1701dfd1e098380295b526ff4ca1ec020c6f0774e3fa034a02f4a4590e6e8d"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00033_non_saved_cards.go",
+      "repository": "fts",
+      "sha256": "5bbd71d00bf604ed9c7372604b8cfaca08b73a2a89cb7fb05d0b8a37072ce9ab"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00034_otp_requests.go",
+      "repository": "fts",
+      "sha256": "bb898762a0a593912f1bd10ef242dd81c0aa1e79a03db1b8b7eac8c7e0e7a34c"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00035_otp_information_table_create.go",
+      "repository": "fts",
+      "sha256": "bf8e24133e56d67ebf07303166beeacc6efc1f0a2325b7d56b3114e3d0c8a996"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00036_otp_request_logs_table_create.go",
+      "repository": "fts",
+      "sha256": "d4eff1da7c4c5a001d71fda71cd7b423f4276e88527011bdff3d610efd4031c9"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00037_otp_verification_logs_table_create.go",
+      "repository": "fts",
+      "sha256": "a68e7ba8bd8889ac124d9495589a94375565ee7ce3eab4720474edaa7d8ce3c4"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00038_audit_logs_table_create.go",
+      "repository": "fts",
+      "sha256": "e212e4643d3655e7e0cca6fd11a5958a949d7c50a0b738786eca6b66d963ae3a"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00039_cron_jobs.go",
+      "repository": "fts",
+      "sha256": "99c2bbbce495b90bf842d61dab9daed5241b579532ce2cb0c8ea1ba99a8df780"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00040_remitter_accounts_table_create.go",
+      "repository": "fts",
+      "sha256": "52497bb287d5705b2a633ce68cabe23225c9f980c3e1e22721abbb00782ebecf"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00041_merchant_communication_details_table_create.go",
+      "repository": "fts",
+      "sha256": "b4cd5e907309a755f5ec57153630c7f0989c14758a9c07fac830380d2845fc0e"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00042_multi_account_routing_rules_table_create.go",
+      "repository": "fts",
+      "sha256": "b16da08bd8487f098a006c68dd9cb361ed53973006a487b7a2e650d8db73b54c"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00043_channel_metrics_table_create.go",
+      "repository": "fts",
+      "sha256": "90f13fbf49a1f31473d0342cb8bcc2dfe78c040575093ce12164e78f27b4df78"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00044_downtimes_table_create.go",
+      "repository": "fts",
+      "sha256": "4fbedc047e3912fb38c1c0d6dba89eddbe62db388aed21dcf888790c47a81460"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00045_transfer_meta_table_create.go",
+      "repository": "fts",
+      "sha256": "a2f96d00be571e9913663a41f817a430934343f544d5e36e2126e969e9988311"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00046_downtime_state_change_logs_table_create.go",
+      "repository": "fts",
+      "sha256": "9de6bbcd06f4ababb384688a4965e00e57adc914be50925027463aaff35868ce"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00047_update_channel_enum_add_slice_channels.go",
+      "repository": "fts",
+      "sha256": "2ce1651aff28a63a1b5ca6a32417487331e35a2900e4ada9cc8aefb65ec62c34"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00048_bene_health_add_success_rate.go",
+      "repository": "fts",
+      "sha256": "26c4b2e4796b92a9f2e77d0a0ae56ece8118418bd76c3e46b0b891ac0cf26df0"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00049_update_channel_enum_add_jpmc.go",
+      "repository": "fts",
+      "sha256": "6ca1ff100b58ab9511c68183de83fc013a5a3dd9554f631d9324fbd757f0b31d"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/00050_rename_jpmc_channel_enum.go",
+      "repository": "fts",
+      "sha256": "b3ddb4608c42eb1e825e0721af58bd0ddbcfff0c318601b2b9517ef7a9568c08"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/one_off_db_update_migration_script.go",
+      "repository": "fts",
+      "sha256": "98c446e5582af032d02891d84452e39ddf81bcac6e11e03b1ddaa52d12aaf9b6"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/runner.go",
+      "repository": "fts",
+      "sha256": "a6e80d0c2319c28eccc239eef93040f071d1fa12a552362bdc749ec825fddb70"
+    },
+    {
+      "commit": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+      "file": "internal/migrations/runner_test.go",
+      "repository": "fts",
+      "sha256": "5196141aa07c89a27da47f8cc21008a24b3fe19eaafbae9800e2d984f38c9475"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20201001011117_create_accounts.go",
+      "repository": "ledger",
+      "sha256": "6e643a4e6ce46a72cbd911acfc175c2c73dd1d4b37d8b9b17492fd47361c2361"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20201001011143_create_journal.go",
+      "repository": "ledger",
+      "sha256": "dc6e76f1bd24942295711afd9e0e29ae70801f10e8f69daf17b4849e57648622"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20201001011149_create_ledger_entries.go",
+      "repository": "ledger",
+      "sha256": "1b1ed5639d6fa45476068d0daad8b7b177a5d83f0e2cf7b9e2fc79939ebeea01"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20201001011240_create_ledger_entry_details.go",
+      "repository": "ledger",
+      "sha256": "59dfa952e23b85681a59791d3a00685e2fd8383d9fc69d2420c58eb614830d78"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20201022184734_create_account_details.go",
+      "repository": "ledger",
+      "sha256": "25b6534453f3beabccd2a9100ce0b8763f7881c0f6645bc963105d53f8e61b98"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20201027234816_create_state_change_logs.go",
+      "repository": "ledger",
+      "sha256": "5dbea5b795458715012d207658ef09c5a51438bcf67378c18109512916589c74"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210416152026_alter_transactor_id_column.go",
+      "repository": "ledger",
+      "sha256": "e5c9f8d6f3b006e28a754d7e7122f6b0aa8704038afcbdb6ad4e53546569e840"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210517133655_alter_balance_column.go",
+      "repository": "ledger",
+      "sha256": "1ce08c7437cf7f71a6ec262937040b464cbb6e78e8c2f384bbf8c89503bf4957"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210527121244_create_idempotency.go",
+      "repository": "ledger",
+      "sha256": "13bb068af6372b8d4496bed5342d34f593843697408a8c811d9ebb25da63140a"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210628101139_add_balance_in_ledger_entries.go",
+      "repository": "ledger",
+      "sha256": "15ef16398241c25d35261521febe45794f987e7c8292520371301ce457f36e74"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210723155653_add_onboarding_events_in_account_details.go",
+      "repository": "ledger",
+      "sha256": "0da49f417d36a3de233794af9612d4803675d36c607730794d2ddb11b531302d"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210810170948_create_ledger_config.go",
+      "repository": "ledger",
+      "sha256": "9bee9e69bf071e1c03b32aafe1ff46616dc6952b1d74d3ef64fe5cb29eab859f"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210826041040_add_tenant_in_account_details.go",
+      "repository": "ledger",
+      "sha256": "6e869b285f4d0373bd6263ef30c8046cc74a7a2257a4152de489ca6257c23584"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210826041041_add_tenant_in_journal.go",
+      "repository": "ledger",
+      "sha256": "0ec991fc5f42a235e2166cde63fda6ae59799abcbee689b0cf7eac45a8a94707"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210916041039_add_reason_in_state_change_logs.go",
+      "repository": "ledger",
+      "sha256": "d66ae97275563144c99b4786ca9d32e7f489c0445e336e9df6194cbe87e0e3d5"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210924122122_add_index_on_notes_column_in_ledger_entry_details_go.go",
+      "repository": "ledger",
+      "sha256": "9f7077dabaeeca93d799d7d1a05d8281318d2b338ebca8a30e54073c482e1675"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20210925113658_rename_transactor_type_to_transactor_event_in_journal_go.go",
+      "repository": "ledger",
+      "sha256": "8ccb70bc147403e0e411498eaf07eda3d3f2faa86e65ce8e164413b91fe40e8a"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20211020100711_add_balance_updated_in_ledger_entries.go",
+      "repository": "ledger",
+      "sha256": "8d89516731fe67d0345b9725182d0c41e0682bb13a175b3c22a45dd636b1aa37"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20211020131618_modify_amount_datatypes.go",
+      "repository": "ledger",
+      "sha256": "e7eb4d2ac49a51d03923533528d7119dceef5954c9c2286a1f5cf4f060de82e4"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20220502170054_create_idempotency_partition_info.go",
+      "repository": "ledger",
+      "sha256": "f1fa202afc311386f3a9c2ab5552c62d6cc0c7493b6e9591537222c0db9984e0"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20220614145258_20220614144234_alter_add_redash_access_to_idempotency_partition_info_go.go",
+      "repository": "ledger",
+      "sha256": "cbe1096c7d53716d8fdec08d4a0a749e479b514dfcca915e7d92405caa64e27f"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20220721150555_create_journal_rejected_events.go",
+      "repository": "ledger",
+      "sha256": "a4893f0a54850194d1c28ef2579d64fb0e5743ea29dd433f5e0345d32282912f"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20220727152211_alter_add_redash_access_journal_rejected_events_default.go",
+      "repository": "ledger",
+      "sha256": "32862d853b3d3b8c6eaa49eb8c2ecc916920aad8f315a3457e3c12ead0a42e46"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20221117104115_create_outbox_jobs.go",
+      "repository": "ledger",
+      "sha256": "fa63219073327b589e24a918ac07284b90ce9f6ef54838e92a6bb751fa35d9c7"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20221128052500_alter_state_change_logs_table.go",
+      "repository": "ledger",
+      "sha256": "324bce2bb82a8f5bbf3794e7dc63ef5ee3cf94218cee5b2131502dd5b2612307"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20221209182605_modify_idempotency_table.go",
+      "repository": "ledger",
+      "sha256": "c35f216e74ac8f0cea68b8de651fc9ca4270cf37c2dcb497fa5bc476b687c612"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20221211114222_create_split_accounts.go",
+      "repository": "ledger",
+      "sha256": "701b273664fa36a5206bc02f3e16640fd04ea2c2c82e803dc9c03fdf606cfd5e"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20221211115222_alter_use_split_accounts_column_in_account_details.go",
+      "repository": "ledger",
+      "sha256": "46355e4ff6c3a0f84f1a94931cc9acf491cd7d56eae7d801f063e1bf39d8de44"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20230216023203_onboarding_events.go",
+      "repository": "ledger",
+      "sha256": "4ad04997750d73720fa4e5466cdbfd2f0506940267431b46396b182c2a1bd8b5"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20230327173846_add_redash_access_for_onboarding_events.go",
+      "repository": "ledger",
+      "sha256": "3fce94a511bb716c1c4276c400ed4ef06462c9abe59062d8e3cc881595516d5c"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20230911161905_alter_table_outbox_jobs_add_column_initial_delay.go",
+      "repository": "ledger",
+      "sha256": "73bd61fd06c51ca147f727e809794b6913ba65c454d287b0bd12ae0b2b6e2849"
+    },
+    {
+      "commit": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+      "file": "internal/database/rx_migrations/20230920171333_alter_remove_onboarding_events_column_in_account_details.go",
+      "repository": "ledger",
+      "sha256": "824e5d9c5df6ea8fd022b92cc8bcd8cfde93ddec63aeb53c007675021e275cd5"
+    },
+    {
+      "commit": "1a21c0f9111da14125d839dc0dfe8d980740f207",
+      "file": "internal/database/migrations/20250127224555_balance.go",
+      "repository": "x-balances",
+      "sha256": "627af52ec34112a5d897c4214d049eec6d4c98887458977a60f0eda8c203e32f"
+    }
+  ],
+  "model_discrepancies": [
+    {
+      "field": "beneficiary_bank_code",
+      "finding": "String field in service model; absent from service migrations. Monolith ps_payout_details sibling migration explicitly declares CHAR(4); that does not establish the service physical schema.",
+      "migration_column_found": false,
+      "migration_table_found": true,
+      "model_file": "internal/app/payoutDetails/model.go",
+      "model_present": true,
+      "repository": "payouts",
+      "table": "payout_details"
+    },
+    {
+      "field": null,
+      "finding": "Model and standalone queries.sql exist; no wired migration creates this table. Not seeded or declared supported.",
+      "migration_column_found": null,
+      "migration_table_found": false,
+      "model_file": "internal/database/model/sub_balance.go",
+      "model_present": true,
+      "repository": "x-balances",
+      "table": "sub_balance"
+    },
+    {
+      "field": null,
+      "finding": "Model and standalone queries.sql exist; no wired migration creates this table. Not seeded or declared supported.",
+      "migration_column_found": null,
+      "migration_table_found": false,
+      "model_file": "internal/database/model/sub_balance_limit.go",
+      "model_present": true,
+      "repository": "x-balances",
+      "table": "sub_balance_limits"
+    }
+  ]
+}

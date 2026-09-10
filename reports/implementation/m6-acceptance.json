@@ -1,0 +1,113 @@
+{
+  "milestone": "M6 \u2014 complete Payouts functional domain",
+  "passed": 15,
+  "total": 15,
+  "accepted": true,
+  "gates": [
+    {
+      "id": "M6-01",
+      "desc": "every reachable repository inventoried (repos-root \u2229 inventory)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "inventory=107 reachable=60 missing=[]"
+    },
+    {
+      "id": "M6-01b",
+      "desc": "deployment artifacts (kube-manifests) inventoried",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "M6-02",
+      "desc": ">=90% of identified critical components represented",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "100.0% of 330"
+    },
+    {
+      "id": "M6-03",
+      "desc": "no known major Payouts business family unmapped",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "families=42 missing=[]"
+    },
+    {
+      "id": "M6-04",
+      "desc": "every P0 family has >=1 PASSing end-to-end journey",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "p0=24 without_pass=[]"
+    },
+    {
+      "id": "M6-05",
+      "desc": "every P0 path covers success + failure + idempotency + async-state",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "{}"
+    },
+    {
+      "id": "M6-06",
+      "desc": "P0 workers/crons executable or explicitly blocked with missing dependency",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "p0_workers=70 executable=42 explicitly_blocked=28 unresolved=[]"
+    },
+    {
+      "id": "M6-07",
+      "desc": "clean boot from empty state provisioned fresh merchants and ran the P0 suite",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "empty=True merchants=13 passed=True"
+    },
+    {
+      "id": "M6-07b",
+      "desc": "clean boot result does not depend on developer-local state",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "attach mode: all project volumes created 2026-09-08T06:21:51+05:30..2026-09-08T06:22:24+05:30 (down -v removed the previous ones), all secrets regenerated 2026-09-08T00:51:50.541200+00:00..2026-09-08T00:51:51.292969+00:00, boot_id f520e5d1-24bf-4d59-bcee-f19e4ee493e0"
+    },
+    {
+      "id": "M6-08a",
+      "desc": "domain snapshot manifest (SHAs, config hashes, schema versions, digests, graph version)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "keys=['compose', 'config_digest', 'config_hashes', 'contracts', 'fidelity_counts', 'flags', 'generated_at', 'graph_counts']"
+    },
+    {
+      "id": "M6-08b",
+      "desc": "a repository/contract change produced a diff and reran only affected paths",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "changed=['ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md'] affected=['batch-sim']"
+    },
+    {
+      "id": "M6-09",
+      "desc": "every graph node carries a fidelity class",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "rows=2093 unlabelled=0"
+    },
+    {
+      "id": "M6-10",
+      "desc": "remaining-access manifest lists every blocked item",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "blocked=2"
+    },
+    {
+      "id": "M6-11",
+      "desc": "on milestone-6 branch, at the twin-m6 tag, or on a branch descending from the twin-m6 tag",
+      "validation_mode": "direct_git",
+      "passed": true,
+      "detail": "milestone-7-shared-ingress-integration (twin-m6 tag ancestor=True)"
+    },
+    {
+      "id": "M6-12",
+      "desc": "graph + evidence tracked in git",
+      "validation_mode": "direct_git",
+      "passed": true,
+      "detail": ""
+    }
+  ]
+}

@@ -1,0 +1,284 @@
+{
+  "milestone": "M5 \u2014 Autonomous discovery on maker-checker workflows",
+  "passed": 38,
+  "total": 38,
+  "accepted": true,
+  "thresholds": {
+    "hypotheses": 15,
+    "experiments": 30,
+    "baselines": 10,
+    "meaningful": 5,
+    "reallocations": 3,
+    "recovered": 1,
+    "defects": 3,
+    "families": 2
+  },
+  "gates": [
+    {
+      "id": "M5-01",
+      "desc": "workflow decision engine present",
+      "validation_mode": "source_inspection",
+      "passed": true,
+      "detail": "wfengine core+server"
+    },
+    {
+      "id": "M5-02",
+      "desc": "engine labelled high-fidelity RECONSTRUCTION",
+      "validation_mode": "source_inspection",
+      "passed": true,
+      "detail": "FIDELITY.md"
+    },
+    {
+      "id": "M5-03",
+      "desc": "workflow scenario suite all-passed",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "12/12"
+    },
+    {
+      "id": "M5-04",
+      "desc": "scenario approval_success passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "approval_success"
+    },
+    {
+      "id": "M5-05",
+      "desc": "scenario rejection passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "rejection"
+    },
+    {
+      "id": "M5-06",
+      "desc": "scenario cancellation passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "cancellation"
+    },
+    {
+      "id": "M5-07",
+      "desc": "scenario expiry passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "expiry"
+    },
+    {
+      "id": "M5-08",
+      "desc": "scenario duplicate_approval passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "duplicate_approval"
+    },
+    {
+      "id": "M5-09",
+      "desc": "scenario duplicate_callback passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "duplicate_callback"
+    },
+    {
+      "id": "M5-10",
+      "desc": "scenario stale_decision passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "stale_decision"
+    },
+    {
+      "id": "M5-11",
+      "desc": "scenario concurrent_decisions passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "concurrent_decisions"
+    },
+    {
+      "id": "M5-12",
+      "desc": "scenario restart_recovery passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "restart_recovery"
+    },
+    {
+      "id": "M5-13",
+      "desc": "scenario cross_org_denial passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "cross_org_denial"
+    },
+    {
+      "id": "M5-14",
+      "desc": "scenario maker_checker_separation passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "maker_checker_separation"
+    },
+    {
+      "id": "M5-15",
+      "desc": "scenario callback_identity passed e2e (not skipped)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "callback_identity"
+    },
+    {
+      "id": "M5-16",
+      "desc": "4 mutants built (fixed reference + 4)",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "mutants=4"
+    },
+    {
+      "id": "M5-17",
+      "desc": "fixed reference violates no invariant",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "M5-18",
+      "desc": "each mutant isolated to its own family",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "M5-19",
+      "desc": ">=4 invariant families represented",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "families=4"
+    },
+    {
+      "id": "M5-20",
+      "desc": ">=15 unique hypotheses",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "106"
+    },
+    {
+      "id": "M5-21",
+      "desc": ">=30 nonduplicate experiments reached service",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "88"
+    },
+    {
+      "id": "M5-22",
+      "desc": ">=10 valid baseline/control operations",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "189"
+    },
+    {
+      "id": "M5-23",
+      "desc": ">=5 observation-driven experiment changes",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "47"
+    },
+    {
+      "id": "M5-24",
+      "desc": ">=3 strategic reallocations",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "58"
+    },
+    {
+      "id": "M5-25",
+      "desc": ">=1 recovered worker interruption",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "1"
+    },
+    {
+      "id": "M5-26",
+      "desc": "no uncontrolled repeated-invalid-request loop",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "dedup active"
+    },
+    {
+      "id": "M5-27",
+      "desc": ">=3 of 4 hidden defects discovered",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "4 defects: ['counting', 'cross_org', 'separation', 'terminal']"
+    },
+    {
+      "id": "M5-28",
+      "desc": "findings span >=2 invariant families",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "['approval-integrity', 'maker-checker', 'org-boundary', 'state-integrity']"
+    },
+    {
+      "id": "M5-29",
+      "desc": "zero accepted findings against the fixed reference",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "0"
+    },
+    {
+      "id": "M5-30",
+      "desc": "every finding independently verified + fresh-ID reproduced",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "4 findings"
+    },
+    {
+      "id": "M5-31",
+      "desc": "findings deduplicated by root cause",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "4 root causes"
+    },
+    {
+      "id": "M5-32",
+      "desc": "at least one finding reproduced by >=2 models",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": "cross-model reproduction"
+    },
+    {
+      "id": "M5-33",
+      "desc": "safety/egress attestation passes",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "M5-34",
+      "desc": "services loopback-only",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "M5-35",
+      "desc": "single external host is the model gateway",
+      "validation_mode": "direct_artifact",
+      "passed": true,
+      "detail": ""
+    },
+    {
+      "id": "M5-36",
+      "desc": "on milestone-5 branch or at the assurance-m5 tag",
+      "validation_mode": "direct_git",
+      "passed": true,
+      "detail": "milestone-5-finish-autonomous-discovery"
+    },
+    {
+      "id": "M5-37",
+      "desc": "annotated tag assurance-m5-autonomous-discovery exists",
+      "validation_mode": "direct_git",
+      "passed": true,
+      "detail": "e2ac27fe5385"
+    },
+    {
+      "id": "M5-38",
+      "desc": "evidence artifacts tracked in git",
+      "validation_mode": "direct_git",
+      "passed": true,
+      "detail": ""
+    }
+  ]
+}

@@ -1,0 +1,5 @@
+schema_version: 1
+inventory_reference: ../inventory/architecture-inventory.json
+default_status: SOURCE_MAPPED_NOT_RUNNING
+promotion_rule: Status can become ACTUAL_SOURCE_RUNNING only with a named runtime trace artifact; replacement status requires a declared deviation and contract test.
+critical_journey_model: composed_two_phase_flow

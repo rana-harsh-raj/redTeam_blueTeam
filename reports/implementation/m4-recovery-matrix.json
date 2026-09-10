@@ -1,0 +1,76 @@
+{
+  "generated_at": "2026-09-06T20:23:11Z",
+  "all_passed": true,
+  "scenarios_run": 7,
+  "scenarios_blocked": [
+    "service_restart",
+    "queue_consumer_restart",
+    "database_restart"
+  ],
+  "results": [
+    {
+      "scenario": "explorer_process_kill",
+      "passed": true,
+      "ready": true,
+      "recovered_hypotheses": 1,
+      "state_hash_stable": true
+    },
+    {
+      "scenario": "subagent_kill",
+      "passed": true,
+      "freed": 1,
+      "reassigned": true,
+      "handoffs": 1
+    },
+    {
+      "scenario": "model_provider_timeout",
+      "passed": true,
+      "no_real_call": true,
+      "raised_llm_error": true
+    },
+    {
+      "scenario": "expired_lease",
+      "passed": true,
+      "freed": 1,
+      "handoffs": 1,
+      "expired_events": 1
+    },
+    {
+      "scenario": "partially_written_artifact",
+      "passed": true,
+      "recovered": 2,
+      "bad_line_skipped": true
+    },
+    {
+      "scenario": "interrupted_replay",
+      "passed": true,
+      "status": "replay_requested",
+      "retryable": true
+    },
+    {
+      "scenario": "interrupted_acceptance",
+      "passed": true,
+      "status": "reproduced",
+      "resumable_marker": true,
+      "gate_passed": true
+    },
+    {
+      "scenario": "service_restart",
+      "passed": null,
+      "blocked": "environment_unavailable",
+      "note": "set M4_DOCKER_RECOVERY=1 to run (touches docker)"
+    },
+    {
+      "scenario": "queue_consumer_restart",
+      "passed": null,
+      "blocked": "environment_unavailable",
+      "note": "set M4_DOCKER_RECOVERY=1 to run (touches docker)"
+    },
+    {
+      "scenario": "database_restart",
+      "passed": null,
+      "blocked": "environment_unavailable",
+      "note": "set M4_DOCKER_RECOVERY=1 to run (touches docker)"
+    }
+  ]
+}

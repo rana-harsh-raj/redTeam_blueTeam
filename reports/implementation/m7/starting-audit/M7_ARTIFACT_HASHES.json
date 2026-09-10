@@ -1,0 +1,10 @@
+{
+  "algorithm": "sha256",
+  "files": {
+    "M7_ACCEPTANCE.json": "220ed8a24dcd776c9186e66baf06c5b9cf0025fab76b889d7e6d6fb6dbf8822c",
+    "M7_FINAL_REPORT.md": "9c9f4d727242715f5afcb4981ea15c7b344b1e6d8df194bbd1aa5d611779af00",
+    "M7_STARTING_EVIDENCE.json": "4c8d4f81cef38671f0893795db0ebb3d11184a8dd70cb8109f0bf3f94c89d8f3"
+  },
+  "scope": "M7 starting-evidence audit artifacts only; no runtime artifacts",
+  "self_excluded": "M7_ARTIFACT_HASHES.json"
+}

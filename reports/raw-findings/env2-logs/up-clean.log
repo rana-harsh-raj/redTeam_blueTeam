@@ -1,0 +1,901 @@
+############################################################
+# 1/8  secrets/gen-secrets.sh
+############################################################
+secrets already present (re-run); keeping them so existing datastore volumes stay reachable. Set REGEN_SECRETS=1 (after scripts/down.sh) to regenerate.
+############################################################
+# 2/8  config/generate.py
+############################################################
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/payouts/default.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/payouts/arena.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/payouts/e2e.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/payouts/payouts.env (0 vars)
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/ledger/default.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/ledger/arena.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/ledger/ledger.env (4 vars)
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/cfa/default.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/cfa/arena.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/cfa/cfa.env (0 vars)
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/xbalances/default.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/xbalances/arena.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/xbalances/xbalances.env (0 vars)
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/fts/env.default.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/fts/holiday.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/fts/env.arena.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/fts/env.arena-migration.toml
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/fts/fts.env (78 vars)
+wrote /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated/mozart-mock/env.arena.toml
+config/generate.py: OK, rendered 6 service configs into /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/generated
+############################################################
+# 3/8  preflight/preflight.py  (HARD GATE -- non-zero exit stops here)
+############################################################
+PREFLIGHT PASSED. Report: /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/SAFETY_PREFLIGHT.md
+############################################################
+# 4/8  datastores profile
+############################################################
+ Container env2_compose-mysql-xbalances-1 Running 
+ Container env2_compose-localstack-1 Running 
+ Container env2_compose-kafka-1 Running 
+ Container env2_compose-mysql-fts-1 Running 
+ Container env2_compose-postgres-ledger-1 Running 
+ Container env2_compose-redis-1 Running 
+ Container env2_compose-mysql-apidb-stub-1 Running 
+ Container env2_compose-mysql-payouts-1 Running 
+ Container env2_compose-mongo-cfa-1 Running 
+==> waiting up to 180s for mysql-payouts to become healthy
+    mysql-payouts: healthy (after 0s)
+==> waiting up to 180s for mysql-fts to become healthy
+    mysql-fts: healthy (after 0s)
+==> waiting up to 180s for mysql-xbalances to become healthy
+    mysql-xbalances: healthy (after 0s)
+==> waiting up to 180s for mysql-apidb-stub to become healthy
+    mysql-apidb-stub: healthy (after 0s)
+==> waiting up to 180s for postgres-ledger to become healthy
+    postgres-ledger: healthy (after 0s)
+==> waiting up to 180s for mongo-cfa to become healthy
+    mongo-cfa: healthy (after 0s)
+==> waiting up to 180s for redis to become healthy
+    redis: healthy (after 0s)
+==> waiting up to 180s for localstack to become healthy
+    localstack: healthy (after 0s)
+==> waiting up to 180s for kafka to become healthy
+    kafka: healthy (after 0s)
+==> all requested services healthy
+############################################################
+# 5/8  migrations (one-shot)
+############################################################
+ Container env2_compose-mysql-payouts-1 Running 
+ Container env2_compose-mysql-apidb-stub-1 Running 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-mysql-apidb-stub-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-mysql-apidb-stub-1 Healthy 
+ Container env2_compose-payouts-migrate-run-b88aa0588408 Creating 
+ Container env2_compose-payouts-migrate-run-b88aa0588408 Created 
+Loading Config Environment: arena
+[33m[2026-09-04 15:18:25][0m [35m[info] replacing callback `gorm:update_time_stamp` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:27[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] replacing callback `gorm:update_time_stamp` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:28[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] replacing callback `gorm:delete` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:33[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] registering callback `gorm:before_query_callback` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:37[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] registering callback `gorm:after_query_callback` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:41[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] replacing callback `gorm:update_time_stamp` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:27[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] replacing callback `gorm:update_time_stamp` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:28[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] replacing callback `gorm:delete` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:33[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] registering callback `gorm:before_query_callback` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:37[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] registering callback `gorm:after_query_callback` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:41[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] replacing callback `gorm:update_time_stamp` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:27[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] replacing callback `gorm:update_time_stamp` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:28[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] replacing callback `gorm:delete` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:33[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] registering callback `gorm:before_query_callback` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:37[0m [31;1m [0m
+
+[33m[2026-09-04 15:18:25][0m [35m[info] registering callback `gorm:after_query_callback` from github.com/razorpay/payouts/pkg/spine/db/callbacks.go:41[0m [31;1m [0m
+2026/09/04 15:18:25 goose: no migrations to run. current version: 20260720000001
+ Container env2_compose-postgres-ledger-1 Running 
+ Container env2_compose-postgres-ledger-1 Waiting 
+ Container env2_compose-postgres-ledger-1 Healthy 
+ Container env2_compose-ledger-migrate-run-cd2ec2954982 Creating 
+ Container env2_compose-ledger-migrate-run-cd2ec2954982 Created 
+2026/09/04 15:18:27 goose: no migrations to run. current version: 20260619120000
+ Container env2_compose-mysql-fts-1 Running 
+ Container env2_compose-mysql-fts-1 Waiting 
+ Container env2_compose-mysql-fts-1 Healthy 
+ Container env2_compose-fts-migrate-run-48a602d6c99b Creating 
+ Container env2_compose-fts-migrate-run-48a602d6c99b Created 
+time="2026-09-04T15:18:28Z" level=info msg="Loading environment for arena and mode live"
+2026/09/04 15:18:28 goose: no migrations to run. current version: 50
+ Container env2_compose-mongo-cfa-1 Running 
+ Container env2_compose-mongo-cfa-1 Waiting 
+ Container env2_compose-mongo-cfa-1 Healthy 
+ Container env2_compose-cfa-migrate-run-b69cf3a80703 Creating 
+ Container env2_compose-cfa-migrate-run-b69cf3a80703 Created 
+Loading default config file: /app/config/default.toml
+Loading config file: /app/config/arena.toml
+Applying migrations...
+Migration 1715709457_create_contacts_collection already applied
+Migration 1715709459_create_fund_accounts_collection already applied
+Migration 1715709458_create_hash_lookup_collection already applied
+Migration 1739361599_identify_duplicates already applied
+2026/09/04 15:18:29 socat[18] E read(6, 0xfbf22cb3c000, 8192): Connection reset by peer
+2026/09/04 15:18:29 socat[17] E read(6, 0xfbf22cb3c000, 8192): Connection reset by peer
+ Container env2_compose-mysql-apidb-stub-1 Running 
+ Container env2_compose-mysql-xbalances-1 Running 
+ Container env2_compose-mysql-xbalances-1 Waiting 
+ Container env2_compose-mysql-apidb-stub-1 Waiting 
+ Container env2_compose-mysql-apidb-stub-1 Healthy 
+ Container env2_compose-mysql-xbalances-1 Healthy 
+ Container env2_compose-xbalances-migrate-run-be6f27a0dc24 Creating 
+ Container env2_compose-xbalances-migrate-run-be6f27a0dc24 Created 
+Loading default config file: /app/config/default.toml
+Loading config file: /app/config/arena.toml
+2026/09/04 15:18:30 goose: no migrations to run. current version: 20250127224555
+############################################################
+# 6/8  seeds
+############################################################
+  -- payouts banking_accounts/fund_accounts/counters (seeds/s4/payouts.sql)
+mysql: [Warning] Using a password<redacted> on the command line interface can be insecure.
+  -- fts source accounts / routing (seeds/s4/fts.sql)
+mysql: [Warning] Using a password<redacted> on the command line interface can be insecure.
+  -- x-balances balance rows (seeds/s4/xbalances.sql)
+mysql: [Warning] Using a password<redacted> on the command line interface can be insecure.
+  -- ledger accounts + ledger_config (seeds/s4/ledger.sql; tenant X schema from rx_migrations)
+  -- cfa contacts/fund_accounts/hash_lookup (seeds/s4/cfa.js, Mongo)
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> cfa
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> | | | | | | | | | | | | | | | | | | | | | | | | | 
+cfa> 
+cfa> | | 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> | | | | | | | | | | | | | | | | | | | | | | | | | | | | | | 
+cfa> 
+cfa> | | 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> 
+cfa> | | | 
+cfa> 
+cfa> | | 
+cfa> 
+cfa> CFA seed complete: 4 contacts, 4 fund_accounts, 8 hash_lookup rows.
+
+cfa>   -- apidb: DDL applied automatically via docker-entrypoint-initdb.d on first boot;
+     apidb_seed.json / dcs_flags.json are read directly by monolith-stub/dcs-stub at their own startup (bind-mounted), no extra step needed here.
+############################################################
+# 7/8  substitutes profile
+############################################################
+ Image rzp-arena/asv-stub:local Building 
+ Image rzp-arena/dcs-stub:local Building 
+ Image rzp-arena/monolith-stub:local Building 
+ Image rzp-arena/splitz-stub:local Building 
+ Image rzp-arena/stork-capture:local Building 
+ Image rzp-arena/mozart-sim:local Building 
+ Image rzp-arena/merchant-webhook-sink:local Building 
+ Image rzp-arena/pricing-stub:local Building 
+ Image rzp-arena/xas-sink:local Building 
+ Image rzp-arena/kong-lite:local Building 
+ Image rzp-arena/shield-stub:local Building 
+#1 [internal] load local bake definitions
+#1 reading from stdin 7.32kB done
+#1 DONE 0.0s
+
+#2 [xas-sink internal] load build definition from Dockerfile
+#2 transferring dockerfile: 776B done
+#2 DONE 0.0s
+
+#3 [asv-stub internal] load metadata for docker.io/library/python:3.12-alpine
+#3 DONE 0.0s
+
+#4 [monolith-stub internal] load .dockerignore
+#4 transferring context: 2B done
+#4 DONE 0.0s
+
+#5 [mozart-sim internal] load build context
+#5 transferring context: 11.49kB done
+#5 DONE 0.0s
+
+#6 [stork-capture internal] load build context
+#6 transferring context: 9.26kB done
+#6 DONE 0.0s
+
+#7 [stork-capture 1/5] FROM docker.io/library/python:3.12-alpine@sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a
+#7 resolve docker.io/library/python:3.12-alpine@sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a 0.0s done
+#7 DONE 0.0s
+
+#8 [shield-stub internal] load build context
+#8 transferring context: 3.29kB done
+#8 DONE 0.0s
+
+#9 [dcs-stub internal] load build context
+#9 transferring context: 15.02kB done
+#9 DONE 0.0s
+
+#10 [xas-sink internal] load build context
+#10 transferring context: 794B done
+#10 DONE 0.0s
+
+#11 [asv-stub internal] load build context
+#11 transferring context: 1.15kB done
+#11 DONE 0.0s
+
+#12 [merchant-webhook-sink internal] load build context
+#12 transferring context: 2.89kB done
+#12 DONE 0.0s
+
+#13 [monolith-stub internal] load build context
+#13 transferring context: 11.78kB done
+#13 DONE 0.0s
+
+#14 [pricing-stub internal] load build context
+#14 transferring context: 2.70kB done
+#14 DONE 0.0s
+
+#15 [kong-lite internal] load build context
+#15 transferring context: 10.94kB done
+#15 DONE 0.0s
+
+#16 [splitz-stub internal] load build context
+#16 transferring context: 5.04kB done
+#16 DONE 0.0s
+
+#17 [monolith-stub 4/5] COPY _common/ /app/_common/
+#17 CACHED
+
+#18 [monolith-stub 3/5] WORKDIR /app
+#18 CACHED
+
+#19 [monolith-stub 2/5] RUN adduser -D -u 10001 stub
+#19 CACHED
+
+#20 [monolith-stub 5/5] COPY monolith-stub/server.py /app/server.py
+#20 CACHED
+
+#21 [merchant-webhook-sink 2/5] RUN adduser -D -u 10001 stub
+#21 CACHED
+
+#22 [merchant-webhook-sink 3/5] WORKDIR /app
+#22 CACHED
+
+#23 [merchant-webhook-sink 4/5] COPY _common/ /app/_common/
+#23 CACHED
+
+#24 [stork-capture 3/5] WORKDIR /app
+#24 CACHED
+
+#25 [stork-capture 2/5] RUN adduser -D -u 10001 stub
+#25 CACHED
+
+#26 [stork-capture 4/5] COPY _common/ /app/_common/
+#26 CACHED
+
+#27 [dcs-stub 4/5] COPY _common/ /app/_common/
+#27 CACHED
+
+#28 [dcs-stub 3/5] WORKDIR /app
+#28 CACHED
+
+#29 [dcs-stub 2/5] RUN adduser -D -u 10001 stub
+#29 CACHED
+
+#30 [kong-lite 2/5] RUN adduser -D -u 10001 stub
+#30 CACHED
+
+#31 [kong-lite 4/5] COPY _common/ /app/_common/
+#31 CACHED
+
+#32 [kong-lite 3/5] WORKDIR /app
+#32 CACHED
+
+#33 [shield-stub 4/5] COPY _common/ /app/_common/
+#33 CACHED
+
+#34 [shield-stub 2/5] RUN adduser -D -u 10001 stub
+#34 CACHED
+
+#35 [shield-stub 3/5] WORKDIR /app
+#35 CACHED
+
+#36 [asv-stub 2/5] RUN adduser -D -u 10001 stub
+#36 CACHED
+
+#37 [asv-stub 4/5] COPY _common/ /app/_common/
+#37 CACHED
+
+#38 [asv-stub 3/5] WORKDIR /app
+#38 CACHED
+
+#39 [mozart-sim 2/5] RUN adduser -D -u 10001 stub
+#39 CACHED
+
+#40 [mozart-sim 4/5] COPY _common/ /app/_common/
+#40 CACHED
+
+#41 [mozart-sim 3/5] WORKDIR /app
+#41 CACHED
+
+#42 [splitz-stub 4/5] COPY _common/ /app/_common/
+#42 CACHED
+
+#43 [splitz-stub 2/5] RUN adduser -D -u 10001 stub
+#43 CACHED
+
+#44 [splitz-stub 3/5] WORKDIR /app
+#44 CACHED
+
+#45 [pricing-stub 3/5] WORKDIR /app
+#45 CACHED
+
+#46 [pricing-stub 2/5] RUN adduser -D -u 10001 stub
+#46 CACHED
+
+#47 [pricing-stub 4/5] COPY _common/ /app/_common/
+#47 CACHED
+
+#48 [xas-sink 3/5] WORKDIR /app
+#48 CACHED
+
+#49 [xas-sink 4/5] COPY _common/ /app/_common/
+#49 CACHED
+
+#50 [xas-sink 2/5] RUN adduser -D -u 10001 stub
+#50 CACHED
+
+#51 [shield-stub 5/5] COPY shield-stub/server.py /app/server.py
+#51 CACHED
+
+#52 [kong-lite 5/5] COPY kong-lite/server.py /app/server.py
+#52 CACHED
+
+#53 [stork-capture 5/5] COPY stork-capture/server.py /app/server.py
+#53 CACHED
+
+#54 [merchant-webhook-sink 5/5] COPY merchant-webhook-sink/server.py /app/server.py
+#54 CACHED
+
+#55 [dcs-stub 5/5] COPY dcs-stub/server.py /app/server.py
+#55 CACHED
+
+#56 [mozart-sim 5/5] COPY mozart-sim/server.py /app/server.py
+#56 CACHED
+
+#57 [xas-sink 5/5] COPY xas-sink/server.py /app/server.py
+#57 CACHED
+
+#58 [asv-stub 5/5] COPY asv-stub/server.py /app/server.py
+#58 CACHED
+
+#59 [pricing-stub 5/5] COPY pricing-stub/server.py /app/server.py
+#59 CACHED
+
+#60 [splitz-stub 5/5] COPY splitz-stub/server.py /app/server.py
+#60 CACHED
+
+#61 [splitz-stub] exporting to image
+#61 exporting layers done
+#61 exporting manifest sha256:c1ad799f3089ffdb0c2c09a9d25e95fa2847c1d89389d288b044ee4e0e15d1c1 done
+#61 exporting config sha256:ab279c8a0ee68eecd13d3a8fbaa6a2d8f6ea59ffb2d4d5909da1019f67c91a16 0.0s done
+#61 exporting attestation manifest sha256:f95d7b6f8f5ae00f388649b6e996117e316a48006d28754de7d148d4252b7805
+#61 exporting attestation manifest sha256:f95d7b6f8f5ae00f388649b6e996117e316a48006d28754de7d148d4252b7805 0.1s done
+#61 exporting manifest list sha256:cc750bff863fc563d673b6525f7e325505b57be1a06a5c24046eb0a5d1b02720 0.0s done
+#61 naming to docker.io/rzp-arena/splitz-stub:local done
+#61 unpacking to docker.io/rzp-arena/splitz-stub:local
+#61 unpacking to docker.io/rzp-arena/splitz-stub:local 0.0s done
+#61 DONE 0.2s
+
+#62 [kong-lite] exporting to image
+#62 exporting layers done
+#62 exporting manifest sha256:16aaa8a35b6fc706997c316f35a50f6234a4af1a9f510799645d625888b0e784 done
+#62 exporting config sha256:7952f5d3af36d84132c500822bdc253be1759da3e6f2d4be3c745093277da52d done
+#62 exporting attestation manifest sha256:6faf35e7f97119302d9b6cae197dc4bc9775f183ee259fc6bf7122334daa74d3 0.1s done
+#62 exporting manifest list sha256:d5314cd478cf53a14c506aa69e37c03107d84709ed638b2c56b012e4dbc5cbaf 0.0s done
+#62 naming to docker.io/rzp-arena/kong-lite:local 0.0s done
+#62 unpacking to docker.io/rzp-arena/kong-lite:local 0.0s done
+#62 DONE 0.2s
+
+#63 [mozart-sim] exporting to image
+#63 exporting layers done
+#63 exporting manifest sha256:7402eb091825194e912921eb2a97a0b2c669a8c3f1cf889f3ec82a9c3ab04b93 done
+#63 exporting config sha256:1e4af14565d5516718a0e420caef97e370aace57130ad57038a44ed7dc3b059f done
+#63 exporting attestation manifest sha256:65b50b8680485a9a16952b8c234d886c294692f797d791b27c876d40abb7cf68 0.1s done
+#63 exporting manifest list sha256:489e7176d2d05e738329a1024242437417cfc67be1cdadb8e4867670cdf147c5 0.0s done
+#63 naming to docker.io/rzp-arena/mozart-sim:local 0.0s done
+#63 unpacking to docker.io/rzp-arena/mozart-sim:local 0.0s done
+#63 DONE 0.2s
+
+#64 [merchant-webhook-sink] exporting to image
+#64 exporting layers done
+#64 exporting manifest sha256:0ee577490be8ba872aa843df1baacd25273d39f549ced79994c22b1589285779 done
+#64 exporting config sha256:03f0825c49854e26a5376e13d328770970eeff6909d5872a35884200bec3021f done
+#64 exporting attestation manifest sha256:648b327bdf8628ae7baf48fd8279d5d96eb7b10329a13ef12302c0361fa17d56 0.1s done
+#64 exporting manifest list sha256:72ec0030644b9102874f13a2dd6ab0288b1669559caf00267ffa11a7c4fbfc75 0.0s done
+#64 naming to docker.io/rzp-arena/merchant-webhook-sink:local 0.0s done
+#64 unpacking to docker.io/rzp-arena/merchant-webhook-sink:local 0.0s done
+#64 DONE 0.2s
+
+#65 [shield-stub] exporting to image
+#65 exporting layers done
+#65 exporting manifest sha256:23222e9637fbf1be9fa9e579d0f7632c40970db08462ccf520fa41f22cd18c65 done
+#65 exporting config sha256:756dc9bf21bdbd87eb28f2ba6ce22bbc0cb9686db504b4b8c902c7ef9b8e348a done
+#65 exporting attestation manifest sha256:0095a286c21246412ab96ff1bb4640870e00e49c4a272ed9f13e0ec63f02034e 0.1s done
+#65 exporting manifest list sha256:c736946f493ae18bef6894e65228f961cbace7fe818bb9c2b8cd77f05c72f00c 0.0s done
+#65 naming to docker.io/rzp-arena/shield-stub:local 0.0s done
+#65 unpacking to docker.io/rzp-arena/shield-stub:local 0.0s done
+#65 DONE 0.2s
+
+#66 [asv-stub] exporting to image
+#66 exporting layers done
+#66 exporting manifest sha256:6ba8a76bb76702790bd7fcdb6e99695176c186f47efa467adffe5122b9544273 done
+#66 exporting config sha256:4c7a3efbf9c3601acdf25c711b927165702b56bc01fb72464e2b4df61482894b done
+#66 exporting attestation manifest sha256:6bd18bb09ac42679571e3066204e227e721a09548481d9f592f86fde9751328e 0.1s done
+#66 exporting manifest list sha256:324de497971048568348066d587cb286ad2ba4f76664f5f5e1b1e5928aab655b 0.0s done
+#66 naming to docker.io/rzp-arena/asv-stub:local 0.0s done
+#66 unpacking to docker.io/rzp-arena/asv-stub:local 0.0s done
+#66 DONE 0.2s
+
+#67 [xas-sink] exporting to image
+#67 exporting layers done
+#67 exporting manifest sha256:da2fd5292376a457b6d72d0a6db2f1f5e78c7482bd17b57f9e4f42f83a9c2e45 done
+#67 exporting config sha256:83957a850d1a56cedfaad57e0fccf72471daaa627ced9e60c7091d4b4ca5e0b3 done
+#67 exporting attestation manifest sha256:16732f61226315fa98d1a18f209896569e321e199b8fd248d0d694acd7b93b65 0.1s done
+#67 exporting manifest list sha256:5166d8afc20f998196994f0f77b888ddd158616e9ef92a22b508e77427ad0e74 0.0s done
+#67 naming to docker.io/rzp-arena/xas-sink:local 0.0s done
+#67 unpacking to docker.io/rzp-arena/xas-sink:local 0.0s done
+#67 DONE 0.2s
+
+#68 [dcs-stub] exporting to image
+#68 exporting layers done
+#68 exporting manifest sha256:988744b7172d8f6d364e06cd1d23fd96bc8ca3af96387d89530cc00b0a6814fc done
+#68 exporting config sha256:c31c94282124dbb0f6a7eab15ddc8f71007f09f816314ff78e06414b1f0a8e2c done
+#68 exporting attestation manifest sha256:536a5a2f674bfd5e0ade7871e22c0a4c2e73fab7a6a28c3db1c30e357ad6787f 0.1s done
+#68 exporting manifest list sha256:b22cf705d470b9ba80e78123b590c6cf3799ac6b24bdf4891812acc63edacae5 0.0s done
+#68 naming to docker.io/rzp-arena/dcs-stub:local 0.0s done
+#68 unpacking to docker.io/rzp-arena/dcs-stub:local 0.0s done
+#68 DONE 0.2s
+
+#69 [stork-capture] exporting to image
+#69 exporting layers done
+#69 exporting manifest sha256:ca3bf839b37bcec46a3685a977f4abc7c1c10c644782a1513271dd7c347597d3 done
+#69 exporting config sha256:fb6dd37dff704c8a1b066facf895439a21aa101920e8ffc4d57756007c389b09 done
+#69 exporting attestation manifest sha256:35ce22a6fb7d434ee38716969a761fe0424fa544a46d05093e3208be0d95f8a5 0.1s done
+#69 exporting manifest list sha256:130ec24ced56a7ae25e0eef7ecebcbd662b1f37a6fb6b1266ef76887ddbc2496 0.0s done
+#69 naming to docker.io/rzp-arena/stork-capture:local 0.0s done
+#69 unpacking to docker.io/rzp-arena/stork-capture:local 0.0s done
+#69 DONE 0.2s
+
+#70 [monolith-stub] exporting to image
+#70 exporting layers done
+#70 exporting manifest sha256:a88a4ce6b1ab1d9e19faf55ea168cdbb8c1df623460e9637b82fc1d7bc406b4e done
+#70 exporting config sha256:39bc33e6f535da243720331dda73b83ef16b8ebe9e7ff31565e176dd89c57286 done
+#70 exporting attestation manifest sha256:9d8995a248b340ab3f89fe6f965fb836d39abe00fdcc50e76458ea1a4d845ac8 0.1s done
+#70 exporting manifest list sha256:043204e85ce2c2a4adeb9b87994fc1160f3559e03201e7d5cefa3a09c5d0f23d 0.0s done
+#70 naming to docker.io/rzp-arena/monolith-stub:local 0.0s done
+#70 unpacking to docker.io/rzp-arena/monolith-stub:local 0.0s done
+#70 DONE 0.2s
+
+#71 [pricing-stub] exporting to image
+#71 exporting layers done
+#71 exporting manifest sha256:3fe47b370c5ea0639ad31abeb72e57c09732000cf633f082aeef95e338150274 done
+#71 exporting config sha256:1fa45f4320aa630c082079cdb68b39b6df940f4ec78d4c22ea25a2a21b0c6c51 done
+#71 exporting attestation manifest sha256:69e1a6244f1c1af42cad7cb21efc515e7e308513daeff5cd74531db70f847002 0.1s done
+#71 exporting manifest list sha256:011901ad817a3fa8f0b2337fa90d4ddebffbd15fe508a6b2121d7b41feb9e581 0.0s done
+#71 naming to docker.io/rzp-arena/pricing-stub:local 0.0s done
+#71 unpacking to docker.io/rzp-arena/pricing-stub:local 0.0s done
+#71 DONE 0.2s
+
+#72 [kong-lite] resolving provenance for metadata file
+#72 ...
+
+#73 [shield-stub] resolving provenance for metadata file
+#73 DONE 0.0s
+
+#74 [stork-capture] resolving provenance for metadata file
+#74 DONE 0.1s
+
+#72 [kong-lite] resolving provenance for metadata file
+#72 DONE 0.1s
+
+#75 [xas-sink] resolving provenance for metadata file
+#75 DONE 0.0s
+
+#76 [merchant-webhook-sink] resolving provenance for metadata file
+#76 DONE 0.1s
+
+#77 [pricing-stub] resolving provenance for metadata file
+#77 DONE 0.1s
+
+#78 [asv-stub] resolving provenance for metadata file
+#78 DONE 0.0s
+
+#79 [mozart-sim] resolving provenance for metadata file
+#79 DONE 0.0s
+
+#80 [splitz-stub] resolving provenance for metadata file
+#80 DONE 0.1s
+
+#81 [monolith-stub] resolving provenance for metadata file
+#81 DONE 0.1s
+
+#82 [dcs-stub] resolving provenance for metadata file
+#82 DONE 0.0s
+ Image rzp-arena/dcs-stub:local Built 
+ Image rzp-arena/stork-capture:local Built 
+ Image rzp-arena/xas-sink:local Built 
+ Image rzp-arena/asv-stub:local Built 
+ Image rzp-arena/monolith-stub:local Built 
+ Image rzp-arena/merchant-webhook-sink:local Built 
+ Image rzp-arena/kong-lite:local Built 
+ Image rzp-arena/mozart-sim:local Built 
+ Image rzp-arena/shield-stub:local Built 
+ Image rzp-arena/splitz-stub:local Built 
+ Image rzp-arena/pricing-stub:local Built 
+ Container env2_compose-mysql-payouts-1 Running 
+ Container env2_compose-mysql-apidb-stub-1 Running 
+ Container env2_compose-postgres-ledger-1 Running 
+ Container env2_compose-mysql-xbalances-1 Running 
+ Container env2_compose-mysql-fts-1 Running 
+ Container env2_compose-splitz-stub-1 Running 
+ Container env2_compose-asv-stub-1 Running 
+ Container env2_compose-kong-lite-1 Running 
+ Container env2_compose-cron-driver-1 Running 
+ Container env2_compose-localstack-1 Running 
+ Container env2_compose-mongo-cfa-1 Running 
+ Container env2_compose-monolith-stub-1 Running 
+ Container env2_compose-kafka-1 Running 
+ Container env2_compose-mozart-sim-1 Running 
+ Container env2_compose-redis-1 Running 
+ Container env2_compose-xas-sink-1 Running 
+ Container env2_compose-stork-capture-1 Running 
+ Container env2_compose-dcs-stub-1 Running 
+ Container env2_compose-pricing-stub-1 Running 
+ Container env2_compose-merchant-webhook-sink-1 Running 
+ Container env2_compose-shield-stub-1 Running 
+==> waiting up to 120s for kong-lite to become healthy
+    kong-lite: healthy (after 0s)
+==> waiting up to 120s for monolith-stub to become healthy
+    monolith-stub: healthy (after 0s)
+==> waiting up to 120s for dcs-stub to become healthy
+    dcs-stub: healthy (after 0s)
+==> waiting up to 120s for splitz-stub to become healthy
+    splitz-stub: healthy (after 0s)
+==> waiting up to 120s for shield-stub to become healthy
+    shield-stub: healthy (after 0s)
+==> waiting up to 120s for pricing-stub to become healthy
+    pricing-stub: healthy (after 0s)
+==> waiting up to 120s for asv-stub to become healthy
+    asv-stub: healthy (after 0s)
+==> waiting up to 120s for stork-capture to become healthy
+    stork-capture: healthy (after 0s)
+==> waiting up to 120s for merchant-webhook-sink to become healthy
+    merchant-webhook-sink: healthy (after 0s)
+==> waiting up to 120s for xas-sink to become healthy
+    xas-sink: healthy (after 0s)
+==> all requested services healthy
+mozart-mock was not built (MOZART_BUILD_CONTEXT unset?) -- using mozart-sim
+ Container env2_compose-mozart-sim-1 Running 
+==> waiting up to 60s for mozart-sim to become healthy
+    mozart-sim: healthy (after 0s)
+==> all requested services healthy
+ Container env2_compose-cron-driver-1 Running 
+  -- Stork webhook subscriptions: stork-capture self-seeds from seeds/stork/subscriptions.json at boot (STORK_SEED_FILE); verifying
+stork-capture-1  | [stork-capture] 2026-09-04T15:11:33 loaded 3 webhook subscription(s) from /app/seed/subscriptions.json
+############################################################
+# 8/8  core profile + final health wait
+############################################################
+ Container env2_compose-shield-stub-1 Running 
+ Container env2_compose-stork-capture-1 Running 
+ Container env2_compose-payouts-api-1 Running 
+ Container env2_compose-redis-1 Running 
+ Container env2_compose-mozart-sim-1 Running 
+ Container env2_compose-mysql-fts-1 Running 
+ Container env2_compose-dcs-stub-1 Running 
+ Container env2_compose-cfa-server-1 Running 
+ Container env2_compose-ledger-worker-1 Running 
+ Container env2_compose-pricing-stub-1 Running 
+ Container env2_compose-splitz-stub-1 Running 
+ Container env2_compose-xbalances-worker-1 Running 
+ Container env2_compose-kafka-1 Running 
+ Container env2_compose-fts-workers-1 Running 
+ Container env2_compose-monolith-stub-1 Running 
+ Container env2_compose-payouts-kafka-fts-status-updates-consumer-1 Running 
+ Container env2_compose-postgres-ledger-1 Running 
+ Container env2_compose-payouts-kafka-fts-status-updates-retry-consumer-1 Running 
+ Container env2_compose-ledger-api-1 Running 
+ Container env2_compose-mysql-payouts-1 Running 
+ Container env2_compose-asv-stub-1 Running 
+ Container env2_compose-fts-web-1 Running 
+ Container env2_compose-mysql-xbalances-1 Running 
+ Container env2_compose-xas-sink-1 Running 
+ Container env2_compose-xbalances-server-1 Running 
+ Container env2_compose-mongo-cfa-1 Running 
+ Container env2_compose-localstack-1 Running 
+ Container env2_compose-merchant-webhook-sink-1 Running 
+ Container env2_compose-cfa-worker-1 Running 
+ Container env2_compose-kong-lite-1 Running 
+ Container env2_compose-cron-driver-1 Running 
+ Container env2_compose-mysql-apidb-stub-1 Running 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-kafka-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-mysql-fts-1 Waiting 
+ Container env2_compose-postgres-ledger-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-postgres-ledger-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-fts-1 Waiting 
+ Container env2_compose-mysql-apidb-stub-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-kafka-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-postgres-ledger-1 Waiting 
+ Container env2_compose-mongo-cfa-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-xbalances-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-kafka-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mongo-cfa-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-xbalances-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-mysql-payouts-1 Waiting 
+ Container env2_compose-localstack-1 Waiting 
+ Container env2_compose-redis-1 Waiting 
+ Container env2_compose-mysql-apidb-stub-1 Waiting 
+ Container env2_compose-postgres-ledger-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-ledger-scheduler-1 Starting 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-mysql-xbalances-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-mysql-apidb-stub-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-mongo-cfa-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-kafka-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-mongo-cfa-1 Healthy 
+ Container env2_compose-kafka-1 Healthy 
+ Container env2_compose-postgres-ledger-1 Healthy 
+ Container env2_compose-mysql-fts-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-payouts-worker-x-balances-balance-refresh-1 Starting 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-payouts-worker-schedule-payout-1 Starting 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-mysql-fts-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-payouts-worker-async-dual-write-1 Starting 
+ Container env2_compose-mysql-apidb-stub-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-payouts-worker-payout-update-failure-handling-1 Starting 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-payouts-worker-partner-bank-hold-payouts-1 Starting 
+ Container env2_compose-kafka-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-payouts-worker-queued-payout-1 Starting 
+ Container env2_compose-mysql-xbalances-1 Healthy 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-payouts-worker-transaction-create-1 Starting 
+ Container env2_compose-payouts-worker-fts-async-hv-processing-1 Starting 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-postgres-ledger-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-payouts-worker-on-hold-payout-1 Starting 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-payouts-worker-webhook-event-1 Starting 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-payouts-worker-payout-source-updater-1 Starting 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-payouts-worker-payout-create-failure-handling-1 Starting 
+ Container env2_compose-mysql-payouts-1 Healthy 
+ Container env2_compose-payouts-worker-fts-async-processing-1 Starting 
+ Container env2_compose-localstack-1 Healthy 
+ Container env2_compose-redis-1 Healthy 
+ Container env2_compose-payouts-worker-generic-processing-1 Starting 
+ Container env2_compose-ledger-scheduler-1 Started 
+ Container env2_compose-payouts-worker-x-balances-balance-refresh-1 Started 
+ Container env2_compose-payouts-worker-schedule-payout-1 Started 
+ Container env2_compose-payouts-worker-async-dual-write-1 Started 
+ Container env2_compose-payouts-worker-payout-update-failure-handling-1 Started 
+ Container env2_compose-payouts-worker-partner-bank-hold-payouts-1 Started 
+ Container env2_compose-payouts-worker-queued-payout-1 Started 
+ Container env2_compose-payouts-worker-transaction-create-1 Started 
+ Container env2_compose-payouts-worker-fts-async-hv-processing-1 Started 
+ Container env2_compose-payouts-worker-on-hold-payout-1 Started 
+ Container env2_compose-payouts-worker-webhook-event-1 Started 
+ Container env2_compose-payouts-worker-payout-source-updater-1 Started 
+ Container env2_compose-payouts-worker-payout-create-failure-handling-1 Started 
+ Container env2_compose-payouts-worker-fts-async-processing-1 Started 
+ Container env2_compose-payouts-worker-generic-processing-1 Started 
+==> waiting up to 240s for payouts-worker-partner-bank-hold-payouts to become healthy
+    payouts-worker-partner-bank-hold-payouts: healthy (after 4s)
+==> waiting up to 240s for payouts-worker-payout-create-failure-handling to become healthy
+    payouts-worker-payout-create-failure-handling: healthy (after 2s)
+==> waiting up to 240s for payouts-worker-webhook-event to become healthy
+    payouts-worker-webhook-event: healthy (after 0s)
+==> waiting up to 240s for fts-web to become healthy
+    fts-web: healthy (after 0s)
+==> waiting up to 240s for fts-workers to become healthy
+    fts-workers: healthy (after 0s)
+==> waiting up to 240s for ledger-worker to become healthy
+    ledger-worker: healthy (after 0s)
+==> waiting up to 240s for payouts-kafka-fts-status-updates-retry-consumer to become healthy
+    payouts-kafka-fts-status-updates-retry-consumer: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-async-dual-write to become healthy
+    payouts-worker-async-dual-write: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-fts-async-processing to become healthy
+    payouts-worker-fts-async-processing: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-on-hold-payout to become healthy
+    payouts-worker-on-hold-payout: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-payout-update-failure-handling to become healthy
+    payouts-worker-payout-update-failure-handling: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-schedule-payout to become healthy
+    payouts-worker-schedule-payout: healthy (after 0s)
+==> waiting up to 240s for xbalances-worker to become healthy
+    xbalances-worker: healthy (after 0s)
+==> waiting up to 240s for cfa-worker to become healthy
+    cfa-worker: healthy (after 0s)
+==> waiting up to 240s for ledger-api to become healthy
+    ledger-api: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-fts-async-hv-processing to become healthy
+    payouts-worker-fts-async-hv-processing: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-generic-processing to become healthy
+    payouts-worker-generic-processing: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-x-balances-balance-refresh to become healthy
+    payouts-worker-x-balances-balance-refresh: healthy (after 0s)
+==> waiting up to 240s for payouts-api to become healthy
+    payouts-api: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-queued-payout to become healthy
+    payouts-worker-queued-payout: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-transaction-create to become healthy
+    payouts-worker-transaction-create: healthy (after 0s)
+==> waiting up to 240s for payouts-kafka-fts-status-updates-consumer to become healthy
+    payouts-kafka-fts-status-updates-consumer: healthy (after 0s)
+==> waiting up to 240s for xbalances-server to become healthy
+    xbalances-server: healthy (after 0s)
+==> waiting up to 240s for cfa-server to become healthy
+    cfa-server: healthy (after 0s)
+==> waiting up to 240s for payouts-worker-payout-source-updater to become healthy
+    payouts-worker-payout-source-updater: healthy (after 0s)
+==> all requested services healthy
+############################################################
+# LocalStack queues: 33 created by seeds/localstack/init-queues.sh
+# Env 2 arena is up. Entrypoint: http://localhost:18080
+# Run scripts/golden-run.sh to exercise the verifier.
+############################################################
+exit=0

@@ -1,0 +1,173 @@
+[app]
+    appEnv                = "default"
+    serviceName           = "workflows"
+    hostname              = "workflows.razorpay.com"
+    port                  = ":9400"
+    metricsPort           = ":9401"
+    shutdownTimeout       = 60
+    shutdownDelay         = 10
+    gitCommitHash         = "nil"
+
+[db]
+    dialect               = "mysql"
+    protocol              = "tcp"
+    url                   = "localhost"
+    port                  = "3306"
+    username              = "root"
+    password              = ""
+    sslMode               = "require"
+    name                  = "workflows"
+    maxOpenConnections    = 5
+    maxIdleConnections    = 5
+    connectionMaxLifetime = 30
+
+[cadenceWorker]
+    domain = "payouts"
+    [cadenceWorker.domainConfigs.payouts]
+        hostPort                = "localhost:7933"
+        domain                  = "payouts"
+        taskList                = "payouts-approval"
+        createNonexistentDomain = true
+        maxTaskLists            = 5
+        workflowType            = "approval"
+
+    [cadenceWorker.domainConfigs.relay]
+        hostPort                = "localhost:7933"
+        domain                  = "relay"
+        taskList                = "relay-approval"
+        createNonexistentDomain = true
+        maxTaskLists            = 5
+        workflowType            = "approval"
+
+    [cadenceWorker.domainConfigs.asl]
+        hostPort                = "localhost:7933"
+        domain                  = "asl"
+        taskList                = "asl-list"
+        createNonexistentDomain = true
+        maxTaskLists            = 5
+        workflowType            = "asl"
+
+    [cadenceWorker.domainConfigs.spr]
+        hostPort                = "localhost:7933"
+        domain                  = "spr"
+        taskList                = "spr-approval"
+        createNonexistentDomain = true
+        maxConcurrentDecisions  = 2
+        maxConcurrentActivities = 2
+        maxTaskLists            = 5
+        workflowType            = "approval"
+
+[clients]
+    [clients.rx_live]
+        host = "https://api.razorpay.com/v1"
+        username = "rzp_live"
+        password = "WORKFLOWS_CLIENTS_RX_LIVE_PASSWORD"
+    [clients.rx_test]
+        host = "https://api.razorpay.com/v1"
+        username = "rzp_test"
+        password = "WORKFLOWS_CLIENTS_RX_TEST_PASSWORD"
+    [clients.payouts_live]
+        host = "https://payouts.razorpay.com"
+        username = "payouts_live"
+        password = "WORKFLOWS_CLIENTS_PAYOUTS_LIVE_PASSWORD"
+    [clients.payouts_test]
+        host = "https://payouts.razorpay.com"
+        username = "payouts_test"
+        password = "WORKFLOWS_CLIENTS_PAYOUTS_TEST_PASSWORD"
+
+    [clients.relay]
+        host     = "https://relay.stage.razorpay.in/v1"
+        username = "config"
+        password = "WORKFLOWS_CLIENTS_RELAY_PASSWORD"
+
+    [clients.growth]
+        host = "https://growth.int.stage.razorpay.in"
+        username = "default"
+        password = "WORKFLOWS_CLIENTS_GROWTH_PASSWORD"
+
+    [clients.splitz]
+        host = "https://splitz.dev.razorpay.in"
+        username = "workflow"
+        password = "WORKFLOWS_CLIENTS_SPLITZ_PASSWORD"
+
+    [clients.payout_links]
+        host = "https://payout-links.razorpay.in"
+        username = "workflows"
+        password = "WORKFLOWS_CLIENTS_PAYOUT_LINKS_PASSWORD"
+
+    [clients.xperience]
+        host = "https://xperience.dev.razorpay.in"
+        username = "workflows"
+        password = "WORKFLOWS_CLIENTS_XPERIENCE_PASSWORD"
+    [clients.abacus]
+        host = "https://abacus.dev.razorpay.in"
+        username = "workflows"
+        password = "WORKFLOWS_CLIENTS_ABACUS_PASSWORD"
+    [clients.dcs]
+        username = "workflows"
+        password = "WORKFLOWS_CLIENTS_DCS_PASSWORD"
+    [clients.vendor_experience]
+        host = "https://vendor-experience.int.dev.razorpay.in"
+        username = "workflows"
+        password = "WORKFLOWS_CLIENTS_VENDOR_EXPERIENCE_PASSWORD"
+    [clients.offers_engine]
+        host = "https://offers-engine.dev.razorpay.in"
+        username = "workflows"
+        password = "WORKFLOWS_CLIENTS_OFFERS_ENGINE_PASSWORD"
+
+[auth]
+    [auth.api]
+        username = "api"
+        password = "WORKFLOWS_AUTH_API_PASSWORD"
+    [auth.payouts]
+        username = "payouts"
+        password = "WORKFLOWS_AUTH_PAYOUTS_PASSWORD"
+    [auth.relay]
+        username = "relay"
+        password = "WORKFLOWS_AUTH_RELAY_PASSWORD"
+    [auth.growth]
+         username = "growth"
+         password = "WORKFLOWS_AUTH_GROWTH_PASSWORD"
+     [auth.payoutLinks]
+         username = "payout_links"
+         password = "WORKFLOWS_AUTH_PAYOUT_LINKS_PASSWORD"
+    [auth.splitz]
+        username = "splitz"
+        password = "WORKFLOWS_AUTH_SPLITZ_PASSWORD"
+    [auth.xperience]
+        username = "xperience"
+        password = "WORKFLOWS_AUTH_XPERIENCE_PASSWORD"
+    [auth.abacus]
+        username = "abacus"
+        password = "WORKFLOWS_AUTH_ABACUS_PASSWORD"
+    [auth.vendorExperience]
+        username = "vendor_experience"
+        password = "WORKFLOWS_AUTH_VENDOR_EXPERIENCE_PASSWORD"
+    [auth.offersEngine]
+        username = "offers_engine"
+        password = "WORKFLOWS_AUTH_OFFERS_ENGINE_PASSWORD"
+    [auth.paymentsBankTransfer]
+        username = "payments_bank_transfer"
+        password = "WORKFLOWS_AUTH_PAYMENTSBANKTRANSFER_PASSWORD"
+
+[log]
+    contextString         = "data"
+    level                 = "info"
+    [log.sentry]
+        dns                   = ""
+        enable                = false
+        logLevel              = "error"
+
+[tracing]
+    serviceName           = "workflows"
+    logSpans              = false
+    localAgentHostPort    = "localhost:6831"
+    disabled              = true
+
+[SplitzConfig]
+    mock = true
+    enabled = true
+    timeout = 10
+    [SplitzConfig.ExperimentIdMap]
+        teams_and_departments_v1 = "NKqQyk9DSVL6PV"
+        pending_filter_new_logic = "PPYpzBrgHHVgYE"

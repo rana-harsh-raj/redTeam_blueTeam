@@ -1,0 +1,92 @@
+{
+  "generated_at": "2026-09-06T05:58:03Z",
+  "results": [
+    {
+      "name": "access_separation",
+      "arena_mint_denied": true,
+      "twirp_denied": true,
+      "identity_fixed": true,
+      "passed": true
+    },
+    {
+      "name": "workflow_approve",
+      "create_status": 200,
+      "payout_id": "pout_TYdyXWveoxhlFG",
+      "status_after_create": "pending",
+      "reached_pending": true,
+      "decide_response": {
+        "payout_id": "TYdyXWveoxhlFG",
+        "decision": "approve",
+        "callback": {
+          "ok": true,
+          "status_code": 200,
+          "url": "http://payouts-api:9400/v1/payouts/payouts_internal/TYdyXWveoxhlFG/approve",
+          "method": "POST",
+          "response": {
+            "id": "TYdyXWveoxhlFG",
+            "fund_account_id": "fa_ARENAFAX000003",
+            "amount": 250000,
+            "fees": 0,
+            "tax": 0,
+            "status": "processing",
+            "purpose": "refund",
+            "mode": "UPI",
+            "created_at": 1788674255
+          }
+        }
+      },
+      "status_after_decision": "reversed",
+      "passed": true
+    },
+    {
+      "name": "workflow_reject",
+      "create_status": 200,
+      "payout_id": "pout_TYdyg8hVUD3ZpH",
+      "status_after_create": "pending",
+      "reached_pending": true,
+      "decide_response": {
+        "payout_id": "TYdyg8hVUD3ZpH",
+        "decision": "reject",
+        "callback": {
+          "ok": true,
+          "status_code": 200,
+          "url": "http://payouts-api:9400/v1/payouts/payouts_internal/TYdyg8hVUD3ZpH/reject",
+          "method": "POST",
+          "response": {
+            "id": "TYdyg8hVUD3ZpH",
+            "fund_account_id": "fa_ARENAFAX000003",
+            "amount": 250000,
+            "fees": 0,
+            "tax": 0,
+            "status": "rejected",
+            "purpose": "refund",
+            "mode": "UPI",
+            "created_at": 1788674263
+          }
+        }
+      },
+      "status_after_decision": "rejected",
+      "rejected": true,
+      "webhooks_seen": 2,
+      "passed": true
+    },
+    {
+      "name": "channel_down",
+      "down_rc": 0,
+      "down_out": " -e PA_USER=fts -e PA_PASS=*** -e 'PA_BODY={\"payload\":{\"account_type\":\"direct\",\"channel\":\"rbl\",\"exclude_merchants\":[],\"mode\":\"IMPS\",\"source\":\"partner_bank_health\",\"status\":\"downtime\"},\"type\":\"partner_bank_health\"}' env2_compose-kong-lite-1 python3 -c '<inline python POST script>'\nHTTP 200\n\"SUCCESS\"\n",
+      "payout_id": "pout_TYdyrcJvLyTsOr",
+      "status": "on_hold",
+      "on_hold": true,
+      "passed": true
+    },
+    {
+      "name": "stork_duplicate",
+      "note": "requires stork-capture recreated with STORK_DUPLICATE_TERMINAL=1",
+      "payout_id": "pout_TYdywyOPVI1ZzT",
+      "delivery_count": 4,
+      "duplicate_event_ids": true,
+      "passed": true
+    }
+  ],
+  "all_passed": true
+}

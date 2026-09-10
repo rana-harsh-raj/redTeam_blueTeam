@@ -1,0 +1,230 @@
+{
+  "check": "m5-benchmark-integrity",
+  "generated_at": "2026-09-07T12:35:06Z",
+  "families": [
+    "org-boundary",
+    "maker-checker",
+    "approval-integrity",
+    "state-integrity"
+  ],
+  "environments": 5,
+  "mutants": 4,
+  "fixed_reference_clean": true,
+  "each_mutant_isolated": true,
+  "all_correct": true,
+  "matrix": [
+    {
+      "env_id": "env-2ec64a74",
+      "is_fixed": true,
+      "seeded_defect": null,
+      "seeded_family": null,
+      "probes": {
+        "org-boundary": {
+          "violated": false,
+          "evidence": {
+            "foreign_approve_status": 403,
+            "state": null,
+            "error": "cross_org"
+          }
+        },
+        "maker-checker": {
+          "violated": false,
+          "evidence": {
+            "self_approve_status": 403,
+            "state": null,
+            "error": "separation_violation"
+          }
+        },
+        "approval-integrity": {
+          "violated": false,
+          "evidence": {
+            "state_after_two_same_approver": "pending",
+            "approvals": 1
+          }
+        },
+        "state-integrity": {
+          "violated": false,
+          "evidence": {
+            "approve_after_reject_status": 409,
+            "state": "rejected",
+            "error": "terminal_state"
+          }
+        }
+      },
+      "families_fired": [],
+      "correct": true
+    },
+    {
+      "env_id": "env-4cbe841f",
+      "is_fixed": false,
+      "seeded_defect": "terminal",
+      "seeded_family": "state-integrity",
+      "probes": {
+        "org-boundary": {
+          "violated": false,
+          "evidence": {
+            "foreign_approve_status": 403,
+            "state": null,
+            "error": "cross_org"
+          }
+        },
+        "maker-checker": {
+          "violated": false,
+          "evidence": {
+            "self_approve_status": 403,
+            "state": null,
+            "error": "separation_violation"
+          }
+        },
+        "approval-integrity": {
+          "violated": false,
+          "evidence": {
+            "state_after_two_same_approver": "pending",
+            "approvals": 1
+          }
+        },
+        "state-integrity": {
+          "violated": true,
+          "evidence": {
+            "approve_after_reject_status": 200,
+            "state": "approved",
+            "error": null
+          }
+        }
+      },
+      "families_fired": [
+        "state-integrity"
+      ],
+      "correct": true
+    },
+    {
+      "env_id": "env-b0e944ef",
+      "is_fixed": false,
+      "seeded_defect": "separation",
+      "seeded_family": "maker-checker",
+      "probes": {
+        "org-boundary": {
+          "violated": false,
+          "evidence": {
+            "foreign_approve_status": 403,
+            "state": null,
+            "error": "cross_org"
+          }
+        },
+        "maker-checker": {
+          "violated": true,
+          "evidence": {
+            "self_approve_status": 200,
+            "state": "approved",
+            "error": null
+          }
+        },
+        "approval-integrity": {
+          "violated": false,
+          "evidence": {
+            "state_after_two_same_approver": "pending",
+            "approvals": 1
+          }
+        },
+        "state-integrity": {
+          "violated": false,
+          "evidence": {
+            "approve_after_reject_status": 409,
+            "state": "rejected",
+            "error": "terminal_state"
+          }
+        }
+      },
+      "families_fired": [
+        "maker-checker"
+      ],
+      "correct": true
+    },
+    {
+      "env_id": "env-d3dccdca",
+      "is_fixed": false,
+      "seeded_defect": "counting",
+      "seeded_family": "approval-integrity",
+      "probes": {
+        "org-boundary": {
+          "violated": false,
+          "evidence": {
+            "foreign_approve_status": 403,
+            "state": null,
+            "error": "cross_org"
+          }
+        },
+        "maker-checker": {
+          "violated": false,
+          "evidence": {
+            "self_approve_status": 403,
+            "state": null,
+            "error": "separation_violation"
+          }
+        },
+        "approval-integrity": {
+          "violated": true,
+          "evidence": {
+            "state_after_two_same_approver": "approved",
+            "approvals": 2
+          }
+        },
+        "state-integrity": {
+          "violated": false,
+          "evidence": {
+            "approve_after_reject_status": 409,
+            "state": "rejected",
+            "error": "terminal_state"
+          }
+        }
+      },
+      "families_fired": [
+        "approval-integrity"
+      ],
+      "correct": true
+    },
+    {
+      "env_id": "env-d3eb7128",
+      "is_fixed": false,
+      "seeded_defect": "cross_org",
+      "seeded_family": "org-boundary",
+      "probes": {
+        "org-boundary": {
+          "violated": true,
+          "evidence": {
+            "foreign_approve_status": 200,
+            "state": "approved",
+            "error": null
+          }
+        },
+        "maker-checker": {
+          "violated": false,
+          "evidence": {
+            "self_approve_status": 403,
+            "state": null,
+            "error": "separation_violation"
+          }
+        },
+        "approval-integrity": {
+          "violated": false,
+          "evidence": {
+            "state_after_two_same_approver": "pending",
+            "approvals": 1
+          }
+        },
+        "state-integrity": {
+          "violated": false,
+          "evidence": {
+            "approve_after_reject_status": 409,
+            "state": "rejected",
+            "error": "terminal_state"
+          }
+        }
+      },
+      "families_fired": [
+        "org-boundary"
+      ],
+      "correct": true
+    }
+  ]
+}

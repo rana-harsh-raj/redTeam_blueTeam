@@ -1,0 +1,92 @@
+{
+  "_path": "/Users/rana.singh/rzp-payouts-architecture/reports/domain/refresh/20260907T171833Z-daily.json",
+  "affected": {
+    "affected_families": [],
+    "affected_services": [],
+    "affected_substitutes": [],
+    "fallback_used": true,
+    "graph_used": false,
+    "rebuild": [],
+    "regen_config": false,
+    "regen_recipes": false,
+    "rerun_journeys": [],
+    "rerun_migrations": [],
+    "reseed": [],
+    "restart": []
+  },
+  "affected_reasons": [],
+  "changed": false,
+  "diff_artefact": "reports/domain/snapshots/20260907T171833Z-diff.json",
+  "diff_summary": [
+    "no change"
+  ],
+  "docker": {
+    "available": null,
+    "reason": null
+  },
+  "executed": false,
+  "generated_at": "2026-09-07T17:18:33Z",
+  "mode": "daily",
+  "note": "plan only; rerun with --execute to run the rebuild and journey steps",
+  "previous_snapshot": "reports/domain/snapshots/20260907T171829Z.json",
+  "root": "/Users/rana.singh/rzp-payouts-architecture",
+  "schema_version": 1,
+  "snapshot": "reports/domain/snapshots/20260907T171833Z.json",
+  "snapshot_digest": "ee8b568b480f75806f4c36d5f96b607ec8c28f5627737e54f460cf169c0ac993",
+  "status": "partial",
+  "steps": [
+    {
+      "argv": null,
+      "artefact": "reports/domain/snapshots/20260907T171833Z.json",
+      "command": "python3 scripts/snapshot/capture.py",
+      "id": "capture",
+      "kind": "capture",
+      "note": "snapshot written; the previous snapshot is never overwritten",
+      "rc": null,
+      "seconds": null,
+      "status": "ok",
+      "stderr_tail": null,
+      "stdout_tail": null
+    },
+    {
+      "argv": null,
+      "artefact": "reports/domain/snapshots/20260907T171833Z-diff.json",
+      "changed": false,
+      "command": "python3 scripts/snapshot/diff.py reports/domain/snapshots/20260907T171829Z.json reports/domain/snapshots/20260907T171833Z.json",
+      "id": "diff",
+      "kind": "diff",
+      "note": "exit 3 == changed",
+      "rc": null,
+      "seconds": null,
+      "status": "ok",
+      "stderr_tail": null,
+      "stdout_tail": null
+    },
+    {
+      "argv": null,
+      "command": "python3 scripts/snapshot/affected.py reports/domain/snapshots/20260907T171833Z-diff.json",
+      "id": "affected",
+      "kind": "affected",
+      "note": "graph_used=False fallback_used=True",
+      "rc": null,
+      "seconds": null,
+      "status": "ok",
+      "stderr_tail": null,
+      "stdout_tail": null
+    },
+    {
+      "argv": null,
+      "command": "python3 RED_LOOP/m6/journeys/run.py --only <none>",
+      "id": "journeys",
+      "journeys": [],
+      "kind": "journeys",
+      "note": "no journeys affected",
+      "rc": null,
+      "runner_present": false,
+      "seconds": null,
+      "status": "planned",
+      "stderr_tail": null,
+      "stdout_tail": null
+    }
+  ]
+}

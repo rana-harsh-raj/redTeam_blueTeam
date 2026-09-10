@@ -1,0 +1,124 @@
+{
+  "started_at": "2026-09-08T01:55:24.470637+00:00",
+  "steps": [],
+  "baseline_snapshot": "/Users/rana.singh/rzp-payouts-architecture/reports/domain/snapshots/20260908T015531Z.json",
+  "change": {
+    "file": "ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md",
+    "kind": "substitute contract revision"
+  },
+  "new_snapshot": "/Users/rana.singh/rzp-payouts-architecture/reports/domain/snapshots/20260908T015537Z.json",
+  "diff_rc": 3,
+  "change_detected": true,
+  "diff_summary": "diff 20260908T015531Z.json -> 20260908T015537Z.json: CHANGED\n  contract substitutes: +[] -[] ~['batch-sim']\n  compose: +[] -[] ~[]; recipes ~['batch-sim']\nwrote /private/tmp/claude-502/-Users-rana-singh-rzp-payouts-architecture/fdac78c9-5fc1-4d5e-a10a-8b389038b55d/scratchpad/m6-refresh-demo/diff.json\n",
+  "affected": {
+    "affected_families": [],
+    "affected_services": [
+      "sub:batch-sim"
+    ],
+    "affected_substitutes": [
+      "batch-sim"
+    ],
+    "diff": {
+      "changed": true,
+      "new": {
+        "captured_at": "2026-09-08T01:55:36Z",
+        "digest": "d506243d9c74c53e70b36a06dbe43b2a4fcd99b0a259154c703b4f67166af199",
+        "path": "/Users/rana.singh/rzp-payouts-architecture/reports/domain/snapshots/20260908T015537Z.json"
+      },
+      "old": {
+        "captured_at": "2026-09-08T01:55:30Z",
+        "digest": "13832e1d9a7e5d767ac54230ad181b19c8d892be259a0064e13da43d2a0c779f",
+        "path": "/Users/rana.singh/rzp-payouts-architecture/reports/domain/snapshots/20260908T015531Z.json"
+      }
+    },
+    "fallback_used": false,
+    "generated_at": "2026-09-08T01:55:37Z",
+    "graph_used": true,
+    "journey_drivers": {},
+    "reasons": [
+      {
+        "cause": "substitute contract batch-sim/CONTRACT.md changed",
+        "journeys": [
+          "journey:bulk-payouts/async_state",
+          "journey:bulk-payouts/cancel_or_reverse",
+          "journey:bulk-payouts/failure",
+          "journey:bulk-payouts/idempotency",
+          "journey:bulk-payouts/success"
+        ],
+        "migrations": [],
+        "rebuild": [
+          "batch-sim"
+        ],
+        "regen_config": false,
+        "reseed": [],
+        "restart": [],
+        "services": [
+          "sub:batch-sim"
+        ],
+        "substitutes": [
+          "batch-sim"
+        ]
+      },
+      {
+        "cause": "recipe batch-sim changed (inputs moved; see other reasons)",
+        "journeys": [],
+        "migrations": [],
+        "rebuild": [],
+        "regen_config": false,
+        "reseed": [],
+        "restart": [],
+        "services": [],
+        "substitutes": []
+      }
+    ],
+    "rebuild": [
+      "batch-sim"
+    ],
+    "regen_config": false,
+    "regen_recipes": true,
+    "rerun_journeys": [
+      "journey:bulk-payouts/async_state",
+      "journey:bulk-payouts/cancel_or_reverse",
+      "journey:bulk-payouts/failure",
+      "journey:bulk-payouts/idempotency",
+      "journey:bulk-payouts/success"
+    ],
+    "rerun_migrations": [],
+    "rerun_other_harness": [],
+    "reseed": [],
+    "restart": [],
+    "schema_version": 1
+  },
+  "affected_services": [
+    "batch-sim"
+  ],
+  "rerun_journeys": [
+    "journey:bulk-payouts/async_state",
+    "journey:bulk-payouts/cancel_or_reverse",
+    "journey:bulk-payouts/failure",
+    "journey:bulk-payouts/idempotency",
+    "journey:bulk-payouts/success"
+  ],
+  "changed": [
+    "ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md"
+  ],
+  "rerun_rc": 0,
+  "rerun_stdout_tail": "run_dir  = /Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m6-refresh-demo-rerun\ncampaign = m6i4-260908t0155   (fresh deterministic ARENA-prefixed merchants)\njourneys = 5\n\n[journey:bulk-payouts/success                        ] PASS              7/7   41.4s \n[journey:bulk-payouts/failure                        ] PASS              6/6    5.3s \n[journey:bulk-payouts/idempotency                    ] PASS              8/8    3.9s \n[journey:bulk-payouts/cancel_or_reverse              ] PASS              8/8   10.3s \n[journey:bulk-payouts/async_state                    ] PASS              5/5    6.1s \n\n{\"total\": 5, \"pass\": 5, \"fail\": 0, \"expected_failure\": 0, \"blocked\": 0}\nreports/implementation/m6-journeys.json\nreports/implementation/m6-journey-coverage.md\n",
+  "rerun_stderr_tail": "",
+  "rerun_ids": [
+    "journey:bulk-payouts/async_state",
+    "journey:bulk-payouts/cancel_or_reverse",
+    "journey:bulk-payouts/failure",
+    "journey:bulk-payouts/idempotency",
+    "journey:bulk-payouts/success"
+  ],
+  "rerun_only_affected": true,
+  "rerun_results": {
+    "PASS": 5,
+    "FAIL": 0,
+    "EXPECTED_FAILURE": 0,
+    "BLOCKED": 0
+  },
+  "reverted": true,
+  "finished_at": "2026-09-08T01:56:44.778104+00:00"
+}

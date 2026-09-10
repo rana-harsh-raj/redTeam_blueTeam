@@ -1,0 +1,23 @@
+{
+  "_source": "findings/20_api_monolith.md:51 (on_hold_merchant_slas_internal, route+controller confirmed, request/response field shapes NOT traced) + payouts/pkg/api/fetch_merchant_slas.go (FetchMerchantSlasResponse{MerchantSlas map[string]int} DTO confirmed). users_internal/actor_info_internal: NOT FOUND as monolith routes in findings/20 -- payouts/pkg/api/user_fetch_multiple.go and fetch_actor_info.go DTOs exist client-side (so the Go client code is real) but findings/20's route-table pass over Route.php did not locate matching route names; these two are therefore best-effort placeholder responses, not independently confirmed against a real route, per the task's request that this stub still answer them.",
+  "on_hold_slas": {
+    "_endpoint": "POST /merchant/on_hold_slas_internal",
+    "_response_dto": "FetchMerchantSlasResponse{merchant_slas: map[string]int} (payouts/pkg/api/fetch_merchant_slas.go)",
+    "merchant_slas": { "ARENAM00000001": 0, "ARENAM00000002": 0, "ARENAM00000003": 0 }
+  },
+  "actor_info": {
+    "_endpoint": "GET /actor_info_internal/{user_id}",
+    "_status": "best-effort -- route not confirmed in findings/20; ActorInfo DTO (actor_id,actor_type,actor_property_key,actor_property_value) is real (payouts/pkg/api/fetch_actor_info.go)",
+    "_source_users": "user ids below match passport_fixtures.json's proxy_impersonation_tokens (M3 finance_l1/l2/owner)",
+    "ARENAU0000001": { "actor_id": "ARENAU0000001", "actor_type": "user", "actor_property_key": "role", "actor_property_value": "finance_l1" },
+    "ARENAU0000002": { "actor_id": "ARENAU0000002", "actor_type": "user", "actor_property_key": "role", "actor_property_value": "finance_l2" },
+    "ARENAU0000003": { "actor_id": "ARENAU0000003", "actor_type": "user", "actor_property_key": "role", "actor_property_value": "owner" }
+  },
+  "users_internal": {
+    "_endpoint": "POST /users_internal",
+    "_status": "best-effort -- route not confirmed in findings/20; response DTO is a raw map[string]interface{} (payouts/pkg/api/user_fetch_multiple.go UserDetailsMultipleResponse.UnmarshalJSON), so any JSON object is structurally valid -- this stub echoes one row per requested user_id, keyed by id, using the same role data as actor_info above.",
+    "ARENAU0000001": { "id": "ARENAU0000001", "name": "Finance L1 User", "email": "financel1@arena.test", "role": "finance_l1" },
+    "ARENAU0000002": { "id": "ARENAU0000002", "name": "Finance L2 User", "email": "financel2@arena.test", "role": "finance_l2" },
+    "ARENAU0000003": { "id": "ARENAU0000003", "name": "Owner User", "email": "owner@arena.test", "role": "owner" }
+  }
+}

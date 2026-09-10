@@ -1,0 +1,6 @@
+test_mysql_tuple_rows_include_empty_reversals_and_full_attempt_chain (test_trace_snapshot.SnapshotTests.test_mysql_tuple_rows_include_empty_reversals_and_full_attempt_chain) ... ok
+
+----------------------------------------------------------------------
+Ran 1 test in 0.000s
+
+OK

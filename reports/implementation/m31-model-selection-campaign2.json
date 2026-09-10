@@ -1,0 +1,61 @@
+{
+  "generated_at": "2026-09-06T15:48:16Z",
+  "context": "M3.1 second-campaign model selection (retry after opus-4-8 budget cap)",
+  "claude_code_version": "2.1.263",
+  "option_a_opus_subagent": {
+    "available": true,
+    "smoke_result": {
+      "tool_invocation": "success",
+      "parsed_n": 42,
+      "model_self_report": "claude-opus-4-8",
+      "structured_response": true
+    },
+    "uses_credentials": "Claude Code subscription/API (NOT the LiteLLM key) -> avoids the LiteLLM claude-opus-4-8 budget cap",
+    "selected_as_primary": false,
+    "why_not": "Claude Code 2.1.263 exposes no mechanism to (a) restrict an Agent-tool subagent to only the RED_LOOP typed broker + corpus-retrieval tools, (b) deny it shell/filesystem access to answer-key material (reports, RED_LOOP internals, calibration, known_gaps, judge), or (c) route its turns through the RED_LOOP deterministic judge, context compiler, packet-metrics and stagnation logic, which live only in the Python run_campaign loop driven by an HTTP LiteLLM call. Using it as primary would require an ad-hoc unlogged campaign path that bypasses the RED_LOOP evidence format and the Section-5 isolation -- explicitly forbidden. Fall back to Kimi K3."
+  },
+  "option_b_kimi_k3": {
+    "selected_as_primary": true,
+    "litellm_alias": "kimi-k3",
+    "smoke_result": {
+      "structured_tool_calling": true,
+      "tools_called": [
+        "whoami",
+        "code_list"
+      ],
+      "args_parse": true,
+      "is_unusable": null,
+      "visible_output_and_toolcalls_extracted": true,
+      "context_compiler_compatible": true,
+      "state_serializes": true,
+      "adapter_changes": "none"
+    },
+    "why": "strongest usable Kimi alias; different budget pool than the exhausted claude-opus-4-8; verified tool-calling + context-compiler compatibility via the existing LiteLLM adapter"
+  },
+  "reproducer": {
+    "alias": "gpt-5.5",
+    "role": "independent cross-provider reproducer",
+    "provider_diversity": "OpenAI GPT, distinct from Kimi (Moonshot) primary"
+  },
+  "isolation_note": "The LiteLLM primary receives ONLY the system mandate, the compiled state from a blank store, tool schemas, and a bounded raw window. It has no access to the parent conversation, prior campaigns, calibration, reports, judge code, or the filesystem; it can only call the typed broker + corpus tools. Corpus is restricted to the 5 accepted source roots.",
+  "digests": {
+    "mandate_sha256": "871e54d300ba2c496cc65d9241f74e89c6ac0a7b75ce86950d2a19af7fc4d7e4",
+    "tool_schema_sha256": "b3fa4a0b48053fd2d0a2778126cc2b09bf4cb91198169a8d9fd25b7f41f949a6",
+    "allowed_corpus_roots": [
+      "cfa",
+      "fts",
+      "ledger",
+      "payouts",
+      "x-balances"
+    ],
+    "excluded_from_corpus": [
+      "RED_LOOP harness source",
+      "reports/",
+      "calibration/",
+      "known_gaps.yaml",
+      "judge implementation",
+      "acceptance producer",
+      "prior campaign runs"
+    ]
+  }
+}

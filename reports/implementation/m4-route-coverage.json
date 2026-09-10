@@ -1,0 +1,117 @@
+{
+  "schema_version": 1,
+  "task": "T17",
+  "generated_at": "2026-09-06T20:33:38Z",
+  "git_head": "8965ec25a2c4577c66372a85bb1b53c4415abc9c",
+  "arena": {
+    "boot_id": "06330f7e-3099-4299-ab0c-9b9d50c43899",
+    "compose_project": "env2_compose",
+    "route_profile": "monolith",
+    "config_digest": "839a4da8c312d11fb6753b99318f7c22d2cc349b46a01b838eeb5e4b1aacf092",
+    "git_head": "39fe41e54d7ee7063ebdbac546334023b1aea5d5"
+  },
+  "route_profile": "monolith",
+  "merchants": {
+    "A": "ARENAD83881351",
+    "B": "ARENAD86313421"
+  },
+  "columns": [
+    "route_id",
+    "request_event",
+    "actor_identity",
+    "transport",
+    "source_dest",
+    "payload_schema_ref",
+    "status_mapping",
+    "correlation_id",
+    "twin_support",
+    "evidence"
+  ],
+  "routes": [
+    {
+      "route_id": "R1",
+      "request_event": "FTS status webhook POST /v1/payouts/transfer_status_webhook",
+      "actor_identity": "FTS (fts service credential [auth.fts])",
+      "transport": "HTTP (FTS -> payouts-api, direct)",
+      "source_dest": "FTS -> payouts-api",
+      "payload_schema_ref": "internal/app/dtos/transfer_status_webhook_request.go",
+      "status_mapping": "failed->refused when transaction_id set (VerifyPayoutFailedTransaction), else failed; processed->processed",
+      "correlation_id": "source_id (payout_id) / fund_transfer_id",
+      "twin_support": "native",
+      "evidence": [
+        {
+          "journey": "B",
+          "route": "/v1/payouts/transfer_status_webhook",
+          "status": 200,
+          "payout_status_after": "failed",
+          "reversal_rows_after": "0"
+        },
+        {
+          "journey": "E",
+          "route": "/v1/payouts/transfer_status_webhook",
+          "status": 500,
+          "guard_refused": true,
+          "payout_status_after": "initiated"
+        }
+      ],
+      "note": "REAL route HandleTransferStatusWebhookForPayout; the only route carrying the statement-first guard"
+    },
+    {
+      "route_id": "R2",
+      "request_event": "FTS -> monolith-stub /update_fts_fund_transfer -> PS legacy source-update relay",
+      "actor_identity": "monolith relay (rzp_live basic; substitute monolith-stub)",
+      "transport": "HTTP relay",
+      "source_dest": "FTS -> monolith-stub -> payouts-api",
+      "payload_schema_ref": "api Attempt/Core.php updateFundTransfer -> PS legacy relay",
+      "status_mapping": "processed->processed; failed->failed (Direct rbl); no statement-first guard (F-T10-1)",
+      "correlation_id": "payout_id",
+      "twin_support": "native (substitute monolith-stub; route_profile=monolith)",
+      "evidence": [
+        {
+          "journey": "B",
+          "payout_id": "TYsoQ5y1OOazEO",
+          "relay_log_kinds": []
+        }
+      ]
+    },
+    {
+      "route_id": "R3",
+      "request_event": "Kafka topic rx-fts-status-update-events (FTS status message)",
+      "actor_identity": "payouts-kafka-fts-status-updates-consumer (REAL accepted binary)",
+      "transport": "Kafka (FTS producer -> broker -> payouts kafka consumer)",
+      "source_dest": "FTS -> Kafka -> payouts-service kafka consumer",
+      "payload_schema_ref": "internal/taskHandlers/fts_status_updates.go StatusUpdateRequest",
+      "status_mapping": "FAILED/REVERSED -> return nil, message Acked and DROPPED (no state change, no reversal, no journal, no webhook)",
+      "correlation_id": "source_id (payout_id)",
+      "twin_support": "expected-failure",
+      "container_status": "running",
+      "assert_drop": "Direct FAILED/REVERSED are dropped: fts_status_updates.go:56-62 (retry consumer fts_status_updates_retry.go:58-64) return nil without applying state -- EF-002/EF-003, invariant I71",
+      "note": "NOT a pass of delivery; the drop is the preserved production-source behaviour. FTS status propagation is exclusive (fts service.go:1139-1144 returns after the Kafka publish), so a Kafka-routed FAILED/REVERSED never reaches PS over HTTP.",
+      "evidence": [
+        "reports/implementation/KAFKA_ROUTE_EVIDENCE.md",
+        "ENV2_COMPOSE/verifier/kafka_scenarios.py",
+        "TWIN_SPEC/expected-failures.yaml (EF-002, EF-003)"
+      ]
+    },
+    {
+      "route_id": "R-remap",
+      "request_event": "terminal status remap by account_type/channel",
+      "actor_identity": "payouts-service status adapter (fts_transfer_status_webhook.go)",
+      "transport": "n/a (mapping logic)",
+      "source_dest": "FTS terminal status -> payout state",
+      "payload_schema_ref": "internal/app/payouts/fts_transfer_status_webhook.go status adapters",
+      "status_mapping": "Direct (rbl) bank failed -> payout FAILED (no reversal); Shared (nodal) bank failed -> payout REVERSED",
+      "correlation_id": "payout_id",
+      "twin_support": "native",
+      "evidence": {
+        "direct_failed_this_run": {
+          "journey_B_status": "failed",
+          "journey_B_reversal_rows": "0",
+          "journey_D_status": "failed",
+          "journey_D_reversal_rows": "0"
+        },
+        "shared_failed_reversed_reference": "ENV2_COMPOSE/verifier/verifiers/test_v18_shared_vs_direct_failed_remap.py (V18)"
+      }
+    }
+  ]
+}

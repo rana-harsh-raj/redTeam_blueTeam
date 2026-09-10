@@ -1,0 +1,643 @@
+[app]
+    appEnv                = "e2e"
+    serviceName           = "payouts"
+    hostname              = "payouts.int.dev.razorpay.in"
+    port                  = ":8000"
+    shutdownTimeout       = 60
+    shutdownDelay         = 10
+    gitCommitHash         = "nil"
+
+[db]
+    [db.master]
+        dialect               = "mysql"
+        protocol              = "tcp"
+        url                   = "env|PAYOUTS_DB_MASTER_URL"
+        port                  = "3306"
+        name                  = "env|PAYOUTS_DB_MASTER_NAME"
+        username              = "env|PAYOUTS_DB_MASTER_USERNAME"
+        password              = "env|PAYOUTS_DB_MASTER_PASSWORD"
+        sslMode               = "require"
+        maxOpenConnections    = 5
+        maxIdleConnections    = 2
+        connectionMaxLifetime = 60
+        debug                 = true
+    [db.replica]
+        dialect               = "mysql"
+        protocol              = "tcp"
+        url                   = "env|PAYOUTS_DB_REPLICA_URL"
+        port                  = "3306"
+        name                  = "env|PAYOUTS_DB_REPLICA_NAME"
+        username              = "env|PAYOUTS_DB_REPLICA_USERNAME"
+        password              = "env|PAYOUTS_DB_REPLICA_PASSWORD"
+        sslMode               = "require"
+        maxOpenConnections    = 5
+        maxIdleConnections    = 2
+        connectionMaxLifetime = 60
+        debug                 = true
+    [db.api]
+        dialect               = "mysql"
+        protocol              = "tcp"
+        url                   = "env|PAYOUTS_DB_API_URL"
+        port                  = "3306"
+        name                  = "env|PAYOUTS_DB_API_NAME"
+        username              = "env|PAYOUTS_DB_API_USERNAME"
+        password              = "env|PAYOUTS_DB_API_PASSWORD"
+        sslMode               = "require"
+        maxOpenConnections    = 5
+        maxIdleConnections    = 2
+        connectionMaxLifetime = 60
+        debug                 = true
+
+[workerpool]
+    init                  = true
+    maxWorkers            = 5
+    workerTimeout         = 3
+
+[cache]
+    driver                = "redis"
+    [cache.redis]
+        scope             = "payouts-live:cache:"
+        host              = "np-valkey-8-cluster-enabled.np.razorpay.vpc"
+        port              = 6379
+        database          = 0
+        password          = ""
+        mode              = "cluster"
+        # Connection pool settings
+        PoolSize      = "env|PAYOUTS_CACHE_REDIS_POOLSIZE"
+        MinIdleConns  = "env|PAYOUTS_CACHE_REDIS_MINIDLECONNS"
+        MaxConnAge    = "env|PAYOUTS_CACHE_REDIS_MAXCONNAGE"
+        IdleTimeout   = "env|PAYOUTS_CACHE_REDIS_IDLETIMEOUT"
+
+[redis]
+    host              = "np-valkey-8-cluster-enabled.np.razorpay.vpc"
+    port              = 6379
+    database          = 0
+    password          = ""
+    mode              = "cluster"
+    dialect           = "redis"
+    # Connection pool settings
+    PoolSize      = "env|PAYOUTS_REDIS_POOLSIZE"
+    MinIdleConns  = "env|PAYOUTS_REDIS_MINIDLECONNS"
+    MaxConnAge    = "env|PAYOUTS_REDIS_MAXCONNAGE"
+    IdleTimeout   = "env|PAYOUTS_REDIS_IDLETIMEOUT"
+
+[auth]
+    [auth.dashboard]
+        username = "dashboard"
+        password = "dashboard"
+    [auth.reminder]
+        username = "reminder"
+        password = "reminder"
+    [auth.api]
+        username = "api"
+        password = "api"
+    [auth.fts]
+        username = "fts"
+        password = "fts"
+    [auth.workflow]
+        username = "rzp_live"
+        password = "env|PAYOUTS_AUTH_WORKFLOW_PASSWORD"
+    [auth.merchantconfiguration]
+        username = "merchant_configuration"
+        password = "merchant_configuration_pw"
+    [auth.xperience]
+        username = "xperience_user"
+        password = "xperience_pw"
+    [auth.bankingaccounts]
+        username = "banking_accounts_user"
+        password = "banking_accounts_pw"
+
+[api]
+    internalIngressHost = "https://api-web.int.dev.razorpay.in/v1"
+    host = "https://api-web.int.dev.razorpay.in/v1"
+    [api.auth]
+        username = "rzp_live"
+        password = "RANDOM_PAYOUTS_PASSWORD"
+
+[stork]
+    servicePrefix = "beta-"
+    [stork.httpClient]
+        host = "https://stork.dev.razorpay.in"
+        [stork.httpClient.auth]
+            username = "payout"
+            password = "payout-password"
+
+[razorx]
+    host = "https://razorx.int.dev.razorpay.in/v1"
+    [razorx.auth]
+        username = "rzp_payouts"
+        password = "RANDOM_RAZORX_PASS_PAYOUTS"
+
+[queue]
+    driver = "sqs"
+    [queue.sqs]
+        credentials         = "anonymous"
+        endpoint            = "http://localstack.localstack.svc.cluster.local:4566/"
+        region              = "ap-south-1"
+        prefix              = "http://localstack.localstack.svc.cluster.local:4566/000000000000/"
+
+[worker]
+    name = "payouts"
+    maxconcurrency = 2
+    waittime = "1s"
+    retrydelay = "30s"
+
+[job]
+    queued_payout                   = "env|PAYOUTS_JOB_QUEUED_PAYOUT"
+    transaction_create              = "env|PAYOUTS_JOB_TRANSACTION_CREATE"
+    schedule_payout                 = "env|PAYOUTS_JOB_SCHEDULE_PAYOUT"
+    on_hold_payout                  = "env|PAYOUTS_JOB_ON_HOLD_PAYOUT"
+    source_updater                  = "env|PAYOUTS_JOB_SOURCE_UPDATER"
+    payout_create_failure_handling  = "env|PAYOUTS_JOB_PAYOUT_CREATE_FAILURE_HANDLING"
+    payout_update_failure_handling  = "env|PAYOUTS_JOB_PAYOUT_UPDATE_FAILURE_HANDLING"
+    batch_submitted_merchants       = "env|PAYOUTS_JOB_BATCH_SUBMITTED_MERCHANTS"
+    bulk_payouts                    = "env|PAYOUTS_JOB_BULK_PAYOUTS"
+    async_dual_write                = "env|PAYOUTS_JOB_ASYNC_DUAL_WRITE"
+    webhook_event                   = "env|PAYOUTS_JOB_WEBHOOK_EVENT"
+    data_consistency_checker        = "env|PAYOUTS_JOB_DATA_CONSISTENCY_CHECKER"
+    data_consistency_event          = "env|PAYOUTS_JOB_DATA_CONSISTENCY_EVENT"
+    rbl_banking_account_statement   = "env|PAYOUTS_JOB_RBL_BANKING_ACCOUNT_STATEMENT"
+    payout_usage_event_processing   = "env|PAYOUTS_JOB_PAYOUT_USAGE_EVENT_PROCESSING"
+    fts_async_processing            = "env|PAYOUTS_JOB_FTS_ASYNC_PROCESSING"
+    fts_async_hv_processing         = "env|PAYOUTS_JOB_FTS_ASYNC_HV_PROCESSING"
+    generic_processing              = "env|PAYOUTS_JOB_GENERIC_PROCESSING"
+    partner_bank_hold_payout        = "env|PAYOUTS_JOB_PARTNER_BANK_HOLD_PAYOUTS"
+    x_balances_payouts_event        = "env|PAYOUTS_JOB_X_BALANCES_PAYOUTS_EVENT"
+    x_balances_balance_refresh       = "env|PAYOUTS_JOB_X_BALANCES_BALANCE_REFRESH"
+    fund_management_payout_check    = "env|PAYOUTS_JOB_FUND_MANAGEMENT_PAYOUT_CHECK"
+    fund_management_payout_initiate = "env|PAYOUTS_JOB_FUND_MANAGEMENT_PAYOUT_INITIATE"
+    x_account_statement_source_event    = "env|PAYOUTS_JOB_X_ACCOUNT_STATEMENT_SOURCE_EVENT"
+
+[passport]
+    [passport.api]
+        identifier = "apiv1"
+        publicKey = "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA7YsDUUnin5mzRewJeh+C\nz7HUCFHDYrQpOgrcxocYJHpuVZW0JT5I6mYq/TNcCt6X+Jcp4Y0DbSQ5V/9uGz+4\niPpmCV6FKrHdjxO/SWfAENY8omhzoeUnyFpR5jITgLQhfVvtU+4XGwztjhx46Zp0\noymkEQ4+4URVOWQTSvjupLkyfiSpYW/w0Pkw/1CZs9/p8SF4D2uidlctgm8ZDH8y\nqqakMudZvdFsYOeBNJ/8s8MkDcSggbpG550EK9OC4podVZ2b6R+6RG1Vo1898LgY\n9ze3gsBBQlB2O61EyWqflX73HdgB19cbg0bDz7T8ogutoBKTONqPX5lbrh+8/YNK\n+13sA9c30LObfxCPVImJxA2x+jc+681QhQ01nuNpt95PcJIUowdG2Y8YmIfLb5xG\nJzCTTwDvj531njQX6g6grdt97ZgPL6UdrxpEPtJULUp+2gOd5OKKy2B4F+9dMnDo\ndJ7HSZZ9w1i10zd+h4q+YKjjpV8m8+9s6rJsS4yJnP0km5RyZ85Rf1A66o4FeDzW\nMjUmvtlznHNvY1vT0Niukn2IJPmME+xaUZaUXPQ6WAaHdIzVvULhIVrXq3BkfaNs\nxF826+QxL/wnMr6SYW91SJvtp5nKBIcYZ7XHV5PvH6fDJyh6r1anofyK/cXdoyfW\nMwA/g8hfqPX7vJlWpw1xuf0CAwEAAQ==\n-----END PUBLIC KEY-----"
+    [passport.edge]
+        identifier = "edgev1"
+        publicKey = "-----BEGIN PUBLIC KEY-----\nMIICIjANBgkqhkiG9w0BAQEFAAOCAg8AMIICCgKCAgEA2SfS/XY3ZZUhnQyB7Q8b\nKKgUtxBO24WGXZeXPP517qbTspi2RvyRqWxaG2wBePEfUmmGp2WdLlfarm01am2f\nu9pEssl00Mu/H1KmyVvariDfEowMGCglsXD8xyEBZqpUXM2X6gffr+KVv0+o8Q9R\nyZSpboEJ++nPKoC+IUTehv5PkYTIxPm5z75CgJXqkq5k2hWhlOmnoKkaiJGu1Dnl\nMJg2RJQRQJr/qbWynG06yz4OLOWNjOVMAAxDkVl8pN0bzFA3oAVGLtnuAdf8cUOd\nDa3+AHMptXUcSX8LxrX7RF7D72fO6ekybuXd35F8VQ0A4VRHfekqmfDRxGTL4ktY\nUTSxulxFnO3gG6lQ8qdATuhFF9DXmHkKfbMdOzvCbSE/U3DpT7FyKmi1tLsUFl47\nj6a9gPgl37bC23bJTUf6MYFisT+ZD2AzJEwtGYnQE9ihrpc3u5NBxRWcRDLIplnx\nLcZWSVL+QMR02o4QjBWQT2Ue3xe1cCsDj2B5DhfhXuRtTFzs5CY6zH92rQ2AEEt7\nWa2PJqRd6K0p7Jaxvzbkv4RtalhaL25ZR0Wqvz8DQopuJS0W9WvsNSKVvjN4DYn9\nh8peGpgiIa+wAk7EjYRzrSsS2eCTjzp6umF5X98Ga9DxP4Z9OK/XQjDWXOVDbFk2\nECSJ1VngTphQMwjFtqEsBBcCAwEAAQ==\n-----END PUBLIC KEY-----"
+
+[tracing]
+    Enabled             = true
+    Port                = 6831
+    MaxTagLengthValue   = "1024"
+    [tracing.RequestHeaderExclusions]
+        "Authorization"     = true
+        "x-passport-jwt-v1" = true
+        "x-pay-token"       = true
+        "x-xsrf-token"      = true
+    [[tracing.RouteURLsToExclude]]
+        "/status"       = true
+    [[tracing.RouteURLsToExclude]]
+        "/commit.txt"   = true
+
+[vault]
+    host = "https://vault.dev.razorpay.in/v1"
+    timeout = "500ms"
+    keepAliveTimeout = "10000ms"
+    httpClientName = "payouts"
+    maxIdleConnections = 100
+    httpmaxjitterinterval = "2ms"
+    [vault.auth]
+        username = "payouts_user"
+        password = "env|PAYOUTS_VAULT_AUTH_PASSWORD"
+    [vault.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 2000
+        errorpercentthreshold = 70
+        circuitbreakertimeout = 10000
+    [vault.httpclient.httpclient]
+        timeout = "500ms"
+
+[mozart]
+    host = "https://mozart.dev.razorpay.in"
+    timeout = "1000ms"
+    keepAliveTimeout = "10000ms"
+    httpClientName = "payouts"
+    maxIdleConnections = 100
+    [mozart.auth]
+        username = "payouts"
+        password = "env|PAYOUTS_MOZART_AUTH_PASSWORD"
+    [mozart.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 2000
+        errorpercentthreshold = 70
+        circuitbreakertimeout = 10000
+    [mozart.httpclient.httpclient]
+        timeout = "1000ms"
+
+[banking_account_service]
+    host = "https://banking-account.dev.razorpay.in/v0.2"
+    timeout = "2000ms"
+    keepAliveTimeout = "10000ms"
+    httpClientName = "payouts"
+    httpretryattempts = 2
+    httpretrywindow = "60ms"
+    maxIdleConnections = 100
+    httpmaxjitterinterval = "2ms"
+    [banking_account_service.auth]
+        username = "payouts"
+        password = "RANDOM_BAS_PASSWORD"
+    [banking_account_service.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [banking_account_service.httpclient.httpclient]
+        timeout = "2000ms"
+
+[workflow]
+    host = "https://workflows.int.dev.razorpay.in"
+    timeout = "100ms"
+    httpClientName = "api"
+    httpretryattempts = 3
+    httpretrywindow = "60ms"
+    httpmaxjitterinterval = "2ms"
+    [workflow.auth]
+        username = "payouts"
+        password = "env|PAYOUTS_WORKFLOW_AUTH_PASSWORD"
+    [workflow.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [workflow.httpclient.httpclient]
+        timeout = "100ms"
+
+[ledger]
+    host = "https://ledger-live.dev.razorpay.in"
+    timeout = "500ms"
+    keepAliveTimeout = "60000ms"
+    maxIdleConnections = 10
+    httpretryattempts = 3
+    [ledger.auth]
+        username = "env|PAYOUTS_LEDGER_AUTH_USERNAME"
+        password = "env|PAYOUTS_LEDGER_AUTH_PASSWORD"
+    [ledger.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [ledger.httpclient.httpclient]
+        timeout = "200ms"
+
+[shield]
+    host = "https://shield-payout.dev.razorpay.in"
+    timeout = 200
+    keepAliveTimeout = 30000
+    maxIdleConnections = 10
+    httpClientName  = "shield"
+    [shield.auth]
+        username = "api"
+        password = "api123"
+    [shield.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        CircuitBreakerSleepWindow= 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 30000
+    [shield.httpclient.httpclient]
+        timeout = 200
+
+[shield_payout_evaluate]
+    [shield_payout_evaluate.exclude_payout]
+        [shield_payout_evaluate.exclude_payout.parameter]
+            purpose = ["rzp_fees"]
+
+[splitz]
+    host                = "https://splitz.dev.razorpay.in"
+    timeout             = 200  #timeout : 200ns later converted to 200ms before sending request to Splitz
+    keepAliveTimeout    = 60000  #keepAliveTimeout : 60000ns later converted to 60s before sending request to Splitz
+    maxIdleConnections  = 10
+    # Disabled for e2e (same as prod): default.toml's client_side_eval=true with a 5min
+    # BigCache TTL means a merchant whitelisted moments before a test's payout call is
+    # often invisible to this cache, causing an intermittent fallback to a separate,
+    # broken API-DB read path (getFreePayoutsSlab). Evaluating live removes that race.
+    client_side_eval    = false
+    [splitz.auth]
+        username        = "env|PAYOUTS_SPLITZ_AUTH_USERNAME"
+        password        = "env|PAYOUTS_SPLITZ_AUTH_PASSWORD"
+    [splitz.httpclient.resiliency]
+        maxconcurrentrequests       = 100
+        requestvolumethreshold      = 20
+        circuitbreakersleepwindow   = 5000
+        errorpercentthreshold       = 50
+        circuitbreakertimeout       = 10000
+    [splitz.httpclient.httpclient]
+        timeout     = 200  #timeout : 200ns later converted to 200ms before sending request to Splitz
+
+[splitz_experiment_list]
+    charge_collections_call_experiment          = "RDTdmZuMkm60K1"
+    charge_collections_call_canary_experiment   = "RNkDIDgW9Z5ZQB"
+    fetch_balance_entity_from_x_balance         = "Rjdj0sAd4paXMG"
+    fetch_balance_entity_from_x_balance_async   = "SQg4o8tfP5GwVq"
+    fetch_by_id_api_fallback_experiment         = "RrqhkWM2jq3iyy"
+    free_payouts_xbalances_experiment           = "RvC7wQdmJZjGjm"
+    fmp_initiate_experiment                     = "SXUGlFyTCzFD6Z"
+    source_updater_sns_experiment               = "ST6285X8cDZdmr" # Enable SNS-based source updater
+
+[configs]
+    [configs.fetch_balance_from_x_balance]
+        enabled_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_BLACKLIST_ENV"
+
+    [configs.fetch_from_microservices]
+        enabled_env = "env|PAYOUTS_CONFIGS_FETCH_FROM_MICROSERVICES_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_FETCH_FROM_MICROSERVICES_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FETCH_FROM_MICROSERVICES_BLACKLIST_ENV"
+
+    [configs.fts_request_from_ps]
+        whitelist_env = "env|PAYOUTS_CONFIGS_FTS_REQUEST_FROM_PS_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FTS_REQUEST_FROM_PS_BLACKLIST_ENV"
+
+    [configs.fetch_balance_from_x_balance_async]
+        enabled_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_ASYNC_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_ASYNC_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FETCH_BALANCE_FROM_X_BALANCE_ASYNC_BLACKLIST_ENV"
+
+    [configs.free_payouts_x_balances]
+        # Hardcoded on (not env-indirected) for e2e: payouts' Splitz client only refreshes its
+        # experiment cache every 5-11 minutes, so a merchant whitelisted via the Splitz API moments
+        # before a test's payout call is often not yet visible, causing an intermittent fallback to
+        # a separate, broken API-DB read path. This config-based toggle is checked before Splitz and
+        # has no such propagation delay.
+        #
+        # whitelist_env/blacklist_env are intentionally empty (not "env|..." indirected) here:
+        # this app has no "env|" resolution fallback-to-empty, so an indirected reference to an
+        # unset env var stays as the literal "env|VAR_NAME" string. MerchantListConfig.GetWhitelist
+        # then treats that non-empty literal as a one-entry whitelist, so no real merchant ID ever
+        # matches it and IsEnabledByMerchantList always returns false — silently defeating the
+        # enabled_env="true" override above and forcing every request through the broken Splitz/
+        # API-DB fallback path.
+        enabled_env = "true"
+        whitelist_env = ""
+        blacklist_env = ""
+
+    [configs.fund_account_optimisation]
+        enabled_env = "env|PAYOUTS_CONFIGS_FUND_ACCOUNT_OPTIMISATION_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_FUND_ACCOUNT_OPTIMISATION_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_FUND_ACCOUNT_OPTIMISATION_BLACKLIST_ENV"
+
+    [configs.account_statement_source_event]
+        enabled_env = "env|PAYOUTS_CONFIGS_ACCOUNT_STATEMENT_SOURCE_EVENT_ENABLED_ENV"
+        whitelist_env = "env|PAYOUTS_CONFIGS_ACCOUNT_STATEMENT_SOURCE_EVENT_WHITELIST_ENV"
+        blacklist_env = "env|PAYOUTS_CONFIGS_ACCOUNT_STATEMENT_SOURCE_EVENT_BLACKLIST_ENV"
+
+
+    [configs.fts_async_hv_processing_merchants]
+        whitelist_env = "env|PAYOUTS_CONFIGS_FTS_ASYNC_HV_PROCESSING_MERCHANTS_WHITELIST_ENV"
+[events]
+    enabled = false
+
+
+[dcs]
+    Username    = "payouts"
+    Password    = "env|PAYOUTS_DCS_PASSWORD"
+    Env         = "dev"
+    Mock        = false
+
+[load_testing]
+    enabled = true
+    merchant_ids = [["Jvsz3m9QJbSiWB","2323230045"]]
+    beneficiary = [["1121431121541121","HDFC0001234","Gaurav Kumar","Dummy@gmail.com","1234567890"]]
+    target_url = "https://api-web.dev.razorpay.in/v1/payouts"
+    username = "env|PAYOUTS_LOAD_TESTING_USERNAME"
+    password = "env|PAYOUTS_LOAD_TESTING_PASSWORD"
+    concurrency = 10
+    request_count = 1
+    timeout_in_secs = 120
+    narration = "Test payout Dev"
+    queue_if_low_balance = true
+    mode = "IMPS"
+
+[x_balances]
+    host = "https://x-balances.dev.razorpay.in"
+    timeout = "30s"
+    keepAliveTimeout = "30s"
+    httpClientName = "x_balances"
+    maxIdleConnections = 100
+    httpretryattempts = 3
+    httpretrywindow = "1s"
+    httpmaxjitterinterval = "100ms"
+    [x_balances.auth]
+        username = "payouts_user"
+        password = "env|PAYOUTS_X_BALANCES_AUTH_PASSWORD"
+    [x_balances.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 1000
+    [x_balances.httpclient.httpclient]
+        timeout = "30s"
+
+[xas]
+    host = "https://x-account-statements.dev.razorpay.in"
+    timeout = "30s"
+    keepAliveTimeout = "30s"
+    httpClientName = "xas"
+    maxIdleConnections = 100
+    httpretryattempts = 3
+    httpretrywindow = "1s"
+    httpmaxjitterinterval = "100ms"
+    [xas.auth]
+        username = "env|PAYOUTS_XAS_AUTH_USERNAME"
+        password = "env|PAYOUTS_XAS_AUTH_PASSWORD"
+    [xas.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 1000
+    [xas.httpclient.httpclient]
+        timeout = "30s"
+
+[fts]
+    host = "env|PAYOUTS_FTS_HOST"
+    timeout = "1000ms"
+    keepAliveTimeout = "10000ms"
+    maxIdleConnections = 100
+    httpClientName = "fts"
+    httpretryattempts = 3
+    httpretrywindow = "60ms"
+    httpmaxjitterinterval = "2ms"
+    [fts.auth]
+        username = "fts"
+        password = "fts"
+    [fts.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 10000
+    [fts.httpclient.httpclient]
+        timeout = "1000ms"
+
+[async_job_dispatch_limit]
+    partner_bank_on_hold_payouts = "env|PAYOUTS_ASYNC_JOB_DISPATCH_LIMIT_PARTNER_BANK_ON_HOLD_PAYOUTS"
+
+[account_service]
+    host = "asv.grpc.int.dev.razorpay.in:443"
+    timeout = "30s"
+    keepAliveTimeout = "30s"
+    httpClientName = "account_service"
+    maxIdleConnections = 100
+    httpretryattempts = 3
+    httpretrywindow = "1s"
+    httpmaxjitterinterval = "100ms"
+    [account_service.auth]
+        username = "PAYOUTS_ACCOUNT_SERVICE_AUTH_USERNAME"
+        password = "PAYOUTS_ACCOUNT_SERVICE_AUTH_PASSWORD"
+    [account_service.httpclient.resiliency]
+        maxconcurrentrequests = 100
+        requestvolumethreshold = 20
+        circuitbreakersleepwindow = 5000
+        errorpercentthreshold = 50
+        circuitbreakertimeout = 1000
+    [account_service.httpclient.httpclient]
+        timeout = "30s"
+
+[ccsdk]
+    mock = false
+
+    [ccsdk.governor]
+        hostname    = "https://governor.dev.razorpay.in"
+        username    = "env|PAYOUTS_CCSDK_GOVERNOR_USERNAME"
+        password    = "env|PAYOUTS_CCSDK_GOVERNOR_PASSWORD"
+        namespace   = "env|PAYOUTS_CCSDK_GOVERNOR_NAMESPACE"
+        timeout     = "1000ms"
+        summaryType = "debug"
+        appMode     = "test"
+
+        [ccsdk.governor.rules]
+            basic   = "env|PAYOUTS_CCSDK_GOVERNOR_RULES_BASIC"
+            product = "env|PAYOUTS_CCSDK_GOVERNOR_RULES_PRODUCT"
+            bank    = "env|PAYOUTS_CCSDK_GOVERNOR_RULES_BANK"
+            mode    = "env|PAYOUTS_CCSDK_GOVERNOR_RULES_MODE"
+            amount  = "env|PAYOUTS_CCSDK_GOVERNOR_RULES_AMOUNT"
+
+    [ccsdk.cache]
+        host        = "np-valkey-8-cluster-enabled.np.razorpay.vpc"
+        port        = 6379
+        password    = ""
+        database    = 0
+        isClustered = false
+
+
+    [ccsdk.splitz]
+        charge_collections_experiment_id = "SXNVZvT9FJMVrW"
+
+    [ccsdk.charge_collections]
+        host     = "https://charge-collections.dev.razorpay.in"
+        username = "payouts_key"
+        password = "env|PAYOUTS_CCSDK_CHARGE_COLLECTIONS_PASSWORD"
+
+        [ccsdk.charge_collections.http_client_config]
+            name                    = "payouts_charge_collections_service"
+            retry_count             = 3
+            backoff_interval        = 200
+            maximum_jitter_interval = 100
+
+        [ccsdk.charge_collections.http_client_config.conn_pool_config]
+            timeout            = 2000
+            keepalivetimeout   = 30000
+            maxidleconnections = 10
+
+        [ccsdk.charge_collections.http_client_config.hystrix_resiliency_config]
+            maxconcurrentrequests     = 100
+            requestvolumethreshold    = 10
+            circuitbreakersleepwindow = 5000
+            errorpercentthreshold     = 75
+            circuitbreakertimeout     = 30000
+
+[db_query_permission]
+
+
+    master  = "env|PAYOUTS_DB_QUERY_PERMISSION_MASTER"
+    replica = "env|PAYOUTS_DB_QUERY_PERMISSION_REPLICA"
+    api     = "env|PAYOUTS_DB_QUERY_PERMISSION_API"
+    tidb    = "env|PAYOUTS_DB_QUERY_PERMISSION_TIDB"
+
+[wda]
+    default_http_client_url = "https://wda-service.concierge.stage.razorpay.in"
+    user = "env|PAYOUTS_WDA_USER"
+    password = "env|PAYOUTS_WDA_PASSWORD"
+    db_namespace = "env|PAYOUTS_WDA_DB_NAMESPACE"
+    db_cluster = "env|PAYOUTS_WDA_DB_CLUSTER"
+    mock = false
+
+[elasticsearch]
+    Enabled = true
+    Host = "https://vpc-common-es7-fd5jblmsbmhirqdm6xdqmremjy.ap-south-1.es.amazonaws.com"
+    Port = 443
+    PayoutDocumentIndex =  "x_account_statements_source_events_v3" #"mandatehq_mandate_v1"
+    Mock = "false"
+    HealthCheckEnabled = "true"
+    ShortTimeoutSeconds = 10
+    MediumTimeoutSeconds = 20
+    LongTimeoutSeconds = 30
+    MaxRetryAttempts = 2
+    JitterEnabled = true
+    JitterMinPercent = 70
+    JitterMaxPercent = 130
+    # NEW CIRCUIT BREAKER PROPERTIES
+    FailureThreshold = 3              # Break circuit after 2 consecutive failures
+    HealthCheckIntervalSec = 30       # Health check every 30 seconds
+    ReconnectIntervalSec = 30        # Min 30 seconds between reconnect attempts
+    ReconnectTimeoutSec = 5         #  second timeout for reconnect health check
+
+[stuck_payouts_monitoring]
+    enabled = true
+
+    [stuck_payouts_monitoring.create_request_submitted]
+        threshold         = "5m"
+        monitoring_window = "15m"
+
+    [stuck_payouts_monitoring.batch_submitted]
+        threshold         = "5m"
+        monitoring_window = "15m"
+
+    [stuck_payouts_monitoring.scheduled]
+        threshold         = "5m"
+        monitoring_window = "15m"
+
+[sla_monitoring]
+    enabled = false
+
+    [sla_monitoring.mode.thresholds]
+        IMPS = "2m"
+        UPI  = "2m"
+        NEFT = "2h30m"
+
+    [sla_monitoring.mode.monitoring_windows]
+        IMPS = "5m"
+        UPI  = "5m"
+        NEFT = "3h"
+
+    [sla_monitoring.team.merchant_ids]
+         settlements = []
+
+[features]
+    ikey_auto_enforcement = true
+    reverse_dual_write = "env|PAYOUTS_FEATURES_REVERSE_DUAL_WRITE"
+    forward_dual_write = true
+    skip_ca_dual_write = true
+    source_updater_sns_enabled = true
+
+[es_sync]
+    push_delay              = "env|PAYOUTS_ES_SYNC_PUSH_DELAY"
+    retry_delay             = "env|PAYOUTS_ES_SYNC_RETRY_DELAY"
+    va_payout_enabled       = "env|PAYOUTS_ES_SYNC_VA_PAYOUT_ENABLED"
+
+[fmp]
+  # Global kill switch — set to true in Credstash + rotate pods to disable all FMP initiation
+  initiate_disabled         = false
+  # Minimum CA balance floor after FMP transfer in paisa (default: Rs10000)
+  gateway_balance_threshold = 1000000
+  # Lookback window for fetching in-flight FMPs in seconds (default: 6 hours)
+  retrieval_threshold       = 21600

@@ -1,0 +1,35 @@
+{
+  "note": "final",
+  "elapsed_s": 1931.5,
+  "hypotheses": 106,
+  "experiments_reached": 88,
+  "baselines": 189,
+  "meaningful_changes": 47,
+  "reallocations": 58,
+  "recovered_workers": 1,
+  "duplicates_suppressed": 181,
+  "candidates": 14,
+  "confirmed_findings": 4,
+  "usage": {
+    "calls": 240,
+    "prompt_tokens": 817224,
+    "completion_tokens": 58297,
+    "by_model": {
+      "kimi-k3": {
+        "calls": 80,
+        "prompt_tokens": 302845,
+        "completion_tokens": 15732
+      },
+      "gpt-5.5": {
+        "calls": 80,
+        "prompt_tokens": 267402,
+        "completion_tokens": 13297
+      },
+      "glm-5p2": {
+        "calls": 80,
+        "prompt_tokens": 246977,
+        "completion_tokens": 29268
+      }
+    }
+  }
+}

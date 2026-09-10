@@ -1,0 +1,81 @@
+# M11 arena overlay for the REAL razorpay/banking-accounts service (APP_MODE=arena; internal/bootstrap/config.go loads
+# default.toml then this file, viper key-for-key). Only arena hosts and generated credentials are set here; every other
+# value is the repository's default.toml. Rendered by config/generate.py into the config-bankingaccounts volume.
+[app]
+    serverMode = "release"
+    port = ":8000"
+    metricsPort = ":8001"
+
+[database]
+    dialect = "mysql"
+    username = "root"
+    password = "{{SECRET.mysql_bas_root_password}}"
+    protocol = "tcp"
+    url = "mysql-bas"
+    port = "3306"
+    name = "banking_account"
+
+[cache]
+    stub = false
+    driver = "redis"
+    [cache.redis]
+        host = "redis"
+        port = 6379
+        database = 3
+        password = ""
+
+# payouts -> banking-accounts: internal/routing/middleware/auth.go VerifyApiAuth compares the Api-Token header with this token
+[api]
+    stub = false
+    token = "{{SECRET.auth_bas_payouts}}"
+    host = "http://api-ingress:8080/v1"
+    username = "rzp_live"
+    password = "{{SECRET.auth_monolith_shared}}"
+
+[payouts]
+    stub = false
+    host = "http://payouts-api:9400"
+    username = "banking_accounts_user"
+    password = "banking_accounts_pw"
+
+[fts]
+    stub = false
+    host = "http://fts-web:8080/v1"
+    username = "api_user"
+    password = "arena-unused"
+
+[balances]
+    stub = false
+    host = "http://xbalances-server:8081"
+    username = "banking_accounts"
+    password = "arena-unused"
+
+[mob]
+    stub = true
+    host = "http://127.0.0.1:9"
+    username = "bas"
+    password = ""
+
+[metro]
+    enabled = false
+    stub = true
+
+[events]
+    enabled = true
+    debug = true          # internal/providers/events.go: enabled && debug -> events.NewMockKafkaProducer()
+
+[Queue]
+    Driver = "inmemory"   # pkg/queue/queue_manager.go: inmemory | sqs
+
+[passport]
+    jwksHost = "http://api-ingress:8080"   # pkg/passport/passport.go InitHandler fetches <jwksHost>/jwks at boot
+    timeout = 2000
+    attempts = 5
+    delay = 500
+    mock = false
+
+[tracing]
+    enabled = false
+
+[sentry]
+    enabled = false

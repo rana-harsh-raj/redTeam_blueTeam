@@ -1,0 +1,19 @@
+# Ledger transport gate
+
+Classification: application/runtime wiring (fixed HTTP proxy); substitute fidelity (fault controls). Forwards Twirp JSON, service Basic Auth and Ledger-Tenant to the real `ledger-api:8080`. Does not mint journals or alter balances. Payouts config alone routes through this gate; verifier, FTS and the monolith still reach Ledger directly.
+
+`POST /_arena/faults` uses the shared scoped fault registry: `scope` is an exact synthetic merchant/transactor ID; optional path prefix, status (e.g.503), delay_ms(0..30000) or connection drop. Clear with `{scope,clear:true}`. `GET /_arena/faults` records which actual requests hit a fault. Scope applies across Payouts API/workers, including async retry, until cleared. This models HTTP transport failure, not a database crash or partition between Ledger and Postgres.
+
+Runtime destination is fixed and internal. No arbitrary URL/network controls are accepted. API is reachable only inside the synthetic arena. Live verifier evidence is required before claiming a retry invariant.
+
+## Header forwarding rule (M1 correction)
+
+**Rule: every inbound request header is copied verbatim to `ledger-api:8080`, except hop-by-hop/transport headers** — `host`, `content-length`, `connection`, `transfer-encoding`, `keep-alive`, `te`, `trailer`, `trailers`, `upgrade`, `accept-encoding`, and any `proxy-*` (`server.py:HOP_BY_HOP` / `forward_headers`). `host` and `content-length` are recomputed by the upstream request; `accept-encoding` is stripped because the gate decodes and re-serialises the JSON body itself and Go's `http.Transport` adds `Accept-Encoding: gzip` on the wire even when the caller never set it.
+
+**Why this matters.** In production, payouts calls `ledger-live` directly, so **Ledger's request-idempotency layer runs on the payouts→Ledger leg**. ledger-sdk emits a fixed header set on every journal call — `Accept`, `Content-Type`, `Ledger-Tenant`, `Request-ID`, `Trace-ID`, `idempotency-key`, `Ledger-Integration-Mode`, `Country-Code` (`ledger-sdk/common/constant.go:39-54`), populated at `ledger-sdk/ledger/journal/core.go:120-124,255-259` and defaulted to a fresh UUID when the caller leaves it empty (`core.go:105-107,249-251`). Server-side, `ledger/pkg/idempotency/hooks.go:17` reads `idempotency-key` off the request into the context and `ledger/pkg/idempotency/interceptor.go:115-118` (`isIdempotencyNotRequired`) returns **true** — skipping the idempotency table entirely — when that value is empty.
+
+The gate previously forwarded a five-name allow-list (`authorization, content-type, ledger-tenant, x-request-id, x-task-id`), so `idempotency-key` was dropped and Ledger's request-idempotency was silently disabled **for the payouts leg only** — FTS and the monolith reach `ledger-api` directly and kept it. That made the twin asymmetric and made any duplicate-journal result (I03 / V04) a measurement of one fewer defence than production. `Request-ID` / `Trace-ID` loss also broke trace correlation across the boundary and left Ledger's `Country-Code` context empty (`ledger/internal/boot/handler.go` hooks; `pkg/outbox/core.go`). Registered as `DEV-001` (`config/declared-deviations.yaml`, `status: fixed_in_m1`).
+
+**Fault injection is unchanged.** Delay / drop / status live entirely in the shared dispatcher (`_common/base_stub.py` → `_common/faults.py`, `faults.control` for `POST|GET /_arena/faults` and `faults.apply` before route dispatch). `forward()` never touches the registry; the header rule applies only after a request has survived fault evaluation.
+
+Offline proof: `substitutes/ledger-gate/test_contract.py` (6 cases, stdlib `unittest`, no container and no network) asserts the full ledger-sdk header set — `idempotency-key` in particular — reaches the upstream request and that `host` / `content-length` / `accept-encoding` / `connection` / `proxy-*` / `transfer-encoding` do not.

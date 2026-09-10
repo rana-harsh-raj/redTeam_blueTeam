@@ -1,0 +1,28 @@
+# M9 Twin Factory overlay for the Source-to-Pay stack (applied by twinfactory together with docker-compose.s2p.yml;
+# never used by the M6/M7 scripts). It makes the S2P datastore credentials and the driver's endpoints/secret
+# instance-configurable: twinfactory generates them per instance into <instance>/ENV2_COMPOSE/secrets/.env.s2p and
+# exports them into the PROCESS environment of its compose invocations only (never into .env.arena):
+#   S2P_MYSQL_ROOT_PASSWORD, S2P_MYSQL_PASSWORD, S2P_API_SECRET
+# The pinned driver (DOMAIN_REPLICAS/source_to_pay/runtime/source-driver/boot.go) reads S2P_DB_*/S2P_REDIS_*/
+# S2P_BOUNDARY_URL/S2P_API_SECRET with defaults equal to the historical constants, so the standalone replica and the
+# M7 arena are unchanged. docker-compose.yml / docker-compose.s2p.yml stay byte-identical (M8 snapshot inputs).
+services:
+  s2p-mysql:
+    environment:
+      MYSQL_ROOT_PASSWORD: ${S2P_MYSQL_ROOT_PASSWORD:-root-local-only}
+      MYSQL_PASSWORD: ${S2P_MYSQL_PASSWORD:-s2p}
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" --silent && mysql -h 127.0.0.1 -uroot -p\"$$MYSQL_ROOT_PASSWORD\" -Nse 'SELECT 1'"]
+      interval: 3s
+      timeout: 3s
+      retries: 40
+  s2p-vp-source:
+    environment:
+      S2P_DB_URL: mysql:3306
+      S2P_DB_NAME: vendor_payments
+      S2P_DB_USER: ${S2P_MYSQL_USER:-s2p}
+      S2P_DB_PASSWORD: ${S2P_MYSQL_PASSWORD:-s2p}
+      S2P_REDIS_HOST: redis
+      S2P_REDIS_PORT: "6379"
+      S2P_BOUNDARY_URL: http://boundary:8080
+      S2P_API_SECRET: ${S2P_API_SECRET:-local-vendor-payments-secret}

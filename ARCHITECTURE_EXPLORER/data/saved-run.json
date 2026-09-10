@@ -1,0 +1,4139 @@
+{
+  "status": "passed",
+  "passed": true,
+  "scenario": "shared_success_via_kong",
+  "steps": [
+    {
+      "name": "Kong merchant authentication and payout create",
+      "passed": true,
+      "http_status": 200,
+      "payout_id": "pout_TYQm6B1u9GGycw"
+    },
+    {
+      "name": "Synchronous balanced initiated journal",
+      "passed": true,
+      "journal_id": "TYQm6FAgwpFo7R"
+    },
+    {
+      "name": "FTS and bank terminal result",
+      "passed": true,
+      "fts_transfer_id": 1,
+      "status": "processed",
+      "utr": "ARENA0000000001"
+    },
+    {
+      "name": "Balanced asynchronous processed journal",
+      "passed": true,
+      "journal_id": "TYQm7yArvTiwTL"
+    },
+    {
+      "name": "Exactly one signed merchant terminal webhook",
+      "passed": true,
+      "event_id": "ev_ARENA000103",
+      "signature_valid": true
+    }
+  ],
+  "started_at": 1788627767.2780492,
+  "merchant_id": "ARENAM00000001",
+  "route_profile": "direct-create-monolith-status",
+  "payout_id": "pout_TYQm6B1u9GGycw",
+  "ending_state": {
+    "label": "live_scenario_completion",
+    "payout_id": "pout_TYQm6B1u9GGycw",
+    "observed_at": 1788627769.6009831,
+    "complete": true,
+    "errors": [],
+    "layers": {
+      "payouts": {
+        "row": {
+          "id": "TYQm6B1u9GGycw",
+          "reference_id": null,
+          "narration": "Arena Merchant One Fund Transf",
+          "merchant_id": "ARENAM00000001",
+          "balance_id": "ARENABAL000001",
+          "method": "fund_transfer",
+          "mode": "IMPS",
+          "fund_account_id": "ARENAFAX000001",
+          "batch_id": null,
+          "idempotency_key": "",
+          "user_id": "",
+          "purpose": "payout",
+          "purpose_type": "settlement",
+          "amount": 10000,
+          "currency": "INR",
+          "notes": "{}",
+          "fees": 200,
+          "tax": 36,
+          "status": "processed",
+          "fts_transfer_id": 1,
+          "transaction_id": "TYQm6FAgwpFo7R",
+          "channel": "RBL",
+          "utr": "ARENA0000000001",
+          "failure_reason": null,
+          "cancellation_user_id": "",
+          "status_code": null,
+          "remarks": null,
+          "created_at": 1788627767,
+          "updated_at": 1788627768,
+          "payout_link_id": "",
+          "pricing_rule_id": "ARENAPLAN00001",
+          "scheduled_at": null,
+          "fee_type": null,
+          "registered_name": "",
+          "workflow_feature": 0,
+          "queued_reason": "",
+          "queued_at": null,
+          "on_hold_at": null,
+          "origin": 1,
+          "status_details_id": "TYQm6x4TFbgfyr",
+          "gateway_ref_no": null
+        },
+        "state_history": [
+          {
+            "id": "TYQm6CuiinNNdj",
+            "payout_id": "TYQm6B1u9GGycw",
+            "event": "ledger_response_awaited",
+            "from": "create_request_submitted",
+            "to": "ledger_response_awaited",
+            "mode": "SYSTEM",
+            "triggered_by": "SYSTEM",
+            "created_at": 1788627767,
+            "updated_at": 1788627767
+          },
+          {
+            "id": "TYQm6GDglO1zEL",
+            "payout_id": "TYQm6B1u9GGycw",
+            "event": "created",
+            "from": "ledger_response_awaited",
+            "to": "created",
+            "mode": "SYSTEM",
+            "triggered_by": "SYSTEM",
+            "created_at": 1788627767,
+            "updated_at": 1788627767
+          },
+          {
+            "id": "TYQm6hYRHyd0tk",
+            "payout_id": "TYQm6B1u9GGycw",
+            "event": "initiated",
+            "from": "created",
+            "to": "initiated",
+            "mode": "SYSTEM",
+            "triggered_by": "SYSTEM",
+            "created_at": 1788627767,
+            "updated_at": 1788627767
+          },
+          {
+            "id": "TYQm6yHSZXFsw6",
+            "payout_id": "TYQm6B1u9GGycw",
+            "event": "processed",
+            "from": "initiated",
+            "to": "processed",
+            "mode": "SYSTEM",
+            "triggered_by": "SYSTEM",
+            "created_at": 1788627768,
+            "updated_at": 1788627768
+          }
+        ],
+        "reversals": []
+      },
+      "fts": {
+        "transfers": [
+          {
+            "id": 1,
+            "product": "PAYOUT",
+            "merchant_id": "ARENAM00000001",
+            "source_type": "payout",
+            "source_id": "TYQm6B1u9GGycw",
+            "preferred_mode": "IMPS",
+            "preferred_channel": "ICICI",
+            "preferred_source_account_id": null,
+            "fund_account_id": 900313,
+            "attempts": 1,
+            "channel": "RBL",
+            "source_account_id": 900001,
+            "source_account_primary_id": 900001,
+            "amount": 10000,
+            "mode": "IFT",
+            "status": "PROCESSED",
+            "utr": "ARENA0000000001",
+            "return_utr": null,
+            "narration": "Arena Merchant One Fund Transf",
+            "remarks": null,
+            "bank_status_code": "SUCCESS",
+            "failure_reason": null,
+            "bank_processed_time": null,
+            "initiate_at": 1788627768,
+            "transfer_by": 1788627768,
+            "extra_info": "{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"SUCCESS\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"}",
+            "retry": 1,
+            "created_at": 1788627768,
+            "updated_at": 1788627768,
+            "gateway_error_code": null,
+            "is_batch": 0,
+            "type": null,
+            "batch_id": null,
+            "credited_at": null,
+            "is_credited": 1,
+            "is_debited": 1,
+            "request_meta": "{\"merchant_detail\": {\"merchant_pan\": \"\", \"merchant_name\": \"Arena Merchant One\", \"merchant_address\": \"1 Arena Street, Bengaluru, IN - 560001\"}}"
+          }
+        ],
+        "attempt_chain": [
+          {
+            "id": 1,
+            "product": "PAYOUT",
+            "merchant_id": "ARENAM00000001",
+            "transfer_id": 1,
+            "channel": "RBL",
+            "source_account_id": 900001,
+            "source_account_primary_id": 900001,
+            "amount": 10000,
+            "fund_account_id": 900313,
+            "bank_status_code": "SUCCESS",
+            "mode": "IFT",
+            "status": "PROCESSED",
+            "utr": "ARENA0000000001",
+            "return_utr": null,
+            "gateway_ref_no": "TYQm6puk5NIR",
+            "narration": "Arena Merchant One Fund Transf",
+            "remarks": null,
+            "failure_reason": null,
+            "bank_processed_time": null,
+            "cms_ref_no": null,
+            "initiate_at": 1788627768,
+            "acknowledged_at": 1788627768,
+            "transfer_response": "{\"data\":{\"_raw\":\"\",\"beneficiary_name\":\"\",\"id\":1,\"remarks\":\"\",\"utr\":\"ARENA0000000001\",\"bank_status_code\":\"SUCCESS\",\"gateway_error_code\":\"\",\"cms_ref_no\":\"\",\"failure_reason\":\"\",\"bank_request_id\":\"\",\"bank_processed_time\":\"\",\"gateway_auth\":{\"token\":\"\",\"token_type\":\"\",\"validity_duration\":\"\"},\"gateway_session\":{\"token\":\"\",\"token_type\":\"\",\"validity_duration\":\"\"},\"return_utr\":\"\",\"ponum\":\"\",\"balance\":\"\",\"accountBalanceAmount\":\"\",\"credited_at\":\"\",\"is_credited\":true,\"is_debited\":true,\"beneficiary_code\":\"\",\"beneficiary_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"},\"error\":{\"description\":\"\",\"gateway_error_code\":\"\",\"gateway_error_description\":\"\",\"gateway_status_code\":0,\"internal_error_code\":\"\"},\"external_trace_id\":\"SIM_TRACE_ID\",\"mozart_id\":\"SIM_MOZART_ID\",\"success\":true,\"meta\":{\"error_type\":\"UNKNOWN\",\"merchant_error\":false,\"critical_error\":false,\"retriable_error\":false,\"pending\":false,\"processed\":true,\"failed\":false,\"reversed\":false},\"extra_info\":{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"},\"HTTPStatusCode\":200}",
+            "status_response": null,
+            "extra_info": "{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"SUCCESS\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"}",
+            "created_at": 1788627768,
+            "updated_at": 1788627768,
+            "gateway_error_code": null,
+            "type": null,
+            "batch_id": null,
+            "gateway_error_code_init": null,
+            "credited_at": null,
+            "is_credited": 1,
+            "is_debited": 1,
+            "re_initiate_count": 0
+          }
+        ],
+        "transfer_meta": []
+      },
+      "ledger": {
+        "transactor_ids": [
+          "pout_TYQm6B1u9GGycw"
+        ],
+        "journals": [
+          {
+            "id": "TYQm6FAgwpFo7R",
+            "merchant_id": "ARENAM00000001",
+            "amount": "10200.000000",
+            "base_amount": "10200.000000",
+            "currency": "INR",
+            "transactor_id": "pout_TYQm6B1u9GGycw",
+            "transactor_event": "payout_initiated",
+            "transaction_date": 1788627767,
+            "created_at": 1788627767,
+            "updated_at": 1788627767,
+            "created_at_microsecond": 1788627767543536,
+            "updated_at_microsecond": 1788627767543536,
+            "tenant": "X"
+          },
+          {
+            "id": "TYQm7yArvTiwTL",
+            "merchant_id": "ARENAM00000001",
+            "amount": "10000.000000",
+            "base_amount": "10000.000000",
+            "currency": "INR",
+            "transactor_id": "pout_TYQm6B1u9GGycw",
+            "transactor_event": "payout_processed",
+            "transaction_date": 1788627769,
+            "created_at": 1788627769,
+            "updated_at": 1788627769,
+            "created_at_microsecond": 1788627769124663,
+            "updated_at_microsecond": 1788627769124663,
+            "tenant": "X"
+          }
+        ],
+        "entries": [
+          {
+            "id": "TYQm6FDVgTO2qS",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm6FAgwpFo7R",
+            "account_id": "ARENAM1ACC0003",
+            "amount": "164.000000",
+            "base_amount": "164.000000",
+            "type": "credit",
+            "currency": "INR",
+            "created_at": 1788627767,
+            "updated_at": 1788627767,
+            "created_at_microsecond": 1788627767544249,
+            "updated_at_microsecond": 1788627767544249,
+            "balance": null,
+            "balance_updated": false
+          },
+          {
+            "id": "TYQm6FDVuaWNUf",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm6FAgwpFo7R",
+            "account_id": "ARENAM1ACC0004",
+            "amount": "36.000000",
+            "base_amount": "36.000000",
+            "type": "credit",
+            "currency": "INR",
+            "created_at": 1788627767,
+            "updated_at": 1788627767,
+            "created_at_microsecond": 1788627767544249,
+            "updated_at_microsecond": 1788627767544249,
+            "balance": null,
+            "balance_updated": false
+          },
+          {
+            "id": "TYQm6FDW3KL35f",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm6FAgwpFo7R",
+            "account_id": "ARENAM1ACC0001",
+            "amount": "10200.000000",
+            "base_amount": "10200.000000",
+            "type": "debit",
+            "currency": "INR",
+            "created_at": 1788627767,
+            "updated_at": 1788627767,
+            "created_at_microsecond": 1788627767544249,
+            "updated_at_microsecond": 1788627767544249,
+            "balance": "9989800.000000",
+            "balance_updated": true
+          },
+          {
+            "id": "TYQm6FDWA2OIi6",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm6FAgwpFo7R",
+            "account_id": "ARENAM1ACC0002",
+            "amount": "10000.000000",
+            "base_amount": "10000.000000",
+            "type": "credit",
+            "currency": "INR",
+            "created_at": 1788627767,
+            "updated_at": 1788627767,
+            "created_at_microsecond": 1788627767544249,
+            "updated_at_microsecond": 1788627767544249,
+            "balance": null,
+            "balance_updated": false
+          },
+          {
+            "id": "TYQm7yDHqC0lI7",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm7yArvTiwTL",
+            "account_id": "ARENAPOOLACC02",
+            "amount": "10000.000000",
+            "base_amount": "10000.000000",
+            "type": "credit",
+            "currency": "INR",
+            "created_at": 1788627769,
+            "updated_at": 1788627769,
+            "created_at_microsecond": 1788627769125271,
+            "updated_at_microsecond": 1788627769125271,
+            "balance": null,
+            "balance_updated": false
+          },
+          {
+            "id": "TYQm7yDI4yQIMt",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm7yArvTiwTL",
+            "account_id": "ARENAM1ACC0002",
+            "amount": "10000.000000",
+            "base_amount": "10000.000000",
+            "type": "debit",
+            "currency": "INR",
+            "created_at": 1788627769,
+            "updated_at": 1788627769,
+            "created_at_microsecond": 1788627769125271,
+            "updated_at_microsecond": 1788627769125271,
+            "balance": null,
+            "balance_updated": false
+          }
+        ],
+        "accounts_at_observation": [
+          {
+            "id": "ARENAM1ACC0001",
+            "merchant_id": "ARENAM00000001",
+            "status": "ACTIVATED",
+            "balance": "9989800.000000",
+            "min_balance": "0.000000",
+            "negative_balance": null,
+            "created_at": 1788627704,
+            "updated_at": 1788627767,
+            "deleted_at": null
+          },
+          {
+            "id": "ARENAM1ACC0002",
+            "merchant_id": "ARENAM00000001",
+            "status": "ACTIVATED",
+            "balance": "0.000000",
+            "min_balance": "0.000000",
+            "negative_balance": null,
+            "created_at": 1788627704,
+            "updated_at": 1788627704,
+            "deleted_at": null
+          },
+          {
+            "id": "ARENAM1ACC0003",
+            "merchant_id": "ARENAM00000001",
+            "status": "ACTIVATED",
+            "balance": "0.000000",
+            "min_balance": "0.000000",
+            "negative_balance": null,
+            "created_at": 1788627704,
+            "updated_at": 1788627704,
+            "deleted_at": null
+          },
+          {
+            "id": "ARENAM1ACC0004",
+            "merchant_id": "ARENAM00000001",
+            "status": "ACTIVATED",
+            "balance": "0.000000",
+            "min_balance": "0.000000",
+            "negative_balance": null,
+            "created_at": 1788627704,
+            "updated_at": 1788627704,
+            "deleted_at": null
+          },
+          {
+            "id": "ARENAPOOLACC02",
+            "merchant_id": "Gh0YfqKiXRdkCo",
+            "status": "ACTIVATED",
+            "balance": "0.000000",
+            "min_balance": "0.000000",
+            "negative_balance": null,
+            "created_at": 1788627704,
+            "updated_at": 1788627704,
+            "deleted_at": null
+          }
+        ]
+      },
+      "merchant_webhooks": {
+        "deliveries": [
+          {
+            "merchant": "ARENAM00000001",
+            "path": "/webhook/ARENAM00000001",
+            "headers": {
+              "Content-Type": "application/json",
+              "X-Razorpay-Event-Id": "ev_ARENA000099",
+              "Request-Id": "ev_ARENA000099"
+            },
+            "body_sha256": "11f10299621d0bbfb22da575c91462b879b311d8c61bad6a38fd2ba8edd209c0",
+            "event_id": "ev_ARENA000099",
+            "request_id": "ev_ARENA000099",
+            "signature_present": true,
+            "signature_valid": true,
+            "received_at": 1788627767.5800037,
+            "body": {
+              "entity": "event",
+              "account_id": "acc_ARENAM00000001",
+              "event": "payout.initiated",
+              "contains": [
+                "payout"
+              ],
+              "payload": {
+                "payout": {
+                  "entity": {
+                    "id": "pout_TYQm6B1u9GGycw",
+                    "entity": "payout",
+                    "fund_account_id": "fa_ARENAFAX000001",
+                    "amount": 10000,
+                    "currency": "INR",
+                    "notes": {},
+                    "fees": 200,
+                    "tax": 36,
+                    "purpose": "payout",
+                    "status": "processing",
+                    "utr": null,
+                    "mode": "IMPS",
+                    "reference_id": null,
+                    "narration": "Arena Merchant One Fund Transf",
+                    "batch_id": null,
+                    "failure_reason": null,
+                    "created_at": 1788627767
+                  }
+                }
+              },
+              "created_at": 1788627767
+            }
+          },
+          {
+            "merchant": "ARENAM00000001",
+            "path": "/webhook/ARENAM00000001",
+            "headers": {
+              "Content-Type": "application/json",
+              "X-Razorpay-Event-Id": "ev_ARENA000101",
+              "Request-Id": "ev_ARENA000101"
+            },
+            "body_sha256": "bf31b540017e33122f63430c0e78e57956626a2b013d97afea8997448a9b1a2c",
+            "event_id": "ev_ARENA000101",
+            "request_id": "ev_ARENA000101",
+            "signature_present": true,
+            "signature_valid": true,
+            "received_at": 1788627768.2020109,
+            "body": {
+              "entity": "event",
+              "account_id": "acc_ARENAM00000001",
+              "event": "payout.updated",
+              "contains": [
+                "payout"
+              ],
+              "payload": {
+                "payout": {
+                  "entity": {
+                    "id": "pout_TYQm6B1u9GGycw",
+                    "entity": "payout",
+                    "fund_account_id": "fa_ARENAFAX000001",
+                    "amount": 10000,
+                    "currency": "INR",
+                    "notes": {},
+                    "fees": 200,
+                    "tax": 36,
+                    "purpose": "payout",
+                    "status": "processing",
+                    "utr": "ARENA0000000001",
+                    "mode": "IMPS",
+                    "reference_id": null,
+                    "narration": "Arena Merchant One Fund Transf",
+                    "batch_id": null,
+                    "failure_reason": null,
+                    "created_at": 1788627767,
+                    "status_details": {
+                      "reason": "payout_processed",
+                      "description": "Payout is processed and the money has been credited into the beneficiary account."
+                    }
+                  }
+                }
+              },
+              "created_at": 1788627768
+            }
+          },
+          {
+            "merchant": "ARENAM00000001",
+            "path": "/webhook/ARENAM00000001",
+            "headers": {
+              "Content-Type": "application/json",
+              "X-Razorpay-Event-Id": "ev_ARENA000103",
+              "Request-Id": "ev_ARENA000103"
+            },
+            "body_sha256": "90934f52f089c14d15dc2ba5943b7b6fadc052387ddf14d36f2f89fcc1d4b9db",
+            "event_id": "ev_ARENA000103",
+            "request_id": "ev_ARENA000103",
+            "signature_present": true,
+            "signature_valid": true,
+            "received_at": 1788627768.2272756,
+            "body": {
+              "entity": "event",
+              "account_id": "acc_ARENAM00000001",
+              "event": "payout.processed",
+              "contains": [
+                "payout"
+              ],
+              "payload": {
+                "payout": {
+                  "entity": {
+                    "id": "pout_TYQm6B1u9GGycw",
+                    "entity": "payout",
+                    "fund_account_id": "fa_ARENAFAX000001",
+                    "amount": 10000,
+                    "currency": "INR",
+                    "notes": {},
+                    "fees": 200,
+                    "tax": 36,
+                    "purpose": "payout",
+                    "status": "processed",
+                    "utr": "ARENA0000000001",
+                    "mode": "IMPS",
+                    "reference_id": null,
+                    "narration": "Arena Merchant One Fund Transf",
+                    "batch_id": null,
+                    "failure_reason": null,
+                    "created_at": 1788627767,
+                    "error": {
+                      "source": null,
+                      "reason": null,
+                      "description": null,
+                      "code": "NA",
+                      "step": "NA",
+                      "metadata": {}
+                    },
+                    "status_details": {
+                      "reason": "payout_processed",
+                      "description": "Payout is processed and the money has been credited into the beneficiary account."
+                    }
+                  }
+                }
+              },
+              "created_at": 1788627768
+            }
+          }
+        ],
+        "boundary": "actual merchant-webhook-sink HTTP receipt; signature bytes are redacted"
+      },
+      "bank": {
+        "events": [
+          {
+            "action": "transfer_init",
+            "attempt_id": "1",
+            "scenario": "success",
+            "poll": 0,
+            "at": 1788627768.1539938
+          }
+        ]
+      },
+      "monolith": {
+        "events": [
+          {
+            "kind": "pricing_rule_selected",
+            "at": 1788627767.5066023,
+            "payload": {
+              "request": {
+                "payout_id": "TYQm6B1u9GGycw",
+                "purpose": "payout",
+                "balance_id": "ARENABAL000001",
+                "merchant_id": "ARENAM00000001",
+                "amount": 10000,
+                "method": "fund_transfer",
+                "fee_type": "",
+                "mode": "IMPS",
+                "channel": "yesbank",
+                "user_id": ""
+              },
+              "response": {
+                "fees": 200,
+                "tax": 36,
+                "pricing_rule_id": "ARENAPLAN00001",
+                "error": "",
+                "code": ""
+              }
+            }
+          },
+          {
+            "kind": "source_update",
+            "at": 1788627767.5154605,
+            "payload": {
+              "payout_id": "TYQm6B1u9GGycw",
+              "source_details": [
+                {}
+              ],
+              "previous_status": "create_request_submitted",
+              "expected_current_status": "ledger_response_awaited"
+            }
+          },
+          {
+            "kind": "source_update",
+            "at": 1788627767.564369,
+            "payload": {
+              "payout_id": "TYQm6B1u9GGycw",
+              "source_details": [
+                {}
+              ],
+              "previous_status": "ledger_response_awaited",
+              "expected_current_status": "created"
+            }
+          },
+          {
+            "kind": "source_update",
+            "at": 1788627767.9719143,
+            "payload": {
+              "payout_id": "TYQm6B1u9GGycw",
+              "source_details": [
+                {}
+              ],
+              "previous_status": "created",
+              "expected_current_status": "initiated"
+            }
+          },
+          {
+            "kind": "source_update",
+            "at": 1788627768.0342784,
+            "payload": {
+              "payout_id": "TYQm6B1u9GGycw",
+              "source_details": [
+                {}
+              ],
+              "previous_status": "created",
+              "expected_current_status": "initiated"
+            }
+          },
+          {
+            "kind": "update_fts_fund_transfer_inbound",
+            "at": 1788627768.1222012,
+            "payload": {
+              "bank_processed_time": "",
+              "bank_status_code": "",
+              "channel": "RBL",
+              "extra_info": {
+                "cms_ref_no": "",
+                "internal_error": false
+              },
+              "failure_reason": "",
+              "fund_transfer_id": 1,
+              "gateway_error_code": "",
+              "gateway_ref_no": "TYQm6puk5NIR",
+              "mode": "IFT",
+              "narration": "Arena Merchant One Fund Transf",
+              "remarks": "",
+              "return_utr": "",
+              "source_id": "TYQm6B1u9GGycw",
+              "source_type": "payout",
+              "status": "INITIATED",
+              "status_details": null,
+              "utr": ""
+            }
+          },
+          {
+            "kind": "payout_merchant_resolved",
+            "at": 1788627768.1450062,
+            "payload": {
+              "payout_id": "TYQm6B1u9GGycw",
+              "merchant_id": "ARENAM00000001",
+              "origin": "payouts.payouts"
+            }
+          },
+          {
+            "kind": "update_payouts_details_with_fts",
+            "at": 1788627768.1628702,
+            "payload": {
+              "status": 200,
+              "body": {
+                "source_id": "TYQm6B1u9GGycw",
+                "fund_transfer_id": 1,
+                "mode": "IFT",
+                "channel": "RBL",
+                "gateway_ref_no": "TYQm6puk5NIR",
+                "fta_status": "initiated"
+              }
+            }
+          },
+          {
+            "kind": "update_fts_fund_transfer_inbound",
+            "at": 1788627768.1885812,
+            "payload": {
+              "bank_account_type": "NODAL",
+              "bank_processed_time": "",
+              "bank_status_code": "SUCCESS",
+              "channel": "RBL",
+              "extra_info": {
+                "bank_status_codes": {
+                  "transfer_init": "SUCCESS",
+                  "transfer_status": ""
+                },
+                "beneficiary_acc_no": "",
+                "beneficiary_acc_type": "",
+                "beneficiary_bank": "",
+                "beneficiary_name": "",
+                "beneficiary_validation_mode": "",
+                "cms_ref_no": "",
+                "deemed_success": {
+                  "creation_time": 0,
+                  "gateway_error_code": ""
+                },
+                "internal_error": false,
+                "is_pending": false,
+                "payee_ifsc": "",
+                "ponum": ""
+              },
+              "failure_reason": "",
+              "fund_transfer_id": 1,
+              "gateway_error_code": "",
+              "gateway_ref_no": "TYQm6puk5NIR",
+              "mode": "IFT",
+              "narration": "Arena Merchant One Fund Transf",
+              "remarks": "",
+              "return_utr": "",
+              "source_account_id": 900001,
+              "source_id": "TYQm6B1u9GGycw",
+              "source_type": "payout",
+              "status": "PROCESSED",
+              "status_details": null,
+              "utr": "ARENA0000000001"
+            }
+          },
+          {
+            "kind": "payout_merchant_resolved",
+            "at": 1788627768.189906,
+            "payload": {
+              "payout_id": "TYQm6B1u9GGycw",
+              "merchant_id": "ARENAM00000001",
+              "origin": "payouts.payouts"
+            }
+          },
+          {
+            "kind": "update_payouts_details_with_fts",
+            "at": 1788627768.198396,
+            "payload": {
+              "status": 200,
+              "body": {
+                "source_id": "TYQm6B1u9GGycw",
+                "fund_transfer_id": 1,
+                "utr": "ARENA0000000001",
+                "mode": "IFT",
+                "channel": "RBL",
+                "bank_status_code": "SUCCESS",
+                "gateway_ref_no": "TYQm6puk5NIR",
+                "fta_status": "processed"
+              }
+            }
+          },
+          {
+            "kind": "mail_and_sms",
+            "at": 1788627768.2204843,
+            "payload": {
+              "entity": "transaction",
+              "entity_id": "TYQm6FAgwpFo7R",
+              "type": "payout.processed",
+              "metadata": {
+                "amount": 10000,
+                "created_at": 1788627767,
+                "payout_id": "TYQm6B1u9GGycw"
+              }
+            }
+          },
+          {
+            "kind": "source_update",
+            "at": 1788627768.2214253,
+            "payload": {
+              "payout_id": "TYQm6B1u9GGycw",
+              "source_details": [
+                {}
+              ],
+              "previous_status": "initiated",
+              "expected_current_status": "processed"
+            }
+          },
+          {
+            "kind": "payout_status_relay",
+            "at": 1788627768.2248757,
+            "payload": {
+              "body": {
+                "source_id": "TYQm6B1u9GGycw",
+                "status": "processed",
+                "failure_reason": "",
+                "bank_status_code": "SUCCESS",
+                "fts_fund_account_id": "900001",
+                "fts_account_type": "nodal",
+                "fts_status": "processed"
+              },
+              "status": 200
+            }
+          }
+        ],
+        "boundary": "observed substitute calls; absence alone does not prove a different route"
+      }
+    },
+    "observability": {
+      "payout_state_history": "persisted payout_logs, ordered by created_at and id",
+      "fts_attempt_chain": "all persisted attempts for the source transfer(s), ordered by id",
+      "fts_state_history": "attempt rows expose current status; an event history is not inferred",
+      "queue_events": "not_observed; no queue message or acknowledgment is fabricated",
+      "atomicity": "successive reads across databases; not a cross-service atomic snapshot",
+      "capture_retention": "bank and webhook capture endpoints retain bounded process-local history"
+    },
+    "merchant_id": "ARENAM00000001",
+    "finished_at": 1788627769.634836,
+    "duration_seconds": 0.03385281562805176
+  },
+  "finished_at": 1788627769.6409802,
+  "duration_seconds": 2.3629310131073,
+  "trace": [
+    {
+      "sequence": 1,
+      "at": 1788627767.3202546,
+      "kind": "http_request",
+      "data": {
+        "method": "POST",
+        "url": "http://mozart-sim:8085/_arena/scenario",
+        "body": {
+          "merchant_id": "ARENAM00000001",
+          "scenario": "success"
+        }
+      }
+    },
+    {
+      "sequence": 2,
+      "at": 1788627767.3267832,
+      "kind": "http_response",
+      "data": {
+        "method": "POST",
+        "url": "http://mozart-sim:8085/_arena/scenario",
+        "status": 200,
+        "body": {
+          "key": "ARENAM00000001",
+          "scenario": "success",
+          "polls": 2
+        }
+      }
+    },
+    {
+      "sequence": 3,
+      "at": 1788627767.4321861,
+      "kind": "http_request",
+      "data": {
+        "method": "POST",
+        "url": "http://kong-lite:8080/v1/payouts",
+        "body": {
+          "fund_account_id": "fa_ARENAFAX000001",
+          "account_number": "2323230099999999",
+          "amount": 10000,
+          "currency": "INR",
+          "mode": "IMPS",
+          "purpose": "payout",
+          "queue_if_low_balance": false,
+          "merchant_id": "ARENAM00000001"
+        }
+      }
+    },
+    {
+      "sequence": 4,
+      "at": 1788627767.568799,
+      "kind": "http_response",
+      "data": {
+        "method": "POST",
+        "url": "http://kong-lite:8080/v1/payouts",
+        "status": 200,
+        "body": {
+          "id": "pout_TYQm6B1u9GGycw",
+          "entity": "payout",
+          "fund_account_id": "fa_ARENAFAX000001",
+          "merchant_id": "ARENAM00000001",
+          "amount": 10000,
+          "currency": "INR",
+          "notes": {},
+          "fees": 200,
+          "tax": 36,
+          "status": "processing",
+          "purpose": "payout",
+          "utr": null,
+          "mode": "IMPS",
+          "reference_id": null,
+          "narration": "Arena Merchant One Fund Transf",
+          "batch_id": null,
+          "failure_reason": null,
+          "created_at": 1788627767,
+          "fee_type": null,
+          "status_details": {
+            "reason": null,
+            "description": null,
+            "source": null
+          }
+        }
+      }
+    },
+    {
+      "sequence": 5,
+      "at": 1788627767.572213,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM journal WHERE transactor_id=%s AND transactor_event=%s ORDER BY created_at DESC LIMIT 1",
+        "params": [
+          "pout_TYQm6B1u9GGycw",
+          "payout_initiated"
+        ],
+        "rows": {
+          "id": "TYQm6FAgwpFo7R",
+          "merchant_id": "ARENAM00000001",
+          "amount": "10200.000000",
+          "base_amount": "10200.000000",
+          "currency": "INR",
+          "transactor_id": "pout_TYQm6B1u9GGycw",
+          "transactor_event": "payout_initiated",
+          "transaction_date": 1788627767,
+          "created_at": 1788627767,
+          "updated_at": 1788627767,
+          "created_at_microsecond": 1788627767543536,
+          "updated_at_microsecond": 1788627767543536,
+          "tenant": "X"
+        }
+      }
+    },
+    {
+      "sequence": 6,
+      "at": 1788627767.5729234,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT account_id, type, amount FROM ledger_entries WHERE journal_id=%s",
+        "params": [
+          "TYQm6FAgwpFo7R"
+        ],
+        "rows": [
+          {
+            "account_id": "ARENAM1ACC0003",
+            "type": "credit",
+            "amount": "164.000000"
+          },
+          {
+            "account_id": "ARENAM1ACC0004",
+            "type": "credit",
+            "amount": "36.000000"
+          },
+          {
+            "account_id": "ARENAM1ACC0001",
+            "type": "debit",
+            "amount": "10200.000000"
+          },
+          {
+            "account_id": "ARENAM1ACC0002",
+            "type": "credit",
+            "amount": "10000.000000"
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 7,
+      "at": 1788627767.573881,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM payouts WHERE id=%s",
+        "params": [
+          "TYQm6B1u9GGycw"
+        ],
+        "rows": {
+          "id": "TYQm6B1u9GGycw",
+          "reference_id": null,
+          "narration": "Arena Merchant One Fund Transf",
+          "merchant_id": "ARENAM00000001",
+          "balance_id": "ARENABAL000001",
+          "method": "fund_transfer",
+          "mode": "IMPS",
+          "fund_account_id": "ARENAFAX000001",
+          "batch_id": null,
+          "idempotency_key": "",
+          "user_id": "",
+          "purpose": "payout",
+          "purpose_type": "settlement",
+          "amount": 10000,
+          "currency": "INR",
+          "notes": "{}",
+          "fees": 200,
+          "tax": 36,
+          "status": "created",
+          "fts_transfer_id": 0,
+          "transaction_id": "TYQm6FAgwpFo7R",
+          "channel": "yesbank",
+          "utr": null,
+          "failure_reason": null,
+          "cancellation_user_id": "",
+          "status_code": null,
+          "remarks": null,
+          "created_at": 1788627767,
+          "updated_at": 1788627767,
+          "payout_link_id": "",
+          "pricing_rule_id": "ARENAPLAN00001",
+          "scheduled_at": null,
+          "fee_type": null,
+          "registered_name": "",
+          "workflow_feature": 0,
+          "queued_reason": "",
+          "queued_at": null,
+          "on_hold_at": null,
+          "origin": 1,
+          "status_details_id": "",
+          "gateway_ref_no": null
+        }
+      }
+    },
+    {
+      "sequence": 8,
+      "at": 1788627768.0761778,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM payouts WHERE id=%s",
+        "params": [
+          "TYQm6B1u9GGycw"
+        ],
+        "rows": {
+          "id": "TYQm6B1u9GGycw",
+          "reference_id": null,
+          "narration": "Arena Merchant One Fund Transf",
+          "merchant_id": "ARENAM00000001",
+          "balance_id": "ARENABAL000001",
+          "method": "fund_transfer",
+          "mode": "IMPS",
+          "fund_account_id": "ARENAFAX000001",
+          "batch_id": null,
+          "idempotency_key": "",
+          "user_id": "",
+          "purpose": "payout",
+          "purpose_type": "settlement",
+          "amount": 10000,
+          "currency": "INR",
+          "notes": "{}",
+          "fees": 200,
+          "tax": 36,
+          "status": "initiated",
+          "fts_transfer_id": 1,
+          "transaction_id": "TYQm6FAgwpFo7R",
+          "channel": "yesbank",
+          "utr": null,
+          "failure_reason": null,
+          "cancellation_user_id": "",
+          "status_code": null,
+          "remarks": null,
+          "created_at": 1788627767,
+          "updated_at": 1788627768,
+          "payout_link_id": "",
+          "pricing_rule_id": "ARENAPLAN00001",
+          "scheduled_at": null,
+          "fee_type": null,
+          "registered_name": "",
+          "workflow_feature": 0,
+          "queued_reason": "",
+          "queued_at": null,
+          "on_hold_at": null,
+          "origin": 1,
+          "status_details_id": "",
+          "gateway_ref_no": null
+        }
+      }
+    },
+    {
+      "sequence": 9,
+      "at": 1788627768.577907,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM payouts WHERE id=%s",
+        "params": [
+          "TYQm6B1u9GGycw"
+        ],
+        "rows": {
+          "id": "TYQm6B1u9GGycw",
+          "reference_id": null,
+          "narration": "Arena Merchant One Fund Transf",
+          "merchant_id": "ARENAM00000001",
+          "balance_id": "ARENABAL000001",
+          "method": "fund_transfer",
+          "mode": "IMPS",
+          "fund_account_id": "ARENAFAX000001",
+          "batch_id": null,
+          "idempotency_key": "",
+          "user_id": "",
+          "purpose": "payout",
+          "purpose_type": "settlement",
+          "amount": 10000,
+          "currency": "INR",
+          "notes": "{}",
+          "fees": 200,
+          "tax": 36,
+          "status": "processed",
+          "fts_transfer_id": 1,
+          "transaction_id": "TYQm6FAgwpFo7R",
+          "channel": "RBL",
+          "utr": "ARENA0000000001",
+          "failure_reason": null,
+          "cancellation_user_id": "",
+          "status_code": null,
+          "remarks": null,
+          "created_at": 1788627767,
+          "updated_at": 1788627768,
+          "payout_link_id": "",
+          "pricing_rule_id": "ARENAPLAN00001",
+          "scheduled_at": null,
+          "fee_type": null,
+          "registered_name": "",
+          "workflow_feature": 0,
+          "queued_reason": "",
+          "queued_at": null,
+          "on_hold_at": null,
+          "origin": 1,
+          "status_details_id": "TYQm6x4TFbgfyr",
+          "gateway_ref_no": null
+        }
+      }
+    },
+    {
+      "sequence": 10,
+      "at": 1788627768.5823882,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT t.*, s.bank_account_type FROM transfers t JOIN source_accounts s ON s.id=t.source_account_primary_id WHERE t.source_id=%s AND t.source_type='payout'",
+        "params": [
+          "TYQm6B1u9GGycw"
+        ],
+        "rows": {
+          "id": 1,
+          "product": "PAYOUT",
+          "merchant_id": "ARENAM00000001",
+          "source_type": "payout",
+          "source_id": "TYQm6B1u9GGycw",
+          "preferred_mode": "IMPS",
+          "preferred_channel": "ICICI",
+          "preferred_source_account_id": null,
+          "fund_account_id": 900313,
+          "attempts": 1,
+          "channel": "RBL",
+          "source_account_id": 900001,
+          "source_account_primary_id": 900001,
+          "amount": 10000,
+          "mode": "IFT",
+          "status": "PROCESSED",
+          "utr": "ARENA0000000001",
+          "return_utr": null,
+          "narration": "Arena Merchant One Fund Transf",
+          "remarks": null,
+          "bank_status_code": "SUCCESS",
+          "failure_reason": null,
+          "bank_processed_time": null,
+          "initiate_at": 1788627768,
+          "transfer_by": 1788627768,
+          "extra_info": "{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"SUCCESS\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"}",
+          "retry": 1,
+          "created_at": 1788627768,
+          "updated_at": 1788627768,
+          "gateway_error_code": null,
+          "is_batch": 0,
+          "type": null,
+          "batch_id": null,
+          "credited_at": null,
+          "is_credited": 1,
+          "is_debited": 1,
+          "request_meta": "{\"merchant_detail\": {\"merchant_pan\": \"\", \"merchant_name\": \"Arena Merchant One\", \"merchant_address\": \"1 Arena Street, Bengaluru, IN - 560001\"}}",
+          "bank_account_type": "NODAL"
+        }
+      }
+    },
+    {
+      "sequence": 11,
+      "at": 1788627768.5837853,
+      "kind": "processed_journal_wait_policy",
+      "data": {
+        "payout_id": "pout_TYQm6B1u9GGycw",
+        "worker_retry_delay_seconds": 30,
+        "settlement_allowance_seconds": 20,
+        "timeout_seconds": 50,
+        "scope": "one source-configured worker retry plus settlement; no retry occurrence inferred"
+      }
+    },
+    {
+      "sequence": 12,
+      "at": 1788627768.586266,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM journal WHERE transactor_id=%s AND transactor_event=%s ORDER BY created_at DESC LIMIT 1",
+        "params": [
+          "pout_TYQm6B1u9GGycw",
+          "payout_processed"
+        ],
+        "rows": null
+      }
+    },
+    {
+      "sequence": 13,
+      "at": 1788627769.0879579,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM journal WHERE transactor_id=%s AND transactor_event=%s ORDER BY created_at DESC LIMIT 1",
+        "params": [
+          "pout_TYQm6B1u9GGycw",
+          "payout_processed"
+        ],
+        "rows": null
+      }
+    },
+    {
+      "sequence": 14,
+      "at": 1788627769.5911849,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM journal WHERE transactor_id=%s AND transactor_event=%s ORDER BY created_at DESC LIMIT 1",
+        "params": [
+          "pout_TYQm6B1u9GGycw",
+          "payout_processed"
+        ],
+        "rows": {
+          "id": "TYQm7yArvTiwTL",
+          "merchant_id": "ARENAM00000001",
+          "amount": "10000.000000",
+          "base_amount": "10000.000000",
+          "currency": "INR",
+          "transactor_id": "pout_TYQm6B1u9GGycw",
+          "transactor_event": "payout_processed",
+          "transaction_date": 1788627769,
+          "created_at": 1788627769,
+          "updated_at": 1788627769,
+          "created_at_microsecond": 1788627769124663,
+          "updated_at_microsecond": 1788627769124663,
+          "tenant": "X"
+        }
+      }
+    },
+    {
+      "sequence": 15,
+      "at": 1788627769.5927753,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT account_id, type, amount FROM ledger_entries WHERE journal_id=%s",
+        "params": [
+          "TYQm7yArvTiwTL"
+        ],
+        "rows": [
+          {
+            "account_id": "ARENAPOOLACC02",
+            "type": "credit",
+            "amount": "10000.000000"
+          },
+          {
+            "account_id": "ARENAM1ACC0002",
+            "type": "debit",
+            "amount": "10000.000000"
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 16,
+      "at": 1788627769.593849,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT COUNT(*) AS c FROM journal WHERE transactor_id=%s AND transactor_event=%s",
+        "params": [
+          "pout_TYQm6B1u9GGycw",
+          "payout_processed"
+        ],
+        "rows": {
+          "c": 1
+        }
+      }
+    },
+    {
+      "sequence": 17,
+      "at": 1788627769.594275,
+      "kind": "http_request",
+      "data": {
+        "method": "GET",
+        "url": "http://merchant-webhook-sink:8080/_arena/deliveries",
+        "body": null
+      }
+    },
+    {
+      "sequence": 18,
+      "at": 1788627769.5991452,
+      "kind": "http_response",
+      "data": {
+        "method": "GET",
+        "url": "http://merchant-webhook-sink:8080/_arena/deliveries",
+        "status": 200,
+        "body": {
+          "deliveries": [
+            {
+              "merchant": "ARENAM00000001",
+              "path": "/webhook/ARENAM00000001",
+              "headers": {
+                "Content-Type": "application/json",
+                "X-Razorpay-Event-Id": "ev_ARENA000099",
+                "Request-Id": "ev_ARENA000099"
+              },
+              "body_sha256": "11f10299621d0bbfb22da575c91462b879b311d8c61bad6a38fd2ba8edd209c0",
+              "event_id": "ev_ARENA000099",
+              "request_id": "ev_ARENA000099",
+              "signature_present": true,
+              "signature_valid": true,
+              "received_at": 1788627767.5800037,
+              "body": {
+                "entity": "event",
+                "account_id": "acc_ARENAM00000001",
+                "event": "payout.initiated",
+                "contains": [
+                  "payout"
+                ],
+                "payload": {
+                  "payout": {
+                    "entity": {
+                      "id": "pout_TYQm6B1u9GGycw",
+                      "entity": "payout",
+                      "fund_account_id": "fa_ARENAFAX000001",
+                      "amount": 10000,
+                      "currency": "INR",
+                      "notes": {},
+                      "fees": 200,
+                      "tax": 36,
+                      "purpose": "payout",
+                      "status": "processing",
+                      "utr": null,
+                      "mode": "IMPS",
+                      "reference_id": null,
+                      "narration": "Arena Merchant One Fund Transf",
+                      "batch_id": null,
+                      "failure_reason": null,
+                      "created_at": 1788627767
+                    }
+                  }
+                },
+                "created_at": 1788627767
+              }
+            },
+            {
+              "merchant": "ARENAM00000001",
+              "path": "/webhook/ARENAM00000001",
+              "headers": {
+                "Content-Type": "application/json",
+                "X-Razorpay-Event-Id": "ev_ARENA000101",
+                "Request-Id": "ev_ARENA000101"
+              },
+              "body_sha256": "bf31b540017e33122f63430c0e78e57956626a2b013d97afea8997448a9b1a2c",
+              "event_id": "ev_ARENA000101",
+              "request_id": "ev_ARENA000101",
+              "signature_present": true,
+              "signature_valid": true,
+              "received_at": 1788627768.2020109,
+              "body": {
+                "entity": "event",
+                "account_id": "acc_ARENAM00000001",
+                "event": "payout.updated",
+                "contains": [
+                  "payout"
+                ],
+                "payload": {
+                  "payout": {
+                    "entity": {
+                      "id": "pout_TYQm6B1u9GGycw",
+                      "entity": "payout",
+                      "fund_account_id": "fa_ARENAFAX000001",
+                      "amount": 10000,
+                      "currency": "INR",
+                      "notes": {},
+                      "fees": 200,
+                      "tax": 36,
+                      "purpose": "payout",
+                      "status": "processing",
+                      "utr": "ARENA0000000001",
+                      "mode": "IMPS",
+                      "reference_id": null,
+                      "narration": "Arena Merchant One Fund Transf",
+                      "batch_id": null,
+                      "failure_reason": null,
+                      "created_at": 1788627767,
+                      "status_details": {
+                        "reason": "payout_processed",
+                        "description": "Payout is processed and the money has been credited into the beneficiary account."
+                      }
+                    }
+                  }
+                },
+                "created_at": 1788627768
+              }
+            },
+            {
+              "merchant": "ARENAM00000001",
+              "path": "/webhook/ARENAM00000001",
+              "headers": {
+                "Content-Type": "application/json",
+                "X-Razorpay-Event-Id": "ev_ARENA000103",
+                "Request-Id": "ev_ARENA000103"
+              },
+              "body_sha256": "90934f52f089c14d15dc2ba5943b7b6fadc052387ddf14d36f2f89fcc1d4b9db",
+              "event_id": "ev_ARENA000103",
+              "request_id": "ev_ARENA000103",
+              "signature_present": true,
+              "signature_valid": true,
+              "received_at": 1788627768.2272756,
+              "body": {
+                "entity": "event",
+                "account_id": "acc_ARENAM00000001",
+                "event": "payout.processed",
+                "contains": [
+                  "payout"
+                ],
+                "payload": {
+                  "payout": {
+                    "entity": {
+                      "id": "pout_TYQm6B1u9GGycw",
+                      "entity": "payout",
+                      "fund_account_id": "fa_ARENAFAX000001",
+                      "amount": 10000,
+                      "currency": "INR",
+                      "notes": {},
+                      "fees": 200,
+                      "tax": 36,
+                      "purpose": "payout",
+                      "status": "processed",
+                      "utr": "ARENA0000000001",
+                      "mode": "IMPS",
+                      "reference_id": null,
+                      "narration": "Arena Merchant One Fund Transf",
+                      "batch_id": null,
+                      "failure_reason": null,
+                      "created_at": 1788627767,
+                      "error": {
+                        "source": null,
+                        "reason": null,
+                        "description": null,
+                        "code": "NA",
+                        "step": "NA",
+                        "metadata": {}
+                      },
+                      "status_details": {
+                        "reason": "payout_processed",
+                        "description": "Payout is processed and the money has been credited into the beneficiary account."
+                      }
+                    }
+                  }
+                },
+                "created_at": 1788627768
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sequence": 19,
+      "at": 1788627769.6041086,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM payouts WHERE id=%s",
+        "params": [
+          "TYQm6B1u9GGycw"
+        ],
+        "rows": {
+          "id": "TYQm6B1u9GGycw",
+          "reference_id": null,
+          "narration": "Arena Merchant One Fund Transf",
+          "merchant_id": "ARENAM00000001",
+          "balance_id": "ARENABAL000001",
+          "method": "fund_transfer",
+          "mode": "IMPS",
+          "fund_account_id": "ARENAFAX000001",
+          "batch_id": null,
+          "idempotency_key": "",
+          "user_id": "",
+          "purpose": "payout",
+          "purpose_type": "settlement",
+          "amount": 10000,
+          "currency": "INR",
+          "notes": "{}",
+          "fees": 200,
+          "tax": 36,
+          "status": "processed",
+          "fts_transfer_id": 1,
+          "transaction_id": "TYQm6FAgwpFo7R",
+          "channel": "RBL",
+          "utr": "ARENA0000000001",
+          "failure_reason": null,
+          "cancellation_user_id": "",
+          "status_code": null,
+          "remarks": null,
+          "created_at": 1788627767,
+          "updated_at": 1788627768,
+          "payout_link_id": "",
+          "pricing_rule_id": "ARENAPLAN00001",
+          "scheduled_at": null,
+          "fee_type": null,
+          "registered_name": "",
+          "workflow_feature": 0,
+          "queued_reason": "",
+          "queued_at": null,
+          "on_hold_at": null,
+          "origin": 1,
+          "status_details_id": "TYQm6x4TFbgfyr",
+          "gateway_ref_no": null
+        }
+      }
+    },
+    {
+      "sequence": 20,
+      "at": 1788627769.6057196,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM payout_logs WHERE payout_id=%s ORDER BY created_at,id LIMIT %s",
+        "params": [
+          "TYQm6B1u9GGycw",
+          501
+        ],
+        "rows": [
+          {
+            "id": "TYQm6CuiinNNdj",
+            "payout_id": "TYQm6B1u9GGycw",
+            "event": "ledger_response_awaited",
+            "from": "create_request_submitted",
+            "to": "ledger_response_awaited",
+            "mode": "SYSTEM",
+            "triggered_by": "SYSTEM",
+            "created_at": 1788627767,
+            "updated_at": 1788627767
+          },
+          {
+            "id": "TYQm6GDglO1zEL",
+            "payout_id": "TYQm6B1u9GGycw",
+            "event": "created",
+            "from": "ledger_response_awaited",
+            "to": "created",
+            "mode": "SYSTEM",
+            "triggered_by": "SYSTEM",
+            "created_at": 1788627767,
+            "updated_at": 1788627767
+          },
+          {
+            "id": "TYQm6hYRHyd0tk",
+            "payout_id": "TYQm6B1u9GGycw",
+            "event": "initiated",
+            "from": "created",
+            "to": "initiated",
+            "mode": "SYSTEM",
+            "triggered_by": "SYSTEM",
+            "created_at": 1788627767,
+            "updated_at": 1788627767
+          },
+          {
+            "id": "TYQm6yHSZXFsw6",
+            "payout_id": "TYQm6B1u9GGycw",
+            "event": "processed",
+            "from": "initiated",
+            "to": "processed",
+            "mode": "SYSTEM",
+            "triggered_by": "SYSTEM",
+            "created_at": 1788627768,
+            "updated_at": 1788627768
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 21,
+      "at": 1788627769.6080546,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM reversals WHERE payout_id=%s ORDER BY created_at,id LIMIT %s",
+        "params": [
+          "TYQm6B1u9GGycw",
+          21
+        ],
+        "rows": []
+      }
+    },
+    {
+      "sequence": 22,
+      "at": 1788627769.608959,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM transfers WHERE source_id=%s AND source_type='payout' ORDER BY id LIMIT %s",
+        "params": [
+          "TYQm6B1u9GGycw",
+          21
+        ],
+        "rows": [
+          {
+            "id": 1,
+            "product": "PAYOUT",
+            "merchant_id": "ARENAM00000001",
+            "source_type": "payout",
+            "source_id": "TYQm6B1u9GGycw",
+            "preferred_mode": "IMPS",
+            "preferred_channel": "ICICI",
+            "preferred_source_account_id": null,
+            "fund_account_id": 900313,
+            "attempts": 1,
+            "channel": "RBL",
+            "source_account_id": 900001,
+            "source_account_primary_id": 900001,
+            "amount": 10000,
+            "mode": "IFT",
+            "status": "PROCESSED",
+            "utr": "ARENA0000000001",
+            "return_utr": null,
+            "narration": "Arena Merchant One Fund Transf",
+            "remarks": null,
+            "bank_status_code": "SUCCESS",
+            "failure_reason": null,
+            "bank_processed_time": null,
+            "initiate_at": 1788627768,
+            "transfer_by": 1788627768,
+            "extra_info": "{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"SUCCESS\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"}",
+            "retry": 1,
+            "created_at": 1788627768,
+            "updated_at": 1788627768,
+            "gateway_error_code": null,
+            "is_batch": 0,
+            "type": null,
+            "batch_id": null,
+            "credited_at": null,
+            "is_credited": 1,
+            "is_debited": 1,
+            "request_meta": "{\"merchant_detail\": {\"merchant_pan\": \"\", \"merchant_name\": \"Arena Merchant One\", \"merchant_address\": \"1 Arena Street, Bengaluru, IN - 560001\"}}"
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 23,
+      "at": 1788627769.6099055,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM attempts WHERE transfer_id IN (%s) ORDER BY id LIMIT %s",
+        "params": [
+          1,
+          501
+        ],
+        "rows": [
+          {
+            "id": 1,
+            "product": "PAYOUT",
+            "merchant_id": "ARENAM00000001",
+            "transfer_id": 1,
+            "channel": "RBL",
+            "source_account_id": 900001,
+            "source_account_primary_id": 900001,
+            "amount": 10000,
+            "fund_account_id": 900313,
+            "bank_status_code": "SUCCESS",
+            "mode": "IFT",
+            "status": "PROCESSED",
+            "utr": "ARENA0000000001",
+            "return_utr": null,
+            "gateway_ref_no": "TYQm6puk5NIR",
+            "narration": "Arena Merchant One Fund Transf",
+            "remarks": null,
+            "failure_reason": null,
+            "bank_processed_time": null,
+            "cms_ref_no": null,
+            "initiate_at": 1788627768,
+            "acknowledged_at": 1788627768,
+            "transfer_response": "{\"data\":{\"_raw\":\"\",\"beneficiary_name\":\"\",\"id\":1,\"remarks\":\"\",\"utr\":\"ARENA0000000001\",\"bank_status_code\":\"SUCCESS\",\"gateway_error_code\":\"\",\"cms_ref_no\":\"\",\"failure_reason\":\"\",\"bank_request_id\":\"\",\"bank_processed_time\":\"\",\"gateway_auth\":{\"token\":\"\",\"token_type\":\"\",\"validity_duration\":\"\"},\"gateway_session\":{\"token\":\"\",\"token_type\":\"\",\"validity_duration\":\"\"},\"return_utr\":\"\",\"ponum\":\"\",\"balance\":\"\",\"accountBalanceAmount\":\"\",\"credited_at\":\"\",\"is_credited\":true,\"is_debited\":true,\"beneficiary_code\":\"\",\"beneficiary_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"},\"error\":{\"description\":\"\",\"gateway_error_code\":\"\",\"gateway_error_description\":\"\",\"gateway_status_code\":0,\"internal_error_code\":\"\"},\"external_trace_id\":\"SIM_TRACE_ID\",\"mozart_id\":\"SIM_MOZART_ID\",\"success\":true,\"meta\":{\"error_type\":\"UNKNOWN\",\"merchant_error\":false,\"critical_error\":false,\"retriable_error\":false,\"pending\":false,\"processed\":true,\"failed\":false,\"reversed\":false},\"extra_info\":{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"},\"HTTPStatusCode\":200}",
+            "status_response": null,
+            "extra_info": "{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"SUCCESS\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"}",
+            "created_at": 1788627768,
+            "updated_at": 1788627768,
+            "gateway_error_code": null,
+            "type": null,
+            "batch_id": null,
+            "gateway_error_code_init": null,
+            "credited_at": null,
+            "is_credited": 1,
+            "is_debited": 1,
+            "re_initiate_count": 0
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 24,
+      "at": 1788627769.6112382,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM transfer_meta WHERE source_id=%s ORDER BY id LIMIT %s",
+        "params": [
+          "TYQm6B1u9GGycw",
+          21
+        ],
+        "rows": []
+      }
+    },
+    {
+      "sequence": 25,
+      "at": 1788627769.61258,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM journal WHERE transactor_id = ANY(%s) OR id = ANY(%s) ORDER BY created_at,id LIMIT %s",
+        "params": [
+          [
+            "pout_TYQm6B1u9GGycw"
+          ],
+          [
+            "TYQm6FAgwpFo7R"
+          ],
+          101
+        ],
+        "rows": [
+          {
+            "id": "TYQm6FAgwpFo7R",
+            "merchant_id": "ARENAM00000001",
+            "amount": "10200.000000",
+            "base_amount": "10200.000000",
+            "currency": "INR",
+            "transactor_id": "pout_TYQm6B1u9GGycw",
+            "transactor_event": "payout_initiated",
+            "transaction_date": 1788627767,
+            "created_at": 1788627767,
+            "updated_at": 1788627767,
+            "created_at_microsecond": 1788627767543536,
+            "updated_at_microsecond": 1788627767543536,
+            "tenant": "X"
+          },
+          {
+            "id": "TYQm7yArvTiwTL",
+            "merchant_id": "ARENAM00000001",
+            "amount": "10000.000000",
+            "base_amount": "10000.000000",
+            "currency": "INR",
+            "transactor_id": "pout_TYQm6B1u9GGycw",
+            "transactor_event": "payout_processed",
+            "transaction_date": 1788627769,
+            "created_at": 1788627769,
+            "updated_at": 1788627769,
+            "created_at_microsecond": 1788627769124663,
+            "updated_at_microsecond": 1788627769124663,
+            "tenant": "X"
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 26,
+      "at": 1788627769.613709,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM ledger_entries WHERE journal_id = ANY(%s) ORDER BY created_at,id LIMIT %s",
+        "params": [
+          [
+            "TYQm6FAgwpFo7R",
+            "TYQm7yArvTiwTL"
+          ],
+          1001
+        ],
+        "rows": [
+          {
+            "id": "TYQm6FDVgTO2qS",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm6FAgwpFo7R",
+            "account_id": "ARENAM1ACC0003",
+            "amount": "164.000000",
+            "base_amount": "164.000000",
+            "type": "credit",
+            "currency": "INR",
+            "created_at": 1788627767,
+            "updated_at": 1788627767,
+            "created_at_microsecond": 1788627767544249,
+            "updated_at_microsecond": 1788627767544249,
+            "balance": null,
+            "balance_updated": false
+          },
+          {
+            "id": "TYQm6FDVuaWNUf",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm6FAgwpFo7R",
+            "account_id": "ARENAM1ACC0004",
+            "amount": "36.000000",
+            "base_amount": "36.000000",
+            "type": "credit",
+            "currency": "INR",
+            "created_at": 1788627767,
+            "updated_at": 1788627767,
+            "created_at_microsecond": 1788627767544249,
+            "updated_at_microsecond": 1788627767544249,
+            "balance": null,
+            "balance_updated": false
+          },
+          {
+            "id": "TYQm6FDW3KL35f",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm6FAgwpFo7R",
+            "account_id": "ARENAM1ACC0001",
+            "amount": "10200.000000",
+            "base_amount": "10200.000000",
+            "type": "debit",
+            "currency": "INR",
+            "created_at": 1788627767,
+            "updated_at": 1788627767,
+            "created_at_microsecond": 1788627767544249,
+            "updated_at_microsecond": 1788627767544249,
+            "balance": "9989800.000000",
+            "balance_updated": true
+          },
+          {
+            "id": "TYQm6FDWA2OIi6",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm6FAgwpFo7R",
+            "account_id": "ARENAM1ACC0002",
+            "amount": "10000.000000",
+            "base_amount": "10000.000000",
+            "type": "credit",
+            "currency": "INR",
+            "created_at": 1788627767,
+            "updated_at": 1788627767,
+            "created_at_microsecond": 1788627767544249,
+            "updated_at_microsecond": 1788627767544249,
+            "balance": null,
+            "balance_updated": false
+          },
+          {
+            "id": "TYQm7yDHqC0lI7",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm7yArvTiwTL",
+            "account_id": "ARENAPOOLACC02",
+            "amount": "10000.000000",
+            "base_amount": "10000.000000",
+            "type": "credit",
+            "currency": "INR",
+            "created_at": 1788627769,
+            "updated_at": 1788627769,
+            "created_at_microsecond": 1788627769125271,
+            "updated_at_microsecond": 1788627769125271,
+            "balance": null,
+            "balance_updated": false
+          },
+          {
+            "id": "TYQm7yDI4yQIMt",
+            "merchant_id": "ARENAM00000001",
+            "journal_id": "TYQm7yArvTiwTL",
+            "account_id": "ARENAM1ACC0002",
+            "amount": "10000.000000",
+            "base_amount": "10000.000000",
+            "type": "debit",
+            "currency": "INR",
+            "created_at": 1788627769,
+            "updated_at": 1788627769,
+            "created_at_microsecond": 1788627769125271,
+            "updated_at_microsecond": 1788627769125271,
+            "balance": null,
+            "balance_updated": false
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 27,
+      "at": 1788627769.6150258,
+      "kind": "db_read",
+      "data": {
+        "sql": "SELECT * FROM accounts WHERE id = ANY(%s) ORDER BY id LIMIT %s",
+        "params": [
+          [
+            "ARENAM1ACC0001",
+            "ARENAM1ACC0002",
+            "ARENAM1ACC0003",
+            "ARENAM1ACC0004",
+            "ARENAPOOLACC02"
+          ],
+          201
+        ],
+        "rows": [
+          {
+            "id": "ARENAM1ACC0001",
+            "merchant_id": "ARENAM00000001",
+            "status": "ACTIVATED",
+            "balance": "9989800.000000",
+            "min_balance": "0.000000",
+            "negative_balance": null,
+            "created_at": 1788627704,
+            "updated_at": 1788627767,
+            "deleted_at": null
+          },
+          {
+            "id": "ARENAM1ACC0002",
+            "merchant_id": "ARENAM00000001",
+            "status": "ACTIVATED",
+            "balance": "0.000000",
+            "min_balance": "0.000000",
+            "negative_balance": null,
+            "created_at": 1788627704,
+            "updated_at": 1788627704,
+            "deleted_at": null
+          },
+          {
+            "id": "ARENAM1ACC0003",
+            "merchant_id": "ARENAM00000001",
+            "status": "ACTIVATED",
+            "balance": "0.000000",
+            "min_balance": "0.000000",
+            "negative_balance": null,
+            "created_at": 1788627704,
+            "updated_at": 1788627704,
+            "deleted_at": null
+          },
+          {
+            "id": "ARENAM1ACC0004",
+            "merchant_id": "ARENAM00000001",
+            "status": "ACTIVATED",
+            "balance": "0.000000",
+            "min_balance": "0.000000",
+            "negative_balance": null,
+            "created_at": 1788627704,
+            "updated_at": 1788627704,
+            "deleted_at": null
+          },
+          {
+            "id": "ARENAPOOLACC02",
+            "merchant_id": "Gh0YfqKiXRdkCo",
+            "status": "ACTIVATED",
+            "balance": "0.000000",
+            "min_balance": "0.000000",
+            "negative_balance": null,
+            "created_at": 1788627704,
+            "updated_at": 1788627704,
+            "deleted_at": null
+          }
+        ]
+      }
+    },
+    {
+      "sequence": 28,
+      "at": 1788627769.6153605,
+      "kind": "http_request",
+      "data": {
+        "method": "GET",
+        "url": "http://merchant-webhook-sink:8080/_arena/deliveries",
+        "body": null
+      }
+    },
+    {
+      "sequence": 29,
+      "at": 1788627769.622058,
+      "kind": "http_response",
+      "data": {
+        "method": "GET",
+        "url": "http://merchant-webhook-sink:8080/_arena/deliveries",
+        "status": 200,
+        "body": {
+          "deliveries": [
+            {
+              "merchant": "ARENAM00000001",
+              "path": "/webhook/ARENAM00000001",
+              "headers": {
+                "Content-Type": "application/json",
+                "X-Razorpay-Event-Id": "ev_ARENA000099",
+                "Request-Id": "ev_ARENA000099"
+              },
+              "body_sha256": "11f10299621d0bbfb22da575c91462b879b311d8c61bad6a38fd2ba8edd209c0",
+              "event_id": "ev_ARENA000099",
+              "request_id": "ev_ARENA000099",
+              "signature_present": true,
+              "signature_valid": true,
+              "received_at": 1788627767.5800037,
+              "body": {
+                "entity": "event",
+                "account_id": "acc_ARENAM00000001",
+                "event": "payout.initiated",
+                "contains": [
+                  "payout"
+                ],
+                "payload": {
+                  "payout": {
+                    "entity": {
+                      "id": "pout_TYQm6B1u9GGycw",
+                      "entity": "payout",
+                      "fund_account_id": "fa_ARENAFAX000001",
+                      "amount": 10000,
+                      "currency": "INR",
+                      "notes": {},
+                      "fees": 200,
+                      "tax": 36,
+                      "purpose": "payout",
+                      "status": "processing",
+                      "utr": null,
+                      "mode": "IMPS",
+                      "reference_id": null,
+                      "narration": "Arena Merchant One Fund Transf",
+                      "batch_id": null,
+                      "failure_reason": null,
+                      "created_at": 1788627767
+                    }
+                  }
+                },
+                "created_at": 1788627767
+              }
+            },
+            {
+              "merchant": "ARENAM00000001",
+              "path": "/webhook/ARENAM00000001",
+              "headers": {
+                "Content-Type": "application/json",
+                "X-Razorpay-Event-Id": "ev_ARENA000101",
+                "Request-Id": "ev_ARENA000101"
+              },
+              "body_sha256": "bf31b540017e33122f63430c0e78e57956626a2b013d97afea8997448a9b1a2c",
+              "event_id": "ev_ARENA000101",
+              "request_id": "ev_ARENA000101",
+              "signature_present": true,
+              "signature_valid": true,
+              "received_at": 1788627768.2020109,
+              "body": {
+                "entity": "event",
+                "account_id": "acc_ARENAM00000001",
+                "event": "payout.updated",
+                "contains": [
+                  "payout"
+                ],
+                "payload": {
+                  "payout": {
+                    "entity": {
+                      "id": "pout_TYQm6B1u9GGycw",
+                      "entity": "payout",
+                      "fund_account_id": "fa_ARENAFAX000001",
+                      "amount": 10000,
+                      "currency": "INR",
+                      "notes": {},
+                      "fees": 200,
+                      "tax": 36,
+                      "purpose": "payout",
+                      "status": "processing",
+                      "utr": "ARENA0000000001",
+                      "mode": "IMPS",
+                      "reference_id": null,
+                      "narration": "Arena Merchant One Fund Transf",
+                      "batch_id": null,
+                      "failure_reason": null,
+                      "created_at": 1788627767,
+                      "status_details": {
+                        "reason": "payout_processed",
+                        "description": "Payout is processed and the money has been credited into the beneficiary account."
+                      }
+                    }
+                  }
+                },
+                "created_at": 1788627768
+              }
+            },
+            {
+              "merchant": "ARENAM00000001",
+              "path": "/webhook/ARENAM00000001",
+              "headers": {
+                "Content-Type": "application/json",
+                "X-Razorpay-Event-Id": "ev_ARENA000103",
+                "Request-Id": "ev_ARENA000103"
+              },
+              "body_sha256": "90934f52f089c14d15dc2ba5943b7b6fadc052387ddf14d36f2f89fcc1d4b9db",
+              "event_id": "ev_ARENA000103",
+              "request_id": "ev_ARENA000103",
+              "signature_present": true,
+              "signature_valid": true,
+              "received_at": 1788627768.2272756,
+              "body": {
+                "entity": "event",
+                "account_id": "acc_ARENAM00000001",
+                "event": "payout.processed",
+                "contains": [
+                  "payout"
+                ],
+                "payload": {
+                  "payout": {
+                    "entity": {
+                      "id": "pout_TYQm6B1u9GGycw",
+                      "entity": "payout",
+                      "fund_account_id": "fa_ARENAFAX000001",
+                      "amount": 10000,
+                      "currency": "INR",
+                      "notes": {},
+                      "fees": 200,
+                      "tax": 36,
+                      "purpose": "payout",
+                      "status": "processed",
+                      "utr": "ARENA0000000001",
+                      "mode": "IMPS",
+                      "reference_id": null,
+                      "narration": "Arena Merchant One Fund Transf",
+                      "batch_id": null,
+                      "failure_reason": null,
+                      "created_at": 1788627767,
+                      "error": {
+                        "source": null,
+                        "reason": null,
+                        "description": null,
+                        "code": "NA",
+                        "step": "NA",
+                        "metadata": {}
+                      },
+                      "status_details": {
+                        "reason": "payout_processed",
+                        "description": "Payout is processed and the money has been credited into the beneficiary account."
+                      }
+                    }
+                  }
+                },
+                "created_at": 1788627768
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sequence": 30,
+      "at": 1788627769.6225872,
+      "kind": "http_request",
+      "data": {
+        "method": "GET",
+        "url": "http://mozart-sim:8085/_arena/scenarios",
+        "body": null
+      }
+    },
+    {
+      "sequence": 31,
+      "at": 1788627769.6257122,
+      "kind": "http_response",
+      "data": {
+        "method": "GET",
+        "url": "http://mozart-sim:8085/_arena/scenarios",
+        "status": 200,
+        "body": {
+          "rules": {
+            "ARENAM00000001": {
+              "scenario": "success",
+              "polls": 2
+            }
+          },
+          "attempts": {
+            "1": {
+              "scenario": "success",
+              "polls": 2,
+              "count": 0,
+              "merchant_id": "ARENAM00000001"
+            }
+          },
+          "events": [
+            {
+              "action": "transfer_init",
+              "attempt_id": "1",
+              "scenario": "success",
+              "poll": 0,
+              "at": 1788627768.1539938
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sequence": 32,
+      "at": 1788627769.627777,
+      "kind": "http_request",
+      "data": {
+        "method": "GET",
+        "url": "http://monolith-stub:8080/_arena/log",
+        "body": null
+      }
+    },
+    {
+      "sequence": 33,
+      "at": 1788627769.6322386,
+      "kind": "http_response",
+      "data": {
+        "method": "GET",
+        "url": "http://monolith-stub:8080/_arena/log",
+        "status": 200,
+        "body": {
+          "log": [
+            {
+              "kind": "pricing_rule_selected",
+              "at": 1788627767.5066023,
+              "payload": {
+                "request": {
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "purpose": "payout",
+                  "balance_id": "ARENABAL000001",
+                  "merchant_id": "ARENAM00000001",
+                  "amount": 10000,
+                  "method": "fund_transfer",
+                  "fee_type": "",
+                  "mode": "IMPS",
+                  "channel": "yesbank",
+                  "user_id": ""
+                },
+                "response": {
+                  "fees": 200,
+                  "tax": 36,
+                  "pricing_rule_id": "ARENAPLAN00001",
+                  "error": "",
+                  "code": ""
+                }
+              }
+            },
+            {
+              "kind": "source_update",
+              "at": 1788627767.5154605,
+              "payload": {
+                "payout_id": "TYQm6B1u9GGycw",
+                "source_details": [
+                  {}
+                ],
+                "previous_status": "create_request_submitted",
+                "expected_current_status": "ledger_response_awaited"
+              }
+            },
+            {
+              "kind": "source_update",
+              "at": 1788627767.564369,
+              "payload": {
+                "payout_id": "TYQm6B1u9GGycw",
+                "source_details": [
+                  {}
+                ],
+                "previous_status": "ledger_response_awaited",
+                "expected_current_status": "created"
+              }
+            },
+            {
+              "kind": "source_update",
+              "at": 1788627767.9719143,
+              "payload": {
+                "payout_id": "TYQm6B1u9GGycw",
+                "source_details": [
+                  {}
+                ],
+                "previous_status": "created",
+                "expected_current_status": "initiated"
+              }
+            },
+            {
+              "kind": "source_update",
+              "at": 1788627768.0342784,
+              "payload": {
+                "payout_id": "TYQm6B1u9GGycw",
+                "source_details": [
+                  {}
+                ],
+                "previous_status": "created",
+                "expected_current_status": "initiated"
+              }
+            },
+            {
+              "kind": "update_fts_fund_transfer_inbound",
+              "at": 1788627768.1222012,
+              "payload": {
+                "bank_processed_time": "",
+                "bank_status_code": "",
+                "channel": "RBL",
+                "extra_info": {
+                  "cms_ref_no": "",
+                  "internal_error": false
+                },
+                "failure_reason": "",
+                "fund_transfer_id": 1,
+                "gateway_error_code": "",
+                "gateway_ref_no": "TYQm6puk5NIR",
+                "mode": "IFT",
+                "narration": "Arena Merchant One Fund Transf",
+                "remarks": "",
+                "return_utr": "",
+                "source_id": "TYQm6B1u9GGycw",
+                "source_type": "payout",
+                "status": "INITIATED",
+                "status_details": null,
+                "utr": ""
+              }
+            },
+            {
+              "kind": "payout_merchant_resolved",
+              "at": 1788627768.1450062,
+              "payload": {
+                "payout_id": "TYQm6B1u9GGycw",
+                "merchant_id": "ARENAM00000001",
+                "origin": "payouts.payouts"
+              }
+            },
+            {
+              "kind": "update_payouts_details_with_fts",
+              "at": 1788627768.1628702,
+              "payload": {
+                "status": 200,
+                "body": {
+                  "source_id": "TYQm6B1u9GGycw",
+                  "fund_transfer_id": 1,
+                  "mode": "IFT",
+                  "channel": "RBL",
+                  "gateway_ref_no": "TYQm6puk5NIR",
+                  "fta_status": "initiated"
+                }
+              }
+            },
+            {
+              "kind": "update_fts_fund_transfer_inbound",
+              "at": 1788627768.1885812,
+              "payload": {
+                "bank_account_type": "NODAL",
+                "bank_processed_time": "",
+                "bank_status_code": "SUCCESS",
+                "channel": "RBL",
+                "extra_info": {
+                  "bank_status_codes": {
+                    "transfer_init": "SUCCESS",
+                    "transfer_status": ""
+                  },
+                  "beneficiary_acc_no": "",
+                  "beneficiary_acc_type": "",
+                  "beneficiary_bank": "",
+                  "beneficiary_name": "",
+                  "beneficiary_validation_mode": "",
+                  "cms_ref_no": "",
+                  "deemed_success": {
+                    "creation_time": 0,
+                    "gateway_error_code": ""
+                  },
+                  "internal_error": false,
+                  "is_pending": false,
+                  "payee_ifsc": "",
+                  "ponum": ""
+                },
+                "failure_reason": "",
+                "fund_transfer_id": 1,
+                "gateway_error_code": "",
+                "gateway_ref_no": "TYQm6puk5NIR",
+                "mode": "IFT",
+                "narration": "Arena Merchant One Fund Transf",
+                "remarks": "",
+                "return_utr": "",
+                "source_account_id": 900001,
+                "source_id": "TYQm6B1u9GGycw",
+                "source_type": "payout",
+                "status": "PROCESSED",
+                "status_details": null,
+                "utr": "ARENA0000000001"
+              }
+            },
+            {
+              "kind": "payout_merchant_resolved",
+              "at": 1788627768.189906,
+              "payload": {
+                "payout_id": "TYQm6B1u9GGycw",
+                "merchant_id": "ARENAM00000001",
+                "origin": "payouts.payouts"
+              }
+            },
+            {
+              "kind": "update_payouts_details_with_fts",
+              "at": 1788627768.198396,
+              "payload": {
+                "status": 200,
+                "body": {
+                  "source_id": "TYQm6B1u9GGycw",
+                  "fund_transfer_id": 1,
+                  "utr": "ARENA0000000001",
+                  "mode": "IFT",
+                  "channel": "RBL",
+                  "bank_status_code": "SUCCESS",
+                  "gateway_ref_no": "TYQm6puk5NIR",
+                  "fta_status": "processed"
+                }
+              }
+            },
+            {
+              "kind": "mail_and_sms",
+              "at": 1788627768.219279,
+              "payload": {
+                "entity": "payout",
+                "entity_id": "TYQm6B1u9GGycw",
+                "type": "contact_communication_payout_processed",
+                "metadata": {
+                  "is_vanilla_payout": true,
+                  "is_vendor_payment": false
+                }
+              }
+            },
+            {
+              "kind": "mail_and_sms",
+              "at": 1788627768.2204843,
+              "payload": {
+                "entity": "transaction",
+                "entity_id": "TYQm6FAgwpFo7R",
+                "type": "payout.processed",
+                "metadata": {
+                  "amount": 10000,
+                  "created_at": 1788627767,
+                  "payout_id": "TYQm6B1u9GGycw"
+                }
+              }
+            },
+            {
+              "kind": "source_update",
+              "at": 1788627768.2214253,
+              "payload": {
+                "payout_id": "TYQm6B1u9GGycw",
+                "source_details": [
+                  {}
+                ],
+                "previous_status": "initiated",
+                "expected_current_status": "processed"
+              }
+            },
+            {
+              "kind": "payout_status_relay",
+              "at": 1788627768.2248757,
+              "payload": {
+                "body": {
+                  "source_id": "TYQm6B1u9GGycw",
+                  "status": "processed",
+                  "failure_reason": "",
+                  "bank_status_code": "SUCCESS",
+                  "fts_fund_account_id": "900001",
+                  "fts_account_type": "nodal",
+                  "fts_status": "processed"
+                },
+                "status": 200
+              }
+            }
+          ]
+        }
+      }
+    },
+    {
+      "sequence": 34,
+      "at": 1788627769.6358595,
+      "kind": "scenario_snapshot",
+      "data": {
+        "label": "live_scenario_completion",
+        "payout_id": "pout_TYQm6B1u9GGycw",
+        "observed_at": 1788627769.6009831,
+        "complete": true,
+        "errors": [],
+        "layers": {
+          "payouts": {
+            "row": {
+              "id": "TYQm6B1u9GGycw",
+              "reference_id": null,
+              "narration": "Arena Merchant One Fund Transf",
+              "merchant_id": "ARENAM00000001",
+              "balance_id": "ARENABAL000001",
+              "method": "fund_transfer",
+              "mode": "IMPS",
+              "fund_account_id": "ARENAFAX000001",
+              "batch_id": null,
+              "idempotency_key": "",
+              "user_id": "",
+              "purpose": "payout",
+              "purpose_type": "settlement",
+              "amount": 10000,
+              "currency": "INR",
+              "notes": "{}",
+              "fees": 200,
+              "tax": 36,
+              "status": "processed",
+              "fts_transfer_id": 1,
+              "transaction_id": "TYQm6FAgwpFo7R",
+              "channel": "RBL",
+              "utr": "ARENA0000000001",
+              "failure_reason": null,
+              "cancellation_user_id": "",
+              "status_code": null,
+              "remarks": null,
+              "created_at": 1788627767,
+              "updated_at": 1788627768,
+              "payout_link_id": "",
+              "pricing_rule_id": "ARENAPLAN00001",
+              "scheduled_at": null,
+              "fee_type": null,
+              "registered_name": "",
+              "workflow_feature": 0,
+              "queued_reason": "",
+              "queued_at": null,
+              "on_hold_at": null,
+              "origin": 1,
+              "status_details_id": "TYQm6x4TFbgfyr",
+              "gateway_ref_no": null
+            },
+            "state_history": [
+              {
+                "id": "TYQm6CuiinNNdj",
+                "payout_id": "TYQm6B1u9GGycw",
+                "event": "ledger_response_awaited",
+                "from": "create_request_submitted",
+                "to": "ledger_response_awaited",
+                "mode": "SYSTEM",
+                "triggered_by": "SYSTEM",
+                "created_at": 1788627767,
+                "updated_at": 1788627767
+              },
+              {
+                "id": "TYQm6GDglO1zEL",
+                "payout_id": "TYQm6B1u9GGycw",
+                "event": "created",
+                "from": "ledger_response_awaited",
+                "to": "created",
+                "mode": "SYSTEM",
+                "triggered_by": "SYSTEM",
+                "created_at": 1788627767,
+                "updated_at": 1788627767
+              },
+              {
+                "id": "TYQm6hYRHyd0tk",
+                "payout_id": "TYQm6B1u9GGycw",
+                "event": "initiated",
+                "from": "created",
+                "to": "initiated",
+                "mode": "SYSTEM",
+                "triggered_by": "SYSTEM",
+                "created_at": 1788627767,
+                "updated_at": 1788627767
+              },
+              {
+                "id": "TYQm6yHSZXFsw6",
+                "payout_id": "TYQm6B1u9GGycw",
+                "event": "processed",
+                "from": "initiated",
+                "to": "processed",
+                "mode": "SYSTEM",
+                "triggered_by": "SYSTEM",
+                "created_at": 1788627768,
+                "updated_at": 1788627768
+              }
+            ],
+            "reversals": []
+          },
+          "fts": {
+            "transfers": [
+              {
+                "id": 1,
+                "product": "PAYOUT",
+                "merchant_id": "ARENAM00000001",
+                "source_type": "payout",
+                "source_id": "TYQm6B1u9GGycw",
+                "preferred_mode": "IMPS",
+                "preferred_channel": "ICICI",
+                "preferred_source_account_id": null,
+                "fund_account_id": 900313,
+                "attempts": 1,
+                "channel": "RBL",
+                "source_account_id": 900001,
+                "source_account_primary_id": 900001,
+                "amount": 10000,
+                "mode": "IFT",
+                "status": "PROCESSED",
+                "utr": "ARENA0000000001",
+                "return_utr": null,
+                "narration": "Arena Merchant One Fund Transf",
+                "remarks": null,
+                "bank_status_code": "SUCCESS",
+                "failure_reason": null,
+                "bank_processed_time": null,
+                "initiate_at": 1788627768,
+                "transfer_by": 1788627768,
+                "extra_info": "{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"SUCCESS\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"}",
+                "retry": 1,
+                "created_at": 1788627768,
+                "updated_at": 1788627768,
+                "gateway_error_code": null,
+                "is_batch": 0,
+                "type": null,
+                "batch_id": null,
+                "credited_at": null,
+                "is_credited": 1,
+                "is_debited": 1,
+                "request_meta": "{\"merchant_detail\": {\"merchant_pan\": \"\", \"merchant_name\": \"Arena Merchant One\", \"merchant_address\": \"1 Arena Street, Bengaluru, IN - 560001\"}}"
+              }
+            ],
+            "attempt_chain": [
+              {
+                "id": 1,
+                "product": "PAYOUT",
+                "merchant_id": "ARENAM00000001",
+                "transfer_id": 1,
+                "channel": "RBL",
+                "source_account_id": 900001,
+                "source_account_primary_id": 900001,
+                "amount": 10000,
+                "fund_account_id": 900313,
+                "bank_status_code": "SUCCESS",
+                "mode": "IFT",
+                "status": "PROCESSED",
+                "utr": "ARENA0000000001",
+                "return_utr": null,
+                "gateway_ref_no": "TYQm6puk5NIR",
+                "narration": "Arena Merchant One Fund Transf",
+                "remarks": null,
+                "failure_reason": null,
+                "bank_processed_time": null,
+                "cms_ref_no": null,
+                "initiate_at": 1788627768,
+                "acknowledged_at": 1788627768,
+                "transfer_response": "{\"data\":{\"_raw\":\"\",\"beneficiary_name\":\"\",\"id\":1,\"remarks\":\"\",\"utr\":\"ARENA0000000001\",\"bank_status_code\":\"SUCCESS\",\"gateway_error_code\":\"\",\"cms_ref_no\":\"\",\"failure_reason\":\"\",\"bank_request_id\":\"\",\"bank_processed_time\":\"\",\"gateway_auth\":{\"token\":\"\",\"token_type\":\"\",\"validity_duration\":\"\"},\"gateway_session\":{\"token\":\"\",\"token_type\":\"\",\"validity_duration\":\"\"},\"return_utr\":\"\",\"ponum\":\"\",\"balance\":\"\",\"accountBalanceAmount\":\"\",\"credited_at\":\"\",\"is_credited\":true,\"is_debited\":true,\"beneficiary_code\":\"\",\"beneficiary_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"},\"error\":{\"description\":\"\",\"gateway_error_code\":\"\",\"gateway_error_description\":\"\",\"gateway_status_code\":0,\"internal_error_code\":\"\"},\"external_trace_id\":\"SIM_TRACE_ID\",\"mozart_id\":\"SIM_MOZART_ID\",\"success\":true,\"meta\":{\"error_type\":\"UNKNOWN\",\"merchant_error\":false,\"critical_error\":false,\"retriable_error\":false,\"pending\":false,\"processed\":true,\"failed\":false,\"reversed\":false},\"extra_info\":{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"},\"HTTPStatusCode\":200}",
+                "status_response": null,
+                "extra_info": "{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"SUCCESS\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"}",
+                "created_at": 1788627768,
+                "updated_at": 1788627768,
+                "gateway_error_code": null,
+                "type": null,
+                "batch_id": null,
+                "gateway_error_code_init": null,
+                "credited_at": null,
+                "is_credited": 1,
+                "is_debited": 1,
+                "re_initiate_count": 0
+              }
+            ],
+            "transfer_meta": []
+          },
+          "ledger": {
+            "transactor_ids": [
+              "pout_TYQm6B1u9GGycw"
+            ],
+            "journals": [
+              {
+                "id": "TYQm6FAgwpFo7R",
+                "merchant_id": "ARENAM00000001",
+                "amount": "10200.000000",
+                "base_amount": "10200.000000",
+                "currency": "INR",
+                "transactor_id": "pout_TYQm6B1u9GGycw",
+                "transactor_event": "payout_initiated",
+                "transaction_date": 1788627767,
+                "created_at": 1788627767,
+                "updated_at": 1788627767,
+                "created_at_microsecond": 1788627767543536,
+                "updated_at_microsecond": 1788627767543536,
+                "tenant": "X"
+              },
+              {
+                "id": "TYQm7yArvTiwTL",
+                "merchant_id": "ARENAM00000001",
+                "amount": "10000.000000",
+                "base_amount": "10000.000000",
+                "currency": "INR",
+                "transactor_id": "pout_TYQm6B1u9GGycw",
+                "transactor_event": "payout_processed",
+                "transaction_date": 1788627769,
+                "created_at": 1788627769,
+                "updated_at": 1788627769,
+                "created_at_microsecond": 1788627769124663,
+                "updated_at_microsecond": 1788627769124663,
+                "tenant": "X"
+              }
+            ],
+            "entries": [
+              {
+                "id": "TYQm6FDVgTO2qS",
+                "merchant_id": "ARENAM00000001",
+                "journal_id": "TYQm6FAgwpFo7R",
+                "account_id": "ARENAM1ACC0003",
+                "amount": "164.000000",
+                "base_amount": "164.000000",
+                "type": "credit",
+                "currency": "INR",
+                "created_at": 1788627767,
+                "updated_at": 1788627767,
+                "created_at_microsecond": 1788627767544249,
+                "updated_at_microsecond": 1788627767544249,
+                "balance": null,
+                "balance_updated": false
+              },
+              {
+                "id": "TYQm6FDVuaWNUf",
+                "merchant_id": "ARENAM00000001",
+                "journal_id": "TYQm6FAgwpFo7R",
+                "account_id": "ARENAM1ACC0004",
+                "amount": "36.000000",
+                "base_amount": "36.000000",
+                "type": "credit",
+                "currency": "INR",
+                "created_at": 1788627767,
+                "updated_at": 1788627767,
+                "created_at_microsecond": 1788627767544249,
+                "updated_at_microsecond": 1788627767544249,
+                "balance": null,
+                "balance_updated": false
+              },
+              {
+                "id": "TYQm6FDW3KL35f",
+                "merchant_id": "ARENAM00000001",
+                "journal_id": "TYQm6FAgwpFo7R",
+                "account_id": "ARENAM1ACC0001",
+                "amount": "10200.000000",
+                "base_amount": "10200.000000",
+                "type": "debit",
+                "currency": "INR",
+                "created_at": 1788627767,
+                "updated_at": 1788627767,
+                "created_at_microsecond": 1788627767544249,
+                "updated_at_microsecond": 1788627767544249,
+                "balance": "9989800.000000",
+                "balance_updated": true
+              },
+              {
+                "id": "TYQm6FDWA2OIi6",
+                "merchant_id": "ARENAM00000001",
+                "journal_id": "TYQm6FAgwpFo7R",
+                "account_id": "ARENAM1ACC0002",
+                "amount": "10000.000000",
+                "base_amount": "10000.000000",
+                "type": "credit",
+                "currency": "INR",
+                "created_at": 1788627767,
+                "updated_at": 1788627767,
+                "created_at_microsecond": 1788627767544249,
+                "updated_at_microsecond": 1788627767544249,
+                "balance": null,
+                "balance_updated": false
+              },
+              {
+                "id": "TYQm7yDHqC0lI7",
+                "merchant_id": "ARENAM00000001",
+                "journal_id": "TYQm7yArvTiwTL",
+                "account_id": "ARENAPOOLACC02",
+                "amount": "10000.000000",
+                "base_amount": "10000.000000",
+                "type": "credit",
+                "currency": "INR",
+                "created_at": 1788627769,
+                "updated_at": 1788627769,
+                "created_at_microsecond": 1788627769125271,
+                "updated_at_microsecond": 1788627769125271,
+                "balance": null,
+                "balance_updated": false
+              },
+              {
+                "id": "TYQm7yDI4yQIMt",
+                "merchant_id": "ARENAM00000001",
+                "journal_id": "TYQm7yArvTiwTL",
+                "account_id": "ARENAM1ACC0002",
+                "amount": "10000.000000",
+                "base_amount": "10000.000000",
+                "type": "debit",
+                "currency": "INR",
+                "created_at": 1788627769,
+                "updated_at": 1788627769,
+                "created_at_microsecond": 1788627769125271,
+                "updated_at_microsecond": 1788627769125271,
+                "balance": null,
+                "balance_updated": false
+              }
+            ],
+            "accounts_at_observation": [
+              {
+                "id": "ARENAM1ACC0001",
+                "merchant_id": "ARENAM00000001",
+                "status": "ACTIVATED",
+                "balance": "9989800.000000",
+                "min_balance": "0.000000",
+                "negative_balance": null,
+                "created_at": 1788627704,
+                "updated_at": 1788627767,
+                "deleted_at": null
+              },
+              {
+                "id": "ARENAM1ACC0002",
+                "merchant_id": "ARENAM00000001",
+                "status": "ACTIVATED",
+                "balance": "0.000000",
+                "min_balance": "0.000000",
+                "negative_balance": null,
+                "created_at": 1788627704,
+                "updated_at": 1788627704,
+                "deleted_at": null
+              },
+              {
+                "id": "ARENAM1ACC0003",
+                "merchant_id": "ARENAM00000001",
+                "status": "ACTIVATED",
+                "balance": "0.000000",
+                "min_balance": "0.000000",
+                "negative_balance": null,
+                "created_at": 1788627704,
+                "updated_at": 1788627704,
+                "deleted_at": null
+              },
+              {
+                "id": "ARENAM1ACC0004",
+                "merchant_id": "ARENAM00000001",
+                "status": "ACTIVATED",
+                "balance": "0.000000",
+                "min_balance": "0.000000",
+                "negative_balance": null,
+                "created_at": 1788627704,
+                "updated_at": 1788627704,
+                "deleted_at": null
+              },
+              {
+                "id": "ARENAPOOLACC02",
+                "merchant_id": "Gh0YfqKiXRdkCo",
+                "status": "ACTIVATED",
+                "balance": "0.000000",
+                "min_balance": "0.000000",
+                "negative_balance": null,
+                "created_at": 1788627704,
+                "updated_at": 1788627704,
+                "deleted_at": null
+              }
+            ]
+          },
+          "merchant_webhooks": {
+            "deliveries": [
+              {
+                "merchant": "ARENAM00000001",
+                "path": "/webhook/ARENAM00000001",
+                "headers": {
+                  "Content-Type": "application/json",
+                  "X-Razorpay-Event-Id": "ev_ARENA000099",
+                  "Request-Id": "ev_ARENA000099"
+                },
+                "body_sha256": "11f10299621d0bbfb22da575c91462b879b311d8c61bad6a38fd2ba8edd209c0",
+                "event_id": "ev_ARENA000099",
+                "request_id": "ev_ARENA000099",
+                "signature_present": true,
+                "signature_valid": true,
+                "received_at": 1788627767.5800037,
+                "body": {
+                  "entity": "event",
+                  "account_id": "acc_ARENAM00000001",
+                  "event": "payout.initiated",
+                  "contains": [
+                    "payout"
+                  ],
+                  "payload": {
+                    "payout": {
+                      "entity": {
+                        "id": "pout_TYQm6B1u9GGycw",
+                        "entity": "payout",
+                        "fund_account_id": "fa_ARENAFAX000001",
+                        "amount": 10000,
+                        "currency": "INR",
+                        "notes": {},
+                        "fees": 200,
+                        "tax": 36,
+                        "purpose": "payout",
+                        "status": "processing",
+                        "utr": null,
+                        "mode": "IMPS",
+                        "reference_id": null,
+                        "narration": "Arena Merchant One Fund Transf",
+                        "batch_id": null,
+                        "failure_reason": null,
+                        "created_at": 1788627767
+                      }
+                    }
+                  },
+                  "created_at": 1788627767
+                }
+              },
+              {
+                "merchant": "ARENAM00000001",
+                "path": "/webhook/ARENAM00000001",
+                "headers": {
+                  "Content-Type": "application/json",
+                  "X-Razorpay-Event-Id": "ev_ARENA000101",
+                  "Request-Id": "ev_ARENA000101"
+                },
+                "body_sha256": "bf31b540017e33122f63430c0e78e57956626a2b013d97afea8997448a9b1a2c",
+                "event_id": "ev_ARENA000101",
+                "request_id": "ev_ARENA000101",
+                "signature_present": true,
+                "signature_valid": true,
+                "received_at": 1788627768.2020109,
+                "body": {
+                  "entity": "event",
+                  "account_id": "acc_ARENAM00000001",
+                  "event": "payout.updated",
+                  "contains": [
+                    "payout"
+                  ],
+                  "payload": {
+                    "payout": {
+                      "entity": {
+                        "id": "pout_TYQm6B1u9GGycw",
+                        "entity": "payout",
+                        "fund_account_id": "fa_ARENAFAX000001",
+                        "amount": 10000,
+                        "currency": "INR",
+                        "notes": {},
+                        "fees": 200,
+                        "tax": 36,
+                        "purpose": "payout",
+                        "status": "processing",
+                        "utr": "ARENA0000000001",
+                        "mode": "IMPS",
+                        "reference_id": null,
+                        "narration": "Arena Merchant One Fund Transf",
+                        "batch_id": null,
+                        "failure_reason": null,
+                        "created_at": 1788627767,
+                        "status_details": {
+                          "reason": "payout_processed",
+                          "description": "Payout is processed and the money has been credited into the beneficiary account."
+                        }
+                      }
+                    }
+                  },
+                  "created_at": 1788627768
+                }
+              },
+              {
+                "merchant": "ARENAM00000001",
+                "path": "/webhook/ARENAM00000001",
+                "headers": {
+                  "Content-Type": "application/json",
+                  "X-Razorpay-Event-Id": "ev_ARENA000103",
+                  "Request-Id": "ev_ARENA000103"
+                },
+                "body_sha256": "90934f52f089c14d15dc2ba5943b7b6fadc052387ddf14d36f2f89fcc1d4b9db",
+                "event_id": "ev_ARENA000103",
+                "request_id": "ev_ARENA000103",
+                "signature_present": true,
+                "signature_valid": true,
+                "received_at": 1788627768.2272756,
+                "body": {
+                  "entity": "event",
+                  "account_id": "acc_ARENAM00000001",
+                  "event": "payout.processed",
+                  "contains": [
+                    "payout"
+                  ],
+                  "payload": {
+                    "payout": {
+                      "entity": {
+                        "id": "pout_TYQm6B1u9GGycw",
+                        "entity": "payout",
+                        "fund_account_id": "fa_ARENAFAX000001",
+                        "amount": 10000,
+                        "currency": "INR",
+                        "notes": {},
+                        "fees": 200,
+                        "tax": 36,
+                        "purpose": "payout",
+                        "status": "processed",
+                        "utr": "ARENA0000000001",
+                        "mode": "IMPS",
+                        "reference_id": null,
+                        "narration": "Arena Merchant One Fund Transf",
+                        "batch_id": null,
+                        "failure_reason": null,
+                        "created_at": 1788627767,
+                        "error": {
+                          "source": null,
+                          "reason": null,
+                          "description": null,
+                          "code": "NA",
+                          "step": "NA",
+                          "metadata": {}
+                        },
+                        "status_details": {
+                          "reason": "payout_processed",
+                          "description": "Payout is processed and the money has been credited into the beneficiary account."
+                        }
+                      }
+                    }
+                  },
+                  "created_at": 1788627768
+                }
+              }
+            ],
+            "boundary": "actual merchant-webhook-sink HTTP receipt; signature bytes are redacted"
+          },
+          "bank": {
+            "events": [
+              {
+                "action": "transfer_init",
+                "attempt_id": "1",
+                "scenario": "success",
+                "poll": 0,
+                "at": 1788627768.1539938
+              }
+            ]
+          },
+          "monolith": {
+            "events": [
+              {
+                "kind": "pricing_rule_selected",
+                "at": 1788627767.5066023,
+                "payload": {
+                  "request": {
+                    "payout_id": "TYQm6B1u9GGycw",
+                    "purpose": "payout",
+                    "balance_id": "ARENABAL000001",
+                    "merchant_id": "ARENAM00000001",
+                    "amount": 10000,
+                    "method": "fund_transfer",
+                    "fee_type": "",
+                    "mode": "IMPS",
+                    "channel": "yesbank",
+                    "user_id": ""
+                  },
+                  "response": {
+                    "fees": 200,
+                    "tax": 36,
+                    "pricing_rule_id": "ARENAPLAN00001",
+                    "error": "",
+                    "code": ""
+                  }
+                }
+              },
+              {
+                "kind": "source_update",
+                "at": 1788627767.5154605,
+                "payload": {
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "source_details": [
+                    {}
+                  ],
+                  "previous_status": "create_request_submitted",
+                  "expected_current_status": "ledger_response_awaited"
+                }
+              },
+              {
+                "kind": "source_update",
+                "at": 1788627767.564369,
+                "payload": {
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "source_details": [
+                    {}
+                  ],
+                  "previous_status": "ledger_response_awaited",
+                  "expected_current_status": "created"
+                }
+              },
+              {
+                "kind": "source_update",
+                "at": 1788627767.9719143,
+                "payload": {
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "source_details": [
+                    {}
+                  ],
+                  "previous_status": "created",
+                  "expected_current_status": "initiated"
+                }
+              },
+              {
+                "kind": "source_update",
+                "at": 1788627768.0342784,
+                "payload": {
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "source_details": [
+                    {}
+                  ],
+                  "previous_status": "created",
+                  "expected_current_status": "initiated"
+                }
+              },
+              {
+                "kind": "update_fts_fund_transfer_inbound",
+                "at": 1788627768.1222012,
+                "payload": {
+                  "bank_processed_time": "",
+                  "bank_status_code": "",
+                  "channel": "RBL",
+                  "extra_info": {
+                    "cms_ref_no": "",
+                    "internal_error": false
+                  },
+                  "failure_reason": "",
+                  "fund_transfer_id": 1,
+                  "gateway_error_code": "",
+                  "gateway_ref_no": "TYQm6puk5NIR",
+                  "mode": "IFT",
+                  "narration": "Arena Merchant One Fund Transf",
+                  "remarks": "",
+                  "return_utr": "",
+                  "source_id": "TYQm6B1u9GGycw",
+                  "source_type": "payout",
+                  "status": "INITIATED",
+                  "status_details": null,
+                  "utr": ""
+                }
+              },
+              {
+                "kind": "payout_merchant_resolved",
+                "at": 1788627768.1450062,
+                "payload": {
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "merchant_id": "ARENAM00000001",
+                  "origin": "payouts.payouts"
+                }
+              },
+              {
+                "kind": "update_payouts_details_with_fts",
+                "at": 1788627768.1628702,
+                "payload": {
+                  "status": 200,
+                  "body": {
+                    "source_id": "TYQm6B1u9GGycw",
+                    "fund_transfer_id": 1,
+                    "mode": "IFT",
+                    "channel": "RBL",
+                    "gateway_ref_no": "TYQm6puk5NIR",
+                    "fta_status": "initiated"
+                  }
+                }
+              },
+              {
+                "kind": "update_fts_fund_transfer_inbound",
+                "at": 1788627768.1885812,
+                "payload": {
+                  "bank_account_type": "NODAL",
+                  "bank_processed_time": "",
+                  "bank_status_code": "SUCCESS",
+                  "channel": "RBL",
+                  "extra_info": {
+                    "bank_status_codes": {
+                      "transfer_init": "SUCCESS",
+                      "transfer_status": ""
+                    },
+                    "beneficiary_acc_no": "",
+                    "beneficiary_acc_type": "",
+                    "beneficiary_bank": "",
+                    "beneficiary_name": "",
+                    "beneficiary_validation_mode": "",
+                    "cms_ref_no": "",
+                    "deemed_success": {
+                      "creation_time": 0,
+                      "gateway_error_code": ""
+                    },
+                    "internal_error": false,
+                    "is_pending": false,
+                    "payee_ifsc": "",
+                    "ponum": ""
+                  },
+                  "failure_reason": "",
+                  "fund_transfer_id": 1,
+                  "gateway_error_code": "",
+                  "gateway_ref_no": "TYQm6puk5NIR",
+                  "mode": "IFT",
+                  "narration": "Arena Merchant One Fund Transf",
+                  "remarks": "",
+                  "return_utr": "",
+                  "source_account_id": 900001,
+                  "source_id": "TYQm6B1u9GGycw",
+                  "source_type": "payout",
+                  "status": "PROCESSED",
+                  "status_details": null,
+                  "utr": "ARENA0000000001"
+                }
+              },
+              {
+                "kind": "payout_merchant_resolved",
+                "at": 1788627768.189906,
+                "payload": {
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "merchant_id": "ARENAM00000001",
+                  "origin": "payouts.payouts"
+                }
+              },
+              {
+                "kind": "update_payouts_details_with_fts",
+                "at": 1788627768.198396,
+                "payload": {
+                  "status": 200,
+                  "body": {
+                    "source_id": "TYQm6B1u9GGycw",
+                    "fund_transfer_id": 1,
+                    "utr": "ARENA0000000001",
+                    "mode": "IFT",
+                    "channel": "RBL",
+                    "bank_status_code": "SUCCESS",
+                    "gateway_ref_no": "TYQm6puk5NIR",
+                    "fta_status": "processed"
+                  }
+                }
+              },
+              {
+                "kind": "mail_and_sms",
+                "at": 1788627768.2204843,
+                "payload": {
+                  "entity": "transaction",
+                  "entity_id": "TYQm6FAgwpFo7R",
+                  "type": "payout.processed",
+                  "metadata": {
+                    "amount": 10000,
+                    "created_at": 1788627767,
+                    "payout_id": "TYQm6B1u9GGycw"
+                  }
+                }
+              },
+              {
+                "kind": "source_update",
+                "at": 1788627768.2214253,
+                "payload": {
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "source_details": [
+                    {}
+                  ],
+                  "previous_status": "initiated",
+                  "expected_current_status": "processed"
+                }
+              },
+              {
+                "kind": "payout_status_relay",
+                "at": 1788627768.2248757,
+                "payload": {
+                  "body": {
+                    "source_id": "TYQm6B1u9GGycw",
+                    "status": "processed",
+                    "failure_reason": "",
+                    "bank_status_code": "SUCCESS",
+                    "fts_fund_account_id": "900001",
+                    "fts_account_type": "nodal",
+                    "fts_status": "processed"
+                  },
+                  "status": 200
+                }
+              }
+            ],
+            "boundary": "observed substitute calls; absence alone does not prove a different route"
+          }
+        },
+        "observability": {
+          "payout_state_history": "persisted payout_logs, ordered by created_at and id",
+          "fts_attempt_chain": "all persisted attempts for the source transfer(s), ordered by id",
+          "fts_state_history": "attempt rows expose current status; an event history is not inferred",
+          "queue_events": "not_observed; no queue message or acknowledgment is fabricated",
+          "atomicity": "successive reads across databases; not a cross-service atomic snapshot",
+          "capture_retention": "bank and webhook capture endpoints retain bounded process-local history"
+        },
+        "merchant_id": "ARENAM00000001",
+        "finished_at": 1788627769.634836,
+        "duration_seconds": 0.03385281562805176
+      }
+    },
+    {
+      "sequence": 35,
+      "at": 1788627769.6370466,
+      "kind": "http_request",
+      "data": {
+        "method": "POST",
+        "url": "http://mozart-sim:8085/_arena/scenario",
+        "body": {
+          "merchant_id": "ARENAM00000001",
+          "clear": true
+        }
+      }
+    },
+    {
+      "sequence": 36,
+      "at": 1788627769.6390016,
+      "kind": "http_response",
+      "data": {
+        "method": "POST",
+        "url": "http://mozart-sim:8085/_arena/scenario",
+        "status": 200,
+        "body": {
+          "cleared": "ARENAM00000001"
+        }
+      }
+    },
+    {
+      "sequence": 37,
+      "at": 1788627769.6442013,
+      "kind": "live_result",
+      "data": {
+        "status": "passed",
+        "passed": true,
+        "scenario": "shared_success_via_kong",
+        "steps": [
+          {
+            "name": "Kong merchant authentication and payout create",
+            "passed": true,
+            "http_status": 200,
+            "payout_id": "pout_TYQm6B1u9GGycw"
+          },
+          {
+            "name": "Synchronous balanced initiated journal",
+            "passed": true,
+            "journal_id": "TYQm6FAgwpFo7R"
+          },
+          {
+            "name": "FTS and bank terminal result",
+            "passed": true,
+            "fts_transfer_id": 1,
+            "status": "processed",
+            "utr": "ARENA0000000001"
+          },
+          {
+            "name": "Balanced asynchronous processed journal",
+            "passed": true,
+            "journal_id": "TYQm7yArvTiwTL"
+          },
+          {
+            "name": "Exactly one signed merchant terminal webhook",
+            "passed": true,
+            "event_id": "ev_ARENA000103",
+            "signature_valid": true
+          }
+        ],
+        "started_at": 1788627767.2780492,
+        "merchant_id": "ARENAM00000001",
+        "route_profile": "direct-create-monolith-status",
+        "payout_id": "pout_TYQm6B1u9GGycw",
+        "ending_state": {
+          "label": "live_scenario_completion",
+          "payout_id": "pout_TYQm6B1u9GGycw",
+          "observed_at": 1788627769.6009831,
+          "complete": true,
+          "errors": [],
+          "layers": {
+            "payouts": {
+              "row": {
+                "id": "TYQm6B1u9GGycw",
+                "reference_id": null,
+                "narration": "Arena Merchant One Fund Transf",
+                "merchant_id": "ARENAM00000001",
+                "balance_id": "ARENABAL000001",
+                "method": "fund_transfer",
+                "mode": "IMPS",
+                "fund_account_id": "ARENAFAX000001",
+                "batch_id": null,
+                "idempotency_key": "",
+                "user_id": "",
+                "purpose": "payout",
+                "purpose_type": "settlement",
+                "amount": 10000,
+                "currency": "INR",
+                "notes": "{}",
+                "fees": 200,
+                "tax": 36,
+                "status": "processed",
+                "fts_transfer_id": 1,
+                "transaction_id": "TYQm6FAgwpFo7R",
+                "channel": "RBL",
+                "utr": "ARENA0000000001",
+                "failure_reason": null,
+                "cancellation_user_id": "",
+                "status_code": null,
+                "remarks": null,
+                "created_at": 1788627767,
+                "updated_at": 1788627768,
+                "payout_link_id": "",
+                "pricing_rule_id": "ARENAPLAN00001",
+                "scheduled_at": null,
+                "fee_type": null,
+                "registered_name": "",
+                "workflow_feature": 0,
+                "queued_reason": "",
+                "queued_at": null,
+                "on_hold_at": null,
+                "origin": 1,
+                "status_details_id": "TYQm6x4TFbgfyr",
+                "gateway_ref_no": null
+              },
+              "state_history": [
+                {
+                  "id": "TYQm6CuiinNNdj",
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "event": "ledger_response_awaited",
+                  "from": "create_request_submitted",
+                  "to": "ledger_response_awaited",
+                  "mode": "SYSTEM",
+                  "triggered_by": "SYSTEM",
+                  "created_at": 1788627767,
+                  "updated_at": 1788627767
+                },
+                {
+                  "id": "TYQm6GDglO1zEL",
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "event": "created",
+                  "from": "ledger_response_awaited",
+                  "to": "created",
+                  "mode": "SYSTEM",
+                  "triggered_by": "SYSTEM",
+                  "created_at": 1788627767,
+                  "updated_at": 1788627767
+                },
+                {
+                  "id": "TYQm6hYRHyd0tk",
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "event": "initiated",
+                  "from": "created",
+                  "to": "initiated",
+                  "mode": "SYSTEM",
+                  "triggered_by": "SYSTEM",
+                  "created_at": 1788627767,
+                  "updated_at": 1788627767
+                },
+                {
+                  "id": "TYQm6yHSZXFsw6",
+                  "payout_id": "TYQm6B1u9GGycw",
+                  "event": "processed",
+                  "from": "initiated",
+                  "to": "processed",
+                  "mode": "SYSTEM",
+                  "triggered_by": "SYSTEM",
+                  "created_at": 1788627768,
+                  "updated_at": 1788627768
+                }
+              ],
+              "reversals": []
+            },
+            "fts": {
+              "transfers": [
+                {
+                  "id": 1,
+                  "product": "PAYOUT",
+                  "merchant_id": "ARENAM00000001",
+                  "source_type": "payout",
+                  "source_id": "TYQm6B1u9GGycw",
+                  "preferred_mode": "IMPS",
+                  "preferred_channel": "ICICI",
+                  "preferred_source_account_id": null,
+                  "fund_account_id": 900313,
+                  "attempts": 1,
+                  "channel": "RBL",
+                  "source_account_id": 900001,
+                  "source_account_primary_id": 900001,
+                  "amount": 10000,
+                  "mode": "IFT",
+                  "status": "PROCESSED",
+                  "utr": "ARENA0000000001",
+                  "return_utr": null,
+                  "narration": "Arena Merchant One Fund Transf",
+                  "remarks": null,
+                  "bank_status_code": "SUCCESS",
+                  "failure_reason": null,
+                  "bank_processed_time": null,
+                  "initiate_at": 1788627768,
+                  "transfer_by": 1788627768,
+                  "extra_info": "{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"SUCCESS\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"}",
+                  "retry": 1,
+                  "created_at": 1788627768,
+                  "updated_at": 1788627768,
+                  "gateway_error_code": null,
+                  "is_batch": 0,
+                  "type": null,
+                  "batch_id": null,
+                  "credited_at": null,
+                  "is_credited": 1,
+                  "is_debited": 1,
+                  "request_meta": "{\"merchant_detail\": {\"merchant_pan\": \"\", \"merchant_name\": \"Arena Merchant One\", \"merchant_address\": \"1 Arena Street, Bengaluru, IN - 560001\"}}"
+                }
+              ],
+              "attempt_chain": [
+                {
+                  "id": 1,
+                  "product": "PAYOUT",
+                  "merchant_id": "ARENAM00000001",
+                  "transfer_id": 1,
+                  "channel": "RBL",
+                  "source_account_id": 900001,
+                  "source_account_primary_id": 900001,
+                  "amount": 10000,
+                  "fund_account_id": 900313,
+                  "bank_status_code": "SUCCESS",
+                  "mode": "IFT",
+                  "status": "PROCESSED",
+                  "utr": "ARENA0000000001",
+                  "return_utr": null,
+                  "gateway_ref_no": "TYQm6puk5NIR",
+                  "narration": "Arena Merchant One Fund Transf",
+                  "remarks": null,
+                  "failure_reason": null,
+                  "bank_processed_time": null,
+                  "cms_ref_no": null,
+                  "initiate_at": 1788627768,
+                  "acknowledged_at": 1788627768,
+                  "transfer_response": "{\"data\":{\"_raw\":\"\",\"beneficiary_name\":\"\",\"id\":1,\"remarks\":\"\",\"utr\":\"ARENA0000000001\",\"bank_status_code\":\"SUCCESS\",\"gateway_error_code\":\"\",\"cms_ref_no\":\"\",\"failure_reason\":\"\",\"bank_request_id\":\"\",\"bank_processed_time\":\"\",\"gateway_auth\":{\"token\":\"\",\"token_type\":\"\",\"validity_duration\":\"\"},\"gateway_session\":{\"token\":\"\",\"token_type\":\"\",\"validity_duration\":\"\"},\"return_utr\":\"\",\"ponum\":\"\",\"balance\":\"\",\"accountBalanceAmount\":\"\",\"credited_at\":\"\",\"is_credited\":true,\"is_debited\":true,\"beneficiary_code\":\"\",\"beneficiary_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"},\"error\":{\"description\":\"\",\"gateway_error_code\":\"\",\"gateway_error_description\":\"\",\"gateway_status_code\":0,\"internal_error_code\":\"\"},\"external_trace_id\":\"SIM_TRACE_ID\",\"mozart_id\":\"SIM_MOZART_ID\",\"success\":true,\"meta\":{\"error_type\":\"UNKNOWN\",\"merchant_error\":false,\"critical_error\":false,\"retriable_error\":false,\"pending\":false,\"processed\":true,\"failed\":false,\"reversed\":false},\"extra_info\":{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"},\"HTTPStatusCode\":200}",
+                  "status_response": null,
+                  "extra_info": "{\"beneficiary_name\":\"\",\"ponum\":\"\",\"deemed_success\":{\"gateway_error_code\":\"\",\"creation_time\":0},\"bank_status_codes\":{\"transfer_init\":\"SUCCESS\",\"transfer_status\":\"\"},\"is_pending\":false,\"payee_ifsc\":\"\",\"beneficiary_acc_no\":\"\",\"beneficiary_bank\":\"\",\"beneficiary_acc_type\":\"\",\"beneficiary_validation_mode\":\"\"}",
+                  "created_at": 1788627768,
+                  "updated_at": 1788627768,
+                  "gateway_error_code": null,
+                  "type": null,
+                  "batch_id": null,
+                  "gateway_error_code_init": null,
+                  "credited_at": null,
+                  "is_credited": 1,
+                  "is_debited": 1,
+                  "re_initiate_count": 0
+                }
+              ],
+              "transfer_meta": []
+            },
+            "ledger": {
+              "transactor_ids": [
+                "pout_TYQm6B1u9GGycw"
+              ],
+              "journals": [
+                {
+                  "id": "TYQm6FAgwpFo7R",
+                  "merchant_id": "ARENAM00000001",
+                  "amount": "10200.000000",
+                  "base_amount": "10200.000000",
+                  "currency": "INR",
+                  "transactor_id": "pout_TYQm6B1u9GGycw",
+                  "transactor_event": "payout_initiated",
+                  "transaction_date": 1788627767,
+                  "created_at": 1788627767,
+                  "updated_at": 1788627767,
+                  "created_at_microsecond": 1788627767543536,
+                  "updated_at_microsecond": 1788627767543536,
+                  "tenant": "X"
+                },
+                {
+                  "id": "TYQm7yArvTiwTL",
+                  "merchant_id": "ARENAM00000001",
+                  "amount": "10000.000000",
+                  "base_amount": "10000.000000",
+                  "currency": "INR",
+                  "transactor_id": "pout_TYQm6B1u9GGycw",
+                  "transactor_event": "payout_processed",
+                  "transaction_date": 1788627769,
+                  "created_at": 1788627769,
+                  "updated_at": 1788627769,
+                  "created_at_microsecond": 1788627769124663,
+                  "updated_at_microsecond": 1788627769124663,
+                  "tenant": "X"
+                }
+              ],
+              "entries": [
+                {
+                  "id": "TYQm6FDVgTO2qS",
+                  "merchant_id": "ARENAM00000001",
+                  "journal_id": "TYQm6FAgwpFo7R",
+                  "account_id": "ARENAM1ACC0003",
+                  "amount": "164.000000",
+                  "base_amount": "164.000000",
+                  "type": "credit",
+                  "currency": "INR",
+                  "created_at": 1788627767,
+                  "updated_at": 1788627767,
+                  "created_at_microsecond": 1788627767544249,
+                  "updated_at_microsecond": 1788627767544249,
+                  "balance": null,
+                  "balance_updated": false
+                },
+                {
+                  "id": "TYQm6FDVuaWNUf",
+                  "merchant_id": "ARENAM00000001",
+                  "journal_id": "TYQm6FAgwpFo7R",
+                  "account_id": "ARENAM1ACC0004",
+                  "amount": "36.000000",
+                  "base_amount": "36.000000",
+                  "type": "credit",
+                  "currency": "INR",
+                  "created_at": 1788627767,
+                  "updated_at": 1788627767,
+                  "created_at_microsecond": 1788627767544249,
+                  "updated_at_microsecond": 1788627767544249,
+                  "balance": null,
+                  "balance_updated": false
+                },
+                {
+                  "id": "TYQm6FDW3KL35f",
+                  "merchant_id": "ARENAM00000001",
+                  "journal_id": "TYQm6FAgwpFo7R",
+                  "account_id": "ARENAM1ACC0001",
+                  "amount": "10200.000000",
+                  "base_amount": "10200.000000",
+                  "type": "debit",
+                  "currency": "INR",
+                  "created_at": 1788627767,
+                  "updated_at": 1788627767,
+                  "created_at_microsecond": 1788627767544249,
+                  "updated_at_microsecond": 1788627767544249,
+                  "balance": "9989800.000000",
+                  "balance_updated": true
+                },
+                {
+                  "id": "TYQm6FDWA2OIi6",
+                  "merchant_id": "ARENAM00000001",
+                  "journal_id": "TYQm6FAgwpFo7R",
+                  "account_id": "ARENAM1ACC0002",
+                  "amount": "10000.000000",
+                  "base_amount": "10000.000000",
+                  "type": "credit",
+                  "currency": "INR",
+                  "created_at": 1788627767,
+                  "updated_at": 1788627767,
+                  "created_at_microsecond": 1788627767544249,
+                  "updated_at_microsecond": 1788627767544249,
+                  "balance": null,
+                  "balance_updated": false
+                },
+                {
+                  "id": "TYQm7yDHqC0lI7",
+                  "merchant_id": "ARENAM00000001",
+                  "journal_id": "TYQm7yArvTiwTL",
+                  "account_id": "ARENAPOOLACC02",
+                  "amount": "10000.000000",
+                  "base_amount": "10000.000000",
+                  "type": "credit",
+                  "currency": "INR",
+                  "created_at": 1788627769,
+                  "updated_at": 1788627769,
+                  "created_at_microsecond": 1788627769125271,
+                  "updated_at_microsecond": 1788627769125271,
+                  "balance": null,
+                  "balance_updated": false
+                },
+                {
+                  "id": "TYQm7yDI4yQIMt",
+                  "merchant_id": "ARENAM00000001",
+                  "journal_id": "TYQm7yArvTiwTL",
+                  "account_id": "ARENAM1ACC0002",
+                  "amount": "10000.000000",
+                  "base_amount": "10000.000000",
+                  "type": "debit",
+                  "currency": "INR",
+                  "created_at": 1788627769,
+                  "updated_at": 1788627769,
+                  "created_at_microsecond": 1788627769125271,
+                  "updated_at_microsecond": 1788627769125271,
+                  "balance": null,
+                  "balance_updated": false
+                }
+              ],
+              "accounts_at_observation": [
+                {
+                  "id": "ARENAM1ACC0001",
+                  "merchant_id": "ARENAM00000001",
+                  "status": "ACTIVATED",
+                  "balance": "9989800.000000",
+                  "min_balance": "0.000000",
+                  "negative_balance": null,
+                  "created_at": 1788627704,
+                  "updated_at": 1788627767,
+                  "deleted_at": null
+                },
+                {
+                  "id": "ARENAM1ACC0002",
+                  "merchant_id": "ARENAM00000001",
+                  "status": "ACTIVATED",
+                  "balance": "0.000000",
+                  "min_balance": "0.000000",
+                  "negative_balance": null,
+                  "created_at": 1788627704,
+                  "updated_at": 1788627704,
+                  "deleted_at": null
+                },
+                {
+                  "id": "ARENAM1ACC0003",
+                  "merchant_id": "ARENAM00000001",
+                  "status": "ACTIVATED",
+                  "balance": "0.000000",
+                  "min_balance": "0.000000",
+                  "negative_balance": null,
+                  "created_at": 1788627704,
+                  "updated_at": 1788627704,
+                  "deleted_at": null
+                },
+                {
+                  "id": "ARENAM1ACC0004",
+                  "merchant_id": "ARENAM00000001",
+                  "status": "ACTIVATED",
+                  "balance": "0.000000",
+                  "min_balance": "0.000000",
+                  "negative_balance": null,
+                  "created_at": 1788627704,
+                  "updated_at": 1788627704,
+                  "deleted_at": null
+                },
+                {
+                  "id": "ARENAPOOLACC02",
+                  "merchant_id": "Gh0YfqKiXRdkCo",
+                  "status": "ACTIVATED",
+                  "balance": "0.000000",
+                  "min_balance": "0.000000",
+                  "negative_balance": null,
+                  "created_at": 1788627704,
+                  "updated_at": 1788627704,
+                  "deleted_at": null
+                }
+              ]
+            },
+            "merchant_webhooks": {
+              "deliveries": [
+                {
+                  "merchant": "ARENAM00000001",
+                  "path": "/webhook/ARENAM00000001",
+                  "headers": {
+                    "Content-Type": "application/json",
+                    "X-Razorpay-Event-Id": "ev_ARENA000099",
+                    "Request-Id": "ev_ARENA000099"
+                  },
+                  "body_sha256": "11f10299621d0bbfb22da575c91462b879b311d8c61bad6a38fd2ba8edd209c0",
+                  "event_id": "ev_ARENA000099",
+                  "request_id": "ev_ARENA000099",
+                  "signature_present": true,
+                  "signature_valid": true,
+                  "received_at": 1788627767.5800037,
+                  "body": {
+                    "entity": "event",
+                    "account_id": "acc_ARENAM00000001",
+                    "event": "payout.initiated",
+                    "contains": [
+                      "payout"
+                    ],
+                    "payload": {
+                      "payout": {
+                        "entity": {
+                          "id": "pout_TYQm6B1u9GGycw",
+                          "entity": "payout",
+                          "fund_account_id": "fa_ARENAFAX000001",
+                          "amount": 10000,
+                          "currency": "INR",
+                          "notes": {},
+                          "fees": 200,
+                          "tax": 36,
+                          "purpose": "payout",
+                          "status": "processing",
+                          "utr": null,
+                          "mode": "IMPS",
+                          "reference_id": null,
+                          "narration": "Arena Merchant One Fund Transf",
+                          "batch_id": null,
+                          "failure_reason": null,
+                          "created_at": 1788627767
+                        }
+                      }
+                    },
+                    "created_at": 1788627767
+                  }
+                },
+                {
+                  "merchant": "ARENAM00000001",
+                  "path": "/webhook/ARENAM00000001",
+                  "headers": {
+                    "Content-Type": "application/json",
+                    "X-Razorpay-Event-Id": "ev_ARENA000101",
+                    "Request-Id": "ev_ARENA000101"
+                  },
+                  "body_sha256": "bf31b540017e33122f63430c0e78e57956626a2b013d97afea8997448a9b1a2c",
+                  "event_id": "ev_ARENA000101",
+                  "request_id": "ev_ARENA000101",
+                  "signature_present": true,
+                  "signature_valid": true,
+                  "received_at": 1788627768.2020109,
+                  "body": {
+                    "entity": "event",
+                    "account_id": "acc_ARENAM00000001",
+                    "event": "payout.updated",
+                    "contains": [
+                      "payout"
+                    ],
+                    "payload": {
+                      "payout": {
+                        "entity": {
+                          "id": "pout_TYQm6B1u9GGycw",
+                          "entity": "payout",
+                          "fund_account_id": "fa_ARENAFAX000001",
+                          "amount": 10000,
+                          "currency": "INR",
+                          "notes": {},
+                          "fees": 200,
+                          "tax": 36,
+                          "purpose": "payout",
+                          "status": "processing",
+                          "utr": "ARENA0000000001",
+                          "mode": "IMPS",
+                          "reference_id": null,
+                          "narration": "Arena Merchant One Fund Transf",
+                          "batch_id": null,
+                          "failure_reason": null,
+                          "created_at": 1788627767,
+                          "status_details": {
+                            "reason": "payout_processed",
+                            "description": "Payout is processed and the money has been credited into the beneficiary account."
+                          }
+                        }
+                      }
+                    },
+                    "created_at": 1788627768
+                  }
+                },
+                {
+                  "merchant": "ARENAM00000001",
+                  "path": "/webhook/ARENAM00000001",
+                  "headers": {
+                    "Content-Type": "application/json",
+                    "X-Razorpay-Event-Id": "ev_ARENA000103",
+                    "Request-Id": "ev_ARENA000103"
+                  },
+                  "body_sha256": "90934f52f089c14d15dc2ba5943b7b6fadc052387ddf14d36f2f89fcc1d4b9db",
+                  "event_id": "ev_ARENA000103",
+                  "request_id": "ev_ARENA000103",
+                  "signature_present": true,
+                  "signature_valid": true,
+                  "received_at": 1788627768.2272756,
+                  "body": {
+                    "entity": "event",
+                    "account_id": "acc_ARENAM00000001",
+                    "event": "payout.processed",
+                    "contains": [
+                      "payout"
+                    ],
+                    "payload": {
+                      "payout": {
+                        "entity": {
+                          "id": "pout_TYQm6B1u9GGycw",
+                          "entity": "payout",
+                          "fund_account_id": "fa_ARENAFAX000001",
+                          "amount": 10000,
+                          "currency": "INR",
+                          "notes": {},
+                          "fees": 200,
+                          "tax": 36,
+                          "purpose": "payout",
+                          "status": "processed",
+                          "utr": "ARENA0000000001",
+                          "mode": "IMPS",
+                          "reference_id": null,
+                          "narration": "Arena Merchant One Fund Transf",
+                          "batch_id": null,
+                          "failure_reason": null,
+                          "created_at": 1788627767,
+                          "error": {
+                            "source": null,
+                            "reason": null,
+                            "description": null,
+                            "code": "NA",
+                            "step": "NA",
+                            "metadata": {}
+                          },
+                          "status_details": {
+                            "reason": "payout_processed",
+                            "description": "Payout is processed and the money has been credited into the beneficiary account."
+                          }
+                        }
+                      }
+                    },
+                    "created_at": 1788627768
+                  }
+                }
+              ],
+              "boundary": "actual merchant-webhook-sink HTTP receipt; signature bytes are redacted"
+            },
+            "bank": {
+              "events": [
+                {
+                  "action": "transfer_init",
+                  "attempt_id": "1",
+                  "scenario": "success",
+                  "poll": 0,
+                  "at": 1788627768.1539938
+                }
+              ]
+            },
+            "monolith": {
+              "events": [
+                {
+                  "kind": "pricing_rule_selected",
+                  "at": 1788627767.5066023,
+                  "payload": {
+                    "request": {
+                      "payout_id": "TYQm6B1u9GGycw",
+                      "purpose": "payout",
+                      "balance_id": "ARENABAL000001",
+                      "merchant_id": "ARENAM00000001",
+                      "amount": 10000,
+                      "method": "fund_transfer",
+                      "fee_type": "",
+                      "mode": "IMPS",
+                      "channel": "yesbank",
+                      "user_id": ""
+                    },
+                    "response": {
+                      "fees": 200,
+                      "tax": 36,
+                      "pricing_rule_id": "ARENAPLAN00001",
+                      "error": "",
+                      "code": ""
+                    }
+                  }
+                },
+                {
+                  "kind": "source_update",
+                  "at": 1788627767.5154605,
+                  "payload": {
+                    "payout_id": "TYQm6B1u9GGycw",
+                    "source_details": [
+                      {}
+                    ],
+                    "previous_status": "create_request_submitted",
+                    "expected_current_status": "ledger_response_awaited"
+                  }
+                },
+                {
+                  "kind": "source_update",
+                  "at": 1788627767.564369,
+                  "payload": {
+                    "payout_id": "TYQm6B1u9GGycw",
+                    "source_details": [
+                      {}
+                    ],
+                    "previous_status": "ledger_response_awaited",
+                    "expected_current_status": "created"
+                  }
+                },
+                {
+                  "kind": "source_update",
+                  "at": 1788627767.9719143,
+                  "payload": {
+                    "payout_id": "TYQm6B1u9GGycw",
+                    "source_details": [
+                      {}
+                    ],
+                    "previous_status": "created",
+                    "expected_current_status": "initiated"
+                  }
+                },
+                {
+                  "kind": "source_update",
+                  "at": 1788627768.0342784,
+                  "payload": {
+                    "payout_id": "TYQm6B1u9GGycw",
+                    "source_details": [
+                      {}
+                    ],
+                    "previous_status": "created",
+                    "expected_current_status": "initiated"
+                  }
+                },
+                {
+                  "kind": "update_fts_fund_transfer_inbound",
+                  "at": 1788627768.1222012,
+                  "payload": {
+                    "bank_processed_time": "",
+                    "bank_status_code": "",
+                    "channel": "RBL",
+                    "extra_info": {
+                      "cms_ref_no": "",
+                      "internal_error": false
+                    },
+                    "failure_reason": "",
+                    "fund_transfer_id": 1,
+                    "gateway_error_code": "",
+                    "gateway_ref_no": "TYQm6puk5NIR",
+                    "mode": "IFT",
+                    "narration": "Arena Merchant One Fund Transf",
+                    "remarks": "",
+                    "return_utr": "",
+                    "source_id": "TYQm6B1u9GGycw",
+                    "source_type": "payout",
+                    "status": "INITIATED",
+                    "status_details": null,
+                    "utr": ""
+                  }
+                },
+                {
+                  "kind": "payout_merchant_resolved",
+                  "at": 1788627768.1450062,
+                  "payload": {
+                    "payout_id": "TYQm6B1u9GGycw",
+                    "merchant_id": "ARENAM00000001",
+                    "origin": "payouts.payouts"
+                  }
+                },
+                {
+                  "kind": "update_payouts_details_with_fts",
+                  "at": 1788627768.1628702,
+                  "payload": {
+                    "status": 200,
+                    "body": {
+                      "source_id": "TYQm6B1u9GGycw",
+                      "fund_transfer_id": 1,
+                      "mode": "IFT",
+                      "channel": "RBL",
+                      "gateway_ref_no": "TYQm6puk5NIR",
+                      "fta_status": "initiated"
+                    }
+                  }
+                },
+                {
+                  "kind": "update_fts_fund_transfer_inbound",
+                  "at": 1788627768.1885812,
+                  "payload": {
+                    "bank_account_type": "NODAL",
+                    "bank_processed_time": "",
+                    "bank_status_code": "SUCCESS",
+                    "channel": "RBL",
+                    "extra_info": {
+                      "bank_status_codes": {
+                        "transfer_init": "SUCCESS",
+                        "transfer_status": ""
+                      },
+                      "beneficiary_acc_no": "",
+                      "beneficiary_acc_type": "",
+                      "beneficiary_bank": "",
+                      "beneficiary_name": "",
+                      "beneficiary_validation_mode": "",
+                      "cms_ref_no": "",
+                      "deemed_success": {
+                        "creation_time": 0,
+                        "gateway_error_code": ""
+                      },
+                      "internal_error": false,
+                      "is_pending": false,
+                      "payee_ifsc": "",
+                      "ponum": ""
+                    },
+                    "failure_reason": "",
+                    "fund_transfer_id": 1,
+                    "gateway_error_code": "",
+                    "gateway_ref_no": "TYQm6puk5NIR",
+                    "mode": "IFT",
+                    "narration": "Arena Merchant One Fund Transf",
+                    "remarks": "",
+                    "return_utr": "",
+                    "source_account_id": 900001,
+                    "source_id": "TYQm6B1u9GGycw",
+                    "source_type": "payout",
+                    "status": "PROCESSED",
+                    "status_details": null,
+                    "utr": "ARENA0000000001"
+                  }
+                },
+                {
+                  "kind": "payout_merchant_resolved",
+                  "at": 1788627768.189906,
+                  "payload": {
+                    "payout_id": "TYQm6B1u9GGycw",
+                    "merchant_id": "ARENAM00000001",
+                    "origin": "payouts.payouts"
+                  }
+                },
+                {
+                  "kind": "update_payouts_details_with_fts",
+                  "at": 1788627768.198396,
+                  "payload": {
+                    "status": 200,
+                    "body": {
+                      "source_id": "TYQm6B1u9GGycw",
+                      "fund_transfer_id": 1,
+                      "utr": "ARENA0000000001",
+                      "mode": "IFT",
+                      "channel": "RBL",
+                      "bank_status_code": "SUCCESS",
+                      "gateway_ref_no": "TYQm6puk5NIR",
+                      "fta_status": "processed"
+                    }
+                  }
+                },
+                {
+                  "kind": "mail_and_sms",
+                  "at": 1788627768.2204843,
+                  "payload": {
+                    "entity": "transaction",
+                    "entity_id": "TYQm6FAgwpFo7R",
+                    "type": "payout.processed",
+                    "metadata": {
+                      "amount": 10000,
+                      "created_at": 1788627767,
+                      "payout_id": "TYQm6B1u9GGycw"
+                    }
+                  }
+                },
+                {
+                  "kind": "source_update",
+                  "at": 1788627768.2214253,
+                  "payload": {
+                    "payout_id": "TYQm6B1u9GGycw",
+                    "source_details": [
+                      {}
+                    ],
+                    "previous_status": "initiated",
+                    "expected_current_status": "processed"
+                  }
+                },
+                {
+                  "kind": "payout_status_relay",
+                  "at": 1788627768.2248757,
+                  "payload": {
+                    "body": {
+                      "source_id": "TYQm6B1u9GGycw",
+                      "status": "processed",
+                      "failure_reason": "",
+                      "bank_status_code": "SUCCESS",
+                      "fts_fund_account_id": "900001",
+                      "fts_account_type": "nodal",
+                      "fts_status": "processed"
+                    },
+                    "status": 200
+                  }
+                }
+              ],
+              "boundary": "observed substitute calls; absence alone does not prove a different route"
+            }
+          },
+          "observability": {
+            "payout_state_history": "persisted payout_logs, ordered by created_at and id",
+            "fts_attempt_chain": "all persisted attempts for the source transfer(s), ordered by id",
+            "fts_state_history": "attempt rows expose current status; an event history is not inferred",
+            "queue_events": "not_observed; no queue message or acknowledgment is fabricated",
+            "atomicity": "successive reads across databases; not a cross-service atomic snapshot",
+            "capture_retention": "bank and webhook capture endpoints retain bounded process-local history"
+          },
+          "merchant_id": "ARENAM00000001",
+          "finished_at": 1788627769.634836,
+          "duration_seconds": 0.03385281562805176
+        },
+        "finished_at": 1788627769.6409802,
+        "duration_seconds": 2.3629310131073
+      }
+    }
+  ]
+}

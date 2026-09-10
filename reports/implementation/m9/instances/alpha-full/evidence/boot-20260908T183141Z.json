@@ -1,0 +1,508 @@
+{
+  "boot": "520e96ad-fbe6-4438-83a5-c64005412c14",
+  "steps": [
+    {
+      "at": "2026-09-08T18:29:45Z",
+      "log": "01-materialize.log",
+      "n": 1,
+      "rc": 0,
+      "secs": 6.49,
+      "step": "materialize"
+    },
+    {
+      "at": "2026-09-08T18:29:47Z",
+      "log": "02-datastores-up.log",
+      "n": 2,
+      "rc": 0,
+      "secs": 2.15,
+      "step": "datastores-up"
+    },
+    {
+      "crash_restarts": {},
+      "healthy": [
+        "kafka",
+        "localstack",
+        "mongo-cfa",
+        "mysql-apidb-stub",
+        "mysql-fts",
+        "mysql-payouts",
+        "mysql-xbalances",
+        "postgres-ledger",
+        "redis"
+      ],
+      "n": 3,
+      "rc": 0,
+      "secs": 21.3,
+      "step": "datastores-health",
+      "unhealthy": []
+    },
+    {
+      "at": "2026-09-08T18:30:11Z",
+      "log": "04-migrate-payouts-migrate.log",
+      "n": 4,
+      "rc": 0,
+      "secs": 2.75,
+      "step": "migrate-payouts-migrate"
+    },
+    {
+      "at": "2026-09-08T18:30:13Z",
+      "log": "05-migrate-ledger-migrate.log",
+      "n": 5,
+      "rc": 0,
+      "secs": 1.12,
+      "step": "migrate-ledger-migrate"
+    },
+    {
+      "at": "2026-09-08T18:30:16Z",
+      "log": "06-migrate-fts-migrate.log",
+      "n": 6,
+      "rc": 0,
+      "secs": 3.66,
+      "step": "migrate-fts-migrate"
+    },
+    {
+      "at": "2026-09-08T18:30:17Z",
+      "log": "07-migrate-cfa-migrate.log",
+      "n": 7,
+      "rc": 0,
+      "secs": 0.87,
+      "step": "migrate-cfa-migrate"
+    },
+    {
+      "at": "2026-09-08T18:30:18Z",
+      "log": "08-migrate-xbalances-migrate.log",
+      "n": 8,
+      "rc": 0,
+      "secs": 0.67,
+      "step": "migrate-xbalances-migrate"
+    },
+    {
+      "at": "2026-09-08T18:30:18Z",
+      "log": "09-schema-patch-mysql-payouts.log",
+      "n": 9,
+      "rc": 0,
+      "secs": 0.14,
+      "step": "schema-patch-mysql-payouts"
+    },
+    {
+      "at": "2026-09-08T18:30:18Z",
+      "log": "10-schema-patch-mysql-apidb-stub.log",
+      "n": 10,
+      "rc": 0,
+      "secs": 0.15,
+      "step": "schema-patch-mysql-apidb-stub"
+    },
+    {
+      "at": "2026-09-08T18:30:19Z",
+      "log": "11-seed-mysql-payouts.log",
+      "n": 11,
+      "rc": 0,
+      "secs": 1.22,
+      "step": "seed-mysql-payouts"
+    },
+    {
+      "at": "2026-09-08T18:30:20Z",
+      "log": "12-seed-mysql-fts.log",
+      "n": 12,
+      "rc": 0,
+      "secs": 0.87,
+      "step": "seed-mysql-fts"
+    },
+    {
+      "at": "2026-09-08T18:30:20Z",
+      "log": "13-seed-mysql-xbalances.log",
+      "n": 13,
+      "rc": 0,
+      "secs": 0.26,
+      "step": "seed-mysql-xbalances"
+    },
+    {
+      "at": "2026-09-08T18:30:21Z",
+      "log": "14-seed-mysql-apidb-stub.log",
+      "n": 14,
+      "rc": 0,
+      "secs": 0.6,
+      "step": "seed-mysql-apidb-stub"
+    },
+    {
+      "at": "2026-09-08T18:30:21Z",
+      "log": "15-seed-postgres-ledger.log",
+      "n": 15,
+      "rc": 0,
+      "secs": 0.2,
+      "step": "seed-postgres-ledger"
+    },
+    {
+      "at": "2026-09-08T18:30:23Z",
+      "log": "16-seed-mongo-cfa.log",
+      "n": 16,
+      "rc": 0,
+      "secs": 1.46,
+      "step": "seed-mongo-cfa"
+    },
+    {
+      "at": "2026-09-08T18:30:23Z",
+      "log": "17-provision-monolith-db.log",
+      "n": 17,
+      "rc": 0,
+      "secs": 0.37,
+      "step": "provision-monolith-db"
+    },
+    {
+      "at": "2026-09-08T18:30:26Z",
+      "log": "18-substitutes-up.log",
+      "n": 18,
+      "rc": 0,
+      "secs": 2.91,
+      "step": "substitutes-up"
+    },
+    {
+      "crash_restarts": {},
+      "healthy": [
+        "api-ingress",
+        "asv-stub",
+        "bankingaccounts-stub",
+        "batch-sim",
+        "dcs-stub",
+        "kong-lite",
+        "ledger-gate",
+        "merchant-webhook-sink",
+        "monolith-stub",
+        "pricing-stub",
+        "shield-stub",
+        "splitz-stub",
+        "stork-capture",
+        "workflow-engine",
+        "workflow-sim",
+        "xas-sim"
+      ],
+      "n": 19,
+      "rc": 0,
+      "secs": 6.0,
+      "step": "substitutes-health",
+      "unhealthy": []
+    },
+    {
+      "at": "2026-09-08T18:30:32Z",
+      "log": "20-mozart-sim-up.log",
+      "n": 20,
+      "rc": 0,
+      "secs": 0.37,
+      "step": "mozart-sim-up"
+    },
+    {
+      "crash_restarts": {},
+      "healthy": [
+        "mozart-sim"
+      ],
+      "n": 21,
+      "rc": 0,
+      "secs": 6.4,
+      "step": "mozart-health",
+      "unhealthy": []
+    },
+    {
+      "at": "2026-09-08T18:30:39Z",
+      "log": "22-cron-driver-up.log",
+      "n": 22,
+      "rc": 0,
+      "secs": 0.56,
+      "step": "cron-driver-up"
+    },
+    {
+      "at": "2026-09-08T18:30:39Z",
+      "log": "23-stork-subscriptions.log",
+      "n": 23,
+      "rc": 0,
+      "secs": 0.17,
+      "step": "stork-subscriptions",
+      "stork_loaded": true
+    },
+    {
+      "at": "2026-09-08T18:30:53Z",
+      "log": "24-core-up.log",
+      "n": 24,
+      "rc": 1,
+      "secs": 13.6,
+      "step": "core-up"
+    },
+    {
+      "at": "2026-09-08T18:31:02Z",
+      "log": "25-core-up-retry1.log",
+      "n": 25,
+      "rc": 0,
+      "secs": 3.94,
+      "step": "core-up-retry1"
+    },
+    {
+      "crash_restarts": {},
+      "healthy": [
+        "cfa-server",
+        "cfa-worker-contact",
+        "cfa-worker-fa",
+        "fts-web",
+        "fts-worker-check-transfer-status",
+        "fts-worker-default",
+        "fts-worker-fire-transfer-status-webhook",
+        "fts-worker-hv-fire-transfer-status-webhook",
+        "fts-worker-hv-initiate-transfer",
+        "fts-worker-initiate-transfer",
+        "fts-worker-rbl-check-transfer-status",
+        "fts-worker-rbl-direct-check-transfer-status",
+        "fts-worker-rbl-direct-imps-check-transfer-status",
+        "fts-worker-rbl-direct-imps-hv-initiate-transfer",
+        "fts-worker-rbl-direct-imps-initiate-transfer",
+        "fts-worker-rbl-direct-initiate-transfer",
+        "fts-worker-rbl-direct-slow-lane-initiate-transfer",
+        "fts-worker-rbl-direct-upi-check-transfer-status",
+        "fts-worker-rbl-direct-upi-initiate-transfer",
+        "fts-worker-rbl-imps-check-transfer-status",
+        "fts-worker-rbl-imps-initiate-transfer",
+        "fts-worker-rbl-initiate-transfer",
+        "fts-worker-rbl-upi-check-transfer-status",
+        "fts-worker-rbl-upi-hv-check-transfer-status",
+        "fts-worker-rbl-upi-hv-initiate-transfer",
+        "fts-worker-rbl-upi-initiate-transfer",
+        "fts-worker-retry-transfer",
+        "fts-worker-retry-transfer-preprocessor",
+        "fts-worker-retry-transfer-source-update",
+        "fts-worker-slow-lane-initiate-transfer",
+        "ledger-api",
+        "ledger-worker",
+        "ledger-worker-balance-update",
+        "ledger-worker-entry-details-create",
+        "ledger-worker-entry-details-create-pg",
+        "ledger-worker-journal-create",
+        "payouts-api",
+        "payouts-kafka-fts-status-updates-consumer",
+        "payouts-kafka-fts-status-updates-retry-consumer",
+        "payouts-worker-api-queue-for-async-dual-write-direct-push",
+        "payouts-worker-async-dual-write",
+        "payouts-worker-batch-submitted-merchants",
+        "payouts-worker-bulk-payouts",
+        "payouts-worker-data-consistency-checker",
+        "payouts-worker-data-consistency-event",
+        "payouts-worker-fts-async-hv-processing",
+        "payouts-worker-fts-async-processing",
+        "payouts-worker-fund-management-payout-check",
+        "payouts-worker-fund-management-payout-initiate",
+        "payouts-worker-generic-processing",
+        "payouts-worker-on-hold-payout",
+        "payouts-worker-partner-bank-hold-payouts",
+        "payouts-worker-payout-create-failure-handling",
+        "payouts-worker-payout-source-updater",
+        "payouts-worker-payout-update-failure-handling",
+        "payouts-worker-payout-usage-event-processing",
+        "payouts-worker-queued-payout",
+        "payouts-worker-rbl-banking-account-statement",
+        "payouts-worker-schedule-payout",
+        "payouts-worker-transaction-create",
+        "payouts-worker-webhook-event",
+        "payouts-worker-x-account-statement-source-event",
+        "payouts-worker-x-balance-payouts-event",
+        "payouts-worker-x-balances-balance-refresh",
+        "xbalances-server",
+        "xbalances-worker"
+      ],
+      "n": 26,
+      "rc": 0,
+      "secs": 6.1,
+      "step": "core-health",
+      "unhealthy": []
+    },
+    {
+      "at": "2026-09-08T18:31:09Z",
+      "log": "27-ledger-config-shared-account-x.log",
+      "n": 27,
+      "rc": 0,
+      "secs": 0.34,
+      "step": "ledger-config-shared_account_x"
+    },
+    {
+      "at": "2026-09-08T18:31:09Z",
+      "log": "28-ledger-config-direct-account-x.log",
+      "n": 28,
+      "rc": 0,
+      "secs": 0.3,
+      "step": "ledger-config-direct_account_x"
+    },
+    {
+      "at": "2026-09-08T18:31:09Z",
+      "log": "29-ledger-da-parents.log",
+      "n": 29,
+      "rc": 0,
+      "secs": 0.26,
+      "step": "ledger-da-parents"
+    },
+    {
+      "at": "2026-09-08T18:31:09Z",
+      "log": "30-ledger-da-inactive.log",
+      "n": 30,
+      "rc": 0,
+      "secs": 0.14,
+      "step": "ledger-da-inactive"
+    },
+    {
+      "at": "2026-09-08T18:31:10Z",
+      "log": "31-ledger-da-activate.log",
+      "n": 31,
+      "rc": 0,
+      "secs": 0.24,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T18:31:10Z",
+      "log": "32-ledger-da-activate.log",
+      "n": 32,
+      "rc": 0,
+      "secs": 0.26,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T18:31:10Z",
+      "log": "33-ledger-da-activate.log",
+      "n": 33,
+      "rc": 0,
+      "secs": 0.25,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T18:31:10Z",
+      "log": "34-ledger-da-activate.log",
+      "n": 34,
+      "rc": 0,
+      "secs": 0.26,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T18:31:11Z",
+      "log": "35-ledger-da-activate.log",
+      "n": 35,
+      "rc": 0,
+      "secs": 0.21,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T18:31:11Z",
+      "log": "36-ledger-da-activate.log",
+      "n": 36,
+      "rc": 0,
+      "secs": 0.24,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T18:31:11Z",
+      "log": "37-ledger-da-activate.log",
+      "n": 37,
+      "rc": 0,
+      "secs": 0.22,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T18:31:11Z",
+      "da_parents_activated": "7",
+      "log": "38-ledger-da-count.log",
+      "n": 38,
+      "rc": 0,
+      "secs": 0.15,
+      "step": "ledger-da-count"
+    },
+    {
+      "at": "2026-09-08T18:31:12Z",
+      "log": "39-reservation-reconcile.log",
+      "n": 39,
+      "rc": 0,
+      "secs": 0.38,
+      "step": "reservation-reconcile"
+    },
+    {
+      "at": "2026-09-08T18:31:12Z",
+      "log": "40-reservation-readiness.log",
+      "n": 40,
+      "rc": 0,
+      "secs": 0.25,
+      "step": "reservation-readiness"
+    },
+    {
+      "at": "2026-09-08T18:31:12Z",
+      "log": "41-host-bridge-start.log",
+      "n": 41,
+      "rc": 0,
+      "secs": 0.22,
+      "step": "host-bridge-start"
+    },
+    {
+      "at": "2026-09-08T18:31:13Z",
+      "log": "42-fingerprint.log",
+      "n": 42,
+      "rc": 0,
+      "secs": 1.15,
+      "step": "fingerprint"
+    },
+    {
+      "at": "2026-09-08T18:31:24Z",
+      "log": "43-s2p-ingress-attach.log",
+      "n": 43,
+      "rc": 0,
+      "secs": 11.16,
+      "step": "s2p-ingress-attach"
+    },
+    {
+      "at": "2026-09-08T18:31:35Z",
+      "log": "44-s2p-datastores-up.log",
+      "n": 44,
+      "rc": 0,
+      "secs": 10.39,
+      "step": "s2p-datastores-up"
+    },
+    {
+      "at": "2026-09-08T18:31:35Z",
+      "log": "45-s2p-topic-add-tds-entry.log",
+      "n": 45,
+      "rc": 1,
+      "secs": 0.11,
+      "step": "s2p-topic-add-tds-entry"
+    },
+    {
+      "at": "2026-09-08T18:31:35Z",
+      "log": "46-s2p-topic-create-add-tds-entry.log",
+      "n": 46,
+      "rc": 0,
+      "secs": 0.31,
+      "step": "s2p-topic-create-add-tds-entry"
+    },
+    {
+      "at": "2026-09-08T18:31:35Z",
+      "log": "47-s2p-topic-prod-x-vendor-paymen.log",
+      "n": 47,
+      "rc": 1,
+      "secs": 0.12,
+      "step": "s2p-topic-prod.x.vendor-paymen"
+    },
+    {
+      "at": "2026-09-08T18:31:36Z",
+      "log": "48-s2p-topic-create-prod-x-vendor-paymen.log",
+      "n": 48,
+      "rc": 0,
+      "secs": 0.3,
+      "step": "s2p-topic-create-prod.x.vendor-paymen"
+    },
+    {
+      "at": "2026-09-08T18:31:41Z",
+      "log": "49-s2p-source-up.log",
+      "n": 49,
+      "rc": 0,
+      "secs": 5.22,
+      "step": "s2p-source-up"
+    },
+    {
+      "at": "2026-09-08T18:31:41Z",
+      "log": "50-s2p-health.log",
+      "n": 50,
+      "rc": 0,
+      "secs": 0.09,
+      "step": "s2p-health",
+      "vp_source_health_rc": 0
+    }
+  ]
+}

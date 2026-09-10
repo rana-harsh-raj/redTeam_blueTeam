@@ -1,0 +1,187 @@
+{
+  "schema_version": 1,
+  "task": "T17",
+  "generated_at": "2026-09-06T20:33:38Z",
+  "git_head": "8965ec25a2c4577c66372a85bb1b53c4415abc9c",
+  "arena": {
+    "boot_id": "06330f7e-3099-4299-ab0c-9b9d50c43899",
+    "compose_project": "env2_compose",
+    "route_profile": "monolith",
+    "config_digest": "839a4da8c312d11fb6753b99318f7c22d2cc349b46a01b838eeb5e4b1aacf092",
+    "git_head": "39fe41e54d7ee7063ebdbac546334023b1aea5d5"
+  },
+  "merchants": {
+    "A": "ARENAD83881351",
+    "B": "ARENAD86313421"
+  },
+  "invariants": [
+    {
+      "invariant": "I-Direct-failure-no-shared-reversal(G31)",
+      "formal_statement": "A failed Direct (rbl) payout produces NO reversal row and NO Shared-style reversal journal; the payout stays failed.",
+      "setup": "Fresh Direct merchant B, feature parity with M2.",
+      "action": "Journeys B (immediate) and D (pending->failure): bank returns failed.",
+      "expected_effect": "payout.status=failed, reversals count=0, no da_payout_reversed journal.",
+      "negative_control": "Shared (nodal) account: bank failed remaps to REVERSED with a reversal row (V18, test_v18).",
+      "evidence_source": {
+        "journey_B": {
+          "pid": "TYsoQ5y1OOazEO",
+          "amount": 5203,
+          "status": "failed",
+          "reversal_rows": "0",
+          "webhooks": [
+            {
+              "event": "payout.initiated",
+              "merchant": "ARENAD86313421",
+              "signature_valid": true,
+              "payout_id": "pout_TYsoQ5y1OOazEO",
+              "payout_status": "processing"
+            },
+            {
+              "event": "payout.updated",
+              "merchant": "ARENAD86313421",
+              "signature_valid": true,
+              "payout_id": "pout_TYsoQ5y1OOazEO",
+              "payout_status": "processing"
+            },
+            {
+              "event": "payout.failed",
+              "merchant": "ARENAD86313421",
+              "signature_valid": true,
+              "payout_id": "pout_TYsoQ5y1OOazEO",
+              "payout_status": "failed"
+            }
+          ]
+        },
+        "journey_D": {
+          "pid": "TYsq4Sd5QFa7NE",
+          "amount": 5897,
+          "status": "failed",
+          "reversal_rows": "0"
+        },
+        "negative_control_ref": "test_v18_shared_vs_direct_failed_remap.py"
+      },
+      "fidelity": "real",
+      "result": "PASS"
+    },
+    {
+      "invariant": "I-Direct-success-no-duplicate-ledger(G54)",
+      "formal_statement": "A processed Direct payout yields exactly two balanced DA journals (da_payout_processed + _recon); replaying the recon/payout_update path creates NO additional journal ((transactor_id,transactor_event) unique).",
+      "setup": "Journey A success on merchant A (DA onboarded).",
+      "action": "Replay the payout_update / delayed status (journeys C and F).",
+      "expected_effect": "journal count stays 2; (transactor_id, transactor_event) unique for the merchant.",
+      "negative_control": "Without ledger layer-2 ValidateJournalExist the replay would write 4 journals.",
+      "evidence_source": {
+        "journey_A_journals": [
+          [
+            "da_payout_processed",
+            true
+          ],
+          [
+            "da_payout_processed_recon",
+            true
+          ]
+        ],
+        "replay_journal_count": {
+          "F": 2,
+          "C": 2
+        },
+        "uniqueness_violations": []
+      },
+      "fidelity": "real",
+      "result": "PASS"
+    },
+    {
+      "invariant": "I-reservation-not-released-twice(G53)",
+      "formal_statement": "An in-flight reservation transitions live -> awaiting_balance_refresh -> released AT MOST ONCE; re-running the reconciler does not double-release or duplicate the item.",
+      "setup": "Journey A processed payout on merchant A.",
+      "action": "Read the reservation set after processing and again after a reconciler pass (journey F re-read).",
+      "expected_effect": "at most one reservation item per payout; state monotonic (no second release).",
+      "negative_control": "A double terminal-hook would remove/decrement the counter twice.",
+      "evidence_source": {
+        "reservations_after_A": {
+          "items": [
+            {
+              "payout_id": "TYsn2RxzaLq6bL",
+              "amount": 5725,
+              "dispatched_at": 1788726426,
+              "state": "awaiting_balance_refresh"
+            }
+          ],
+          "transition_source": "reconciler_pass"
+        },
+        "reservation_items_for_payout_now": [
+          {
+            "payout_id": "TYsn2RxzaLq6bL",
+            "amount": 5725,
+            "dispatched_at": 1788726426,
+            "state": "awaiting_balance_refresh"
+          }
+        ]
+      },
+      "fidelity": "real",
+      "result": "PASS"
+    },
+    {
+      "invariant": "I-balance-not-decremented-twice(G28-adj)",
+      "formal_statement": "A duplicate statement / replayed recon does not debit the merchant ledger balance a second time: no additional debit entries appear and the DA journal count is unchanged.",
+      "setup": "Journey A success + journey F duplicate statement on merchant A.",
+      "action": "Re-ingest the identical CSV and re-fire the payout_update (journey F).",
+      "expected_effect": "no new BAS row, DA journal count stays 2 (so no second set of debit entries).",
+      "negative_control": "Absent dedup, a second da_payout_processed would double the merchant-balance debit.",
+      "evidence_source": {
+        "journey_F": {
+          "pid": "TYsn2RxzaLq6bL",
+          "bas_id": "TYsoEfZHOtG4lC",
+          "journals_after": 2
+        }
+      },
+      "fidelity": "real",
+      "result": "PASS"
+    },
+    {
+      "invariant": "I-conservation(G51)",
+      "formal_statement": "For a successful Direct payout the DA journal entries sum to zero (sum_debit==sum_credit per journal) AND the modeled money-state is conserved across balance/reservation/ledger (reservation held==amount during pending, released on terminal; ledger merchant-balance debit==payout amount).",
+      "setup": "Journey A on merchant A.",
+      "action": "Sum ledger entries per journal; compare reservation-held and ledger merchant-balance debit against the payout amount.",
+      "expected_effect": "every journal balanced; reservation held during pending == amount; da_payout_processed debit on Merchant Balance == amount.",
+      "negative_control": "An unbalanced journal or a reservation/ledger amount != payout amount breaks conservation.",
+      "evidence_source": {
+        "ok": true,
+        "journals_balanced": true,
+        "merchant_balance_debit": 5725.0,
+        "payout_amount": 5725,
+        "ledger_debit_equals_amount": true,
+        "reservation_held_during_pending": 5725,
+        "modeled_conservation": "reservation held (==amount, released on terminal) offsets the ledger merchant-balance debit; DA journals balanced (sum_debit==sum_credit) -> net ledger movement is zero-sum across DA sub-accounts"
+      },
+      "fidelity": "real (ledger) + modeled (reservation/balance conservation)",
+      "result": "PASS"
+    },
+    {
+      "invariant": "I-reconciliation-correct-tuple(G26)",
+      "formal_statement": "Statement->payout matching uses the correct tuple: same merchant_id, account_number, currency, amount and statement-detail; the wrong-amount statement is NOT matched.",
+      "setup": "Journey A (positive) + journey G2 wrong-amount (negative control) on their merchants.",
+      "action": "Read the linked BAS row (A) and the wrong-amount BAS row (G2).",
+      "expected_effect": "A: BAS.merchant_id==mid, account_number==acct, currency==INR, amount==payout amount, linked to the correct payout. G2: wrong-amount row stays external, unlinked, no journal.",
+      "negative_control": "G2 wrong-amount statement is the negative control (must NOT link).",
+      "evidence_source": {
+        "ok": true,
+        "positive": {
+          "bas_merchant_id": "ARENAD83881351",
+          "bas_account_number": "2323000083881351",
+          "bas_currency": "INR",
+          "bas_amount": "5725",
+          "expected_amount": 5725,
+          "payout_transaction_id": "TYsoEfZHOtG4lC",
+          "expected_bas_id": "TYsoEfZHOtG4lC",
+          "link_via_transaction_id": true
+        },
+        "negative_control_G2_pass": true
+      },
+      "fidelity": "real-worker statement + real PS link; substitute xas decision",
+      "result": "PASS"
+    }
+  ],
+  "passed": 6,
+  "total": 6
+}

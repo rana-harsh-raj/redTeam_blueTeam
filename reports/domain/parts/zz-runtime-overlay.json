@@ -1,0 +1,1551 @@
+{
+ "lane": "zz-runtime-overlay",
+ "generated_at": "2026-09-08T09:24:52.968247+00:00",
+ "sources": [
+  {
+   "repo": "twin",
+   "path": "ENV2_COMPOSE/docker-compose.yml + docker ps"
+  }
+ ],
+ "docker_available": true,
+ "nodes": [
+  {
+   "id": "svc:payouts-api",
+   "kind": "service",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-api",
+   "compose_service": "payouts-api",
+   "profile": "core",
+   "label": "svc:payouts-api",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-api is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/webhook_event",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-webhook-event",
+   "compose_service": "payouts-worker-webhook-event",
+   "profile": "core",
+   "label": "worker:payouts/webhook_event",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 31 minutes (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-webhook-event is Up 31 minutes (healthy)"
+  },
+  {
+   "id": "worker:payouts/webhook_event",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-webhook-event",
+   "compose_service": "payouts-worker-webhook-event",
+   "profile": "core",
+   "label": "worker:payouts/webhook_event",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 31 minutes (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-webhook-event is Up 31 minutes (healthy)"
+  },
+  {
+   "id": "worker:payouts/queued_payout",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-queued-payout",
+   "compose_service": "payouts-worker-queued-payout",
+   "profile": "core",
+   "label": "worker:payouts/queued_payout",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-queued-payout is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/queued_payout",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-queued-payout",
+   "compose_service": "payouts-worker-queued-payout",
+   "profile": "core",
+   "label": "worker:payouts/queued_payout",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-queued-payout is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/schedule_payout",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-schedule-payout",
+   "compose_service": "payouts-worker-schedule-payout",
+   "profile": "core",
+   "label": "worker:payouts/schedule_payout",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-schedule-payout is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/schedule_payout",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-schedule-payout",
+   "compose_service": "payouts-worker-schedule-payout",
+   "profile": "core",
+   "label": "worker:payouts/schedule_payout",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-schedule-payout is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/on_hold_payout",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-on-hold-payout",
+   "compose_service": "payouts-worker-on-hold-payout",
+   "profile": "core",
+   "label": "worker:payouts/on_hold_payout",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-on-hold-payout is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/on_hold_payout",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-on-hold-payout",
+   "compose_service": "payouts-worker-on-hold-payout",
+   "profile": "core",
+   "label": "worker:payouts/on_hold_payout",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-on-hold-payout is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/fts_async_processing",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-fts-async-processing",
+   "compose_service": "payouts-worker-fts-async-processing",
+   "profile": "core",
+   "label": "worker:payouts/fts_async_processing",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 31 minutes (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-fts-async-processing is Up 31 minutes (healthy)"
+  },
+  {
+   "id": "worker:payouts/fts_async_processing",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-fts-async-processing",
+   "compose_service": "payouts-worker-fts-async-processing",
+   "profile": "core",
+   "label": "worker:payouts/fts_async_processing",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 31 minutes (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-fts-async-processing is Up 31 minutes (healthy)"
+  },
+  {
+   "id": "worker:payouts/fts_async_hv_processing",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-fts-async-hv-processing",
+   "compose_service": "payouts-worker-fts-async-hv-processing",
+   "profile": "core",
+   "label": "worker:payouts/fts_async_hv_processing",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-fts-async-hv-processing is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/fts_async_hv_processing",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-fts-async-hv-processing",
+   "compose_service": "payouts-worker-fts-async-hv-processing",
+   "profile": "core",
+   "label": "worker:payouts/fts_async_hv_processing",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-fts-async-hv-processing is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/payout_create_failure_handling",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-payout-create-failure-handling",
+   "compose_service": "payouts-worker-payout-create-failure-handling",
+   "profile": "core",
+   "label": "worker:payouts/payout_create_failure_handling",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-payout-create-failure-handling is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/payout_create_failure_handling",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-payout-create-failure-handling",
+   "compose_service": "payouts-worker-payout-create-failure-handling",
+   "profile": "core",
+   "label": "worker:payouts/payout_create_failure_handling",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-payout-create-failure-handling is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/payout_update_failure_handling",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-payout-update-failure-handling",
+   "compose_service": "payouts-worker-payout-update-failure-handling",
+   "profile": "core",
+   "label": "worker:payouts/payout_update_failure_handling",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-payout-update-failure-handling is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/payout_update_failure_handling",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-payout-update-failure-handling",
+   "compose_service": "payouts-worker-payout-update-failure-handling",
+   "profile": "core",
+   "label": "worker:payouts/payout_update_failure_handling",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-payout-update-failure-handling is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/transaction_create",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-transaction-create",
+   "compose_service": "payouts-worker-transaction-create",
+   "profile": "core",
+   "label": "worker:payouts/transaction_create",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-transaction-create is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/transaction_create",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-transaction-create",
+   "compose_service": "payouts-worker-transaction-create",
+   "profile": "core",
+   "label": "worker:payouts/transaction_create",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-transaction-create is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/generic_processing",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-generic-processing",
+   "compose_service": "payouts-worker-generic-processing",
+   "profile": "core",
+   "label": "worker:payouts/generic_processing",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-generic-processing is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/generic_processing",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-generic-processing",
+   "compose_service": "payouts-worker-generic-processing",
+   "profile": "core",
+   "label": "worker:payouts/generic_processing",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-generic-processing is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/async_dual_write",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-async-dual-write",
+   "compose_service": "payouts-worker-async-dual-write",
+   "profile": "core",
+   "label": "worker:payouts/async_dual_write",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-async-dual-write is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/async_dual_write",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-async-dual-write",
+   "compose_service": "payouts-worker-async-dual-write",
+   "profile": "core",
+   "label": "worker:payouts/async_dual_write",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-async-dual-write is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/x_balances_balance_refresh",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-x-balances-balance-refresh",
+   "compose_service": "payouts-worker-x-balances-balance-refresh",
+   "profile": "core",
+   "label": "worker:payouts/x_balances_balance_refresh",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-x-balances-balance-refresh is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/x_balances_balance_refresh",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-x-balances-balance-refresh",
+   "compose_service": "payouts-worker-x-balances-balance-refresh",
+   "profile": "core",
+   "label": "worker:payouts/x_balances_balance_refresh",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-x-balances-balance-refresh is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/rbl_banking_account_statement",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-rbl-banking-account-statement",
+   "compose_service": "payouts-worker-rbl-banking-account-statement",
+   "profile": "core",
+   "label": "worker:payouts/rbl_banking_account_statement",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-rbl-banking-account-statement is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/rbl_banking_account_statement",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-rbl-banking-account-statement",
+   "compose_service": "payouts-worker-rbl-banking-account-statement",
+   "profile": "core",
+   "label": "worker:payouts/rbl_banking_account_statement",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-rbl-banking-account-statement is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/payout_source_updater",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-payout-source-updater",
+   "compose_service": "payouts-worker-payout-source-updater",
+   "profile": "core",
+   "label": "worker:payouts/payout_source_updater",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-payout-source-updater is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/payout_source_updater",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-payout-source-updater",
+   "compose_service": "payouts-worker-payout-source-updater",
+   "profile": "core",
+   "label": "worker:payouts/payout_source_updater",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-payout-source-updater is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/partner_bank_hold_payouts",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-partner-bank-hold-payouts",
+   "compose_service": "payouts-worker-partner-bank-hold-payouts",
+   "profile": "core",
+   "label": "worker:payouts/partner_bank_hold_payouts",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-partner-bank-hold-payouts is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/partner_bank_hold_payouts",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-partner-bank-hold-payouts",
+   "compose_service": "payouts-worker-partner-bank-hold-payouts",
+   "profile": "core",
+   "label": "worker:payouts/partner_bank_hold_payouts",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-partner-bank-hold-payouts is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/bulk_payouts",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-bulk-payouts",
+   "compose_service": "payouts-worker-bulk-payouts",
+   "profile": "core",
+   "label": "worker:payouts/bulk_payouts",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-bulk-payouts is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/bulk_payouts",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-bulk-payouts",
+   "compose_service": "payouts-worker-bulk-payouts",
+   "profile": "core",
+   "label": "worker:payouts/bulk_payouts",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-bulk-payouts is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/batch_submitted_merchants",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-batch-submitted-merchants",
+   "compose_service": "payouts-worker-batch-submitted-merchants",
+   "profile": "core",
+   "label": "worker:payouts/batch_submitted_merchants",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-batch-submitted-merchants is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/batch_submitted_merchants",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-batch-submitted-merchants",
+   "compose_service": "payouts-worker-batch-submitted-merchants",
+   "profile": "core",
+   "label": "worker:payouts/batch_submitted_merchants",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-batch-submitted-merchants is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/data_consistency_checker",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-data-consistency-checker",
+   "compose_service": "payouts-worker-data-consistency-checker",
+   "profile": "core",
+   "label": "worker:payouts/data_consistency_checker",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-data-consistency-checker is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/data_consistency_checker",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-data-consistency-checker",
+   "compose_service": "payouts-worker-data-consistency-checker",
+   "profile": "core",
+   "label": "worker:payouts/data_consistency_checker",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-data-consistency-checker is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/data_consistency_event",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-data-consistency-event",
+   "compose_service": "payouts-worker-data-consistency-event",
+   "profile": "core",
+   "label": "worker:payouts/data_consistency_event",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-data-consistency-event is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/data_consistency_event",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-data-consistency-event",
+   "compose_service": "payouts-worker-data-consistency-event",
+   "profile": "core",
+   "label": "worker:payouts/data_consistency_event",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-data-consistency-event is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/fund_management_payout_check",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-fund-management-payout-check",
+   "compose_service": "payouts-worker-fund-management-payout-check",
+   "profile": "core",
+   "label": "worker:payouts/fund_management_payout_check",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-fund-management-payout-check is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/fund_management_payout_check",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-fund-management-payout-check",
+   "compose_service": "payouts-worker-fund-management-payout-check",
+   "profile": "core",
+   "label": "worker:payouts/fund_management_payout_check",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-fund-management-payout-check is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/fund_management_payout_initiate",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-fund-management-payout-initiate",
+   "compose_service": "payouts-worker-fund-management-payout-initiate",
+   "profile": "core",
+   "label": "worker:payouts/fund_management_payout_initiate",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-fund-management-payout-initiate is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/fund_management_payout_initiate",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-fund-management-payout-initiate",
+   "compose_service": "payouts-worker-fund-management-payout-initiate",
+   "profile": "core",
+   "label": "worker:payouts/fund_management_payout_initiate",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-fund-management-payout-initiate is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/payout_usage_event_processing",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-payout-usage-event-processing",
+   "compose_service": "payouts-worker-payout-usage-event-processing",
+   "profile": "core",
+   "label": "worker:payouts/payout_usage_event_processing",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-payout-usage-event-processing is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/payout_usage_event_processing",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-payout-usage-event-processing",
+   "compose_service": "payouts-worker-payout-usage-event-processing",
+   "profile": "core",
+   "label": "worker:payouts/payout_usage_event_processing",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-payout-usage-event-processing is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/x_account_statement_source_event",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-x-account-statement-source-event",
+   "compose_service": "payouts-worker-x-account-statement-source-event",
+   "profile": "core",
+   "label": "worker:payouts/x_account_statement_source_event",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-x-account-statement-source-event is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/x_account_statement_source_event",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-x-account-statement-source-event",
+   "compose_service": "payouts-worker-x-account-statement-source-event",
+   "profile": "core",
+   "label": "worker:payouts/x_account_statement_source_event",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-x-account-statement-source-event is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/x_balance_payouts_event",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-x-balance-payouts-event",
+   "compose_service": "payouts-worker-x-balance-payouts-event",
+   "profile": "core",
+   "label": "worker:payouts/x_balance_payouts_event",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-x-balance-payouts-event is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/x_balance_payouts_event",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-x-balance-payouts-event",
+   "compose_service": "payouts-worker-x-balance-payouts-event",
+   "profile": "core",
+   "label": "worker:payouts/x_balance_payouts_event",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-x-balance-payouts-event is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/api_queue_for_async_dual_write_direct_push",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-api-queue-for-async-dual-write-direct-push",
+   "compose_service": "payouts-worker-api-queue-for-async-dual-write-direct-push",
+   "profile": "core",
+   "label": "worker:payouts/api_queue_for_async_dual_write_direct_push",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-api-queue-for-async-dual-write-direct-push is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:payouts/api_queue_for_async_dual_write_direct_push",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:payouts-worker-api-queue-for-async-dual-write-direct-push",
+   "compose_service": "payouts-worker-api-queue-for-async-dual-write-direct-push",
+   "profile": "core",
+   "label": "worker:payouts/api_queue_for_async_dual_write_direct_push",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service payouts-worker-api-queue-for-async-dual-write-direct-push is Up 2 hours (healthy)"
+  },
+  {
+   "id": "svc:ledger-api",
+   "kind": "service",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:ledger-api",
+   "compose_service": "ledger-api",
+   "profile": "core",
+   "label": "svc:ledger-api",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service ledger-api is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:ledger/balance_update",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:ledger-worker-balance-update",
+   "compose_service": "ledger-worker-balance-update",
+   "profile": "core",
+   "label": "worker:ledger/balance_update",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service ledger-worker-balance-update is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:ledger/journal_create",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:ledger-worker-journal-create",
+   "compose_service": "ledger-worker-journal-create",
+   "profile": "core",
+   "label": "worker:ledger/journal_create",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service ledger-worker-journal-create is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:ledger/scheduler",
+   "kind": "worker",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:ledger-scheduler",
+   "compose_service": "ledger-scheduler",
+   "profile": "core",
+   "label": "worker:ledger/scheduler",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": false,
+    "healthy": false,
+    "status": "Exited (0) 2 hours ago"
+   },
+   "fidelity": "real_source_mapped_not_running",
+   "fidelity_evidence": "container for compose service ledger-scheduler is Exited (0) 2 hours ago"
+  },
+  {
+   "id": "svc:fts-web",
+   "kind": "service",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:fts-web",
+   "compose_service": "fts-web",
+   "profile": "core",
+   "label": "svc:fts-web",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service fts-web is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:fts/default",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:fts-worker-default",
+   "compose_service": "fts-worker-default",
+   "profile": "core",
+   "label": "worker:fts/default",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service fts-worker-default is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:fts/default",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:fts-worker-default",
+   "compose_service": "fts-worker-default",
+   "profile": "core",
+   "label": "worker:fts/default",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service fts-worker-default is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:fts/initiate_transfer",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:fts-worker-initiate-transfer",
+   "compose_service": "fts-worker-initiate-transfer",
+   "profile": "core",
+   "label": "worker:fts/initiate_transfer",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service fts-worker-initiate-transfer is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:fts/check_transfer_status",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:fts-worker-check-transfer-status",
+   "compose_service": "fts-worker-check-transfer-status",
+   "profile": "core",
+   "label": "worker:fts/check_transfer_status",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service fts-worker-check-transfer-status is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:fts/fire_transfer_status_webhook",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:fts-worker-fire-transfer-status-webhook",
+   "compose_service": "fts-worker-fire-transfer-status-webhook",
+   "profile": "core",
+   "label": "worker:fts/fire_transfer_status_webhook",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 31 minutes (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service fts-worker-fire-transfer-status-webhook is Up 31 minutes (healthy)"
+  },
+  {
+   "id": "worker:fts/retry_transfer",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:fts-worker-retry-transfer",
+   "compose_service": "fts-worker-retry-transfer",
+   "profile": "core",
+   "label": "worker:fts/retry_transfer",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service fts-worker-retry-transfer is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:fts/retry_transfer_preprocessor",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:fts-worker-retry-transfer-preprocessor",
+   "compose_service": "fts-worker-retry-transfer-preprocessor",
+   "profile": "core",
+   "label": "worker:fts/retry_transfer_preprocessor",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service fts-worker-retry-transfer-preprocessor is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:fts/retry_transfer_source_update",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:fts-worker-retry-transfer-source-update",
+   "compose_service": "fts-worker-retry-transfer-source-update",
+   "profile": "core",
+   "label": "worker:fts/retry_transfer_source_update",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service fts-worker-retry-transfer-source-update is Up 2 hours (healthy)"
+  },
+  {
+   "id": "svc:cfa-server",
+   "kind": "service",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:cfa-server",
+   "compose_service": "cfa-server",
+   "profile": "core",
+   "label": "svc:cfa-server",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service cfa-server is Up 2 hours (healthy)"
+  },
+  {
+   "id": "svc:xbalances-server",
+   "kind": "service",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:xbalances-server",
+   "compose_service": "xbalances-server",
+   "profile": "core",
+   "label": "svc:xbalances-server",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service xbalances-server is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:x-balances/default",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:xbalances-worker",
+   "compose_service": "xbalances-worker",
+   "profile": "core",
+   "label": "worker:x-balances/default",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service xbalances-worker is Up 2 hours (healthy)"
+  },
+  {
+   "id": "worker:x-balances/default",
+   "kind": "worker",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:xbalances-worker",
+   "compose_service": "xbalances-worker",
+   "profile": "core",
+   "label": "worker:x-balances/default",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "real_source_running",
+   "fidelity_evidence": "container for compose service xbalances-worker is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:kong-lite",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:kong-lite",
+   "compose_service": "kong-lite",
+   "profile": "substitutes",
+   "label": "sub:kong-lite",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 44 seconds (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service kong-lite is Up 44 seconds (healthy)"
+  },
+  {
+   "id": "sub:ledger-gate",
+   "kind": "substitute",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:ledger-gate",
+   "compose_service": "ledger-gate",
+   "profile": "substitutes",
+   "label": "sub:ledger-gate",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service ledger-gate is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:monolith-stub",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:monolith-stub",
+   "compose_service": "monolith-stub",
+   "profile": "substitutes",
+   "label": "sub:monolith-stub",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 57 seconds (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service monolith-stub is Up 57 seconds (healthy)"
+  },
+  {
+   "id": "sub:dcs-stub",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:dcs-stub",
+   "compose_service": "dcs-stub",
+   "profile": "substitutes",
+   "label": "sub:dcs-stub",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 29 minutes (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service dcs-stub is Up 29 minutes (healthy)"
+  },
+  {
+   "id": "sub:splitz-stub",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:splitz-stub",
+   "compose_service": "splitz-stub",
+   "profile": "substitutes",
+   "label": "sub:splitz-stub",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 29 minutes (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service splitz-stub is Up 29 minutes (healthy)"
+  },
+  {
+   "id": "sub:shield-stub",
+   "kind": "substitute",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:shield-stub",
+   "compose_service": "shield-stub",
+   "profile": "substitutes",
+   "label": "sub:shield-stub",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service shield-stub is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:pricing-stub",
+   "kind": "substitute",
+   "criticality": "P2",
+   "confidence": "confirmed",
+   "twin_ref": "compose:pricing-stub",
+   "compose_service": "pricing-stub",
+   "profile": "substitutes",
+   "label": "sub:pricing-stub",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service pricing-stub is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:asv-stub",
+   "kind": "substitute",
+   "criticality": "P2",
+   "confidence": "confirmed",
+   "twin_ref": "compose:asv-stub",
+   "compose_service": "asv-stub",
+   "profile": "substitutes",
+   "label": "sub:asv-stub",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service asv-stub is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:bankingaccounts-stub",
+   "kind": "substitute",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:bankingaccounts-stub",
+   "compose_service": "bankingaccounts-stub",
+   "profile": "substitutes",
+   "label": "sub:bankingaccounts-stub",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 29 minutes (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service bankingaccounts-stub is Up 29 minutes (healthy)"
+  },
+  {
+   "id": "sub:stork-capture",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:stork-capture",
+   "compose_service": "stork-capture",
+   "profile": "substitutes",
+   "label": "sub:stork-capture",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service stork-capture is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:merchant-webhook-sink",
+   "kind": "substitute",
+   "criticality": "P1",
+   "confidence": "confirmed",
+   "twin_ref": "compose:merchant-webhook-sink",
+   "compose_service": "merchant-webhook-sink",
+   "profile": "substitutes",
+   "label": "sub:merchant-webhook-sink",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service merchant-webhook-sink is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:xas-sim",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:xas-sim",
+   "compose_service": "xas-sim",
+   "profile": "substitutes",
+   "label": "sub:xas-sim",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service xas-sim is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:mozart-sim",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:mozart-sim",
+   "compose_service": "mozart-sim",
+   "profile": "substitutes",
+   "label": "sub:mozart-sim",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service mozart-sim is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:workflow-sim",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:workflow-sim",
+   "compose_service": "workflow-sim",
+   "profile": "substitutes",
+   "label": "sub:workflow-sim",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service workflow-sim is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:workflow-engine",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:workflow-engine",
+   "compose_service": "workflow-engine",
+   "profile": "substitutes",
+   "label": "workflow-engine \u2014 M5 RECONSTRUCTION of the Workflow Service (approval engine)",
+   "owner_domain": "twin",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md"
+   ],
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service workflow-engine is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:batch-sim",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:batch-sim",
+   "compose_service": "batch-sim",
+   "profile": "substitutes",
+   "label": "batch-sim \u2014 HIGH-FIDELITY REPLACEMENT of razorpay/batch payout batch types",
+   "owner_domain": "twin",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md"
+   ],
+   "runtime": {
+    "running": true,
+    "healthy": true,
+    "status": "Up 2 hours (healthy)"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service batch-sim is Up 2 hours (healthy)"
+  },
+  {
+   "id": "sub:cron-driver",
+   "kind": "substitute",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "twin_ref": "compose:cron-driver",
+   "compose_service": "cron-driver",
+   "profile": "substitutes",
+   "label": "sub:cron-driver",
+   "owner_domain": "twin",
+   "runtime": {
+    "running": true,
+    "healthy": false,
+    "status": "Up 2 hours"
+   },
+   "fidelity": "high_fidelity_replacement",
+   "fidelity_evidence": "container for compose service cron-driver is Up 2 hours"
+  }
+ ],
+ "edges": [],
+ "families": []
+}

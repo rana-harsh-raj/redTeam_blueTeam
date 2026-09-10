@@ -1,0 +1,19 @@
+{
+  "production_entrypoints": "verified",
+  "whole_module_build": "not claimed",
+  "known_generated_test_only_gaps": [
+    {
+      "repository": "vendor-payments",
+      "package": "github.com/razorpay/vendor-payments/mock-accounting-payouts",
+      "reason": "gitignored mockgen output imported by internal-accounting-payouts/tests",
+      "runtime_impact": "none"
+    },
+    {
+      "repository": "accounting-integrations",
+      "symbols": ["metrics.MockIMetrics", "metrics.NewMockIMetrics"],
+      "reason": "gitignored mockgen output imported by internal/service/tests/testhelper",
+      "runtime_impact": "none"
+    }
+  ],
+  "private_dependency_policy": "Private modules are consumed from the operator-owned Go module cache or existing authenticated Git access. No credentials or module source cache is tracked."
+}

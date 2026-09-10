@@ -1,0 +1,430 @@
+{
+  "boot": "46748827-5fa9-4d8e-983d-c72ac4096fb9",
+  "steps": [
+    {
+      "at": "2026-09-08T17:49:14Z",
+      "log": "01-materialize.log",
+      "n": 1,
+      "rc": 0,
+      "secs": 7.04,
+      "step": "materialize"
+    },
+    {
+      "at": "2026-09-08T17:49:16Z",
+      "log": "02-datastores-up.log",
+      "n": 2,
+      "rc": 0,
+      "secs": 1.61,
+      "step": "datastores-up"
+    },
+    {
+      "healthy": [
+        "kafka",
+        "localstack",
+        "mongo-cfa",
+        "mysql-apidb-stub",
+        "mysql-fts",
+        "mysql-payouts",
+        "mysql-xbalances",
+        "postgres-ledger",
+        "redis"
+      ],
+      "n": 3,
+      "rc": 0,
+      "secs": 16.4,
+      "step": "datastores-health",
+      "unhealthy": []
+    },
+    {
+      "at": "2026-09-08T17:49:35Z",
+      "log": "04-migrate-payouts-migrate.log",
+      "n": 4,
+      "rc": 0,
+      "secs": 2.23,
+      "step": "migrate-payouts-migrate"
+    },
+    {
+      "at": "2026-09-08T17:49:36Z",
+      "log": "05-migrate-ledger-migrate.log",
+      "n": 5,
+      "rc": 0,
+      "secs": 0.91,
+      "step": "migrate-ledger-migrate"
+    },
+    {
+      "at": "2026-09-08T17:49:38Z",
+      "log": "06-migrate-fts-migrate.log",
+      "n": 6,
+      "rc": 0,
+      "secs": 1.99,
+      "step": "migrate-fts-migrate"
+    },
+    {
+      "at": "2026-09-08T17:49:38Z",
+      "log": "07-migrate-cfa-migrate.log",
+      "n": 7,
+      "rc": 0,
+      "secs": 0.7,
+      "step": "migrate-cfa-migrate"
+    },
+    {
+      "at": "2026-09-08T17:49:39Z",
+      "log": "08-migrate-xbalances-migrate.log",
+      "n": 8,
+      "rc": 0,
+      "secs": 0.52,
+      "step": "migrate-xbalances-migrate"
+    },
+    {
+      "at": "2026-09-08T17:49:39Z",
+      "log": "09-schema-patch-mysql-payouts.log",
+      "n": 9,
+      "rc": 0,
+      "secs": 0.23,
+      "step": "schema-patch-mysql-payouts"
+    },
+    {
+      "at": "2026-09-08T17:49:39Z",
+      "log": "10-schema-patch-mysql-apidb-stub.log",
+      "n": 10,
+      "rc": 0,
+      "secs": 0.21,
+      "step": "schema-patch-mysql-apidb-stub"
+    },
+    {
+      "at": "2026-09-08T17:49:40Z",
+      "log": "11-seed-mysql-payouts.log",
+      "n": 11,
+      "rc": 0,
+      "secs": 0.75,
+      "step": "seed-mysql-payouts"
+    },
+    {
+      "at": "2026-09-08T17:49:40Z",
+      "log": "12-seed-mysql-fts.log",
+      "n": 12,
+      "rc": 0,
+      "secs": 0.52,
+      "step": "seed-mysql-fts"
+    },
+    {
+      "at": "2026-09-08T17:49:41Z",
+      "log": "13-seed-mysql-xbalances.log",
+      "n": 13,
+      "rc": 0,
+      "secs": 0.18,
+      "step": "seed-mysql-xbalances"
+    },
+    {
+      "at": "2026-09-08T17:49:41Z",
+      "log": "14-seed-mysql-apidb-stub.log",
+      "n": 14,
+      "rc": 0,
+      "secs": 0.57,
+      "step": "seed-mysql-apidb-stub"
+    },
+    {
+      "at": "2026-09-08T17:49:42Z",
+      "log": "15-seed-postgres-ledger.log",
+      "n": 15,
+      "rc": 0,
+      "secs": 0.29,
+      "step": "seed-postgres-ledger"
+    },
+    {
+      "at": "2026-09-08T17:49:43Z",
+      "log": "16-seed-mongo-cfa.log",
+      "n": 16,
+      "rc": 0,
+      "secs": 1.15,
+      "step": "seed-mongo-cfa"
+    },
+    {
+      "at": "2026-09-08T17:49:43Z",
+      "log": "17-provision-monolith-db.log",
+      "n": 17,
+      "rc": 0,
+      "secs": 0.42,
+      "step": "provision-monolith-db"
+    },
+    {
+      "at": "2026-09-08T17:49:45Z",
+      "log": "18-substitutes-up.log",
+      "n": 18,
+      "rc": 0,
+      "secs": 2.2,
+      "step": "substitutes-up"
+    },
+    {
+      "healthy": [
+        "api-ingress",
+        "asv-stub",
+        "bankingaccounts-stub",
+        "dcs-stub",
+        "kong-lite",
+        "ledger-gate",
+        "merchant-webhook-sink",
+        "monolith-stub",
+        "pricing-stub",
+        "shield-stub",
+        "splitz-stub",
+        "stork-capture",
+        "workflow-engine",
+        "workflow-sim",
+        "xas-sim"
+      ],
+      "n": 19,
+      "rc": 0,
+      "secs": 6.1,
+      "step": "substitutes-health",
+      "unhealthy": []
+    },
+    {
+      "at": "2026-09-08T17:49:52Z",
+      "log": "20-mozart-sim-up.log",
+      "n": 20,
+      "rc": 0,
+      "secs": 0.44,
+      "step": "mozart-sim-up"
+    },
+    {
+      "healthy": [
+        "mozart-sim"
+      ],
+      "n": 21,
+      "rc": 0,
+      "secs": 6.5,
+      "step": "mozart-health",
+      "unhealthy": []
+    },
+    {
+      "at": "2026-09-08T17:49:59Z",
+      "log": "22-cron-driver-up.log",
+      "n": 22,
+      "rc": 0,
+      "secs": 0.78,
+      "step": "cron-driver-up"
+    },
+    {
+      "at": "2026-09-08T17:49:59Z",
+      "log": "23-stork-subscriptions.log",
+      "n": 23,
+      "rc": 0,
+      "secs": 0.18,
+      "step": "stork-subscriptions",
+      "stork_loaded": true
+    },
+    {
+      "at": "2026-09-08T17:50:19Z",
+      "log": "24-core-up.log",
+      "n": 24,
+      "rc": 0,
+      "secs": 19.52,
+      "step": "core-up"
+    },
+    {
+      "healthy": [
+        "cfa-server",
+        "cfa-worker-contact",
+        "cfa-worker-fa",
+        "fts-web",
+        "fts-worker-check-transfer-status",
+        "fts-worker-default",
+        "fts-worker-fire-transfer-status-webhook",
+        "fts-worker-hv-fire-transfer-status-webhook",
+        "fts-worker-hv-initiate-transfer",
+        "fts-worker-initiate-transfer",
+        "fts-worker-rbl-check-transfer-status",
+        "fts-worker-rbl-direct-check-transfer-status",
+        "fts-worker-rbl-direct-imps-check-transfer-status",
+        "fts-worker-rbl-direct-imps-hv-initiate-transfer",
+        "fts-worker-rbl-direct-imps-initiate-transfer",
+        "fts-worker-rbl-direct-initiate-transfer",
+        "fts-worker-rbl-direct-slow-lane-initiate-transfer",
+        "fts-worker-rbl-direct-upi-check-transfer-status",
+        "fts-worker-rbl-direct-upi-initiate-transfer",
+        "fts-worker-rbl-imps-check-transfer-status",
+        "fts-worker-rbl-imps-initiate-transfer",
+        "fts-worker-rbl-initiate-transfer",
+        "fts-worker-rbl-upi-check-transfer-status",
+        "fts-worker-rbl-upi-hv-check-transfer-status",
+        "fts-worker-rbl-upi-hv-initiate-transfer",
+        "fts-worker-rbl-upi-initiate-transfer",
+        "fts-worker-retry-transfer",
+        "fts-worker-retry-transfer-preprocessor",
+        "fts-worker-retry-transfer-source-update",
+        "fts-worker-slow-lane-initiate-transfer",
+        "ledger-api",
+        "ledger-worker",
+        "ledger-worker-balance-update",
+        "ledger-worker-entry-details-create",
+        "ledger-worker-entry-details-create-pg",
+        "ledger-worker-journal-create",
+        "payouts-api",
+        "payouts-kafka-fts-status-updates-consumer",
+        "payouts-kafka-fts-status-updates-retry-consumer",
+        "payouts-worker-api-queue-for-async-dual-write-direct-push",
+        "payouts-worker-async-dual-write",
+        "payouts-worker-batch-submitted-merchants",
+        "payouts-worker-bulk-payouts",
+        "payouts-worker-data-consistency-checker",
+        "payouts-worker-data-consistency-event",
+        "payouts-worker-fts-async-hv-processing",
+        "payouts-worker-fts-async-processing",
+        "payouts-worker-fund-management-payout-check",
+        "payouts-worker-fund-management-payout-initiate",
+        "payouts-worker-generic-processing",
+        "payouts-worker-on-hold-payout",
+        "payouts-worker-partner-bank-hold-payouts",
+        "payouts-worker-payout-create-failure-handling",
+        "payouts-worker-payout-source-updater",
+        "payouts-worker-payout-update-failure-handling",
+        "payouts-worker-payout-usage-event-processing",
+        "payouts-worker-queued-payout",
+        "payouts-worker-rbl-banking-account-statement",
+        "payouts-worker-schedule-payout",
+        "payouts-worker-transaction-create",
+        "payouts-worker-webhook-event",
+        "payouts-worker-x-account-statement-source-event",
+        "payouts-worker-x-balance-payouts-event",
+        "payouts-worker-x-balances-balance-refresh",
+        "xbalances-server",
+        "xbalances-worker"
+      ],
+      "n": 25,
+      "rc": 0,
+      "secs": 6.3,
+      "step": "core-health",
+      "unhealthy": []
+    },
+    {
+      "at": "2026-09-08T17:50:26Z",
+      "log": "26-ledger-config-shared-account-x.log",
+      "n": 26,
+      "rc": 0,
+      "secs": 0.35,
+      "step": "ledger-config-shared_account_x"
+    },
+    {
+      "at": "2026-09-08T17:50:26Z",
+      "log": "27-ledger-config-direct-account-x.log",
+      "n": 27,
+      "rc": 0,
+      "secs": 0.25,
+      "step": "ledger-config-direct_account_x"
+    },
+    {
+      "at": "2026-09-08T17:50:26Z",
+      "log": "28-ledger-da-parents.log",
+      "n": 28,
+      "rc": 0,
+      "secs": 0.27,
+      "step": "ledger-da-parents"
+    },
+    {
+      "at": "2026-09-08T17:50:26Z",
+      "log": "29-ledger-da-inactive.log",
+      "n": 29,
+      "rc": 0,
+      "secs": 0.15,
+      "step": "ledger-da-inactive"
+    },
+    {
+      "at": "2026-09-08T17:50:26Z",
+      "log": "30-ledger-da-activate.log",
+      "n": 30,
+      "rc": 0,
+      "secs": 0.22,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T17:50:27Z",
+      "log": "31-ledger-da-activate.log",
+      "n": 31,
+      "rc": 0,
+      "secs": 0.22,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T17:50:27Z",
+      "log": "32-ledger-da-activate.log",
+      "n": 32,
+      "rc": 0,
+      "secs": 0.22,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T17:50:27Z",
+      "log": "33-ledger-da-activate.log",
+      "n": 33,
+      "rc": 0,
+      "secs": 0.24,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T17:50:27Z",
+      "log": "34-ledger-da-activate.log",
+      "n": 34,
+      "rc": 0,
+      "secs": 0.28,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T17:50:28Z",
+      "log": "35-ledger-da-activate.log",
+      "n": 35,
+      "rc": 0,
+      "secs": 0.23,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T17:50:28Z",
+      "log": "36-ledger-da-activate.log",
+      "n": 36,
+      "rc": 0,
+      "secs": 0.21,
+      "step": "ledger-da-activate"
+    },
+    {
+      "at": "2026-09-08T17:50:28Z",
+      "da_parents_activated": "7",
+      "log": "37-ledger-da-count.log",
+      "n": 37,
+      "rc": 0,
+      "secs": 0.13,
+      "step": "ledger-da-count"
+    },
+    {
+      "at": "2026-09-08T17:50:28Z",
+      "log": "38-reservation-reconcile.log",
+      "n": 38,
+      "rc": 0,
+      "secs": 0.4,
+      "step": "reservation-reconcile"
+    },
+    {
+      "at": "2026-09-08T17:50:29Z",
+      "log": "39-reservation-readiness.log",
+      "n": 39,
+      "rc": 0,
+      "secs": 0.37,
+      "step": "reservation-readiness"
+    },
+    {
+      "at": "2026-09-08T17:50:29Z",
+      "log": "40-host-bridge-start.log",
+      "n": 40,
+      "rc": 0,
+      "secs": 0.25,
+      "step": "host-bridge-start"
+    },
+    {
+      "at": "2026-09-08T17:50:31Z",
+      "log": "41-fingerprint.log",
+      "n": 41,
+      "rc": 0,
+      "secs": 1.52,
+      "step": "fingerprint"
+    }
+  ]
+}

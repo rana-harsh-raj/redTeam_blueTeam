@@ -1,0 +1,142 @@
+{
+  "_source": "config-proto/rzp/x/merchant/payouts/{workflows,fund_transfer,api_interface,cfa}.proto, config-proto/rzp/x/merchant/payouts/direct_accounts/{configs,payout_mode_config}.proto -- field numbers/types cross-checked against findings/26_dcs_splitz_governor_shield.md:80-117 (used by substitutes/dcs-stub/server.py's protobuf3 encoder). Values per-merchant sourced from the fixtures agent's env2-seeds/dcs_fixtures.json (findings-grounded, see that file's own _source note).",
+  "_merchant_id_note": "IDs are ARENAM00000001/2/3 (14 chars, CHAR(14)-safe -- matches payouts/fts merchant_id columns and seeds/payouts.sql etc from the fixtures workstream). Deviates from this task's illustrative 'ARENAM0000000001..3' (16 chars), which would silently truncate/collide in a CHAR(14) column -- see seeds/dcs/merchants.json's sibling note in ENV2_COMPOSE/config/arena.yaml.",
+  "_legacy_name_note": "DCS (config-proto) itself has NO 'legacy' field names -- only the DCS names below are real proto fields (findings/26:109-114: 'payout_workflows as a bare name does not exist; the actual field is enable_payout_workflow'). The 'legacy' block per merchant is a STUB-ONLY convenience alias table (not a real DCS/proxy contract) added because the task explicitly asks this fixture to serve both naming conventions; see substitutes/dcs-stub/CONTRACT.md for the exact alias map and the real Proxy-service DCSFeature{write_via_client,read_enabled_via_dcs,dual_write_enabled} mechanism this is standing in for.",
+  "merchants": {
+    "ARENAM00000001": {
+      "_role": "M1 -- Shared/Lite, ledger-backed balance, no workflow, no in-flight reservation",
+      "dcs": {
+        "rzp/x/merchant/payouts/Workflows": {
+          "enable_approval_via_oauth": false,
+          "skip_workflow_for_dashboard": false,
+          "skip_workflow_for_payroll": false,
+          "skip_approval_workflow_for_api": false,
+          "enable_payout_workflow": false
+        },
+        "rzp/x/merchant/payouts/FundTransfer": {
+          "enable_payouts": true,
+          "payouts_to_fts_async_processing": false,
+          "increase_per_payout_amount_limit": false,
+          "payouts_blocked_via_lite_account": false,
+          "enable_payouts_queue_buffer": false,
+          "queue_payout_bal_buffer": 0,
+          "block_va_payouts": false
+        },
+        "rzp/x/merchant/payouts/ApiInterface": {
+          "enable_beneficiary_name_in_response": false,
+          "enable_null_narration": false,
+          "payout_idem_key_required": true,
+          "enable_http_encryption": false,
+          "below_rupee_payouts": false,
+          "payout_service_enabled": true,
+          "fmp_config": {},
+          "bene_name_in_payout": false,
+          "rbl_ca_upi": false,
+          "enable_ip_whitelist_fetch": false
+        },
+        "rzp/x/merchant/payouts/Cfa": { "skip_ifsc_lookup": false },
+        "rzp/x/merchant/payouts/direct_accounts/Configs": { "in_flight_reservation_enabled": false },
+        "rzp/x/merchant/payouts/direct_accounts/PayoutModeConfig": { "allowed_upi_channels": [] }
+      },
+      "legacy": {
+        "payout_workflows": false,
+        "skip_workflow_for_api": false,
+        "skip_wf_for_payroll": false,
+        "in_flight_reservation_enabled": false,
+        "queue_payout_bal_buffer": 0,
+        "skip_ifsc_lookup": false,
+        "payout_service_enabled": true
+      }
+    },
+    "ARENAM00000002": {
+      "_role": "M2 -- Direct/current account on RBL, x-balances-mirrored balance, in_flight_reservation_enabled ON",
+      "dcs": {
+        "rzp/x/merchant/payouts/Workflows": {
+          "enable_approval_via_oauth": false,
+          "skip_workflow_for_dashboard": false,
+          "skip_workflow_for_payroll": false,
+          "skip_approval_workflow_for_api": false,
+          "enable_payout_workflow": false
+        },
+        "rzp/x/merchant/payouts/FundTransfer": {
+          "enable_payouts": true,
+          "payouts_to_fts_async_processing": true,
+          "increase_per_payout_amount_limit": false,
+          "payouts_blocked_via_lite_account": false,
+          "enable_payouts_queue_buffer": true,
+          "queue_payout_bal_buffer": 50000,
+          "block_va_payouts": false
+        },
+        "rzp/x/merchant/payouts/ApiInterface": {
+          "enable_beneficiary_name_in_response": true,
+          "enable_null_narration": false,
+          "payout_idem_key_required": true,
+          "enable_http_encryption": false,
+          "below_rupee_payouts": false,
+          "payout_service_enabled": true,
+          "fmp_config": {},
+          "bene_name_in_payout": true,
+          "rbl_ca_upi": false,
+          "enable_ip_whitelist_fetch": false
+        },
+        "rzp/x/merchant/payouts/Cfa": { "skip_ifsc_lookup": true },
+        "rzp/x/merchant/payouts/direct_accounts/Configs": { "in_flight_reservation_enabled": true },
+        "rzp/x/merchant/payouts/direct_accounts/PayoutModeConfig": { "allowed_upi_channels": ["icici", "axis"] }
+      },
+      "legacy": {
+        "payout_workflows": false,
+        "skip_workflow_for_api": false,
+        "skip_wf_for_payroll": false,
+        "in_flight_reservation_enabled": true,
+        "queue_payout_bal_buffer": 50000,
+        "skip_ifsc_lookup": true,
+        "payout_service_enabled": true
+      }
+    },
+    "ARENAM00000003": {
+      "_role": "M3 -- Shared, workflow-enabled with finance_l1/finance_l2/owner roles",
+      "dcs": {
+        "rzp/x/merchant/payouts/Workflows": {
+          "enable_approval_via_oauth": false,
+          "skip_workflow_for_dashboard": false,
+          "skip_workflow_for_payroll": true,
+          "skip_approval_workflow_for_api": true,
+          "enable_payout_workflow": true
+        },
+        "rzp/x/merchant/payouts/FundTransfer": {
+          "enable_payouts": true,
+          "payouts_to_fts_async_processing": false,
+          "increase_per_payout_amount_limit": false,
+          "payouts_blocked_via_lite_account": false,
+          "enable_payouts_queue_buffer": true,
+          "queue_payout_bal_buffer": 100000,
+          "block_va_payouts": true
+        },
+        "rzp/x/merchant/payouts/ApiInterface": {
+          "enable_beneficiary_name_in_response": false,
+          "enable_null_narration": false,
+          "payout_idem_key_required": true,
+          "enable_http_encryption": false,
+          "below_rupee_payouts": false,
+          "payout_service_enabled": true,
+          "fmp_config": {},
+          "bene_name_in_payout": false,
+          "rbl_ca_upi": false,
+          "enable_ip_whitelist_fetch": false
+        },
+        "rzp/x/merchant/payouts/Cfa": { "skip_ifsc_lookup": false },
+        "rzp/x/merchant/payouts/direct_accounts/Configs": { "in_flight_reservation_enabled": false },
+        "rzp/x/merchant/payouts/direct_accounts/PayoutModeConfig": { "allowed_upi_channels": ["yesbank"] }
+      },
+      "legacy": {
+        "payout_workflows": true,
+        "skip_workflow_for_api": true,
+        "skip_wf_for_payroll": true,
+        "in_flight_reservation_enabled": false,
+        "queue_payout_bal_buffer": 100000,
+        "skip_ifsc_lookup": false,
+        "payout_service_enabled": true
+      }
+    }
+  }
+}

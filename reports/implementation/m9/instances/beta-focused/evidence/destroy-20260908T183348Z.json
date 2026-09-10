@@ -1,0 +1,30 @@
+{
+  "boundary": {
+    "data_dirs_left": [],
+    "destroyed": true,
+    "rc": 0,
+    "secs": 2.5
+  },
+  "containers_left": [],
+  "instance_id": "beta-focused",
+  "secs": 37.7,
+  "started_at": "2026-09-08T18:33:11Z",
+  "steps": [
+    {
+      "at": "2026-09-08T18:33:15Z",
+      "log": "01-host-bridge-stop.log",
+      "n": 1,
+      "rc": 0,
+      "secs": 0.45,
+      "step": "host-bridge-stop"
+    },
+    {
+      "at": "2026-09-08T18:33:46Z",
+      "log": "02-destroy-down.log",
+      "n": 2,
+      "rc": 0,
+      "secs": 30.29,
+      "step": "destroy-down"
+    }
+  ]
+}

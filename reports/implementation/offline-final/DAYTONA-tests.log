@@ -1,0 +1,17 @@
+test_all_workflow_failures_export_then_cleanup (test_runner.RunnerTests.test_all_workflow_failures_export_then_cleanup) ... ok
+test_approval_alone_does_not_enable_execution (test_runner.RunnerTests.test_approval_alone_does_not_enable_execution) ... ok
+test_cleanup_error_is_visible (test_runner.RunnerTests.test_cleanup_error_is_visible) ... ok
+test_evidence_tampering_blocks_acceptance (test_runner.RunnerTests.test_evidence_tampering_blocks_acceptance) ... ok
+test_interrupt_also_exports_then_deletes (test_runner.RunnerTests.test_interrupt_also_exports_then_deletes) ... ok
+test_no_approval_makes_no_sdk_or_api_calls (test_runner.RunnerTests.test_no_approval_makes_no_sdk_or_api_calls) ... ok
+test_only_http_404_proves_absence (test_runner.RunnerTests.test_only_http_404_proves_absence) ... ok
+test_successful_full_starts_with_smoke (test_runner.RunnerTests.test_successful_full_starts_with_smoke) ... ok
+test_unapproved_dry_run_estimates_fixed_workspace_profile_without_plan (test_runner.RunnerTests.test_unapproved_dry_run_estimates_fixed_workspace_profile_without_plan) ... ok
+test_unmeasured_profile_cannot_allocate (test_runner.RunnerTests.test_unmeasured_profile_cannot_allocate) ... ok
+test_unobserved_workspace_phase_does_not_produce_measured_estimate (test_runner.RunnerTests.test_unobserved_workspace_phase_does_not_produce_measured_estimate) ... ok
+test_unvalidated_plan_cannot_redirect_resource_estimate (test_runner.RunnerTests.test_unvalidated_plan_cannot_redirect_resource_estimate) ... ok
+
+----------------------------------------------------------------------
+Ran 12 tests in 0.030s
+
+OK

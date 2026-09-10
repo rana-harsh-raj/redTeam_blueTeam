@@ -1,0 +1,208 @@
+[App]
+    Env = "default"
+    Logger = "zap"
+    LogLevel = "debug"
+    HostName = "https://x-balances.dev.razorpay.in"
+    GitCommit = "" # APP_GITCOMMIT
+
+[Server]
+    ShutdownTimeout = 20
+    [Server.ServerAddresses]
+        Grpc     = ":8080"
+        Http     = ":8081"
+        Internal = ":8082"
+
+    [Server.Auth]
+        [Server.Auth.API]
+            Username  = "api"
+            Password1 = "env|SERVER_AUTH_API_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_API_PASSWORD2"
+        [Server.Auth.Cron]
+            Username  = "env|SERVER_AUTH_CRON_USERNAME"
+            Password1 = "env|SERVER_AUTH_CRON_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_CRON_PASSWORD2"
+        [Server.Auth.Admin]
+            Username  = "env|SERVER_AUTH_ADMIN_USERNAME"
+            Password1 = "env|SERVER_AUTH_ADMIN_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_ADMIN_PASSWORD2"
+        [Server.Auth.PS]
+            Username  = "env|SERVER_AUTH_PS_USERNAME"
+            Password1 = "env|SERVER_AUTH_PS_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_PS_PASSWORD2"
+        [Server.Auth.BankingAccounts]
+            Username  = "env|SERVER_AUTH_BANKINGACCOUNTS_USERNAME"
+            Password1 = "env|SERVER_AUTH_BANKINGACCOUNTS_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_BANKINGACCOUNTS_PASSWORD2"
+        [Server.Auth.Validx]
+            Username  = "env|SERVER_AUTH_VALIDX_USERNAME"
+            Password1 = "env|SERVER_AUTH_VALIDX_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_VALIDX_PASSWORD2"
+        [Server.Auth.VirtualAccount]
+            Username = "env|SERVER_AUTH_VIRTUALACCOUNT_USERNAME"
+            Password1 = "env|SERVER_AUTH_VIRTUALACCOUNT_PASSWORD1"
+            Password2 = "env|SERVER_AUTH_VIRTUALACCOUNT_PASSWORD2"
+
+[Sentry]
+    Enabled = false
+    DSN = "" # SENTRY_DSN
+
+[Store]
+    Choice = "sql"
+    [Store.Sql]
+        Dialect = "mysql"
+        Protocol = "tcp"
+        Port = 3306
+        Url = "localhost"
+        Username = "rx_balances_rw"
+        Password = "rx_balances_rw_pw"
+        Name = "rx_balances_local"
+        SslMode = "disable"
+        MaxOpenConnections = 5
+        MaxIdleConnections = 5
+
+[APIStore]
+    Choice = "sql"
+    [APIStore.Sql]
+        Dialect = "mysql"
+        Protocol = "tcp"
+        Port = 3306
+        Url = "localhost"
+        Username = "api_rx"
+        Password = "api_rx_pw"
+        Name = "api_local"
+        SslMode = "disable"
+        MaxOpenConnections = 5
+        MaxIdleConnections = 5
+
+[Worker]
+    # The value for name key will be overridden from env and the format holds no significance
+    # except for letting user know the variable name and where to pick up the info.
+    Sync                  = false
+    Name                  = "pocworker"
+    MaxConcurrency       = 1
+    WaitTime             = "10s"
+    RetryDelay           = "30s"
+    [Worker.DbConfig]
+        maxOpenConnections    = 2
+        maxIdleConnections    = 2
+        connectionMaxLifetime = 0
+        connectionMaxIdleTime = 120
+
+[Queue]
+    Driver = "sqs"
+    [Queue.Sqs]
+        Region = "env|QUEUE_SQS_REGION"
+        Endpoint = "env|QUEUE_SQS_ENDPOINT"
+        Prefix = "env|QUEUE_SQS_PREFIX"
+        UseAnonymousCredentials = false
+        MaxRetries = 3
+        VisibilityTimeout = 300 # 5 minutes
+        WaitTimeout = 20  # 20 seconds
+        [Queue.Sqs.Httpclient]
+            ConnectTimeoutMs = 60001
+            ConnKeepAliveMs = 0
+            ExpectContinueTimeoutMs = 60001
+            IdleConnTimeoutMs = 0
+            MaxAllIdleConns = 0
+            MaxHostIdleConns = 100
+            ResponseHeaderTimeoutMs = 60001
+            TLSHandshakeTimeoutMs = 60001
+
+[APIService]
+    Mock = false
+    BaseURL = "https://api-web.dev.razorpay.in"
+    [APIService.ConnPoolConfig]
+        Timeout                             = 30000
+        KeepAliveTimeout                    = 90000
+        MaxIdleConnections                  = 30
+    [APIService.HystrixResiliencyConfig]
+        MaxConcurrentRequests               = 100
+        RequestVolumeThreshold              = 20
+        CircuitBreakerSleepWindow           = 5000
+        ErrorPercentThreshold               = 50
+        CircuitBreakerTimeout               = 30000
+    [APIService.Auth]
+        Username                            = "rzp_live"
+        Password                            = "env|APISERVICE_AUTH_PASSWORD"
+
+[PayoutService]
+    Mock = false
+    BaseURL = "https://payouts.dev.razorpay.in"
+    [PayoutService.ConnPoolConfig]
+        Timeout                             = 30000
+        KeepAliveTimeout                    = 90000
+        MaxIdleConnections                  = 30
+    [PayoutService.HystrixResiliencyConfig]
+        MaxConcurrentRequests               = 100
+        RequestVolumeThreshold              = 20
+        CircuitBreakerSleepWindow           = 5000
+        ErrorPercentThreshold               = 50
+        CircuitBreakerTimeout               = 30000
+    [PayoutService.Auth]
+        Username                            = "x_balances"
+        Password                            = "env|PAYOUTSERVICE_AUTH_PASSWORD"
+
+# Config to be used for redis cache
+[Cache]
+    Choice = "redis"
+    [Cache.Redis]
+        Addr = "localhost:6379"
+        Password = ""
+        DB = 0
+# Config to be used for Ratelimiter
+[RateLimiter]
+    Choice = "redis"
+    [RateLimiter.Redis]
+        Addr = "localhost:6379"
+        Password = ""
+        DB = 1
+
+[BalanceFetch]
+    FetchStrategy = "last_attempted_at"  # Options: "last_fetched_at" or "last_attempted_at"
+
+[DCSConfig]
+    Env      = "dev"
+    Mock     = false
+    [DCSConfig.Auth]
+        Username = "env|DCSCONFIG_AUTH_USERNAME"
+        Password = "env|DCSCONFIG_AUTH_PASSWORD"
+
+[AccountServiceConfig]
+    Host        = "asv.grpc.conc.dev.razorpay.in:443"
+    Mock        = false
+    LogResponse = true
+    CacheEvictionSeconds    = "15"
+    CacheMaxCacheSizeMB     = "8"
+    CacheCleanWindowSeconds = "1"
+    CacheShards             = "16"
+    CacheMaxEntriesInWindow = "10000"
+    [AccountServiceConfig.Auth]
+        Username = "xBalances"
+        Password = "env|ACCOUNTSERVICECONFIG_AUTH_PASSWORD"
+
+[LedgerConfig]
+    Host               = "https://ledger-live.dev.razorpay.in"
+    Timeout            = 10000
+    KeepAliveTimeout   = 60000
+    MaxIdleConnections = 10
+    [LedgerConfig.Auth]
+        Username = "x_balances_key"
+        Password = "env|LEDGERCONFIG_AUTH_PASSWORD"
+
+
+# Observability 2.0 Configuration
+[Telemetry]
+    serviceName = "x-balances"
+    serviceNamespace = "payouts"
+    environment = "development"
+    exporterHost = "localhost"
+    exporterPort = "4318"
+    otelLogLevel = "debug"
+    httpEnabledPaths = [
+        "^GET /v1/accounts$",
+        "^POST /v1/balance/create$",
+        "^GET /v1/balances/[a-zA-Z0-9]+$",
+        "^POST /v1/balances$",
+    ]
+    [Telemetry.log]
+        level = "info"

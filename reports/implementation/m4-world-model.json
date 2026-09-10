@@ -1,0 +1,4184 @@
+{
+ "version": "m4-world-model.v1",
+ "generated_at": "2026-09-07T00:00:00Z",
+ "generated_from": [
+  {
+   "key": "acceptance_invariants",
+   "path": "TWIN_SPEC/acceptance-invariants.yaml",
+   "sha256": "f7e7986d119b55dece0d2d422518773038a00706bab7a7bff5d4d5a15baa625b",
+   "exists": true
+  },
+  {
+   "key": "components",
+   "path": "TWIN_SPEC/components.yaml",
+   "sha256": "dd1ec58f04d22342cf3ec804f0d4f6d291736acaeca1040b36818948dc9c1627",
+   "exists": true
+  },
+  {
+   "key": "compose",
+   "path": "ENV2_COMPOSE/docker-compose.yml",
+   "sha256": "c5bc650e82ee027d53f982adde4b35f8453e427425f899d3f93f9f545872b72c",
+   "exists": true
+  },
+  {
+   "key": "fidelity_matrix",
+   "path": "reports/implementation/m4-fidelity-matrix.csv",
+   "sha256": "8c1a0cf95dbe25e0c99ca40a3f6a64ab11040ddcf1438325cc452d27c4c4a881",
+   "exists": true
+  },
+  {
+   "key": "init_queues",
+   "path": "ENV2_COMPOSE/seeds/localstack/init-queues.sh",
+   "sha256": "21bda2266f85aed58edda6b32bc547769b7153b29161df6b27f9c7ae77761a14",
+   "exists": true
+  },
+  {
+   "key": "invariant_results",
+   "path": "reports/implementation/m4-invariant-results.json",
+   "sha256": "4ec180bbfd06f514bef80ac526949711543409accf787bdad10bdfda73577d78",
+   "exists": true
+  },
+  {
+   "key": "journeys",
+   "path": "reports/implementation/m4-direct-journeys.json",
+   "sha256": "c8b4b963c254a1caf6f5204051ea90226c988ea41993541d6ecba8ba36ebcc63",
+   "exists": true
+  },
+  {
+   "key": "predecessor_graph",
+   "path": "reports/PAYOUTS_SERVICE_GRAPH.json",
+   "sha256": "af3a2379384fec697bf2a54a0bf400da52d46139a4683c2ed6e9021c602c73d6",
+   "exists": true
+  },
+  {
+   "key": "replay",
+   "path": "reports/implementation/m4-direct-e2e-replay.json",
+   "sha256": "9264e02342248eb0c051b655c11667c54816dc21904327b1df07b58af14bd878",
+   "exists": true
+  },
+  {
+   "key": "route_coverage",
+   "path": "reports/implementation/m4-route-coverage.json",
+   "sha256": "a99bf87fd2199b12998c1f42ccb84b9b5577d49807dd299e0b7b26bc11b5c127",
+   "exists": true
+  },
+  {
+   "key": "route_matrix",
+   "path": "TWIN_SPEC/route-matrix.yaml",
+   "sha256": "fb07d861c375f180780d8e17d94408153f48e6670137c7e3a02dff071d84e1aa",
+   "exists": true
+  },
+  {
+   "key": "source_map",
+   "path": "reports/implementation/m4-source-map.md",
+   "sha256": "ca1f7e5a7f2731f5311c1c95d6cd545d4ead92bd9984566e989245059a4e7978",
+   "exists": true
+  }
+ ],
+ "milestone": "M4-direct-reconciliation",
+ "task": "T21 (Stretch H) World-Model Graph Export",
+ "fidelity_vocabulary": [
+  "real",
+  "substitute",
+  "fixture",
+  "expected-failure",
+  "missing"
+ ],
+ "coverage_vocabulary": [
+  "executed",
+  "source_inferred",
+  "substitute",
+  "implemented",
+  "independently_reproduced",
+  "deliberately_simplified",
+  "unresolved"
+ ],
+ "nodes": [
+  {
+   "id": "arch:api_monolith",
+   "type": "arch_component",
+   "label": "api_monolith",
+   "attrs": {
+    "repo": "razorpay/api",
+    "role": "public/dashboard ingress, idempotency, OTP, role enforcement, proxy to PS, create_fta relay, FTS webhook relay, pricing,",
+    "today": "REPRESENTATIVE SUBSTITUTE (monolith-stub: PS-facing callbacks only; brute-force ",
+    "target": "CONTRACT-FAITHFUL SUBSTITUTE — direct PS-DB read, corrected route contracts, FTS"
+   },
+   "fidelity": "substitute",
+   "evidence": "01, 02, 05, 12"
+  },
+  {
+   "id": "arch:asv",
+   "type": "arch_component",
+   "label": "asv",
+   "attrs": {
+    "repo": "goutils/account-service (gRPC)",
+    "role": "merchant account fields on the experiment path",
+    "today": "INCORRECT (HTTP JSON stub vs native gRPC) but unreachable while experiment off",
+    "target": "gRPC mock only if MerchantConfigViaAsvAndDcs is tested"
+   },
+   "fidelity": "substitute",
+   "evidence": 10
+  },
+  {
+   "id": "arch:authz",
+   "type": "arch_component",
+   "label": "authz",
+   "attrs": {
+    "repo": "razorpay/authz",
+    "role": "Casbin policy enforcement at Edge (shadow on public API; enforced on dashboard-merchant surface); PS never calls it",
+    "today": "MISSING (correct for PS-direct twin)",
+    "target": "only if dashboard role enforcement is tested: in-process goutils/authz mock adap"
+   },
+   "fidelity": "missing",
+   "evidence": 3
+  },
+  {
+   "id": "arch:banking_accounts",
+   "type": "arch_component",
+   "label": "banking_accounts",
+   "attrs": {
+    "repo": "razorpay/banking-accounts (k8s name banking-account)",
+    "role": "banking account onboarding/state (system of record for Direct accounts: creates the FTS source account with account_type",
+    "today": "REPRESENTATIVE SUBSTITUTE (1 route)",
+    "target": "keep substitute; M4 adds the credentials route (route-matrix R2) so the REAL PS "
+   },
+   "fidelity": "substitute",
+   "evidence": 7
+  },
+  {
+   "id": "arch:batch",
+   "type": "arch_component",
+   "label": "batch",
+   "attrs": {
+    "repo": "razorpay/batch",
+    "role": "CSV bulk create/approve driver",
+    "today": "MISSING",
+    "target": "CONTRACT-FAITHFUL SUBSTITUTE (thin driver) per substitute-contracts/batch-servic"
+   },
+   "fidelity": "missing",
+   "evidence": "02, 08"
+  },
+  {
+   "id": "arch:cfa",
+   "type": "arch_component",
+   "label": "cfa",
+   "attrs": {
+    "repo": "razorpay/cfa",
+    "role": "contacts, fund accounts (Mongo; DocumentDB in prod), SHA3-256 dedupe without unique indexes",
+    "today": "REAL (engine MongoDB vs DocumentDB)",
+    "target": "REAL"
+   },
+   "fidelity": "real",
+   "evidence": "05, 07"
+  },
+  {
+   "id": "arch:cron_fastcron",
+   "type": "arch_component",
+   "label": "cron_fastcron",
+   "attrs": {
+    "role": "external SaaS calling PS /v1/cron/* (Basic fast_cron)",
+    "today": "REPRESENTATIVE SUBSTITUTE (cron-driver; 3 wrong paths; batch_submitted missing; ",
+    "target": "fix paths, add batch_submitted + fund_management_payouts/check, label cadence AS"
+   },
+   "fidelity": "substitute",
+   "evidence": "04, 12"
+  },
+  {
+   "id": "arch:dashboard_bff",
+   "type": "arch_component",
+   "label": "dashboard_bff",
+   "attrs": {
+    "repo": "dashboard (PHP), xperience (Go), x (SPA)",
+    "role": "session -> Basic rzp_<mode>_<merchantId> + X-Dashboard-User-* headers to monolith; xperience verifies passports for /xpe",
+    "today": "MISSING",
+    "target": "REPRESENTATIVE SUBSTITUTE (fake login -> headers)"
+   },
+   "fidelity": "missing",
+   "evidence": 2
+  },
+  {
+   "id": "arch:dcs",
+   "type": "arch_component",
+   "label": "dcs",
+   "attrs": {
+    "repo": "razorpay/dcs, goutils/dcs",
+    "role": "merchant feature/config KV (proto bytes), login JWT, 15 s client cache",
+    "today": "CONTRACT-FAITHFUL SUBSTITUTE (dcs-stub wire bytes correct); reachability via are",
+    "target": "keep substitute; document patch; real DCS (DynamoDB-local + MySQL + Kafka) optio"
+   },
+   "fidelity": "substitute",
+   "evidence": "04, 10"
+  },
+  {
+   "id": "arch:edge_kong_passport",
+   "type": "arch_component",
+   "label": "edge_kong_passport",
+   "attrs": {
+    "repo": "razorpay/edge, terraform-kong, goutils/passport",
+    "role": "API-key auth, passport minting (RS256, 300 s), impersonation, authz-enforcer (shadow on public API)",
+    "today": "CONTRACT-FAITHFUL SUBSTITUTE for API-key shape (kong-lite); MISSING impersonatio",
+    "target": "CONTRACT-FAITHFUL SUBSTITUTE with all four passport shapes and keys-table indire"
+   },
+   "fidelity": "substitute",
+   "evidence": 3
+  },
+  {
+   "id": "arch:fts",
+   "type": "arch_component",
+   "label": "fts",
+   "attrs": {
+    "repo": "razorpay/fts",
+    "role": "transfer creation, source-account routing, channel health, attempt retries, bank gateway calls, status propagation (webh",
+    "today": "REAL binary; seeds REPRESENTATIVE (RBL only, no DOWN rows; M2 source_accounts.ac",
+    "target": "REAL — seed a second channel + DOWN rows; enable Kafka producer for a designated"
+   },
+   "fidelity": "real",
+   "evidence": "06, 09, 12"
+  },
+  {
+   "id": "arch:kafka",
+   "type": "arch_component",
+   "label": "kafka",
+   "attrs": {
+    "role": "rx-fts-status-update-events / -retry-events",
+    "today": "REAL broker + REAL PS consumers; producer leg MISSING (config)",
+    "target": "REAL end-to-end (enable fts producer + Splitz on for a merchant)"
+   },
+   "fidelity": "real",
+   "evidence": 9
+  },
+  {
+   "id": "arch:ledger",
+   "type": "arch_component",
+   "label": "ledger",
+   "attrs": {
+    "repo": "razorpay/ledger",
+    "role": "money authority tenant X; journals; account discovery; balances; SNS journal-created; suspended CronJobs",
+    "today": "REAL binary; ledger_config REAL via CreateInBulk (shared_account_x + direct_acco",
+    "target": "REAL: AccountAPI/CreateInBulk{direct_account_x} once + AccountAPI/CreateOnEvent{"
+   },
+   "fidelity": "real",
+   "evidence": "05, 07"
+  },
+  {
+   "id": "arch:mozart",
+   "type": "arch_component",
+   "label": "mozart",
+   "attrs": {
+    "repo": "razorpay/mozart",
+    "role": "bank gateway adapter; response envelope without meta; -mock mode with fixtures",
+    "today": "REPRESENTATIVE SUBSTITUTE (mozart-sim: ignores gateway/version and credentials —",
+    "target": "CONTRACT-FAITHFUL SUBSTITUTE per substitute-contracts/mozart-sim.md; M4 adds POS"
+   },
+   "fidelity": "substitute",
+   "evidence": "06, 12"
+  },
+  {
+   "id": "arch:payouts_service",
+   "type": "arch_component",
+   "label": "payouts_service",
+   "attrs": {
+    "repo": "razorpay/payouts",
+    "role": "payout source of truth, state machine, create pipeline, queueing, reservations, FTS status ingestion, webhooks, cron rou",
+    "today": "REAL (api + 14 workers + 2 consumers; real binary)",
+    "target": "REAL — add the 10 missing worker roles (batch_submitted_merchants, bulk_payouts,"
+   },
+   "fidelity": "real",
+   "evidence": "reports/fidelity/raw/04, 12"
+  },
+  {
+   "id": "arch:pricing",
+   "type": "arch_component",
+   "label": "pricing",
+   "attrs": {
+    "repo": "api (pricing table), governor, charge-collections (sdk unreadable)",
+    "role": "fees/tax; default path = Redis-cached rule set by monolith or monolith fetch_pricing_info; Governor/CC only when Splitz ",
+    "today": "REPRESENTATIVE SUBSTITUTE (flat plan; ignores channel/method/amount)",
+    "target": "CONTRACT-FAITHFUL SUBSTITUTE keyed by (plan_id, channel, method/mode, amount sla"
+   },
+   "fidelity": "substitute",
+   "evidence": "01, 04, 10"
+  },
+  {
+   "id": "arch:recon_art",
+   "type": "arch_component",
+   "label": "recon_art",
+   "attrs": {
+    "repo": "recon",
+    "role": "FinOps-gated Kafka dispatcher hitting FTS /v1/attempts/:action and /reconcile",
+    "today": "MISSING",
+    "target": "verifier-driven direct calls to FTS ART routes (REAL routes) for Env 4"
+   },
+   "fidelity": "missing",
+   "evidence": "06, 11"
+  },
+  {
+   "id": "arch:shield",
+   "type": "arch_component",
+   "label": "shield",
+   "attrs": {
+    "repo": "shield-sdk",
+    "role": "fraud allow/block/review; PS branches on block only; 200 ms fail-open",
+    "today": "CONTRACT-FAITHFUL SUBSTITUTE (needs latency/fault knobs)",
+    "target": "keep"
+   },
+   "fidelity": "substitute",
+   "evidence": 10
+  },
+  {
+   "id": "arch:splitz",
+   "type": "arch_component",
+   "label": "splitz",
+   "attrs": {
+    "repo": "razorpay/splitz, goutils/splitz",
+    "role": "experiments; payouts prod uses server-side Evaluate (config/prod.toml:442 client_side_eval=false); default.toml/arena us",
+    "today": "INCORRECT for payouts (arena client_side_eval=true + stub FetchDecisionContext r",
+    "target": "CONTRACT-FAITHFUL SUBSTITUTE: arena client_side_eval=false; seeded Evaluate per "
+   },
+   "fidelity": "substitute",
+   "evidence": "04, 10"
+  },
+  {
+   "id": "arch:stork",
+   "type": "arch_component",
+   "label": "stork",
+   "attrs": {
+    "repo": "razorpay/stork",
+    "role": "merchant webhooks/SMS/email delivery, retries, disable crons",
+    "today": "CONTRACT-FAITHFUL SUBSTITUTE (stork-capture; needs ARENA_STORK_JSON patch; no re",
+    "target": "keep substitute; add duplicate/delay/drop knobs; optionally protobuf decoding to"
+   },
+   "fidelity": "substitute",
+   "evidence": 9
+  },
+  {
+   "id": "arch:ups",
+   "type": "arch_component",
+   "label": "ups",
+   "attrs": {
+    "repo": "payments-upi",
+    "role": "VPA -> customer name (POST /v1/payments/validate/account)",
+    "today": "MISSING (blackhole)",
+    "target": "minimal stub or REAL (repo has compose) when UPI beneficiary flows are tested"
+   },
+   "fidelity": "missing",
+   "evidence": 10
+  },
+  {
+   "id": "arch:workflow_service",
+   "type": "arch_component",
+   "label": "workflow_service",
+   "attrs": {
+    "repo": "razorpay/workflows (+ Cadence)",
+    "role": "approval state machine, callbacks, config resolution",
+    "today": "MISSING ([workflow] host points to 127.0.0.1:1 → workflow-applicable creates fai",
+    "target": "REAL (Cassandra + Cadence + MySQL + api + workers) when approval family in scope"
+   },
+   "fidelity": "missing",
+   "evidence": 8
+  },
+  {
+   "id": "arch:x_balances",
+   "type": "arch_component",
+   "label": "x_balances",
+   "attrs": {
+    "repo": "razorpay/x-balances",
+    "role": "account selection (ListAccounts), Direct balance polling, Shared overwritten from ledger",
+    "today": "REAL binary (server + 1 worker vs 5 per-bank families) but the worker is INERT: ",
+    "target": "REAL; to make the refresh event real: [Queue] Driver=sqs with LocalStack + APP_E"
+   },
+   "fidelity": "real",
+   "evidence": "07, 12, reports/implementation/m4-subagent-handoffs/T04.md"
+  },
+  {
+   "id": "arch:xas_x_account_statements",
+   "type": "arch_component",
+   "label": "xas_x_account_statements",
+   "attrs": {
+    "repo": "x-account-statements (x-bank-statement-sync is an EMPTY repo — README + CI only; do not model, T03 C-T03-5)",
+    "role": "ONE OF THREE statement matchers (C-013): XAS matches its own fetches (utr -> grn -> cms + balance_id/account_number + am",
+    "today": "MISSING (xas-sink health only; FTS retry-preprocessor and PS VerifyPayoutFailedT",
+    "target": "CONTRACT-FAITHFUL SUBSTITUTE xas-sim (m4-decisions D-006 (2b)): consumes the REA"
+   },
+   "fidelity": "missing",
+   "evidence": "10, 11, reports/implementation/m4-subagent-handoffs/T03.md Findings 3-5"
+  },
+  {
+   "id": "comp:autonomous-hypothesis-lifecycle-harness",
+   "type": "component",
+   "label": "Autonomous hypothesis lifecycle harness",
+   "attrs": {
+    "coverage": "executed",
+    "production_reachability": "n/a"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-hypothesis-lifecycle.json:gate"
+  },
+  {
+   "id": "comp:autonomous-soak-bounded-checkpointed",
+   "type": "component",
+   "label": "Autonomous soak (bounded/checkpointed)",
+   "attrs": {
+    "coverage": "executed",
+    "production_reachability": "n/a"
+   },
+   "fidelity": "substitute",
+   "evidence": "RED_LOOP/runs/*/m4-direct-e2e-soak.json"
+  },
+  {
+   "id": "comp:balance-refresh-hold-release-trigger-a-balancerefreshevent",
+   "type": "component",
+   "label": "Balance-refresh / hold-release trigger A (BalanceRefreshEvent)",
+   "attrs": {
+    "coverage": "deliberately_simplified",
+    "production_reachability": "unknown",
+    "deviation_ids": "L-009;C-009;DEV-024;EF-007"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-known-limits.md:L-009"
+  },
+  {
+   "id": "comp:bankingaccounts-stub-rbl-credentials-route",
+   "type": "component",
+   "label": "bankingaccounts-stub (RBL credentials route)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "known",
+    "deviation_ids": "L-003"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-bas-ingest.json"
+  },
+  {
+   "id": "comp:basd-rows-banking-account-statement-details",
+   "type": "component",
+   "label": "BASD rows (banking_account_statement_details)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "known",
+    "deviation_ids": "L-006"
+   },
+   "fidelity": "fixture",
+   "evidence": "reports/implementation/m4-bas-ingest.json"
+  },
+  {
+   "id": "comp:cfa-server-v1-candidate",
+   "type": "component",
+   "label": "cfa-server (v1-candidate)",
+   "attrs": {
+    "production_reachability": "known",
+    "deviation_ids": "T23-flag"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-baseline-report.md"
+  },
+  {
+   "id": "comp:concurrent-idempotency-payout-create",
+   "type": "component",
+   "label": "Concurrent idempotency (payout create)",
+   "attrs": {
+    "coverage": "executed",
+    "production_reachability": "known",
+    "deviation_ids": "DEV-001"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-boundary-results.json:gates.G52"
+  },
+  {
+   "id": "comp:cross-provider-replay-machinery-calibration",
+   "type": "component",
+   "label": "Cross-provider replay machinery (calibration)",
+   "attrs": {
+    "coverage": "independently_reproduced",
+    "production_reachability": "n/a"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-lifecycle-validation.json:independent_replay"
+  },
+  {
+   "id": "comp:da-ledger-journal-emitter-processledgerpayoutfordirect",
+   "type": "component",
+   "label": "DA ledger journal emitter (processLedgerPayoutForDirect)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "unknown",
+    "deviation_ids": "L-004;C-004;C-010;U-08;U-09;EF-004"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks"
+  },
+  {
+   "id": "comp:da-ledger-journals-da-payout-processed-recon",
+   "type": "component",
+   "label": "DA ledger journals da_payout_processed(+_recon)",
+   "attrs": {
+    "coverage": "executed",
+    "production_reachability": "unknown",
+    "deviation_ids": "L-016;DEV-001"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks"
+  },
+  {
+   "id": "comp:dcs-stub-feature-config",
+   "type": "component",
+   "label": "dcs-stub (feature/config)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "unknown",
+    "deviation_ids": "DEV-120;DEV-172;U-01;U-02"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-known-limits.md:L-018"
+  },
+  {
+   "id": "comp:direct-pricing-flat-twin-plan",
+   "type": "component",
+   "label": "Direct pricing (flat twin plan)",
+   "attrs": {
+    "coverage": "deliberately_simplified",
+    "production_reachability": "unknown",
+    "deviation_ids": "L-017"
+   },
+   "fidelity": "fixture",
+   "evidence": "reports/implementation/m4-known-limits.md:L-017"
+  },
+  {
+   "id": "comp:fts-web-fts-v1-candidate",
+   "type": "component",
+   "label": "fts-web (FTS v1-candidate)",
+   "attrs": {
+    "coverage": "real",
+    "production_reachability": "known"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-provision.json"
+  },
+  {
+   "id": "comp:journey-direct-immediate-failure",
+   "type": "component",
+   "label": "Journey: Direct immediate failure",
+   "attrs": {
+    "coverage": "executed",
+    "production_reachability": "known"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-provision.json:summary.all_green"
+  },
+  {
+   "id": "comp:journey-direct-success-create-fts-bank-statement-recon-ledge",
+   "type": "component",
+   "label": "Journey: Direct success (create->FTS->bank->statement->recon->ledger->webhook)",
+   "attrs": {
+    "coverage": "executed",
+    "production_reachability": "unknown",
+    "deviation_ids": "C-010"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-xas-ledger.json:all_green"
+  },
+  {
+   "id": "comp:journey-pending-failure-held-failed-reversed",
+   "type": "component",
+   "label": "Journey: pending->failure (held->failed->reversed)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "unknown"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks"
+  },
+  {
+   "id": "comp:journey-pending-success-held-processed-ledger",
+   "type": "component",
+   "label": "Journey: pending->success (held->processed->ledger)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "unknown"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks"
+  },
+  {
+   "id": "comp:journey-statement-first-ordering",
+   "type": "component",
+   "label": "Journey: statement-first ordering",
+   "attrs": {
+    "coverage": "executed",
+    "production_reachability": "known"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks"
+  },
+  {
+   "id": "comp:kong-lite-hardened-edge",
+   "type": "component",
+   "label": "kong-lite (hardened edge)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "known"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-boundary-results.json"
+  },
+  {
+   "id": "comp:ledger-api-ledger-v1-candidate",
+   "type": "component",
+   "label": "ledger-api (Ledger v1-candidate)",
+   "attrs": {
+    "coverage": "real",
+    "production_reachability": "unknown",
+    "deviation_ids": "C-010;DEV-001;DEV-002"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks"
+  },
+  {
+   "id": "comp:monolith-stub-create-fta-relay-emitter",
+   "type": "component",
+   "label": "monolith-stub (create_fta relay + emitter)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "known",
+    "deviation_ids": "L-013;U-13"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-source-map.md:#2"
+  },
+  {
+   "id": "comp:mozart-sim-rbl-v2-account-statement-bank-boundary",
+   "type": "component",
+   "label": "mozart-sim (RBL v2 account_statement bank boundary)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "unknown",
+    "deviation_ids": "L-003"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-bas-ingest.json"
+  },
+  {
+   "id": "comp:payouts-api-ps-core-v1-candidate",
+   "type": "component",
+   "label": "payouts-api (PS core v1-candidate)",
+   "attrs": {
+    "coverage": "real",
+    "production_reachability": "known"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-provision.json"
+  },
+  {
+   "id": "comp:ps-art-route-v1-banking-account-statement-process-batch-matc",
+   "type": "component",
+   "label": "PS ART route /v1/banking_account_statement/process/batch (matcher a)",
+   "attrs": {
+    "coverage": "real",
+    "production_reachability": "known"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks"
+  },
+  {
+   "id": "comp:ps-updatepayoutafterbasrecon-repair-route",
+   "type": "component",
+   "label": "PS UpdatePayoutAfterBASRecon (repair route)",
+   "attrs": {
+    "coverage": "real",
+    "production_reachability": "unknown"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks"
+  },
+  {
+   "id": "comp:ps-worker-rbl-banking-account-statement-statement-ingest",
+   "type": "component",
+   "label": "PS worker rbl_banking_account_statement (statement ingest)",
+   "attrs": {
+    "production_reachability": "known",
+    "deviation_ids": "L-007"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-bas-ingest.json:all_pass"
+  },
+  {
+   "id": "comp:ps-x-account-statement-source-event-queue",
+   "type": "component",
+   "label": "PS x_account_statement_source_event queue",
+   "attrs": {
+    "coverage": "real",
+    "production_reachability": "unknown",
+    "deviation_ids": "U-06"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks"
+  },
+  {
+   "id": "comp:reservation-release-5-min-reconciler-trigger-b",
+   "type": "component",
+   "label": "Reservation release (5-min reconciler trigger B)",
+   "attrs": {
+    "coverage": "executed",
+    "production_reachability": "known",
+    "deviation_ids": "C-015"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-xas-ledger.json:all_green"
+  },
+  {
+   "id": "comp:slice-direct-channel",
+   "type": "component",
+   "label": "SLICE Direct channel",
+   "attrs": {
+    "coverage": "deliberately_simplified",
+    "production_reachability": "unknown",
+    "deviation_ids": "L-012"
+   },
+   "fidelity": "fixture",
+   "evidence": "reports/implementation/m4-known-limits.md:L-012"
+  },
+  {
+   "id": "comp:splitz-stub-experiment-flags",
+   "type": "component",
+   "label": "splitz-stub (experiment flags)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "unknown",
+    "deviation_ids": "DEV-025;U-03;U-04;U-05;U-06;U-07;U-08"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-source-map.md:#7"
+  },
+  {
+   "id": "comp:tenant-isolation-boundary-merchant-a-b",
+   "type": "component",
+   "label": "Tenant-isolation boundary (merchant A/B)",
+   "attrs": {
+    "coverage": "executed",
+    "production_reachability": "known"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-boundary-results.json:gates"
+  },
+  {
+   "id": "comp:xas-sim-xas-enrichment-matcher-b",
+   "type": "component",
+   "label": "xas-sim (XAS enrichment/matcher b)",
+   "attrs": {
+    "coverage": "substitute",
+    "production_reachability": "unknown",
+    "deviation_ids": "L-005;C-011;C-013;C-014"
+   },
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks"
+  },
+  {
+   "id": "comp:xbalances-server-x-balances-v1-candidate",
+   "type": "component",
+   "label": "xbalances-server (x-balances v1-candidate)",
+   "attrs": {
+    "coverage": "real",
+    "production_reachability": "known",
+    "deviation_ids": "DEV-024"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-provision.json"
+  },
+  {
+   "id": "da:da_ext_credit",
+   "type": "da_event",
+   "label": "da_ext_credit",
+   "attrs": {
+    "config": "XDAExtCredit",
+    "entries": "Cr MerchantBalance; Dr MerchantCash",
+    "on_direct_path": "True"
+   },
+   "fidelity": "substitute",
+   "evidence": "LEDGER:internal/journal/ledger_config/seed_data/direct_account_x.go:588-606"
+  },
+  {
+   "id": "da:da_ext_debit",
+   "type": "da_event",
+   "label": "da_ext_debit",
+   "attrs": {
+    "config": "XDAExtDebit",
+    "entries": "Dr MerchantBalance(amount); Cr MerchantCash(amount)",
+    "on_direct_path": "True"
+   },
+   "fidelity": "substitute",
+   "evidence": "LEDGER:internal/journal/ledger_config/seed_data/direct_account_x.go:609-627"
+  },
+  {
+   "id": "da:da_ext_fee_payout_processed",
+   "type": "da_event",
+   "label": "da_ext_fee_payout_processed",
+   "attrs": {
+    "on_direct_path": "False"
+   },
+   "fidelity": "missing",
+   "evidence": "LEDGER:internal/common/constant.go:507-518"
+  },
+  {
+   "id": "da:da_ext_fee_payout_reversed",
+   "type": "da_event",
+   "label": "da_ext_fee_payout_reversed",
+   "attrs": {
+    "on_direct_path": "False"
+   },
+   "fidelity": "missing",
+   "evidence": "LEDGER:internal/common/constant.go:507-518"
+  },
+  {
+   "id": "da:da_ext_payout_",
+   "type": "da_event",
+   "label": "da_ext_payout_",
+   "attrs": {
+    "config": "XDAExtToPayoutProcessed/Reversed",
+    "entries": "7-entry re-class (ext → payout)",
+    "on_direct_path": "False"
+   },
+   "fidelity": "missing",
+   "evidence": "LEDGER:internal/journal/ledger_config/seed_data/direct_account_x.go:292-381"
+  },
+  {
+   "id": "da:da_ext_payout_processed",
+   "type": "da_event",
+   "label": "da_ext_payout_processed",
+   "attrs": {
+    "on_direct_path": "False"
+   },
+   "fidelity": "missing",
+   "evidence": "LEDGER:internal/common/constant.go:507-518"
+  },
+  {
+   "id": "da:da_ext_payout_reversed",
+   "type": "da_event",
+   "label": "da_ext_payout_reversed",
+   "attrs": {
+    "on_direct_path": "False"
+   },
+   "fidelity": "missing",
+   "evidence": "LEDGER:internal/common/constant.go:507-518"
+  },
+  {
+   "id": "da:da_fee_",
+   "type": "da_event",
+   "label": "da_fee_",
+   "attrs": {
+    "config": "Reward / Fee / Legacy variants",
+    "on_direct_path": "False"
+   },
+   "fidelity": "missing",
+   "evidence": "LEDGER:internal/journal/ledger_config/seed_data/direct_account_x.go:133-140, 423-585, 629-837"
+  },
+  {
+   "id": "da:da_fee_payout_processed",
+   "type": "da_event",
+   "label": "da_fee_payout_processed",
+   "attrs": {
+    "on_direct_path": "False"
+   },
+   "fidelity": "missing",
+   "evidence": "LEDGER:internal/common/constant.go:507-518"
+  },
+  {
+   "id": "da:da_fee_payout_reversed",
+   "type": "da_event",
+   "label": "da_fee_payout_reversed",
+   "attrs": {
+    "on_direct_path": "False"
+   },
+   "fidelity": "missing",
+   "evidence": "LEDGER:internal/common/constant.go:507-518"
+  },
+  {
+   "id": "da:da_payout_failed",
+   "type": "da_event",
+   "label": "da_payout_failed",
+   "attrs": {
+    "on_direct_path": "False"
+   },
+   "fidelity": "missing",
+   "evidence": "LEDGER:internal/common/constant.go:507-518"
+  },
+  {
+   "id": "da:da_payout_initiated",
+   "type": "da_event",
+   "label": "da_payout_initiated",
+   "attrs": {
+    "on_direct_path": "False"
+   },
+   "fidelity": "missing",
+   "evidence": "LEDGER:internal/common/constant.go:507-518"
+  },
+  {
+   "id": "da:da_payout_processed",
+   "type": "da_event",
+   "label": "da_payout_processed",
+   "attrs": {
+    "config": "XDAPayoutProcessed",
+    "entries": "Dr MerchantBalance(amount); Cr VendorPayable(amount); Dr CommissionReceivable(commission); Cr CommissionIncome(commission − tax); Cr OutputGST(tax)",
+    "on_direct_path": "True"
+   },
+   "fidelity": "substitute",
+   "evidence": "LEDGER:internal/journal/ledger_config/seed_data/direct_account_x.go:220-253"
+  },
+  {
+   "id": "da:da_payout_processed_recon",
+   "type": "da_event",
+   "label": "da_payout_processed_recon",
+   "attrs": {
+    "config": "XDAPayoutProcessedRecon",
+    "entries": "Dr VendorPayable(amount); Cr MerchantCash(amount)",
+    "on_direct_path": "True"
+   },
+   "fidelity": "substitute",
+   "evidence": "LEDGER:internal/journal/ledger_config/seed_data/direct_account_x.go:383-401"
+  },
+  {
+   "id": "da:da_payout_reversed",
+   "type": "da_event",
+   "label": "da_payout_reversed",
+   "attrs": {
+    "on_direct_path": "True"
+   },
+   "fidelity": "substitute",
+   "evidence": "LEDGER:internal/common/constant.go:507-518"
+  },
+  {
+   "id": "da:da_payout_reversed_recon",
+   "type": "da_event",
+   "label": "da_payout_reversed_recon",
+   "attrs": {
+    "on_direct_path": "True"
+   },
+   "fidelity": "substitute",
+   "evidence": "LEDGER:internal/common/constant.go:507-518"
+  },
+  {
+   "id": "ds:kafka",
+   "type": "datastore",
+   "label": "Kafka broker",
+   "attrs": {
+    "contents": "rx-fts-status-update-events topic transport",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: kafka)"
+  },
+  {
+   "id": "ds:localstack",
+   "type": "datastore",
+   "label": "LocalStack",
+   "attrs": {
+    "contents": "SQS queues + SNS topics",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: localstack)"
+  },
+  {
+   "id": "ds:mongo-cfa",
+   "type": "datastore",
+   "label": "MongoDB — CFA",
+   "attrs": {
+    "contents": "contacts / fund accounts",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mongo-cfa)"
+  },
+  {
+   "id": "ds:mysql-apidb-stub",
+   "type": "datastore",
+   "label": "MySQL — monolith apidb stub",
+   "attrs": {
+    "contents": "balance.account_type=direct provisioner seed",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mysql-apidb-stub)"
+  },
+  {
+   "id": "ds:mysql-fts",
+   "type": "datastore",
+   "label": "MySQL — FTS DB",
+   "attrs": {
+    "contents": "transfers / attempts / source_accounts / direct_account_routing_rules / transfer_meta",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mysql-fts)"
+  },
+  {
+   "id": "ds:mysql-payouts",
+   "type": "datastore",
+   "label": "MySQL — payouts DB",
+   "attrs": {
+    "contents": "banking_accounts / payouts / banking_account_statement(_details) / reversals / counters",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mysql-payouts)"
+  },
+  {
+   "id": "ds:mysql-xbalances",
+   "type": "datastore",
+   "label": "MySQL — x-balances DB",
+   "attrs": {
+    "contents": "balance (id==monolith balance id; account_type direct|shared|sub_balance)",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mysql-xbalances)"
+  },
+  {
+   "id": "ds:postgres-ledger",
+   "type": "datastore",
+   "label": "Postgres — ledger DB",
+   "attrs": {
+    "contents": "accounts / account_details(entities) / journal / ledger_config / idempotency",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: postgres-ledger)"
+  },
+  {
+   "id": "ds:redis",
+   "type": "datastore",
+   "label": "Redis",
+   "attrs": {
+    "contents": "reservations in_flight / partner_bank_health / pricing-rule / idempotency mutex",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: redis)"
+  },
+  {
+   "id": "ep:bulk_create",
+   "type": "endpoint",
+   "label": "bulk_create",
+   "attrs": {
+    "ingress": "bulk_create"
+   },
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.bulk_create"
+  },
+  {
+   "id": "ep:dashboard_create",
+   "type": "endpoint",
+   "label": "dashboard_create",
+   "attrs": {
+    "ingress": "dashboard_create"
+   },
+   "fidelity": "substitute",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.dashboard_create"
+  },
+  {
+   "id": "ep:free_payout",
+   "type": "endpoint",
+   "label": "GET /v1/payouts/free_payout/{balance_id}",
+   "attrs": {
+    "scoping": "none (H-D3 / F-M4-001)"
+   },
+   "fidelity": "real",
+   "evidence": "PS:internal/app/freePayout/core.go:678-684 (no merchant scoping); public allowlist (T06)"
+  },
+  {
+   "id": "ep:internal_app_create",
+   "type": "endpoint",
+   "label": "internal_app_create",
+   "attrs": {
+    "ingress": "internal_app_create"
+   },
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.internal_app_create"
+  },
+  {
+   "id": "ep:public_api_create",
+   "type": "endpoint",
+   "label": "public_api_create",
+   "attrs": {
+    "ingress": "public_api_create"
+   },
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.public_api_create"
+  },
+  {
+   "id": "ef:EF-001",
+   "type": "expected_failure",
+   "label": "EF-001 — Shared PROCESSED over Kafka cannot enqueue the processed Ledger journal",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-001)"
+  },
+  {
+   "id": "ef:EF-002",
+   "type": "expected_failure",
+   "label": "EF-002 — FTS FAILED over Kafka acknowledged and dropped",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-002)"
+  },
+  {
+   "id": "ef:EF-003",
+   "type": "expected_failure",
+   "label": "EF-003 — FTS REVERSED over Kafka acknowledged and dropped",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-003)"
+  },
+  {
+   "id": "ef:EF-004",
+   "type": "expected_failure",
+   "label": "EF-004 — PS-recon merchants receive no DA Ledger journal on a matched debit statement",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-004)"
+  },
+  {
+   "id": "ef:EF-005",
+   "type": "expected_failure",
+   "label": "EF-005 — PS source-event field name mismatch vs XAS (event_created_timestamp vs event_create_timestamp)",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-005)"
+  },
+  {
+   "id": "ef:EF-006",
+   "type": "expected_failure",
+   "label": "EF-006 — FTS FAILED/REVERSED for a Direct payout over Kafka dropped (root cause is the consumer)",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-006)"
+  },
+  {
+   "id": "ef:EF-007",
+   "type": "expected_failure",
+   "label": "EF-007 — x-balances BalanceRefreshEvent (reservation release trigger A) unreachable without injection",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-007)"
+  },
+  {
+   "id": "ef:EF-008",
+   "type": "expected_failure",
+   "label": "EF-008 — FTS partner-bank health notification to PS (route H) never emitted in the twin",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-008)"
+  },
+  {
+   "id": "finding:F-M4-001",
+   "type": "finding",
+   "label": "F-M4-001 — Cross-tenant free-payout attribute disclosure (IDOR)",
+   "attrs": {
+    "classification": "VERIFIED_UNAUTHORIZED_EFFECT",
+    "verified": "True",
+    "claim": "GET /v1/payouts/free_payout/{balance_id} returns 200 cross-tenant with no merchant scoping (freePayout/core.go GetFreePayoutAttributes); does it leak the victim's distinct free-payout config (real IDO",
+    "coverage": "independently_reproduced"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-findings.md; m4-direct-e2e-replay.json (candidate H-D3)"
+  },
+  {
+   "id": "finding:F-T10-1",
+   "type": "finding",
+   "label": "F-T10-1 — the statement-first VerifyPayoutFailedTransaction guard is only on the FTS-direc",
+   "attrs": {
+    "classification": "SOURCE_FAITHFUL_ROUTE_ASYMMETRY",
+    "verified": "False",
+    "claim": "the statement-first VerifyPayoutFailedTransaction guard is only on the FTS-direct route (/v1/payouts/transfer_status_webhook); the monolith-relay route (HandlePayoutStatusUpdateViaFTS) lacks it and ca",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-findings.md; m4-direct-e2e-replay.json (candidate F-T10-1)"
+  },
+  {
+   "id": "finding:H-D4",
+   "type": "finding",
+   "label": "H-D4 — creating a payout as A quoting B's fund_account_id: does the payout bind to B or",
+   "attrs": {
+    "classification": "NO_UNAUTHORIZED_EFFECT_BENIGN",
+    "verified": "False",
+    "claim": "creating a payout as A quoting B's fund_account_id: does the payout bind to B or draw B's balance (money/state cross-tenant), or does it stay bound to A (benign)?",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-findings.md; m4-direct-e2e-replay.json (candidate H-D4)"
+  },
+  {
+   "id": "id:broker",
+   "type": "identity",
+   "label": "Attacker Broker (fixed-identity injection through kong-lite)",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-direct-e2e-replay.json (H-D3 independent_reproduction)"
+  },
+  {
+   "id": "id:kong-edge",
+   "type": "identity",
+   "label": "kong-lite edge (mints passport at hardened edge)",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/substitutes/kong-lite/route_policy.py:39,70"
+  },
+  {
+   "id": "id:merchant-passport",
+   "type": "identity",
+   "label": "Merchant passport (consumer.id wins over body/header)",
+   "attrs": {
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "PS:internal/auth/passport.go:173-207; PS:internal/app/payouts/core.go:411-418"
+  },
+  {
+   "id": "id:service-creds",
+   "type": "identity",
+   "label": "Service credentials ([fts.auth]/[payouts_service.auth]/cred.API)",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/auth/authHelper.go:13-25; TWIN:route-matrix.yaml direct_status_transports"
+  },
+  {
+   "id": "inv:G26",
+   "type": "invariant",
+   "label": "I-reconciliation-correct-tuple(G26)",
+   "attrs": {
+    "statement": "Statement->payout matching uses the correct tuple: same merchant_id, account_number, currency, amount and statement-detail; the wrong-amount statement is NOT matched.",
+    "result": "PASS",
+    "coverage": "executed",
+    "negative_control": "G2 wrong-amount statement is the negative control (must NOT link)."
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-invariant-results.json (G26: PASS)"
+  },
+  {
+   "id": "inv:G28-adj",
+   "type": "invariant",
+   "label": "I-balance-not-decremented-twice(G28-adj)",
+   "attrs": {
+    "statement": "A duplicate statement / replayed recon does not debit the merchant ledger balance a second time: no additional debit entries appear and the DA journal count is unchanged.",
+    "result": "PASS",
+    "coverage": "executed",
+    "negative_control": "Absent dedup, a second da_payout_processed would double the merchant-balance debit."
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-invariant-results.json (G28-adj: PASS)"
+  },
+  {
+   "id": "inv:G31",
+   "type": "invariant",
+   "label": "I-Direct-failure-no-shared-reversal(G31)",
+   "attrs": {
+    "statement": "A failed Direct (rbl) payout produces NO reversal row and NO Shared-style reversal journal; the payout stays failed.",
+    "result": "PASS",
+    "coverage": "executed",
+    "negative_control": "Shared (nodal) account: bank failed remaps to REVERSED with a reversal row (V18, test_v18)."
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-invariant-results.json (G31: PASS)"
+  },
+  {
+   "id": "inv:G51",
+   "type": "invariant",
+   "label": "I-conservation(G51)",
+   "attrs": {
+    "statement": "For a successful Direct payout the DA journal entries sum to zero (sum_debit==sum_credit per journal) AND the modeled money-state is conserved across balance/reservation/ledger (reservation held==amount during pending, released on terminal; ledger merchant-balance debit==payout amount).",
+    "result": "PASS",
+    "coverage": "executed",
+    "negative_control": "An unbalanced journal or a reservation/ledger amount != payout amount breaks conservation."
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-invariant-results.json (G51: PASS)"
+  },
+  {
+   "id": "inv:G53",
+   "type": "invariant",
+   "label": "I-reservation-not-released-twice(G53)",
+   "attrs": {
+    "statement": "An in-flight reservation transitions live -> awaiting_balance_refresh -> released AT MOST ONCE; re-running the reconciler does not double-release or duplicate the item.",
+    "result": "PASS",
+    "coverage": "executed",
+    "negative_control": "A double terminal-hook would remove/decrement the counter twice."
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-invariant-results.json (G53: PASS)"
+  },
+  {
+   "id": "inv:G54",
+   "type": "invariant",
+   "label": "I-Direct-success-no-duplicate-ledger(G54)",
+   "attrs": {
+    "statement": "A processed Direct payout yields exactly two balanced DA journals (da_payout_processed + _recon); replaying the recon/payout_update path creates NO additional journal ((transactor_id,transactor_event) unique).",
+    "result": "PASS",
+    "coverage": "executed",
+    "negative_control": "Without ledger layer-2 ValidateJournalExist the replay would write 4 journals."
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-invariant-results.json (G54: PASS)"
+  },
+  {
+   "id": "inv:I01",
+   "type": "invariant",
+   "label": "same X-Payout-Idempotency + same body -> same payout id; different body -> 400 SameIdempotencyKeyDifferentRequest",
+   "attrs": {
+    "prod_enforced": "yes (PS idempotency_keys UNIQUE(idempotency_key, merchant_id), SHA-256 canonical body hash, Redis mutex 20 min)",
+    "verifier": "V01, V02",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/routing/middleware/idempotency_key.go:34-93; migrations/20221004002554:23; api MerchantIdempotencyHandler.php:84-210"
+  },
+  {
+   "id": "inv:I02",
+   "type": "invariant",
+   "label": "FTS dedupes on (source_type, source_id) and returns the existing transfer with 200 (not 201)",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V03",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "fts/internal/migrations/00005_transfers_table_create.go:62; fts/internal/transfer/service.go:322-436; controllers/transfer.go:139-146"
+  },
+  {
+   "id": "inv:I03",
+   "type": "invariant",
+   "label": "ledger journal (transactor_id, transactor_event) duplicates are prevented only by app-level check under a Redis mutex; the twin MUST NOT add a unique index",
+   "attrs": {
+    "prod_enforced": "partial (race window exists)",
+    "verifier": "V04 (rewrite: assert absence of unique index + single row under sequential duplicate; concurrency race is a separate NEW probe; M1: V04 now guards the index catalogue non-empty -- asserts pg_indexes returns rows and the public.journal primary key is present -- before trusting the negative absent-unique-index result, so a wrong table/schema/search_path cannot pass vacuously)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "ledger/internal/journal/validation.go:353-369; pg_migrations/20201001011143_create_journal.go:39"
+  },
+  {
+   "id": "inv:I04",
+   "type": "invariant",
+   "label": "bulk create rows are unique per (merchant_id, idempotency_key) in bulk_idempotency_keys; max 15 rows per request",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/app/bulkPayoutsProcessor/repo.go:28-35; constants.go:6"
+  },
+  {
+   "id": "inv:I10",
+   "type": "invariant",
+   "label": "every payout_logs (from, to) pair is a legal transition of state_machine.go; processed is reachable only from initiated",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V14",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/app/payouts/state_machine.go (see state-machines.yaml)"
+  },
+  {
+   "id": "inv:I11",
+   "type": "invariant",
+   "label": "FTS webhooks for payouts not in {initiated, processed, reversed, failed} are acknowledged 200 and ignored; terminal repeats are no-ops",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V15 (needs pending-hold bank scenario)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/app/common/appConstants/states.go:37-54"
+  },
+  {
+   "id": "inv:I12",
+   "type": "invariant",
+   "label": "PS moves the payout to initiated before calling create_fta; create_fta errors do not roll it back",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/app/payouts/processor/payoutFTS.go:18-83"
+  },
+  {
+   "id": "inv:I13",
+   "type": "invariant",
+   "label": "FTS transfer FSM: PROCESSED only from INITIATED; REVERSED only from PROCESSED; no webhook while RETRY",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "fts/internal/transfer/state_machine.go:80-114; service.go:1104-1111"
+  },
+  {
+   "id": "inv:I20",
+   "type": "invariant",
+   "label": "payout_initiated journal balances to zero, debits MerchantBalance amount+commission synchronously, and is the balance authorization (insufficient -> queued or 400)",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V05, V09, V10 (V10 expectation must be 400 \"not enough balance\", not a failed payout), V11",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "ledger shared_account_x.go XPayoutInitiatedV2; payouts payoutViaLedgerService.go:198-271; ledger account/repo.go:417-449"
+  },
+  {
+   "id": "inv:I21",
+   "type": "invariant",
+   "label": "payout_processed journal is asynchronous and Shared-only; identifiers fts_fund_account_id / fts_account_type come verbatim (lower-cased) from the FTS webhook; ledger account_details for the FTS account must carry fund_account_type = lower(bank_account_type) under the matching Current/Nodal parent",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V06 (asserts fts_fund_account_id/fts_account_type via payout_meta_temporary fts_info and the credited account_details.fund_account_type under the matching parent)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts core.go:2532-2598,2575; pkg/ledger/ledger_journal_create.go:210-218; ledger account_discovery/core.go:51-181; fts source_account.go:99-101; ledger account/seed_data/shared_account_x.go:199-231"
+  },
+  {
+   "id": "inv:I22",
+   "type": "invariant",
+   "label": "Shared FTS FAILED -> payout reversed with a reversals row created before the payout_reversed journal; Direct (RBL/ICICI/AXIS/YESBANK/IDFC/SLICE) FTS FAILED -> payout failed, no reversal, no ledger call",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V07, V08, V18 (stimulus must go through the FTS/monolith relay, not a synthetic PS webhook)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts states.go:64-128; reversals/core.go:281-330; api Status.php:243-309"
+  },
+  {
+   "id": "inv:I23",
+   "type": "invariant",
+   "label": "reversal row is committed before the ledger call and survives a ledger outage via payout_update_failure_handling",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V17 (needs ledger fault injection: docker pause ledger-api)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/app/reversals/core.go:281-330; asyncFailureHandlingHelper.go:582-666"
+  },
+  {
+   "id": "inv:I24",
+   "type": "invariant",
+   "label": "transaction.created webhook fires after every successful failed/reversed journal; payout.processed/reversed/failed fire on state entry; cancelled fires none",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V21 (fix capture path /_captured/events)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts reversalViaLedgerService.go:215-312; appConstants/webhooks.go:4-24; state_machine.go:83-85"
+  },
+  {
+   "id": "inv:I30",
+   "type": "invariant",
+   "label": "with in_flight_reservation_enabled, a dispatched Direct payout has a live Redis reservation; it moves to awaiting_balance_refresh on processed and is released on failed/reversed/cancelled/rejected; sum(live) == sum(amounts of dispatched payouts)",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V12, V13 (requires reconciler cron path fixed so the heartbeat exists; gate fails closed otherwise)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts reservation/store.go:150,160,227-241,395-400; reservation_hook.go:34-90"
+  },
+  {
+   "id": "inv:I31",
+   "type": "invariant",
+   "label": "gate fails closed (queues) when the reconciler heartbeat (TTL 12.5 min) is missing",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW (stop cron, expect queued)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts inflight_reservation_reconciler.go:51-56"
+  },
+  {
+   "id": "inv:I40",
+   "type": "invariant",
+   "label": "queued low-balance payout dequeues only when API-DB balance.updated_at is within 6 h and the live balance covers amount+fee; dequeue is first-fit by list order",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V24a (twin must refresh balance.updated_at and expose balance_update_event)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/app/balance/repo.go:26-51; helperQueuedPayouts.go:18-47"
+  },
+  {
+   "id": "inv:I41",
+   "type": "invariant",
+   "label": "scheduled payouts use slots 9/13/17/21 IST within 3 months and are dispatched only by the cron; still-pending at slot -> rejected",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V24b",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts schedule.go:23,55; core.go:2772-2867; repo.go:164-183"
+  },
+  {
+   "id": "inv:I42",
+   "type": "invariant",
+   "label": "on-hold payouts past merchant SLA are failed by the bene-bank cron; partner-bank downtime from FTS notify puts Direct payouts on hold",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts onHoldHelper.go:117-153,309-341; internal_routes.go:11-22"
+  },
+  {
+   "id": "inv:I50",
+   "type": "invariant",
+   "label": "workflow-applicable creates enter pending only via non-Private auth when skip_approval_workflow_for_api is set; WFS Create failure fails the create (400)",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts processor/baseHelper.go:107-193, base.go:285-289"
+  },
+  {
+   "id": "inv:I51",
+   "type": "invariant",
+   "label": "approve/reject callbacks to PS are Basic-auth only, accept 200/201/409 as success on the WFS side, and rejection moves pending -> rejected with payout.rejected webhook",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/pkg/workflow/workflow_create.go:264-338; payout_internal_routes.go:71-79"
+  },
+  {
+   "id": "inv:I52",
+   "type": "invariant",
+   "label": "no expiry callback ever fires from WFS; 3-month auto-cancel is monolith-side (PENDING -> rejected, QUEUED -> failed)",
+   "attrs": {
+    "prod_enforced": "yes (as an absence)",
+    "verifier": "NEW (document, negative test)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "workflows approval/workflow.go (no timer); api Core.php:4482-4525"
+  },
+  {
+   "id": "inv:I60",
+   "type": "invariant",
+   "label": "merchant identity comes from passport consumer (private) or impersonation.Consumer (proxy/privilege); header x-merchant-id only as fallback; a valid passport with a conflicting header wins silently",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V20 (fetch half) + NEW",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/auth/authHelper.go:12-25,173-208; request_context.go:47-75"
+  },
+  {
+   "id": "inv:I61",
+   "type": "invariant",
+   "label": "another merchant's passport cannot fetch or cancel a payout; but PS approve/reject internal routes have no tenant check beyond Basic auth (RejectPendingPayout uses unscoped FindByID)",
+   "attrs": {
+    "prod_enforced": "partial",
+    "verifier": "V20, NEW (document the unscoped internal route as a production characteristic)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts payout_internal_routes.go:12-18,71-79; lane 04 §7"
+  },
+  {
+   "id": "inv:I70",
+   "type": "invariant",
+   "label": "exactly one of {Kafka, direct PS, legacy monolith webhook} fires per transfer status change; legacy webhook retries 3 x 200 s then abandons without DLQ",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "V16 (redefine: lost callback via PS_RELAY_MODE=drop -> payout stays initiated with no repair, matching production), NEW for Kafka leg; M1 adds kafka_scenarios.py shared_source_failure/direct_after_shared (EF-001)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "fts/internal/transfer/service.go:1071-1275"
+  },
+  {
+   "id": "inv:I71",
+   "type": "invariant",
+   "label": "PS Kafka consumer drops reversed/failed messages and republishes other failures to the retry topic keyed by source_id",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "kafka_scenarios.py failed_dropped_direct/failed_dropped_shared/reversed_dropped_direct (real FTS-published FAILED/REVERSED over Kafka; expected failure EF-002/EF-003)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/taskHandlers/fts_status_updates.go:56-113"
+  },
+  {
+   "id": "inv:I72",
+   "type": "invariant",
+   "label": "the monolith relay sends details before status and never retries; unknown FTA status produces no PS call",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "api Attempt/Core.php:487-560,835-875; Payout/Core.php:1054-1057"
+  },
+  {
+   "id": "inv:I80",
+   "type": "invariant",
+   "label": "no production job repairs or monitors initiated payouts; ManualAction has exactly 3 cases; stuck-initiated alerts are dead (label mismatch)",
+   "attrs": {
+    "prod_enforced": "yes (absence)",
+    "verifier": "V16 (stronger than production: drives all 8 cron routes and asserts no repair), V23/V22 fault hooks NEW",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts adminClientController.go:267-356; core.go:9891-10467; alert-rules payouts_rules.yaml:2222-2269; metric.go:1014-1021"
+  },
+  {
+   "id": "inv:I81",
+   "type": "invariant",
+   "label": "FTS retry after FAILED is gated by XAS statement presence (debit-only -> refuse)",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW (needs XAS substitute)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "fts/internal/transfer/retry_preprocessor_service.go:226-308"
+  },
+  {
+   "id": "inv:I82",
+   "type": "invariant",
+   "label": "a bank return credit matched by XAS turns a failed payout into reversed via banking_account_statement/payout_update",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW (needs XAS substitute + monolith-stub route)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "api Core.php:10286-10379; payouts core.go:7203-7395"
+  },
+  {
+   "id": "inv:I90",
+   "type": "invariant",
+   "label": "fees/tax come from monolith fetch_pricing_info (or Redis-cached rule) keyed by merchant, balance, channel, method, mode, amount slab, fee_type; free_payout -> 0; pricing failure fails the create",
+   "attrs": {
+    "prod_enforced": "yes",
+    "verifier": "NEW (per-mode fee assertions)",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "payouts processor/payout_pricing.go:138-355; api Validator.php:666-679"
+  },
+  {
+   "id": "inv:S01",
+   "type": "invariant",
+   "label": "no packet leaves the arena; no real Razorpay hostname in generated config; no credentials in images",
+   "attrs": {
+    "prod_enforced": "n/a",
+    "verifier": "SAFETY_PREFLIGHT.md, EGRESS_AUDIT.md",
+    "coverage": "source_inferred"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/preflight/preflight.py; network/egress-audit.sh"
+  },
+  {
+   "id": "journey:A",
+   "type": "journey",
+   "label": "Journey A — Success (create->recon->DA ledger->webhook)",
+   "attrs": {
+    "result": "PASS",
+    "merchant_id": "ARENAD83881351",
+    "fidelity_note": "real payout/PS/FTS/ledger; real-worker statement; substitute xas matching",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (A: PASS)"
+  },
+  {
+   "id": "journey:B",
+   "type": "journey",
+   "label": "Journey B — Immediate failure (failed, no reversal, released, idempotent)",
+   "attrs": {
+    "result": "PASS",
+    "merchant_id": "ARENAD86313421",
+    "fidelity_note": "real",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (B: PASS)"
+  },
+  {
+   "id": "journey:C",
+   "type": "journey",
+   "label": "Journey C — Pending->success (poll1 PENDING, poll2 SUCCESS; recon once; idempotent)",
+   "attrs": {
+    "result": "PASS",
+    "merchant_id": "ARENAD83881351",
+    "fidelity_note": "real payout/PS/FTS/ledger; real-worker statement; substitute xas",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (C: PASS)"
+  },
+  {
+   "id": "journey:D",
+   "type": "journey",
+   "label": "Journey D — Pending->failure (failed, released, no shared reversal)",
+   "attrs": {
+    "result": "PASS",
+    "merchant_id": "ARENAD86313421",
+    "fidelity_note": "real",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (D: PASS)"
+  },
+  {
+   "id": "journey:E",
+   "type": "journey",
+   "label": "Journey E — Statement-first: FTS-direct guard refuses (R1) vs monolith-relay moves to failed (R2/F-T10-1)",
+   "attrs": {
+    "result": "PASS",
+    "merchant_id": "ARENAD83881351",
+    "fidelity_note": "real (VerifyPayoutFailedTransaction) + real-worker statement; substitute relay control",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (E: PASS)"
+  },
+  {
+   "id": "journey:F",
+   "type": "journey",
+   "label": "Journey F — Duplicate statement (no new row / no duplicate journal / no double release)",
+   "attrs": {
+    "result": "PASS",
+    "merchant_id": "ARENAD83881351",
+    "fidelity_note": "real-worker dedupe + real ledger dedup; substitute xas",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (F: PASS)"
+  },
+  {
+   "id": "journey:G",
+   "type": "journey",
+   "label": "Journey G — Conflict: credit->reversed (transaction_id) + wrong-amount->external (negative control)",
+   "attrs": {
+    "result": "PASS",
+    "merchant_id": "ARENAD86313421",
+    "fidelity_note": "real PS reversal + real ledger; credit stmt substitute_injected; substitute xas",
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (G: PASS)"
+  },
+  {
+   "id": "q:journal_create",
+   "type": "queue",
+   "label": "SQS journal_create (= prod-ledger-journal-create-live)",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #4; route-matrix R12"
+  },
+  {
+   "id": "q:rbl_banking_account_statement",
+   "type": "queue",
+   "label": "SQS rbl_banking_account_statement",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #6; init-queues.sh"
+  },
+  {
+   "id": "q:stage-x-balances-balance-refresh-live",
+   "type": "queue",
+   "label": "SQS x-balances-balance-refresh (reservation release trigger A)",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "route-matrix R2/R3; TWIN_SPEC/expected-failures.yaml EF-007"
+  },
+  {
+   "id": "q:x_account_statement_source_event",
+   "type": "queue",
+   "label": "SQS x_account_statement_source_event",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/job/x_account_statement_source_event.go:21-56; route-matrix R5"
+  },
+  {
+   "id": "route:A",
+   "type": "route",
+   "label": "A — POST /v1/transfer",
+   "attrs": {
+    "twin": "native (profile direct/kafka)",
+    "correlation": "source_id <-> transfers.source_id (UNIQUE)",
+    "coverage": "executed",
+    "production_reachability": "known"
+   },
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml direct_status_transports A_ps_fts_create_direct"
+  },
+  {
+   "id": "route:B",
+   "type": "route",
+   "label": "B — POST /v1/payouts_service/create_fta/{id} then POST /v1/transfer",
+   "attrs": {
+    "twin": "substitute (default profile)",
+    "correlation": "same",
+    "coverage": "executed",
+    "production_reachability": "known",
+    "deviation_ids": "L-013"
+   },
+   "fidelity": "substitute",
+   "evidence": "TWIN_SPEC/route-matrix.yaml direct_status_transports B_ps_monolith_fts_create"
+  },
+  {
+   "id": "route:C",
+   "type": "route",
+   "label": "C — POST /fts/rbl/v1/transfer_init | /transfer_status",
+   "attrs": {
+    "twin": "substitute; Direct vs Pool indistinguishable at the bank boundary",
+    "correlation": "attempts.gateway_ref_no (UNIQUE)",
+    "coverage": "executed",
+    "production_reachability": "unknown",
+    "deviation_ids": "L-003"
+   },
+   "fidelity": "substitute",
+   "evidence": "TWIN_SPEC/route-matrix.yaml direct_status_transports C_fts_bank"
+  },
+  {
+   "id": "route:D",
+   "type": "route",
+   "label": "D — POST /v1/payouts/transfer_status_webhook",
+   "attrs": {
+    "transport": "HTTP, 3x200s retry",
+    "status_map": "initiated->initiated, processed->processed, failed->failed, reversed->reversed (states.go:84-91)",
+    "twin": "native, profile direct only",
+    "correlation": "source_id, fund_transfer_id",
+    "coverage": "executed",
+    "route_coverage_evidence": "reports/implementation/m4-route-coverage.json (R1)",
+    "production_reachability": "known"
+   },
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml direct_status_transports D_fts_ps_direct_webhook"
+  },
+  {
+   "id": "route:E",
+   "type": "route",
+   "label": "E — POST /v1/update_fts_fund_transfer -> POST .../update_payouts_details_with_fts + PATCH .../update_payouts_with_fts",
+   "attrs": {
+    "status_map": "Status.php:273-279 Direct/RBL failed->failed",
+    "twin": "substitute (default profile)",
+    "correlation": "source_id (+fund_transfer_id on details)",
+    "coverage": "executed",
+    "route_coverage_evidence": "reports/implementation/m4-route-coverage.json (R2)",
+    "production_reachability": "known",
+    "deviation_ids": "L-013"
+   },
+   "fidelity": "substitute",
+   "evidence": "TWIN_SPEC/route-matrix.yaml direct_status_transports E_fts_monolith_ps"
+  },
+  {
+   "id": "route:F",
+   "type": "route",
+   "label": "F — rx-fts-status-update-events (retry ...-retry-events)",
+   "attrs": {
+    "transport": "Kafka",
+    "status_map": "processed->processed; failed/reversed dropped",
+    "twin": "native, profile kafka",
+    "correlation": "key = source_id",
+    "expected_failures": "[EF-002, EF-003, EF-006]",
+    "coverage": "executed",
+    "route_coverage_evidence": "reports/implementation/m4-route-coverage.json (R3)",
+    "production_reachability": "unknown",
+    "deviation_ids": "EF-002;EF-003;U-05"
+   },
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/route-matrix.yaml direct_status_transports F_fts_kafka_ps"
+  },
+  {
+   "id": "route:G",
+   "type": "route",
+   "label": "G — POST /v1/attempts/verify, PATCH /v1/attempts/safe_update",
+   "attrs": {
+    "status_map": "PROCESSED->REVERSED -> payout reversed",
+    "twin": "native",
+    "correlation": "attempt id",
+    "coverage": "executed",
+    "production_reachability": "known"
+   },
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml direct_status_transports G_admin_return"
+  },
+  {
+   "id": "route:H",
+   "type": "route",
+   "label": "H — FTS POST /v1/notify/health/update",
+   "attrs": {
+    "status_map": "direct_rbl_imps key -> on_hold",
+    "twin": "payouts native; FTS emitter missing (env.default.toml:837-841 placeholder URL)",
+    "correlation": "<acct>_<channel>_<mode>",
+    "expected_failures": "[EF-008]",
+    "coverage": "unresolved",
+    "production_reachability": "unknown",
+    "deviation_ids": "EF-008;L-010"
+   },
+   "fidelity": "missing",
+   "evidence": "TWIN_SPEC/route-matrix.yaml direct_status_transports H_health_on_hold"
+  },
+  {
+   "id": "route:I",
+   "type": "route",
+   "label": "I — job x_account_statement_source_event",
+   "attrs": {
+    "twin": "substitute sink (xas-sim, D-006)",
+    "correlation": "payout id / utr",
+    "expected_failures": "[EF-005]",
+    "coverage": "implemented",
+    "production_reachability": "unknown",
+    "deviation_ids": "L-005;U-06"
+   },
+   "fidelity": "substitute",
+   "evidence": "TWIN_SPEC/route-matrix.yaml direct_status_transports I_ps_xas_source_event"
+  },
+  {
+   "id": "route:R-remap",
+   "type": "route",
+   "label": "R-remap — terminal status remap by account_type/channel",
+   "attrs": {
+    "coverage": "executed",
+    "route_coverage_evidence": "reports/implementation/m4-route-coverage.json (R-remap)"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-route-coverage.json (R-remap); PS:internal/app/payouts/fts_transfer_status_webhook.go:1300-1339"
+  },
+  {
+   "id": "route:R1",
+   "type": "route",
+   "label": "R1 — POST /v1/cron/banking_account_statement/fetch/initiate {channel:\"rbl\"} (FastCron Basic)",
+   "attrs": {
+    "twin": "REAL route + REAL worker (new container payouts-worker-rbl-banking-account-statement, [job] key, SQS queue, cron-driver job — T10)",
+    "effect": "BASD selection (balance_changed_rule|others) -> job rbl_banking_account_statement (MaxRetries 7, 1800 s)",
+    "name": "bas_fetch_initiate"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/routing/router/cron_routes.go:15,26-27; internal/app/bankingAccountStatementDetails/core.go:55-151,176-208; internal/job/rbl_banking_account_statement.go:16-24"
+  },
+  {
+   "id": "route:R10",
+   "type": "route",
+   "label": "R10 — GET /v1/account_statements/fetch_multiple_by_reference_numbers?type=debit|credit&account_n",
+   "attrs": {
+    "twin": "xas-sim serves it; PS and FTS [xas].host repointed from xas-sink (T11)",
+    "name": "xas_fetch_multiple_by_reference_numbers"
+   },
+   "fidelity": "substitute",
+   "evidence": "payouts/pkg/xAccountStatement/fetch_by_multiple_references.go:15,70-78; x-account-statements internal/account_statements/get/service/service.go:425-470"
+  },
+  {
+   "id": "route:R11",
+   "type": "route",
+   "label": "R11 — POST /twirp/rzp.ledger.account.v1.AccountAPI/CreateInBulk {account_data_identifier:\\\"direc",
+   "attrs": {
+    "twin": "REAL Twirp calls issued by up.sh / ledger_da.py (T11); not present before M4 (M2 had 0 DA accounts)",
+    "effect": "7 parent accounts; per-merchant sub-accounts named \"<parent> - <mid> - <basd>\", min_balance NULL (mirror, not authority)",
+    "name": "ledger_da_accounts"
+   },
+   "fidelity": "real",
+   "evidence": "ledger/proto/platform/ledger/account/v1/account_api.proto:15,72-83,92-96; internal/account/server.go:138-200,719; internal/account/core.go:1430-1500,1812-1824; internal/account/onboarding/direct_merchant_onboarding/core.go:41-51; internal/account/seed_data/direct_account_x.go:53-189"
+  },
+  {
+   "id": "route:R12",
+   "type": "route",
+   "label": "R12 — SNS api-ledger-journal-create-live -> SQS prod-ledger-journal-create-live (twin queue jour",
+   "attrs": {
+    "twin": "REAL Ledger service + REAL journal_create worker; emitter = monolith-stub substitute reproducing processLedgerPayoutForDirect with the Finding-6 payload, gated by feature da_ledger_journal_writes and skipped under payout_service_txn_recon (D-006 (3))",
+    "name": "ledger_da_journals"
+   },
+   "fidelity": "substitute",
+   "evidence": "ledger/internal/journal/ledger_config/seed_data/direct_account_x.go:220-253,383-401; internal/common/constant.go:507-518; payouts/internal/app/dtos/ledger.go:3-20"
+  },
+  {
+   "id": "route:R13",
+   "type": "route",
+   "label": "R13 — banking_account_statement_details row (basd_<14>) inserted by the MONOLITH directly into t",
+   "attrs": {
+    "twin": "provisioner inserts the row (D-006 (1); T09)",
+    "effect": "banking_account_statement_details row (basd_<14>) inserted by the MONOLITH directly into the PS DB at CA onboarding; PS never creates it",
+    "name": "basd_row_creation"
+   },
+   "fidelity": "substitute",
+   "evidence": "api/app/Models/BankingAccountStatement/Details/Core.php:219-237; api/app/Http/Route.php:4193,3597"
+  },
+  {
+   "id": "route:R14",
+   "type": "route",
+   "label": "R14 — POST /v1/statement/dual_write {id} -> DualWriteForStatement -> EnrichmentUpdate (replaces ",
+   "attrs": {
+    "twin": "Kafka CDC not reproducible (Maxwell); xas-sim posts payout_update directly",
+    "name": "xas_dual_write_hook"
+   },
+   "fidelity": "substitute",
+   "evidence": "proto/x/x-account-statements/statement/v1/statement_api.proto:12; x-account-statements internal/account_statements/dual_write/service/service.go:173-190"
+  },
+  {
+   "id": "route:R15",
+   "type": "route",
+   "label": "R15 — monolith RblBankingAccountStatement job + saveAccountStatementV2 matcher + payoutUpdateByB",
+   "attrs": {
+    "twin": "NOT modelled (only the payout_update relay exists); recon substitute calls the PS batch route directly",
+    "effect": "monolith RblBankingAccountStatement job + saveAccountStatementV2 matcher + payoutUpdateByBASRecon + banking_account_statement/batch/process front route + source_event_info GET",
+    "name": "monolith_matcher_and_fetcher"
+   },
+   "fidelity": "substitute",
+   "evidence": "api/app/Jobs/RblBankingAccountStatement.php:44,173; api/app/Models/BankingAccountStatement/Core.php:3043-3140,3143-3175,3302-3350,4004-4120; api/app/Http/Route.php:2434,4182,4837,2353"
+  },
+  {
+   "id": "route:R2",
+   "type": "route",
+   "label": "R2 — GET /merchant/{mid}/banking_account_by_account_number/{acct}/credentials -> {auth_username",
+   "attrs": {
+    "twin": "bankingaccounts-stub route added (T10)",
+    "name": "ps_bankingaccounts_credentials"
+   },
+   "fidelity": "substitute",
+   "evidence": "payouts/pkg/bankingAccountService/fetch_banking_creds.go:14,69; processor/rbl_gateway.go:264-293"
+  },
+  {
+   "id": "route:R3",
+   "type": "route",
+   "label": "R3 — POST /razorpayx/rbl/v2/account_statement (RblRequest{attempt{id, transaction_type:'B', fro",
+   "attrs": {
+    "twin": "mozart-sim substitute endpoint (T10)",
+    "name": "ps_mozart_account_statement"
+   },
+   "fidelity": "substitute",
+   "evidence": "payouts/internal/app/bankingAccountStatement/processor/rbl_gateway.go:168-231,355-411,413-460,517-662; rbl_statement.go:9-32; rbl_constants.go:6-61; mozart/app/config/razorpayx/rbl/v2/account_statement.json"
+  },
+  {
+   "id": "route:R4",
+   "type": "route",
+   "label": "R4 — banking_account_statement rows + BASD {pagination_key, statement_closing_balance, ..., met",
+   "attrs": {
+    "twin": "REAL (dual-write lands in monolith-stub/PS DB as today)",
+    "effect": "banking_account_statement rows + BASD {pagination_key, statement_closing_balance, ..., metadata} in one DB txn; model hook DualWrite -> async_dual_write job (monolith)",
+    "name": "ps_bas_persist"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/app/bankingAccountStatement/processor/base.go:55-97; core.go:289-319; model.go:202-204"
+  },
+  {
+   "id": "route:R5",
+   "type": "route",
+   "label": "R5 — SQS x_account_statement_source_event (prod-x-account-statement-source-event), raw JSON Xas",
+   "attrs": {
+    "twin": "REAL producer (config key + queue, T10) -> xas-sim consumer (T11)",
+    "gates": "Direct only (core.go:1786-1788); Splitz account_statement_source_event P9jMHiqpMI81A5 or env whitelist (:1859-1880); terminal status; >=1 of utr|grn|cms",
+    "name": "ps_xas_source_event"
+   },
+   "fidelity": "substitute",
+   "evidence": "payouts/internal/job/x_account_statement_source_event.go:21-56,78-100; internal/app/payouts/core.go:1768-1857,8455-8550"
+  },
+  {
+   "id": "route:R6",
+   "type": "route",
+   "label": "R6 — xas_matching",
+   "attrs": {
+    "twin": "xas-sim substitute (T11) — must preserve all rules above (C-013: XAS is one of three matchers; monolith matcher not modelled; PS UTR auto-linker is a dead stub)",
+    "name": "xas_matching"
+   },
+   "fidelity": "substitute",
+   "evidence": "x-account-statements internal/account_statements/enrich/service/service.go:44-91,93-148,190-218,328-357; repo/repo.go:268-287,327-341; enrichers/payout_enricher.go:38-63; source_events/service/service.go:68-88,140-156"
+  },
+  {
+   "id": "route:R7",
+   "type": "route",
+   "label": "R7 — POST {monolith}/v1/banking_account_statement/payout_update {bas_id, entity_id, entity_type",
+   "attrs": {
+    "twin": "xas-sim -> monolith-stub relay (server.py:743-764, already accepts extra fields) -> REAL PS UpdatePayoutAfterBASRecon",
+    "name": "xas_payout_update_outbound"
+   },
+   "fidelity": "substitute",
+   "evidence": "x-account-statements internal/gateway/api/service/service.go:34-35,108-127; dual_write/service/service.go:113-190; api/app/Models/Payout/Core.php:10305-10318; api/app/Http/Route.php:4837"
+  },
+  {
+   "id": "route:R8",
+   "type": "route",
+   "label": "R8 — POST /v1/payouts/banking_account_statement/payout_update (BasicAuth API|Workflow|Xperience",
+   "attrs": {
+    "twin": "REAL",
+    "effect": "entity_type payout -> payouts.transaction_id = bas_id (idempotent :7233-7239; shouldSkipUpdateDueToMismatch on utr/grn/cms :9850-9887 under Splitz xas_source_event_utr_and_grn_match_experiment); payout_reversal -> if payout failed create reversal + EventReversed (:7297-7318) else stamp existing reversal (:7320-7345); mail/SMS (:7370-7386); NO ledger call (SendLedgerEventPostBasLinking commented at :7284,:7356)",
+    "name": "ps_update_payout_after_bas_recon"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/app/payouts/core.go:7203-7395; internal/routing/router/payout_internal_routes.go:126-133"
+  },
+  {
+   "id": "route:R9",
+   "type": "route",
+   "label": "R9 — POST /v1/banking_account_statement/process/batch [{data: base64({banking_account_statement",
+   "attrs": {
+    "twin": "REAL route driven by a recon substitute (D-006 (2a)); requires DA ledger accounts (R11) for the external journal",
+    "effect": "lock BAS row; link payout (debit) / payout_reversal (credit) unless entity already linked -> external; post-commit external -> NotifyLedgerOnLinking (da_ext_debit|da_ext_credit journal); payout|reversal -> SendUpdatesToPayoutSource -> monolith POST /banking_account_statement/payout_update (6 fields) -> R8",
+    "name": "ps_art_process_batch"
+   },
+   "fidelity": "real",
+   "evidence": "payouts/internal/routing/router/bas_internal_routes.go:11-25; internal/app/bankingAccountStatement/core.go:321-432,434-485,627-663,673-733; pkg/api/bas_recon_payout_update.go:14-74"
+  },
+  {
+   "id": "svc:cfa-server",
+   "type": "service",
+   "label": "cfa-server",
+   "attrs": {
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-baseline-report.md (cfa real v1-candidate)"
+  },
+  {
+   "id": "svc:fts-web",
+   "type": "service",
+   "label": "fts-web",
+   "attrs": {
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-provision.json (fts-web real FTS v1-candidate)"
+  },
+  {
+   "id": "svc:ledger-api",
+   "type": "service",
+   "label": "ledger-api",
+   "attrs": {
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-xas-ledger.json:checks (ledger real v1-candidate)"
+  },
+  {
+   "id": "svc:payouts-api",
+   "type": "service",
+   "label": "payouts-api",
+   "attrs": {
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-provision.json (payouts-api real PS v1-candidate)"
+  },
+  {
+   "id": "svc:xbalances-server",
+   "type": "service",
+   "label": "xbalances-server",
+   "attrs": {
+    "coverage": "executed"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-provision.json (x-balances real v1-candidate)"
+  },
+  {
+   "id": "sym:GetFreePayoutAttributes",
+   "type": "source_symbol",
+   "label": "GetFreePayoutAttributes(ctx, balanceId) — resolves banking account by balance_id alone",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/app/freePayout/core.go:678-684"
+  },
+  {
+   "id": "state:payout:created",
+   "type": "state",
+   "label": "payout.created",
+   "attrs": {
+    "machine": "payout"
+   },
+   "fidelity": "real",
+   "evidence": "PS:internal/app/payouts/reservation_hook.go:42-48"
+  },
+  {
+   "id": "state:payout:failed",
+   "type": "state",
+   "label": "payout.failed (Direct: no reversal row)",
+   "attrs": {
+    "machine": "payout"
+   },
+   "fidelity": "real",
+   "evidence": "PS:internal/app/common/appConstants/states.go:84"
+  },
+  {
+   "id": "state:payout:processed",
+   "type": "state",
+   "label": "payout.processed (Direct, no reversal)",
+   "attrs": {
+    "machine": "payout"
+   },
+   "fidelity": "real",
+   "evidence": "PS:internal/app/payouts/core.go:3866-3868"
+  },
+  {
+   "id": "state:payout:reversed",
+   "type": "state",
+   "label": "payout.reversed (credit-after-debit upgrade)",
+   "attrs": {
+    "machine": "payout"
+   },
+   "fidelity": "real",
+   "evidence": "PS:internal/app/payouts/core.go:7289-7318"
+  },
+  {
+   "id": "state:reservation:awaiting_balance_refresh",
+   "type": "state",
+   "label": "Reservation awaiting_balance_refresh",
+   "attrs": {
+    "machine": "inflight_reservation"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #3 reservation state machine"
+  },
+  {
+   "id": "state:reservation:live",
+   "type": "state",
+   "label": "Reservation live (counter held)",
+   "attrs": {
+    "machine": "inflight_reservation"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #3 reservation state machine"
+  },
+  {
+   "id": "state:reservation:released",
+   "type": "state",
+   "label": "Reservation released (HDEL+DECRBY)",
+   "attrs": {
+    "machine": "inflight_reservation"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #3 reservation state machine"
+  },
+  {
+   "id": "svc:asv-stub",
+   "type": "substitute",
+   "label": "asv-stub",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: asv-stub)"
+  },
+  {
+   "id": "svc:bankingaccounts-stub",
+   "type": "substitute",
+   "label": "bankingaccounts-stub",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: bankingaccounts-stub)"
+  },
+  {
+   "id": "svc:cron-driver",
+   "type": "substitute",
+   "label": "cron-driver",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: cron-driver)"
+  },
+  {
+   "id": "svc:dcs-stub",
+   "type": "substitute",
+   "label": "dcs-stub",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: dcs-stub)"
+  },
+  {
+   "id": "svc:kong-lite",
+   "type": "substitute",
+   "label": "kong-lite",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: kong-lite)"
+  },
+  {
+   "id": "svc:ledger-gate",
+   "type": "substitute",
+   "label": "ledger-gate",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-gate)"
+  },
+  {
+   "id": "svc:merchant-webhook-sink",
+   "type": "substitute",
+   "label": "merchant-webhook-sink",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: merchant-webhook-sink)"
+  },
+  {
+   "id": "svc:monolith-stub",
+   "type": "substitute",
+   "label": "monolith-stub",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: monolith-stub)"
+  },
+  {
+   "id": "svc:mozart-mock",
+   "type": "substitute",
+   "label": "mozart-mock",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mozart-mock)"
+  },
+  {
+   "id": "svc:mozart-sim",
+   "type": "substitute",
+   "label": "mozart-sim",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mozart-sim)"
+  },
+  {
+   "id": "svc:pricing-stub",
+   "type": "substitute",
+   "label": "pricing-stub",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: pricing-stub)"
+  },
+  {
+   "id": "svc:shield-stub",
+   "type": "substitute",
+   "label": "shield-stub",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: shield-stub)"
+  },
+  {
+   "id": "svc:splitz-stub",
+   "type": "substitute",
+   "label": "splitz-stub",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: splitz-stub)"
+  },
+  {
+   "id": "svc:stork-capture",
+   "type": "substitute",
+   "label": "stork-capture",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: stork-capture)"
+  },
+  {
+   "id": "svc:verifier",
+   "type": "substitute",
+   "label": "verifier",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: verifier)"
+  },
+  {
+   "id": "svc:workflow-sim",
+   "type": "substitute",
+   "label": "workflow-sim",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: workflow-sim)"
+  },
+  {
+   "id": "svc:xas-sim",
+   "type": "substitute",
+   "label": "xas-sim",
+   "attrs": {
+    "role": "twin substitute (D-006)"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: xas-sim)"
+  },
+  {
+   "id": "topic:api-ledger-journal-create-live",
+   "type": "topic",
+   "label": "SNS api-ledger-journal-create-live",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #4 (SNS -> SQS journal_create)"
+  },
+  {
+   "id": "topic:journal-created",
+   "type": "topic",
+   "label": "SNS journal-created",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/seeds/localstack/init-queues.sh (create-topic journal-created)"
+  },
+  {
+   "id": "topic:payout-updates-test-dev",
+   "type": "topic",
+   "label": "SNS payout-updates-test-dev",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/seeds/localstack/init-queues.sh (create-topic payout-updates-test-dev)"
+  },
+  {
+   "id": "topic:rx-fts-status-update-events",
+   "type": "topic",
+   "label": "Kafka rx-fts-status-update-events (FTS status transport)",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "route-matrix.yaml direct_status_transports F; TWIN_SPEC/expected-failures.yaml EF-002/003/006"
+  },
+  {
+   "id": "boundary:bank",
+   "type": "trust_boundary",
+   "label": "Bank boundary (Mozart / RBL)",
+   "attrs": {
+    "zone": "external"
+   },
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/substitutes/mozart-sim/server.py:53-60"
+  },
+  {
+   "id": "boundary:internal-mesh",
+   "type": "trust_boundary",
+   "label": "Internal service mesh (payouts + real services)",
+   "attrs": {
+    "zone": "internal"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #6 workers"
+  },
+  {
+   "id": "boundary:internet-edge",
+   "type": "trust_boundary",
+   "label": "Internet edge (kong-lite hardened)",
+   "attrs": {
+    "zone": "edge"
+   },
+   "fidelity": "substitute",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths; ENV2_COMPOSE/substitutes/kong-lite/route_policy.py"
+  },
+  {
+   "id": "svc:cfa-worker-contact",
+   "type": "worker",
+   "label": "cfa-worker-contact",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: cfa-worker-contact)"
+  },
+  {
+   "id": "svc:cfa-worker-fa",
+   "type": "worker",
+   "label": "cfa-worker-fa",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: cfa-worker-fa)"
+  },
+  {
+   "id": "svc:fts-worker-check-transfer-status",
+   "type": "worker",
+   "label": "fts-worker-check-transfer-status",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-check-transfer-status)"
+  },
+  {
+   "id": "svc:fts-worker-default",
+   "type": "worker",
+   "label": "fts-worker-default",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-default)"
+  },
+  {
+   "id": "svc:fts-worker-fire-transfer-status-webhook",
+   "type": "worker",
+   "label": "fts-worker-fire-transfer-status-webhook",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-fire-transfer-status-webhook)"
+  },
+  {
+   "id": "svc:fts-worker-initiate-transfer",
+   "type": "worker",
+   "label": "fts-worker-initiate-transfer",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-initiate-transfer)"
+  },
+  {
+   "id": "svc:fts-worker-rbl-check-transfer-status",
+   "type": "worker",
+   "label": "fts-worker-rbl-check-transfer-status",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-check-transfer-status)"
+  },
+  {
+   "id": "svc:fts-worker-rbl-direct-imps-check-transfer-status",
+   "type": "worker",
+   "label": "fts-worker-rbl-direct-imps-check-transfer-status",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-direct-imps-check-transfer-status)"
+  },
+  {
+   "id": "svc:fts-worker-rbl-direct-imps-initiate-transfer",
+   "type": "worker",
+   "label": "fts-worker-rbl-direct-imps-initiate-transfer",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-direct-imps-initiate-transfer)"
+  },
+  {
+   "id": "svc:fts-worker-rbl-imps-check-transfer-status",
+   "type": "worker",
+   "label": "fts-worker-rbl-imps-check-transfer-status",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-imps-check-transfer-status)"
+  },
+  {
+   "id": "svc:fts-worker-rbl-imps-initiate-transfer",
+   "type": "worker",
+   "label": "fts-worker-rbl-imps-initiate-transfer",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-imps-initiate-transfer)"
+  },
+  {
+   "id": "svc:fts-worker-rbl-initiate-transfer",
+   "type": "worker",
+   "label": "fts-worker-rbl-initiate-transfer",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-initiate-transfer)"
+  },
+  {
+   "id": "svc:fts-worker-retry-transfer",
+   "type": "worker",
+   "label": "fts-worker-retry-transfer",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-retry-transfer)"
+  },
+  {
+   "id": "svc:fts-worker-retry-transfer-preprocessor",
+   "type": "worker",
+   "label": "fts-worker-retry-transfer-preprocessor",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-retry-transfer-preprocessor)"
+  },
+  {
+   "id": "svc:fts-worker-retry-transfer-source-update",
+   "type": "worker",
+   "label": "fts-worker-retry-transfer-source-update",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-retry-transfer-source-update)"
+  },
+  {
+   "id": "svc:ledger-scheduler",
+   "type": "worker",
+   "label": "ledger-scheduler",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-scheduler)"
+  },
+  {
+   "id": "svc:ledger-worker",
+   "type": "worker",
+   "label": "ledger-worker",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-worker)"
+  },
+  {
+   "id": "svc:ledger-worker-balance-update",
+   "type": "worker",
+   "label": "ledger-worker-balance-update",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-worker-balance-update)"
+  },
+  {
+   "id": "svc:ledger-worker-entry-details-create",
+   "type": "worker",
+   "label": "ledger-worker-entry-details-create",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-worker-entry-details-create)"
+  },
+  {
+   "id": "svc:ledger-worker-entry-details-create-pg",
+   "type": "worker",
+   "label": "ledger-worker-entry-details-create-pg",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-worker-entry-details-create-pg)"
+  },
+  {
+   "id": "svc:ledger-worker-journal-create",
+   "type": "worker",
+   "label": "ledger-worker-journal-create",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-worker-journal-create)"
+  },
+  {
+   "id": "svc:payouts-kafka-fts-status-updates-consumer",
+   "type": "worker",
+   "label": "payouts-kafka-fts-status-updates-consumer",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-kafka-fts-status-updates-consumer)"
+  },
+  {
+   "id": "svc:payouts-kafka-fts-status-updates-retry-consumer",
+   "type": "worker",
+   "label": "payouts-kafka-fts-status-updates-retry-consumer",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-kafka-fts-status-updates-retry-consumer)"
+  },
+  {
+   "id": "svc:payouts-worker-async-dual-write",
+   "type": "worker",
+   "label": "payouts-worker-async-dual-write",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-async-dual-write)"
+  },
+  {
+   "id": "svc:payouts-worker-fts-async-hv-processing",
+   "type": "worker",
+   "label": "payouts-worker-fts-async-hv-processing",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-fts-async-hv-processing)"
+  },
+  {
+   "id": "svc:payouts-worker-fts-async-processing",
+   "type": "worker",
+   "label": "payouts-worker-fts-async-processing",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-fts-async-processing)"
+  },
+  {
+   "id": "svc:payouts-worker-generic-processing",
+   "type": "worker",
+   "label": "payouts-worker-generic-processing",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-generic-processing)"
+  },
+  {
+   "id": "svc:payouts-worker-on-hold-payout",
+   "type": "worker",
+   "label": "payouts-worker-on-hold-payout",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-on-hold-payout)"
+  },
+  {
+   "id": "svc:payouts-worker-partner-bank-hold-payouts",
+   "type": "worker",
+   "label": "payouts-worker-partner-bank-hold-payouts",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-partner-bank-hold-payouts)"
+  },
+  {
+   "id": "svc:payouts-worker-payout-create-failure-handling",
+   "type": "worker",
+   "label": "payouts-worker-payout-create-failure-handling",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-payout-create-failure-handling)"
+  },
+  {
+   "id": "svc:payouts-worker-payout-source-updater",
+   "type": "worker",
+   "label": "payouts-worker-payout-source-updater",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-payout-source-updater)"
+  },
+  {
+   "id": "svc:payouts-worker-payout-update-failure-handling",
+   "type": "worker",
+   "label": "payouts-worker-payout-update-failure-handling",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-payout-update-failure-handling)"
+  },
+  {
+   "id": "svc:payouts-worker-queued-payout",
+   "type": "worker",
+   "label": "payouts-worker-queued-payout",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-queued-payout)"
+  },
+  {
+   "id": "svc:payouts-worker-rbl-banking-account-statement",
+   "type": "worker",
+   "label": "payouts-worker-rbl-banking-account-statement",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-rbl-banking-account-statement)"
+  },
+  {
+   "id": "svc:payouts-worker-schedule-payout",
+   "type": "worker",
+   "label": "payouts-worker-schedule-payout",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-schedule-payout)"
+  },
+  {
+   "id": "svc:payouts-worker-transaction-create",
+   "type": "worker",
+   "label": "payouts-worker-transaction-create",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-transaction-create)"
+  },
+  {
+   "id": "svc:payouts-worker-webhook-event",
+   "type": "worker",
+   "label": "payouts-worker-webhook-event",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-webhook-event)"
+  },
+  {
+   "id": "svc:payouts-worker-x-balances-balance-refresh",
+   "type": "worker",
+   "label": "payouts-worker-x-balances-balance-refresh",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-x-balances-balance-refresh)"
+  },
+  {
+   "id": "svc:xbalances-worker",
+   "type": "worker",
+   "label": "xbalances-worker",
+   "attrs": {
+    "coverage": "implemented"
+   },
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: xbalances-worker)"
+  }
+ ],
+ "edges": [
+  {
+   "src": "route:R1",
+   "dst": "route:R3",
+   "type": "accounting_path",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/job/rbl_banking_account_statement.go:33-40"
+  },
+  {
+   "src": "route:R12",
+   "dst": "svc:ledger-api",
+   "type": "accounting_path",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-source-map.md #4"
+  },
+  {
+   "src": "route:R3",
+   "dst": "route:R4",
+   "type": "accounting_path",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "PS:internal/app/bankingAccountStatement/processor/base.go:55-97"
+  },
+  {
+   "src": "route:R5",
+   "dst": "svc:xas-sim",
+   "type": "accounting_path",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "PS:internal/job/x_account_statement_source_event.go:21-56"
+  },
+  {
+   "src": "route:R6",
+   "dst": "route:R7",
+   "type": "accounting_path",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "XAS:internal/gateway/api/service/service.go:34-35,108-127"
+  },
+  {
+   "src": "route:R7",
+   "dst": "svc:monolith-stub",
+   "type": "accounting_path",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "route-matrix.yaml R7 (relay server.py:743-764)"
+  },
+  {
+   "src": "route:R8",
+   "dst": "route:R12",
+   "type": "accounting_path",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "route-matrix.yaml R12 (monolith-stub DA emitter)"
+  },
+  {
+   "src": "route:R9",
+   "dst": "route:R8",
+   "type": "accounting_path",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/app/bankingAccountStatement/core.go:627-663 (SendUpdatesToPayoutSource)"
+  },
+  {
+   "src": "svc:monolith-stub",
+   "dst": "route:R8",
+   "type": "accounting_path",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "PS:internal/app/payouts/core.go:7203-7395 (UpdatePayoutAfterBASRecon)"
+  },
+  {
+   "src": "svc:xas-sim",
+   "dst": "route:R6",
+   "type": "accounting_path",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "route-matrix.yaml R6 (xas-sim matcher)"
+  },
+  {
+   "src": "inv:G26",
+   "dst": "route:R6",
+   "type": "asserts",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-invariant-results.json (G26: PASS)"
+  },
+  {
+   "src": "inv:G26",
+   "dst": "route:R9",
+   "type": "asserts",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-invariant-results.json (G26: PASS)"
+  },
+  {
+   "src": "inv:G28-adj",
+   "dst": "route:R4",
+   "type": "asserts",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-invariant-results.json (G28-adj: PASS)"
+  },
+  {
+   "src": "inv:G51",
+   "dst": "svc:ledger-api",
+   "type": "asserts",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-invariant-results.json (G51: PASS)"
+  },
+  {
+   "src": "inv:G53",
+   "dst": "state:reservation:awaiting_balance_refresh",
+   "type": "asserts",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-invariant-results.json (G53: PASS)"
+  },
+  {
+   "src": "inv:G54",
+   "dst": "da:da_payout_processed",
+   "type": "asserts",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-invariant-results.json (G54: PASS)"
+  },
+  {
+   "src": "inv:G54",
+   "dst": "da:da_payout_processed_recon",
+   "type": "asserts",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-invariant-results.json (G54: PASS)"
+  },
+  {
+   "src": "ep:bulk_create",
+   "dst": "svc:payouts-api",
+   "type": "calls",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.bulk_create"
+  },
+  {
+   "src": "ep:dashboard_create",
+   "dst": "svc:payouts-api",
+   "type": "calls",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.dashboard_create"
+  },
+  {
+   "src": "ep:free_payout",
+   "dst": "svc:payouts-api",
+   "type": "calls",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/app/freePayout/core.go:678-684"
+  },
+  {
+   "src": "ep:internal_app_create",
+   "dst": "svc:payouts-api",
+   "type": "calls",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.internal_app_create"
+  },
+  {
+   "src": "ep:public_api_create",
+   "dst": "svc:payouts-api",
+   "type": "calls",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.public_api_create"
+  },
+  {
+   "src": "id:broker",
+   "dst": "id:kong-edge",
+   "type": "calls",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-direct-e2e-replay.json (H-D3 broker path)"
+  },
+  {
+   "src": "svc:ledger-worker-journal-create",
+   "dst": "q:journal_create",
+   "type": "consumes",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "route-matrix.yaml R12 (job JournalCreate)"
+  },
+  {
+   "src": "svc:payouts-kafka-fts-status-updates-consumer",
+   "dst": "topic:rx-fts-status-update-events",
+   "type": "consumes",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "PS:internal/taskHandlers/fts_status_updates.go:37-80 (FAILED/REVERSED dropped)"
+  },
+  {
+   "src": "svc:payouts-worker-rbl-banking-account-statement",
+   "dst": "q:rbl_banking_account_statement",
+   "type": "consumes",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/job/rbl_banking_account_statement.go:16-24"
+  },
+  {
+   "src": "finding:F-M4-001",
+   "dst": "boundary:internet-edge",
+   "type": "crosses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-findings.md (kong-lite mints passport; no ownership check)"
+  },
+  {
+   "src": "topic:api-ledger-journal-create-live",
+   "dst": "q:journal_create",
+   "type": "delivers_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #4"
+  },
+  {
+   "src": "id:kong-edge",
+   "dst": "boundary:internet-edge",
+   "type": "enforces",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": ""
+  },
+  {
+   "src": "journey:A",
+   "dst": "svc:payouts-api",
+   "type": "exercises",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (A: PASS)"
+  },
+  {
+   "src": "journey:B",
+   "dst": "svc:payouts-api",
+   "type": "exercises",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (B: PASS)"
+  },
+  {
+   "src": "journey:C",
+   "dst": "svc:payouts-api",
+   "type": "exercises",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (C: PASS)"
+  },
+  {
+   "src": "journey:D",
+   "dst": "svc:payouts-api",
+   "type": "exercises",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (D: PASS)"
+  },
+  {
+   "src": "journey:E",
+   "dst": "svc:payouts-api",
+   "type": "exercises",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (E: PASS)"
+  },
+  {
+   "src": "journey:F",
+   "dst": "svc:payouts-api",
+   "type": "exercises",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (F: PASS)"
+  },
+  {
+   "src": "journey:G",
+   "dst": "svc:payouts-api",
+   "type": "exercises",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-direct-journeys.json (G: PASS)"
+  },
+  {
+   "src": "ep:free_payout",
+   "dst": "sym:GetFreePayoutAttributes",
+   "type": "implements",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/app/freePayout/core.go:678-684"
+  },
+  {
+   "src": "id:kong-edge",
+   "dst": "id:merchant-passport",
+   "type": "mints_identity_for",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/substitutes/kong-lite/route_policy.py:39,70"
+  },
+  {
+   "src": "svc:ledger-api",
+   "dst": "da:da_payout_processed",
+   "type": "posts_journal",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-invariant-results.json G54 (two balanced DA journals)"
+  },
+  {
+   "src": "svc:ledger-api",
+   "dst": "da:da_payout_processed_recon",
+   "type": "posts_journal",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "reports/implementation/m4-invariant-results.json G54 (two balanced DA journals)"
+  },
+  {
+   "src": "ef:EF-002",
+   "dst": "route:F",
+   "type": "predicts_failure",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-002)"
+  },
+  {
+   "src": "ef:EF-002",
+   "dst": "topic:rx-fts-status-update-events",
+   "type": "predicts_failure",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-002)"
+  },
+  {
+   "src": "ef:EF-003",
+   "dst": "route:F",
+   "type": "predicts_failure",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-003)"
+  },
+  {
+   "src": "ef:EF-004",
+   "dst": "route:R12",
+   "type": "predicts_failure",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-004)"
+  },
+  {
+   "src": "ef:EF-005",
+   "dst": "route:R5",
+   "type": "predicts_failure",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-005)"
+  },
+  {
+   "src": "ef:EF-005",
+   "dst": "svc:xas-sim",
+   "type": "predicts_failure",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-005)"
+  },
+  {
+   "src": "ef:EF-006",
+   "dst": "route:F",
+   "type": "predicts_failure",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-006)"
+  },
+  {
+   "src": "ef:EF-007",
+   "dst": "q:stage-x-balances-balance-refresh-live",
+   "type": "predicts_failure",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-007)"
+  },
+  {
+   "src": "ef:EF-007",
+   "dst": "state:reservation:awaiting_balance_refresh",
+   "type": "predicts_failure",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-007)"
+  },
+  {
+   "src": "ef:EF-008",
+   "dst": "route:H",
+   "type": "predicts_failure",
+   "attrs": {},
+   "fidelity": "expected-failure",
+   "evidence": "TWIN_SPEC/expected-failures.yaml (EF-008)"
+  },
+  {
+   "src": "svc:payouts-api",
+   "dst": "q:x_account_statement_source_event",
+   "type": "publishes",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/job/x_account_statement_source_event.go:21-56 (Direct terminal)"
+  },
+  {
+   "src": "finding:F-M4-001",
+   "dst": "sym:GetFreePayoutAttributes",
+   "type": "root_cause",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/app/freePayout/core.go:678-684"
+  },
+  {
+   "src": "boundary:internet-edge",
+   "dst": "ep:bulk_create",
+   "type": "routes_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.bulk_create"
+  },
+  {
+   "src": "boundary:internet-edge",
+   "dst": "ep:dashboard_create",
+   "type": "routes_to",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.dashboard_create"
+  },
+  {
+   "src": "boundary:internet-edge",
+   "dst": "ep:free_payout",
+   "type": "routes_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/app/freePayout/core.go:678-684 (no merchant scoping); public allowlist (T06)"
+  },
+  {
+   "src": "boundary:internet-edge",
+   "dst": "ep:internal_app_create",
+   "type": "routes_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.internal_app_create"
+  },
+  {
+   "src": "boundary:internet-edge",
+   "dst": "ep:public_api_create",
+   "type": "routes_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "TWIN_SPEC/route-matrix.yaml ingress_paths.public_api_create"
+  },
+  {
+   "src": "svc:fts-web",
+   "dst": "svc:payouts-api",
+   "type": "status_transport",
+   "attrs": {
+    "route": "H"
+   },
+   "fidelity": "missing",
+   "evidence": "route H"
+  },
+  {
+   "src": "svc:fts-worker-fire-transfer-status-webhook",
+   "dst": "svc:payouts-api",
+   "type": "status_transport",
+   "attrs": {
+    "route": "D"
+   },
+   "fidelity": "real",
+   "evidence": "route D"
+  },
+  {
+   "src": "svc:fts-worker-fire-transfer-status-webhook",
+   "dst": "topic:rx-fts-status-update-events",
+   "type": "status_transport",
+   "attrs": {
+    "route": "F"
+   },
+   "fidelity": "expected-failure",
+   "evidence": "route F"
+  },
+  {
+   "src": "svc:monolith-stub",
+   "dst": "svc:fts-web",
+   "type": "status_transport",
+   "attrs": {
+    "route": "B"
+   },
+   "fidelity": "substitute",
+   "evidence": "route B"
+  },
+  {
+   "src": "svc:monolith-stub",
+   "dst": "svc:payouts-api",
+   "type": "status_transport",
+   "attrs": {
+    "route": "E"
+   },
+   "fidelity": "substitute",
+   "evidence": "route E"
+  },
+  {
+   "src": "svc:payouts-worker-fts-async-processing",
+   "dst": "svc:fts-web",
+   "type": "status_transport",
+   "attrs": {
+    "route": "A"
+   },
+   "fidelity": "real",
+   "evidence": "route A"
+  },
+  {
+   "src": "svc:verifier",
+   "dst": "svc:fts-web",
+   "type": "status_transport",
+   "attrs": {
+    "route": "G"
+   },
+   "fidelity": "real",
+   "evidence": "route G"
+  },
+  {
+   "src": "topic:rx-fts-status-update-events",
+   "dst": "topic:rx-fts-status-update-events",
+   "type": "status_transport",
+   "attrs": {
+    "route": "F"
+   },
+   "fidelity": "expected-failure",
+   "evidence": "route F"
+  },
+  {
+   "src": "finding:F-M4-001",
+   "dst": "ep:free_payout",
+   "type": "targets_route",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-findings.md (Route: GET /v1/payouts/free_payout/{balance_id})"
+  },
+  {
+   "src": "finding:F-T10-1",
+   "dst": "route:D",
+   "type": "targets_route",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "fts_transfer_status_webhook.go:654-710 (guard present)"
+  },
+  {
+   "src": "finding:F-T10-1",
+   "dst": "route:E",
+   "type": "targets_route",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "core.go:1465-1585 HandlePayoutStatusUpdateViaFTS (no guard)"
+  },
+  {
+   "src": "state:reservation:awaiting_balance_refresh",
+   "dst": "state:reservation:released",
+   "type": "transition",
+   "attrs": {
+    "trigger": "BalanceRefreshEvent with `balance_last_fetched_at = R`",
+    "guard": "flag ON; `dispatched_at + lag < R`"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #3 (`reservation_hook.go:349-394,236-333`; `scripts.go:141-156`)"
+  },
+  {
+   "src": "state:reservation:live",
+   "dst": "state:reservation:awaiting_balance_refresh",
+   "type": "transition",
+   "attrs": {
+    "trigger": "`OnEvent(processed)`",
+    "guard": "Direct, flag ON, store bound"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #3 (`reservation_hook.go:83-86,107-145`; `scripts.go:112-119`)"
+  },
+  {
+   "src": "state:reservation:live",
+   "dst": "state:reservation:released",
+   "type": "transition",
+   "attrs": {
+    "trigger": "re-dispatch",
+    "guard": "self-excluded recheck fails"
+   },
+   "fidelity": "real",
+   "evidence": "reports/implementation/m4-source-map.md #3 (`scripts.go:53-64`)"
+  },
+  {
+   "src": "ds:kafka",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: kafka)"
+  },
+  {
+   "src": "ds:localstack",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: localstack)"
+  },
+  {
+   "src": "ds:mongo-cfa",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mongo-cfa)"
+  },
+  {
+   "src": "ds:mysql-apidb-stub",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mysql-apidb-stub)"
+  },
+  {
+   "src": "ds:mysql-fts",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mysql-fts)"
+  },
+  {
+   "src": "ds:mysql-payouts",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mysql-payouts)"
+  },
+  {
+   "src": "ds:mysql-xbalances",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mysql-xbalances)"
+  },
+  {
+   "src": "ds:postgres-ledger",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: postgres-ledger)"
+  },
+  {
+   "src": "ds:redis",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: redis)"
+  },
+  {
+   "src": "q:journal_create",
+   "dst": "ds:localstack",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/seeds/localstack/init-queues.sh (create-queue journal_create)"
+  },
+  {
+   "src": "q:rbl_banking_account_statement",
+   "dst": "ds:localstack",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/seeds/localstack/init-queues.sh (create-queue rbl_banking_account_statement)"
+  },
+  {
+   "src": "q:stage-x-balances-balance-refresh-live",
+   "dst": "ds:localstack",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/seeds/localstack/init-queues.sh (create-queue stage-x-balances-balance-refresh-live)"
+  },
+  {
+   "src": "q:x_account_statement_source_event",
+   "dst": "ds:localstack",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/seeds/localstack/init-queues.sh (create-queue x_account_statement_source_event)"
+  },
+  {
+   "src": "svc:asv-stub",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: asv-stub)"
+  },
+  {
+   "src": "svc:bankingaccounts-stub",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: bankingaccounts-stub)"
+  },
+  {
+   "src": "svc:cfa-server",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: cfa-server)"
+  },
+  {
+   "src": "svc:cfa-worker-contact",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: cfa-worker-contact)"
+  },
+  {
+   "src": "svc:cfa-worker-fa",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: cfa-worker-fa)"
+  },
+  {
+   "src": "svc:cron-driver",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: cron-driver)"
+  },
+  {
+   "src": "svc:dcs-stub",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: dcs-stub)"
+  },
+  {
+   "src": "svc:fts-web",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-web)"
+  },
+  {
+   "src": "svc:fts-worker-check-transfer-status",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-check-transfer-status)"
+  },
+  {
+   "src": "svc:fts-worker-default",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-default)"
+  },
+  {
+   "src": "svc:fts-worker-fire-transfer-status-webhook",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-fire-transfer-status-webhook)"
+  },
+  {
+   "src": "svc:fts-worker-initiate-transfer",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-initiate-transfer)"
+  },
+  {
+   "src": "svc:fts-worker-rbl-check-transfer-status",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-check-transfer-status)"
+  },
+  {
+   "src": "svc:fts-worker-rbl-direct-imps-check-transfer-status",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-direct-imps-check-transfer-status)"
+  },
+  {
+   "src": "svc:fts-worker-rbl-direct-imps-initiate-transfer",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-direct-imps-initiate-transfer)"
+  },
+  {
+   "src": "svc:fts-worker-rbl-imps-check-transfer-status",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-imps-check-transfer-status)"
+  },
+  {
+   "src": "svc:fts-worker-rbl-imps-initiate-transfer",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-imps-initiate-transfer)"
+  },
+  {
+   "src": "svc:fts-worker-rbl-initiate-transfer",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-rbl-initiate-transfer)"
+  },
+  {
+   "src": "svc:fts-worker-retry-transfer",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-retry-transfer)"
+  },
+  {
+   "src": "svc:fts-worker-retry-transfer-preprocessor",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-retry-transfer-preprocessor)"
+  },
+  {
+   "src": "svc:fts-worker-retry-transfer-source-update",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: fts-worker-retry-transfer-source-update)"
+  },
+  {
+   "src": "svc:kong-lite",
+   "dst": "boundary:internet-edge",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: kong-lite)"
+  },
+  {
+   "src": "svc:ledger-api",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-api)"
+  },
+  {
+   "src": "svc:ledger-gate",
+   "dst": "boundary:internet-edge",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-gate)"
+  },
+  {
+   "src": "svc:ledger-scheduler",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-scheduler)"
+  },
+  {
+   "src": "svc:ledger-worker",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-worker)"
+  },
+  {
+   "src": "svc:ledger-worker-balance-update",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-worker-balance-update)"
+  },
+  {
+   "src": "svc:ledger-worker-entry-details-create",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-worker-entry-details-create)"
+  },
+  {
+   "src": "svc:ledger-worker-entry-details-create-pg",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-worker-entry-details-create-pg)"
+  },
+  {
+   "src": "svc:ledger-worker-journal-create",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: ledger-worker-journal-create)"
+  },
+  {
+   "src": "svc:merchant-webhook-sink",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: merchant-webhook-sink)"
+  },
+  {
+   "src": "svc:monolith-stub",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: monolith-stub)"
+  },
+  {
+   "src": "svc:mozart-mock",
+   "dst": "boundary:bank",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mozart-mock)"
+  },
+  {
+   "src": "svc:mozart-sim",
+   "dst": "boundary:bank",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: mozart-sim)"
+  },
+  {
+   "src": "svc:payouts-api",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-api)"
+  },
+  {
+   "src": "svc:payouts-kafka-fts-status-updates-consumer",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-kafka-fts-status-updates-consumer)"
+  },
+  {
+   "src": "svc:payouts-kafka-fts-status-updates-retry-consumer",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-kafka-fts-status-updates-retry-consumer)"
+  },
+  {
+   "src": "svc:payouts-worker-async-dual-write",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-async-dual-write)"
+  },
+  {
+   "src": "svc:payouts-worker-fts-async-hv-processing",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-fts-async-hv-processing)"
+  },
+  {
+   "src": "svc:payouts-worker-fts-async-processing",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-fts-async-processing)"
+  },
+  {
+   "src": "svc:payouts-worker-generic-processing",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-generic-processing)"
+  },
+  {
+   "src": "svc:payouts-worker-on-hold-payout",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-on-hold-payout)"
+  },
+  {
+   "src": "svc:payouts-worker-partner-bank-hold-payouts",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-partner-bank-hold-payouts)"
+  },
+  {
+   "src": "svc:payouts-worker-payout-create-failure-handling",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-payout-create-failure-handling)"
+  },
+  {
+   "src": "svc:payouts-worker-payout-source-updater",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-payout-source-updater)"
+  },
+  {
+   "src": "svc:payouts-worker-payout-update-failure-handling",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-payout-update-failure-handling)"
+  },
+  {
+   "src": "svc:payouts-worker-queued-payout",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-queued-payout)"
+  },
+  {
+   "src": "svc:payouts-worker-rbl-banking-account-statement",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-rbl-banking-account-statement)"
+  },
+  {
+   "src": "svc:payouts-worker-schedule-payout",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-schedule-payout)"
+  },
+  {
+   "src": "svc:payouts-worker-transaction-create",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-transaction-create)"
+  },
+  {
+   "src": "svc:payouts-worker-webhook-event",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-webhook-event)"
+  },
+  {
+   "src": "svc:payouts-worker-x-balances-balance-refresh",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: payouts-worker-x-balances-balance-refresh)"
+  },
+  {
+   "src": "svc:pricing-stub",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: pricing-stub)"
+  },
+  {
+   "src": "svc:shield-stub",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: shield-stub)"
+  },
+  {
+   "src": "svc:splitz-stub",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: splitz-stub)"
+  },
+  {
+   "src": "svc:stork-capture",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: stork-capture)"
+  },
+  {
+   "src": "svc:verifier",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: verifier)"
+  },
+  {
+   "src": "svc:workflow-sim",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: workflow-sim)"
+  },
+  {
+   "src": "svc:xas-sim",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "substitute",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: xas-sim)"
+  },
+  {
+   "src": "svc:xbalances-server",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: xbalances-server)"
+  },
+  {
+   "src": "svc:xbalances-worker",
+   "dst": "boundary:internal-mesh",
+   "type": "uses",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (service: xbalances-worker)"
+  },
+  {
+   "src": "svc:cfa-server",
+   "dst": "ds:mongo-cfa",
+   "type": "writes_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "ENV2_COMPOSE/docker-compose.yml (cfa-server -> mongo-cfa)"
+  },
+  {
+   "src": "svc:fts-web",
+   "dst": "ds:mysql-fts",
+   "type": "writes_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "FTS:internal/migrations/00005,00007,00020"
+  },
+  {
+   "src": "svc:ledger-api",
+   "dst": "ds:postgres-ledger",
+   "type": "writes_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "LEDGER:internal/journal/... journal/accounts/ledger_config"
+  },
+  {
+   "src": "svc:payouts-api",
+   "dst": "ds:mysql-payouts",
+   "type": "writes_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/database/migrations (banking_accounts/payouts/bas)"
+  },
+  {
+   "src": "svc:payouts-api",
+   "dst": "ds:redis",
+   "type": "writes_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "PS:internal/app/payouts/reservation/store.go:32-39 (in_flight)"
+  },
+  {
+   "src": "svc:xbalances-server",
+   "dst": "ds:mysql-xbalances",
+   "type": "writes_to",
+   "attrs": {},
+   "fidelity": "real",
+   "evidence": "XB:internal/database/migrations/20250127224555_balance.go:17-48"
+  }
+ ],
+ "stats": {
+  "nodes_total": 251,
+  "edges_total": 151,
+  "nodes_by_type": {
+   "arch_component": 24,
+   "component": 33,
+   "da_event": 16,
+   "datastore": 9,
+   "endpoint": 5,
+   "expected_failure": 8,
+   "finding": 3,
+   "identity": 4,
+   "invariant": 37,
+   "journey": 7,
+   "queue": 4,
+   "route": 25,
+   "service": 5,
+   "source_symbol": 1,
+   "state": 7,
+   "substitute": 17,
+   "topic": 4,
+   "trust_boundary": 3,
+   "worker": 39
+  },
+  "nodes_by_fidelity": {
+   "expected-failure": 11,
+   "fixture": 3,
+   "missing": 18,
+   "real": 152,
+   "substitute": 67
+  },
+  "edges_by_type": {
+   "accounting_path": 10,
+   "asserts": 7,
+   "calls": 6,
+   "consumes": 3,
+   "crosses": 1,
+   "delivers_to": 1,
+   "enforces": 1,
+   "exercises": 7,
+   "implements": 1,
+   "mints_identity_for": 1,
+   "posts_journal": 2,
+   "predicts_failure": 10,
+   "publishes": 1,
+   "root_cause": 1,
+   "routes_to": 5,
+   "status_transport": 8,
+   "targets_route": 3,
+   "transition": 3,
+   "uses": 74,
+   "writes_to": 6
+  },
+  "edges_by_fidelity": {
+   "expected-failure": 13,
+   "missing": 1,
+   "real": 98,
+   "substitute": 39
+  }
+ }
+}

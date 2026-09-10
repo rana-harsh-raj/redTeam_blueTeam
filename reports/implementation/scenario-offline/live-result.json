@@ -1,0 +1,20 @@
+{
+  "status": "failed",
+  "passed": false,
+  "scenario": "shared_success_via_kong",
+  "steps": [
+    {
+      "name": "scenario failure",
+      "passed": false,
+      "error_type": "FileNotFoundError",
+      "message": "[Errno 2] No such file or directory: '/fixtures/scenario-index.json'"
+    }
+  ],
+  "started_at": 1788609089.3422518,
+  "error": {
+    "type": "FileNotFoundError",
+    "message": "[Errno 2] No such file or directory: '/fixtures/scenario-index.json'"
+  },
+  "finished_at": 1788609089.3423886,
+  "duration_seconds": 0.00013685226440429688
+}

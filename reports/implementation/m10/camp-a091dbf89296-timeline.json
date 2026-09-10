@@ -1,0 +1,164 @@
+{
+  "campaign_id": "camp-a091dbf89296",
+  "manifest_content_id": "a091dbf892964d0b067b6c52d5e8118b03b790991101d7bce3de589a7d93db5e",
+  "generated_at": "2026-09-09T09:38:55Z",
+  "phases": [
+    {
+      "seq": 3,
+      "ts": "2026-09-09T09:35:56Z",
+      "phase": "campaign_started"
+    },
+    {
+      "seq": 90,
+      "ts": "2026-09-09T09:38:55Z",
+      "phase": "campaign_completed"
+    }
+  ],
+  "events": [
+    {
+      "seq": 3,
+      "ts": "2026-09-09T09:35:56Z",
+      "event": "campaign_started",
+      "twins": [
+        "alpha-m10"
+      ]
+    },
+    {
+      "seq": 5,
+      "ts": "2026-09-09T09:35:58Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-001",
+      "subject": "identity:trust-boundary:payouts-service",
+      "priority": 5
+    },
+    {
+      "seq": 7,
+      "ts": "2026-09-09T09:35:58Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-002",
+      "subject": "family:accounting",
+      "priority": 4
+    },
+    {
+      "seq": 9,
+      "ts": "2026-09-09T09:35:58Z",
+      "event": "planning_cycle",
+      "cycle": 1,
+      "new_theses": 2
+    },
+    {
+      "seq": 11,
+      "ts": "2026-09-09T09:35:58Z",
+      "event": "cell_created",
+      "cell_id": "CELL-001",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:node",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 13,
+      "ts": "2026-09-09T09:35:58Z",
+      "event": "task_created",
+      "task_id": "TASK-001",
+      "thesis_id": "TH-001",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-001",
+      "replica_index": 0
+    },
+    {
+      "seq": 16,
+      "ts": "2026-09-09T09:35:58Z",
+      "event": "cell_created",
+      "cell_id": "CELL-002",
+      "twin": "alpha-m10",
+      "focus": "alpha-m10:Ledger accounting (shared / VA-to-VA / FAV / Direct-account journals)",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 18,
+      "ts": "2026-09-09T09:35:58Z",
+      "event": "task_created",
+      "task_id": "TASK-002",
+      "thesis_id": "TH-002",
+      "twin": "alpha-m10",
+      "task_kind": "probe",
+      "cell_id": "CELL-002",
+      "replica_index": 0
+    },
+    {
+      "seq": 29,
+      "ts": "2026-09-09T09:36:59Z",
+      "event": "model_fallback",
+      "task_id": "TASK-001",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 85,
+      "ts": "2026-09-09T09:38:55Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-001"
+    },
+    {
+      "seq": 90,
+      "ts": "2026-09-09T09:38:55Z",
+      "event": "campaign_completed",
+      "stop_reason": "action_budget_exhausted",
+      "consumption": {
+        "actions": 32,
+        "model_calls": 12,
+        "prompt_tokens": 211466,
+        "completion_tokens": 2102,
+        "wall_seconds": 178.5,
+        "estimated_usd": 1.0889,
+        "by_model": {
+          "gpt-5.5": {
+            "calls": 12,
+            "prompt_tokens": 211466,
+            "completion_tokens": 2102
+          }
+        }
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "campaign_id": "camp-a091dbf89296",
+      "control_state": {
+        "finished_at": "2026-09-09T09:38:55Z",
+        "phase": "completed",
+        "planning_cycles": 1,
+        "started_at": "2026-09-09T09:35:56Z",
+        "started_epoch": 1788946556.940541,
+        "stop_reason": "action_budget_exhausted",
+        "twin_cursor": 2
+      },
+      "counts": {
+        "budget": 2,
+        "candidates": 0,
+        "cells": 2,
+        "events": 22,
+        "handoffs": 0,
+        "hypotheses_v2": 3,
+        "leases": 2,
+        "model_calls": 12,
+        "narrative": 0,
+        "planning": 1,
+        "recoveries": 0,
+        "tasks": 4,
+        "theses": 5,
+        "tool_calls": 32,
+        "twins": 1,
+        "verifications": 0,
+        "workers": 2
+      },
+      "extra": {
+        "stop_reason": "action_budget_exhausted"
+      },
+      "phase": "final",
+      "state_hash": "f2e1cc35a796d8a43e86814d95bec4ecc9c3f2951661037019332a2ef7aaff95",
+      "ts": "2026-09-09T09:38:55Z"
+    }
+  ]
+}

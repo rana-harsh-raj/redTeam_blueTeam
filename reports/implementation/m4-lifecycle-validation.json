@@ -1,0 +1,95 @@
+{
+  "kind": "M4_LIFECYCLE_VALIDATION",
+  "campaign_id": "m4lifeval-20260906T193754Z-b94c76",
+  "generated_at": "2026-09-06T19:37:54Z",
+  "run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4lifeval-20260906T193754Z-b94c76",
+  "calibration_run": "calibfx-20260906T193754Z-05fe64",
+  "reproducer_model": "gpt-5.5",
+  "note": "CALIBRATION-ONLY. A genuine cross-tenant IDOR in a loopback fixture, driven through the full hypothesis lifecycle to prove the machinery can reach accept and that the gate passes only when the six arms executed. NOT a Razorpay finding.",
+  "hypothesis_id": "H-001",
+  "final_status": "accepted",
+  "reached_accept": true,
+  "unauthorized_effect": true,
+  "arms_executed": [
+    "clean_reset",
+    "expected_denial_control",
+    "malformed_or_absent_identity_variant",
+    "merchant_b_variant",
+    "own_merchant_control",
+    "state_observation"
+  ],
+  "missing_arms": [],
+  "oracle_regression": {
+    "mode": "regression",
+    "passed": true,
+    "checks": {
+      "victim_resource_exists": true,
+      "resource_belongs_to_victim": true,
+      "authenticated_as_attacker": true,
+      "no_victim_credential_used": true,
+      "status_200": true,
+      "response_contains_canary": true,
+      "response_owner_is_victim": true,
+      "response_not_canned": true,
+      "request_response_artifacts_present": true
+    },
+    "canary_disclosed": true,
+    "victim_owner_seen": true
+  },
+  "gate_when_arms_executed": {
+    "passed": true
+  },
+  "gate_control_only_counterfactual": {
+    "can_support": false,
+    "reason": "missing_arms:merchant_b_variant,malformed_or_absent_identity_variant,expected_denial_control,state_observation,clean_reset",
+    "proves": "an experiment lacking the merchant-B / cross arms cannot support"
+  },
+  "independent_replay": {
+    "independent": true,
+    "reproduced": true,
+    "provider": "gpt-5.5 (openai-gpt, cross-provider)",
+    "run": "calibfx-20260906T193754Z-0509d7",
+    "mode": "model_gateway",
+    "certificate": {
+      "kind": "CALIBRATION_ONLY",
+      "classification": "CALIBRATION_REDISCOVERY",
+      "never_an_open_finding": true,
+      "effect_present_in_regression": true,
+      "effect_absent_in_fixed_negative_control": true,
+      "reproduced": true,
+      "note": "Self-contained tenant-isolation fixture used ONLY to exercise the fresh-ID reproduce-and-judge machinery and prove a causal negative control. NOT a Razorpay production finding.",
+      "reproducer_model": "gpt-5.5",
+      "different_provider": true
+    }
+  },
+  "closing_gate": {
+    "passed": true,
+    "reasons": []
+  },
+  "lifecycle_rollup": {
+    "proposed": 0,
+    "claimed": 0,
+    "experiment_defined": 0,
+    "executing": 0,
+    "evidence_gathered": 0,
+    "falsified": 0,
+    "blocked": 0,
+    "supported": 0,
+    "replay_requested": 0,
+    "reproduced": 0,
+    "rejected": 0,
+    "accepted": 1,
+    "closed": 0,
+    "deprioritized": 0
+  },
+  "transitions": [
+    "claimed",
+    "experiment_defined",
+    "executing",
+    "evidence_gathered",
+    "supported",
+    "replay_requested",
+    "reproduced",
+    "accepted"
+  ]
+}

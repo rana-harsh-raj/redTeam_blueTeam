@@ -1,0 +1,9 @@
+You are an independent auditor. Read ONLY the files under /Users/rana.singh/rzp-payouts-architecture/reports/ (start with ENV2_BUILD_STATUS.md, ENV2_BUILD_RUNBOOK.md, ARCHITECTURE_DELTA.md, EFFECTIVE_CONFIG_GAPS.md, SYNTHETIC_FIXTURE_SPEC.md, VERIFIER_SPEC.md, SAFETY_PREFLIGHT.md, EGRESS_AUDIT.md, raw-findings/31_env2_bringup_notes.md) and the package under /Users/rana.singh/rzp-payouts-architecture/ENV2_COMPOSE/ (docker-compose.yml, scripts/up.sh, config/generate.py, preflight/preflight.py, network/*.sh, seeds/, substitutes/*/CONTRACT.md, verifier/). Do not start containers, do not modify files, do not use Docker except read-only inspection (`docker ps`, `docker compose config`) if you want.
+
+Produce a written audit at /Users/rana.singh/rzp-payouts-architecture/reports/raw-findings/32_independent_audit_env2.md with sections:
+1. Claims vs evidence: for each claim in ENV2_BUILD_STATUS.md, say whether the package/evidence supports it (cite file:line).
+2. Safety gate: does the package honour build/runtime separation, no baked credentials, internal-only network, no host mounts of credentials, secret scanning, preflight, egress audit? List every exception you find (e.g. the LocalStack ARN exemption, synthetic AWS env, the arena-only repo-copy patches, the kong-lite /_arena/mint endpoint) and rate each as acceptable / needs attention.
+3. Fidelity risks: where does the arena diverge from production in a way that could invalidate verifier results (stub relays, monolith status map, ledger config seeding, schema patches, cron cadences, direct-account routing seeds)?
+4. Reproducibility: could a new engineer run `bash scripts/up.sh` from a clean machine following the runbook? List missing steps or undocumented assumptions.
+5. Top 10 recommended fixes, ordered by risk.
+Be concrete and skeptical; quote file paths and line numbers. Keep it under 2500 words.

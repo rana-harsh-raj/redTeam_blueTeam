@@ -1,0 +1,50 @@
+{
+  "_source": "findings/26_dcs_splitz_governor_shield.md:934-1102 (proto/charge_collections/pricing/v1/pricing_api.proto:14-49, payouts/pkg/ccSdk/config.go:22-29). Governor is a rule-SELECTION engine (bool Evaluation + Score per rule, no fee numbers); Charge Collections' Rule message is the actual fee schema. Amounts are in paisa (Razorpay convention) throughout, matching payouts.fees/payouts.tax (both `int unsigned`) and payouts.amount (`bigint unsigned`) column units in payouts/internal/database/migrations/20200615182810_create_payouts_table.go.",
+  "_task_requirement": "Task specifies: flat fee Rs 2 + 18% GST for IMPS; free_payout counter 0. Rs 2 = 200 paisa; 18% of 200 = 36 paisa tax. This is an explicit arena requirement, independent of the SDK mock's own built-in default (fee=500,tax=90 for method=fund_transfer&&mode=IMPS, findings/26:1069) -- documented here as a deliberate deviation for reproducible golden-flow assertions.",
+  "rule_schema_used": {
+    "id": "string", "plan_id": "string", "plan_name": "string", "product": "banking", "feature": "payout",
+    "app_name": null, "gateway": null, "procurer": null, "payment_method": "fund_transfer",
+    "payment_method_type": null, "payment_method_subtype": null, "auth_type": null, "payment_network": null,
+    "payment_issuer": null, "receiver_type": null, "account_type": null, "channel": "RBL",
+    "payouts_filter": null, "audit_id": null, "fee_model": "flat", "currency": "INR",
+    "emi_duration": null, "max_fee": null, "international": false, "amount_range_active": false,
+    "amount_range_min": null, "amount_range_max": null, "expired_at": null,
+    "fee_bearer": "platform", "percent_rate": 0, "fixed_rate": 200, "min_fee": 200,
+    "org_id": "ARENAORG000001", "created_at": 0, "updated_at": 0, "percent_rate_scale_factor": 100
+  },
+  "pricing_plans": {
+    "ARENAM00000001": { "plan_id": "ARENAPLAN00001", "plan_name": "arena_default_x_plan", "rules": [
+      { "mode": "IMPS", "fixed_rate_paisa": 200, "tax_paisa": 36, "total_paisa": 236, "gst_rate_pct": 18, "fee_type": "flat" },
+      { "mode": "NEFT", "fixed_rate_paisa": 200, "tax_paisa": 36, "total_paisa": 236, "gst_rate_pct": 18, "fee_type": "flat" }
+    ]},
+    "ARENAM00000002": { "plan_id": "ARENAPLAN00002", "plan_name": "arena_default_direct_plan", "rules": [
+      { "mode": "IMPS", "fixed_rate_paisa": 200, "tax_paisa": 36, "total_paisa": 236, "gst_rate_pct": 18, "fee_type": "flat" },
+      { "mode": "NEFT", "fixed_rate_paisa": 200, "tax_paisa": 36, "total_paisa": 236, "gst_rate_pct": 18, "fee_type": "flat" }
+    ]},
+    "ARENAM00000003": { "plan_id": "ARENAPLAN00003", "plan_name": "arena_default_workflow_plan", "rules": [
+      { "mode": "IMPS", "fixed_rate_paisa": 200, "tax_paisa": 36, "total_paisa": 236, "gst_rate_pct": 18, "fee_type": "flat" },
+      { "mode": "NEFT", "fixed_rate_paisa": 200, "tax_paisa": 36, "total_paisa": 236, "gst_rate_pct": 18, "fee_type": "flat" }
+    ]}
+  },
+  "special_case_overrides": {
+    "_note": "Mirrors the real ccSdk mock's own override precedence (findings/26:1067-1071) so tests exercising these paths behave consistently: purpose==rzp_fees/refund => fee=0,tax=0; fee_type==free_payout => fee=0,tax=0.",
+    "purpose_rzp_fees": { "fee_paisa": 0, "tax_paisa": 0 },
+    "purpose_refund": { "fee_paisa": 0, "tax_paisa": 0 },
+    "fee_type_free_payout": { "fee_paisa": 0, "tax_paisa": 0 }
+  },
+  "free_payout_counters": {
+    "_source": "payouts `counters` table (internal/database/migrations/20220526144631_create_counters_table.go): id, balance_id, free_payouts_consumed_last_reset_at, free_payouts_consumed (default 0), account_type, created_at, updated_at.",
+    "_note": "Seeded via payouts.sql counters INSERT, one row per merchant balance_id, free_payouts_consumed=0 at reset.",
+    "ARENAM00000001": { "counter_id": "ARENACTR000001", "balance_id": "ARENABAL000001", "free_payouts_consumed": 0 },
+    "ARENAM00000002": { "counter_id": "ARENACTR000002", "balance_id": "ARENABAL000002", "free_payouts_consumed": 0 },
+    "ARENAM00000003": { "counter_id": "ARENACTR000003", "balance_id": "ARENABAL000003", "free_payouts_consumed": 0 }
+  },
+  "governor_rule_chain_ids": {
+    "_source": "payouts/pkg/ccSdk/config.go:22-29 PayoutRuleChainCollection",
+    "BasicRuleChainID": "ARENAGOVCHAIN01",
+    "ProductRuleChainID": "ARENAGOVCHAIN02",
+    "BankingAccountRuleChainID": "ARENAGOVCHAIN03",
+    "PayoutModeRuleChainID": "ARENAGOVCHAIN04",
+    "AmountRangeRuleChainID": "ARENAGOVCHAIN05"
+  }
+}

@@ -1,0 +1,2503 @@
+{
+ "kind": "m11_differential",
+ "generated_at": "2026-09-09T18:55:09.187953+00:00",
+ "real_run": "/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T173309Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T182343Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T184745Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T185350Z",
+ "substitute_run": "/Users/rana.singh/.twin-factory/instances/m11-sub/journeys/run-20260909T173302Z,/Users/rana.singh/.twin-factory/instances/m11-sub/journeys/run-20260909T182343Z",
+ "real_summary": {
+  "total": 125,
+  "pass": 113,
+  "expected_failure": 2,
+  "blocked": 10
+ },
+ "substitute_summary": {
+  "total": 125,
+  "pass": 107,
+  "expected_failure": 1,
+  "blocked": 12,
+  "fail": 5
+ },
+ "journeys": 125,
+ "identical": 108,
+ "with_differences": 17,
+ "open_differences": [],
+ "items": [
+  {
+   "id": "journey:accounting/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:accounting/cancel_or_reverse",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:accounting/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:accounting/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:accounting/success",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:approval-workflow/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "11/11",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "11/11",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:approval-workflow/cancel_or_reverse",
+   "real": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:approval-workflow/concurrency",
+   "real": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:approval-workflow/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:approval-workflow/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:approval-workflow/maker_checker",
+   "real": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "substitute_only_check",
+     "check": "a_distinct_checker_CAN_approve",
+     "substitute": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "a_second_approval_on_the_terminal_workflow_is_refused_409",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "engine_org_is_the_merchant(WFE_TENANT_KEY=owner_id)",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "payout.pending_webhook_delivered(StatusToWebhookEventMap PENDING)",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "payout_parked_at_pending_by_the_workflow_engine",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "payouts_stored_the_engine_workflow_id(workflow_entity_map, 14 chars)",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "real_workflow_service_accepts_the_makers_own_approval_(no_separation_rule_in_razorpay/workflows)",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "refusal_names_the_separation_rule",
+     "substitute": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "the_action_trail_records_the_approval_with_the_makers_actor_id",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "the_append_only_audit_trail_records_the_approval_with_its_actor_identity",
+     "substitute": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "the_engine_holds_a_pending_workflow_for_this_payout",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "the_maker's_own_approval_is_REFUSED_403_separation_violation",
+     "substitute": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "the_refused_self_approval_left_no_approval_row_in_the_trail",
+     "substitute": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "workflow_is_approved",
+     "substitute": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "workflow_is_approved_by_that_single_approval",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "workflow_still_pending_after_the_refused_self_approval",
+     "substitute": true,
+     "classification": "source-supported correction",
+     "why": "razorpay/workflows has no maker != checker rule (internal/action, internal/workflow state machine; only a DCS-gated auto-approve when the creator's role equals the checker role). The M5 reconstruction's 403 separation_violation was an assumption. The driver asserts the real behaviour in the real variant and the reconstruction's in the substitute variant."
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:approval-workflow/n_of_m",
+   "real": {
+    "result": "PASS",
+    "checks": "17/17",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "19/19",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "substitute_only_check",
+     "check": "a_repeat_approval_by_the_same_actor_does_not_reach_the_threshold",
+     "substitute": true,
+     "classification": "source-supported correction",
+     "why": "eligible-approver sets and per-actor de-duplication are reconstruction concepts; the real service admits any actor presenting the checker state's role. The real-variant driver records what a repeat approval does instead of assuming it."
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "an_approver_outside_the_eligible_set_is_refused_403_not_eligible",
+     "substitute": true,
+     "classification": "source-supported correction",
+     "why": "eligible-approver sets and per-actor de-duplication are reconstruction concepts; the real service admits any actor presenting the checker state's role. The real-variant driver records what a repeat approval does instead of assuming it."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "repeat_approval_by_the_same_actor_is_refused_or_not_counted_(observed_real_semantics)",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "eligible-approver sets and per-actor de-duplication are reconstruction concepts; the real service admits any actor presenting the checker state's role. The real-variant driver records what a repeat approval does instead of assuming it."
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "still_pending_after_the_duplicate_approval",
+     "substitute": true,
+     "classification": "source-supported correction",
+     "why": "eligible-approver sets and per-actor de-duplication are reconstruction concepts; the real service admits any actor presenting the checker state's role. The real-variant driver records what a repeat approval does instead of assuming it."
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:approval-workflow/success",
+   "real": {
+    "result": "PASS",
+    "checks": "14/14",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "14/14",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:async-workers/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "4/4",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "4/4",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:async-workers/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:async-workers/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:async-workers/success",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:beneficiary-fund-accounts/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:beneficiary-fund-accounts/cfa_api",
+   "real": {
+    "result": "PASS",
+    "checks": "18/18",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "18/18",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:beneficiary-fund-accounts/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:beneficiary-fund-accounts/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:beneficiary-fund-accounts/success",
+   "real": {
+    "result": "PASS",
+    "checks": "15/15",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "15/15",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:beneficiary-fund-accounts/tenant_isolation",
+   "real": {
+    "result": "PASS",
+    "checks": "2/2",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "2/2",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:bulk-payouts/async_state",
+   "real": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the compose project)); ENV2_COMPOSE/substitutes/batch-sim exists in the tree with its CONTRACT.md, so what remains is the compose service plus the controlled reboot (topology lane)"
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the compose project)); ENV2_COMPOSE/substitutes/batch-sim exists in the tree with its CONTRACT.md, so what remains is the compose service plus the controlled reboot (topology lane)"
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:bulk-payouts/cancel_or_reverse",
+   "real": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the compose project)); ENV2_COMPOSE/substitutes/batch-sim exists in the tree with its CONTRACT.md, so what remains is the compose service plus the controlled reboot (topology lane)"
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the compose project)); ENV2_COMPOSE/substitutes/batch-sim exists in the tree with its CONTRACT.md, so what remains is the compose service plus the controlled reboot (topology lane)"
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:bulk-payouts/failure",
+   "real": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the compose project)); ENV2_COMPOSE/substitutes/batch-sim exists in the tree with its CONTRACT.md, so what remains is the compose service plus the controlled reboot (topology lane)"
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the compose project)); ENV2_COMPOSE/substitutes/batch-sim exists in the tree with its CONTRACT.md, so what remains is the compose service plus the controlled reboot (topology lane)"
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:bulk-payouts/idempotency",
+   "real": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the compose project)); ENV2_COMPOSE/substitutes/batch-sim exists in the tree with its CONTRACT.md, so what remains is the compose service plus the controlled reboot (topology lane)"
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the compose project)); ENV2_COMPOSE/substitutes/batch-sim exists in the tree with its CONTRACT.md, so what remains is the compose service plus the controlled reboot (topology lane)"
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:bulk-payouts/success",
+   "real": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the compose project)); ENV2_COMPOSE/substitutes/batch-sim exists in the tree with its CONTRACT.md, so what remains is the compose service plus the controlled reboot (topology lane)"
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the compose project)); ENV2_COMPOSE/substitutes/batch-sim exists in the tree with its CONTRACT.md, so what remains is the compose service plus the controlled reboot (topology lane)"
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:cross-domain-s2p/async_state",
+   "real": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:cross-domain-s2p/failure",
+   "real": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:cross-domain-s2p/idempotency",
+   "real": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "journey:cross-domain-s2p/success must run first (it establishes the tax payment and remittance)"
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "journey:cross-domain-s2p/success must run first (it establishes the tax payment and remittance)"
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:cross-domain-s2p/success",
+   "real": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:direct-payouts/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "11/11",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "11/11",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:direct-payouts/cancel_or_reverse",
+   "real": {
+    "result": "PASS",
+    "checks": "2/2",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "2/2",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:direct-payouts/duplicate",
+   "real": {
+    "result": "PASS",
+    "checks": "3/3",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "3/3",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:direct-payouts/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:direct-payouts/failure_pending",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:direct-payouts/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:direct-payouts/pending",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:direct-payouts/statement_first",
+   "real": {
+    "result": "PASS",
+    "checks": "3/3",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "3/3",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:direct-payouts/success",
+   "real": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:failure-reversal-cancellation/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:failure-reversal-cancellation/cancel_or_reverse",
+   "real": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:failure-reversal-cancellation/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:failure-reversal-cancellation/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:failure-reversal-cancellation/pending",
+   "real": {
+    "result": "PASS",
+    "checks": "14/14",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "14/14",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:failure-reversal-cancellation/success",
+   "real": {
+    "result": "PASS",
+    "checks": "11/11",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "11/11",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:failure-reversal-cancellation/webhook",
+   "real": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:fetch-list/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:fetch-list/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:fetch-list/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:fetch-list/success",
+   "real": {
+    "result": "PASS",
+    "checks": "17/17",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "16/16",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "real_only_check",
+     "check": "bare_(unsigned)_id_is_refused_by_the_monolith_path_400_(PublicEntity::stripSignOrFail)",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "an unsigned payout id is refused (400) on the monolith path (PublicEntity::stripSignOrFail); kong-lite forwarded bare ids straight to the Payouts service, which accepts them"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:idempotency-retries/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:idempotency-retries/duplicate",
+   "real": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:idempotency-retries/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:idempotency-retries/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:idempotency-retries/retry",
+   "real": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "substitute_only_check",
+     "check": "advanced_the_scheduled_retry_task_0be93f18",
+     "substitute": true,
+     "classification": "twin adaptation",
+     "why": "the check name carries the retry task id of that run (a different id per run); the assertion is the same in both variants and passed in both"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "advanced_the_scheduled_retry_task_174820a4",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "the check name carries the retry task id of that run (a different id per run); the assertion is the same in both variants and passed in both"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:idempotency-retries/success",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:on-hold/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:on-hold/cancel_or_reverse",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:on-hold/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:on-hold/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "14/14",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "14/14",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:on-hold/success",
+   "real": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:pricing-free-payouts/accounting",
+   "real": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:pricing-free-payouts/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "21/21",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "21/21",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:pricing-free-payouts/cancel_or_reverse",
+   "real": {
+    "result": "EXPECTED_FAILURE",
+    "checks": "4/4",
+    "missing": null
+   },
+   "substitute": {
+    "result": "EXPECTED_FAILURE",
+    "checks": "4/4",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:pricing-free-payouts/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:pricing-free-payouts/free_payout",
+   "real": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:pricing-free-payouts/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:pricing-free-payouts/success",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:queued-low-balance/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:queued-low-balance/cancel_or_reverse",
+   "real": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:queued-low-balance/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:queued-low-balance/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:queued-low-balance/success",
+   "real": {
+    "result": "PASS",
+    "checks": "14/14",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "14/14",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:scheduled-payouts/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:scheduled-payouts/cancel_or_reverse",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:scheduled-payouts/cancel_via_dashboard",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:scheduled-payouts/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "3/3",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "3/3",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:scheduled-payouts/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:scheduled-payouts/success",
+   "real": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-ingress/admin",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-ingress/approval",
+   "real": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-ingress/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-ingress/batch",
+   "real": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim reachable on the arena network (compose service `batch-sim`, profile `substitutes`; the M9 critical-payouts / focused profiles do not derive it)"
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "batch-sim reachable on the arena network (compose service `batch-sim`, profile `substitutes`; the M9 critical-payouts / focused profiles do not derive it)"
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-ingress/direct",
+   "real": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-ingress/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-ingress/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-ingress/restart",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-ingress/success",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-ingress/tenant_isolation",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-payouts/accounting",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-payouts/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-payouts/cancel_or_reverse",
+   "real": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-payouts/concurrency",
+   "real": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-payouts/duplicate",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-payouts/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-payouts/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-payouts/pending",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-payouts/restart",
+   "real": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:shared-payouts/success",
+   "real": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:source-updates/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:source-updates/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:source-updates/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:source-updates/success",
+   "real": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:trust-path/api_key_auth",
+   "real": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "real_only_check",
+     "check": "credential_tags_carry_the_mode_(m~l)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "Kong consumer/credential-store checks exist only in the real variant"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "every_refusal_was_answered_by_the_gateway_itself_(no_upstream_call)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "Kong consumer/credential-store checks exist only in the real variant"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "kong_consumer_username_is_the_merchant_id_(edge common.lua extract_consumer_details)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "Kong consumer/credential-store checks exist only in the real variant"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "one_basic-auth-x_credential_per_key_id_hashed_sha512_(the_plaintext_secret_is_never_stored_or_returned)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "Kong consumer/credential-store checks exist only in the real variant"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "the_success_was_proxied_through_the_gateway_(upstream_request-id_echo;_kong.conf_headers=off)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "Kong consumer/credential-store checks exist only in the real variant"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "the_wrong-secret_request_never_reached_the_monolith_replacement_(no_ingress_audit_row)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "Kong consumer/credential-store checks exist only in the real variant"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/bas_lookup",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "3/3",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "real_only_check",
+     "check": "banking_accounts_row_exists_for_the_Direct_merchant",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "Api-Token and businesses/banking_accounts checks exist only in the real variant; the lookup during processing must happen in both"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "details_carry_sales_team_and_business_type_(seeded_businesses_row)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "Api-Token and businesses/banking_accounts checks exist only in the real variant; the lookup during processing must happen in both"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "real_banking-accounts_returns_the_Direct_merchants_details_200",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "Api-Token and businesses/banking_accounts checks exist only in the real variant; the lookup during processing must happen in both"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/cross_merchant_denial",
+   "real": {
+    "result": "PASS",
+    "checks": "10/10",
+    "missing": null
+   },
+   "substitute": {
+    "result": "FAIL",
+    "checks": "9/10",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "result",
+     "real": "PASS",
+     "substitute": "FAIL",
+     "classification": "twin adaptation",
+     "why": "identical assertions in both variants"
+    },
+    {
+     "kind": "check_outcome",
+     "check": "the_denied_fetch_was_evaluated_under_tenant_A_(not_B)",
+     "real": true,
+     "substitute": false,
+     "classification": "source-supported correction",
+     "why": "kong-lite bypasses the monolith replacement, so there is no tenant-scoped ingress audit in the substitute variant; the refusal itself is asserted in both"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/dashboard_session",
+   "real": {
+    "result": "PASS",
+    "checks": "9/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "real_only_check",
+     "check": "gateway_itself_refused_it",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real-variant-only gateway/workflow-row observations"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/fund_account_ownership",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:trust-path/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "FAIL",
+    "checks": "6/7",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "result",
+     "real": "PASS",
+     "substitute": "FAIL",
+     "classification": "source-supported correction",
+     "why": "kong-lite (substitute) proxies /v1/payouts straight to the Payouts service and short-circuits X-Payout-Idempotency itself, so the monolith replacement's idempotency state / audit never sees the call; on the real path the gateway forwards to the monolith replacement (Route.php idempotentRoutesConfig) as in production"
+    },
+    {
+     "kind": "check_outcome",
+     "check": "the_replay_was_served_from_idempotency_state_without_a_second_upstream_create",
+     "real": true,
+     "substitute": false,
+     "classification": "source-supported correction",
+     "why": "kong-lite (substitute) proxies /v1/payouts straight to the Payouts service and short-circuits X-Payout-Idempotency itself, so the monolith replacement's idempotency state / audit never sees the call; on the real path the gateway forwards to the monolith replacement (Route.php idempotentRoutesConfig) as in production"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/identity_propagation",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "FAIL",
+    "checks": "3/5",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "result",
+     "real": "PASS",
+     "substitute": "FAIL",
+     "classification": "twin adaptation",
+     "why": "edge passport (kid edgev2) checks exist only in the real variant; kong-lite forwards its own passport"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "X-PASSPORT-USABLE_true_(passport-enabler)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "edge passport (kid edgev2) checks exist only in the real variant; kong-lite forwards its own passport"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "gateway_passport_verified_by_the_monolith_replacement_(RS256, kid edgev2)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "edge passport (kid edgev2) checks exist only in the real variant; kong-lite forwards its own passport"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "gateway_replaced_the_forged_passport_with_its_own_(consumer = caller)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "edge passport (kid edgev2) checks exist only in the real variant; kong-lite forwards its own passport"
+    },
+    {
+     "kind": "check_outcome",
+     "check": "monolith_replacement_saw_the_merchant_identity_from_the_gateway_call",
+     "real": true,
+     "substitute": false,
+     "classification": "twin adaptation",
+     "why": "edge passport (kid edgev2) checks exist only in the real variant; kong-lite forwards its own passport"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "passport_consumer_is_the_authenticated_merchant_in_live_mode",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "edge passport (kid edgev2) checks exist only in the real variant; kong-lite forwards its own passport"
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "substitute_gateway_forwarded_an_identity_the_ingress_accepted",
+     "substitute": false,
+     "classification": "twin adaptation",
+     "why": "edge passport (kid edgev2) checks exist only in the real variant; kong-lite forwards its own passport"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/internal_app_auth",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "real_only_check",
+     "check": "gateway_itself_refused_the_app_credential",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real-variant-only 'gateway itself refused' observation"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/maker_checker",
+   "real": {
+    "result": "PASS",
+    "checks": "13/13",
+    "missing": null
+   },
+   "substitute": {
+    "result": "FAIL",
+    "checks": "11/12",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "result",
+     "real": "PASS",
+     "substitute": "FAIL",
+     "classification": "source-supported correction",
+     "why": "real: Twirp ConfigAPI/ActionAPI + Cadence (separation section, 409 on terminal); substitute: the M5 reconstruction's admin/actor planes (404 no_pending_workflow on terminal). Both are asserted by variant."
+    },
+    {
+     "kind": "check_outcome",
+     "check": "approval_config_bound_for_the_merchant_(1_checker_approval)",
+     "real": true,
+     "substitute": false,
+     "classification": "source-supported correction",
+     "why": "real: Twirp ConfigAPI/ActionAPI + Cadence (separation section, 409 on terminal); substitute: the M5 reconstruction's admin/actor planes (404 no_pending_workflow on terminal). Both are asserted by variant."
+    },
+    {
+     "kind": "real_only_check",
+     "check": "real_workflow_service_accepts_the_creators_own_approval_(no_maker!=checker_rule_in_razorpay/workflows_-_source_supported_correction_of_the_M5_reconstruction)",
+     "real": true,
+     "classification": "source-supported correction",
+     "why": "real: Twirp ConfigAPI/ActionAPI + Cadence (separation section, 409 on terminal); substitute: the M5 reconstruction's admin/actor planes (404 no_pending_workflow on terminal). Both are asserted by variant."
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/payouts_ext_direct",
+   "real": {
+    "result": "PASS",
+    "checks": "6/6",
+    "missing": null
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "the REAL edge gateway (ARENA_INGRESS_IMPL=edge-kong): kong-lite has no payouts-ext service/host routing"
+   },
+   "differences": [
+    {
+     "kind": "result",
+     "real": "PASS",
+     "substitute": "BLOCKED",
+     "classification": "twin adaptation",
+     "why": "BLOCKED on the substitute variant: kong-lite has no payouts-ext service/host routing"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "anonymous_is_refused_401_at_the_edge",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "every check is real-only (the substitute variant is BLOCKED before any check)"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "another_merchant_never_reads_the_payout_through_payouts-ext_(4xx)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "every check is real-only (the substitute variant is BLOCKED before any check)"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "create_200",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "every check is real-only (the substitute variant is BLOCKED before any check)"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "payouts_service_answered_the_edge-authenticated_call_(200_or_its_own_401)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "every check is real-only (the substitute variant is BLOCKED before any check)"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "the_monolith_replacement_never_saw_the_payouts-ext_call_(routed_by_host_to_the_Payouts_service)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "every check is real-only (the substitute variant is BLOCKED before any check)"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "wrong_secret_is_refused_401_at_the_edge_(never_reaches_the_Payouts_service)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "every check is real-only (the substitute variant is BLOCKED before any check)"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/restart_cache_invalidation",
+   "real": {
+    "result": "EXPECTED_FAILURE",
+    "checks": "8/9",
+    "missing": null
+   },
+   "substitute": {
+    "result": "BLOCKED",
+    "checks": "0/0",
+    "missing": "the REAL trust path (ARENA_TRUST_PATH=real): Kong Admin API credential store + Shield rule API"
+   },
+   "differences": [
+    {
+     "kind": "result",
+     "real": "EXPECTED_FAILURE",
+     "substitute": "BLOCKED",
+     "classification": "twin adaptation",
+     "why": "real: EXPECTED_FAILURE F-M11-2 (a deleted basic-auth-x credential keeps authenticating on Kong 3.4.2 -- recorded finding); substitute: BLOCKED by design (Kong Admin API + Shield rule API are real-service surfaces)"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "baseline_200",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real-only checks"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "credential_deleted_through_the_admin_api",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real-only checks"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "credential_present_before_rotation",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real-only checks"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "credential_re-registered",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real-only checks"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "edge-kong_actually_restarted_and_is_running",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real-only checks"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "merchant_key_still_authenticates_after_the_gateway_restart_(credentials_in_Kong_Postgres)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real-only checks"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "old_secret_refused_after_the_credential_was_deleted_(cache_invalidated)",
+     "real": false,
+     "classification": "twin adaptation",
+     "why": "real-only checks"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "re-registered_credential_authenticates_again",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real-only checks"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "shield_rules_for_the_merchant_survive_the_restart_(MySQL)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real-only checks"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/route_authorization",
+   "real": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "substitute": {
+    "result": "FAIL",
+    "checks": "8/9",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "result",
+     "real": "PASS",
+     "substitute": "FAIL",
+     "classification": "twin adaptation",
+     "why": "gateway route-table checks exist only in the real variant; both variants must refuse the unroutable paths with 4xx"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "a_routable_prod-api_path_is_proxied_to_the_monolith_replacement",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "gateway route-table checks exist only in the real variant; both variants must refuse the unroutable paths with 4xx"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "every_unroutable_path_was_answered_by_the_gateway_itself_404_no_route",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "gateway route-table checks exist only in the real variant; both variants must refuse the unroutable paths with 4xx"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "gateway_route_table_is_the_derived_prod-api_table_(no_internal/admin_routes)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "gateway route-table checks exist only in the real variant; both variants must refuse the unroutable paths with 4xx"
+    },
+    {
+     "kind": "check_outcome",
+     "check": "ps_internal_approve_route_is_not_reachable_through_the_public_gateway_(4xx)",
+     "real": true,
+     "substitute": false,
+     "classification": "source-supported correction",
+     "why": "kong-lite (substitute) proxies whole path prefixes, so a merchant key reaches the Payouts service's internal approve route (PS answers 500 for the unknown id); the REAL gateway has no such route (404 at the edge). This is exactly the fidelity gap the promotion closes."
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/s2s_identity",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "1/1",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "real_only_check",
+     "check": "banking-accounts_admits_the_payouts_Api-Token_200",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "the substitute stubs carry no production credential contract; real-only checks are recorded, not silently skipped"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "banking-accounts_refuses_anonymous_and_wrong_Api-Token_401",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "the substitute stubs carry no production credential contract; real-only checks are recorded, not silently skipped"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "shield_admits_the_payouts_identity_and_evaluates_(action_returned)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "the substitute stubs carry no production credential contract; real-only checks are recorded, not silently skipped"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "shield_refuses_anonymous_and_wrong_credentials_401",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "the substitute stubs carry no production credential contract; real-only checks are recorded, not silently skipped"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "workflow_service_admits_the_payouts_service_identity_200",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "the substitute stubs carry no production credential contract; real-only checks are recorded, not silently skipped"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "workflow_service_refuses_anonymous_and_wrong_credentials_401",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "the substitute stubs carry no production credential contract; real-only checks are recorded, not silently skipped"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:trust-path/shield_rules",
+   "real": {
+    "result": "PASS",
+    "checks": "8/8",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "differences": [
+    {
+     "kind": "real_only_check",
+     "check": "merchant_has_the_arena_block_rule_in_the_real_Shield",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real: the rule API / stable-rule / direct-evaluate / block checks; substitute: shield-stub carries fixture rules for the seeded merchants only, so a fresh pool merchant is allowed (checked as 'stub consulted')"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "payout_to_the_blocked_beneficiary_is_refused_as_suspicious_transaction",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real: the rule API / stable-rule / direct-evaluate / block checks; substitute: shield-stub carries fixture rules for the seeded merchants only, so a fresh pool merchant is allowed (checked as 'stub consulted')"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "real_Shield_blocks_the_payouts-shaped_request_for_a_9999_beneficiary_(ruleset_payout_primary)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real: the rule API / stable-rule / direct-evaluate / block checks; substitute: shield-stub carries fixture rules for the seeded merchants only, so a fresh pool merchant is allowed (checked as 'stub consulted')"
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "shield-stub_was_consulted_for_the_fresh_merchant_(fixture_rules_bind_to_the_seeded_merchants_only)",
+     "substitute": true,
+     "classification": "twin adaptation",
+     "why": "real: the rule API / stable-rule / direct-evaluate / block checks; substitute: shield-stub carries fixture rules for the seeded merchants only, so a fresh pool merchant is allowed (checked as 'stub consulted')"
+    },
+    {
+     "kind": "substitute_only_check",
+     "check": "shield_verdict_persisted_on_the_payout_(payout_meta_permanent.shield_evaluate_response)",
+     "substitute": true,
+     "classification": "twin adaptation",
+     "why": "real: the rule API / stable-rule / direct-evaluate / block checks; substitute: shield-stub carries fixture rules for the seeded merchants only, so a fresh pool merchant is allowed (checked as 'stub consulted')"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "the_block_rule_is_a_stable_rule_(no_0%_canary_feature_flag)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real: the rule API / stable-rule / direct-evaluate / block checks; substitute: shield-stub carries fixture rules for the seeded merchants only, so a fresh pool merchant is allowed (checked as 'stub consulted')"
+    },
+    {
+     "kind": "real_only_check",
+     "check": "the_real_Shield_evaluated_this_merchant_(container_log)",
+     "real": true,
+     "classification": "twin adaptation",
+     "why": "real: the rule API / stable-rule / direct-evaluate / block checks; substitute: shield-stub carries fixture rules for the seeded merchants only, so a fresh pool merchant is allowed (checked as 'stub consulted')"
+    }
+   ],
+   "same": false
+  },
+  {
+   "id": "journey:webhooks/async_state",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:webhooks/duplicate",
+   "real": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "7/7",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:webhooks/failure",
+   "real": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "12/12",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:webhooks/idempotency",
+   "real": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:webhooks/success",
+   "real": {
+    "result": "PASS",
+    "checks": "11/11",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "11/11",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  },
+  {
+   "id": "journey:webhooks/webhook",
+   "real": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "substitute": {
+    "result": "PASS",
+    "checks": "5/5",
+    "missing": null
+   },
+   "differences": [],
+   "same": true
+  }
+ ]
+}

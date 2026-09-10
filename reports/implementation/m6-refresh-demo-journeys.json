@@ -1,0 +1,126 @@
+{
+  "schema_version": 1,
+  "lane": "I4 business-journeys",
+  "milestone": "M6",
+  "generated_at": "2026-09-08T01:56:44Z",
+  "run_dir": "RED_LOOP/runs/m6-refresh-demo-rerun",
+  "git_head": "4405b868727bb446f7391dc543afb9d81c2a30c0",
+  "fingerprint": {
+    "boot_id": "f520e5d1-24bf-4d59-bcee-f19e4ee493e0",
+    "compose_project": "env2_compose",
+    "route_profile": "monolith",
+    "config_digest": "a3b68136ef6dd91a5834d92aff0890fd74811142dc051c42c7f8c66a7f23601c",
+    "git_head": "4405b868727bb446f7391dc543afb9d81c2a30c0",
+    "generated_at": null
+  },
+  "campaign_prefix": "m6i4-260908t0155",
+  "merchants": {
+    "bulk": {
+      "stork_subscription": {
+        "seed_existed": false,
+        "seed_err": null,
+        "live_existed": false,
+        "live_err": null,
+        "sink": "http://merchant-webhook-sink:8080/webhook/ARENAM97698466"
+      },
+      "profile": "bulk",
+      "archetype": "shared",
+      "merchant_id": "ARENAM97698466",
+      "campaign_id": "m6i4-260908t0155-bulk",
+      "role": "bulk",
+      "verified": true,
+      "verify_status": 200,
+      "ledger_accounts_owned": 4,
+      "ledger_account_id_collisions": [],
+      "failed_steps": [],
+      "descriptor": "RED_LOOP/runs/.../descriptor-ARENAM97698466.json (git-ignored, carries the key secret)"
+    }
+  },
+  "provisioner_findings": {
+    "ledger_account_id_collisions": []
+  },
+  "summary": {
+    "total": 5,
+    "pass": 5,
+    "fail": 0,
+    "expected_failure": 0,
+    "blocked": 0
+  },
+  "journeys": [
+    {
+      "id": "journey:bulk-payouts/success",
+      "family": "family:bulk-payouts",
+      "variant": "success",
+      "priority": "P1",
+      "result": "PASS",
+      "fidelity": "real",
+      "evidence_path": "RED_LOOP/runs/m6-refresh-demo-rerun/evidence/journey-bulk-payouts-success.json",
+      "merchant_id": "ARENAM97698466",
+      "duration_s": 41.4,
+      "checks_passed": 7,
+      "checks_total": 7,
+      "notes": null,
+      "failed_checks": null
+    },
+    {
+      "id": "journey:bulk-payouts/failure",
+      "family": "family:bulk-payouts",
+      "variant": "failure",
+      "priority": "P1",
+      "result": "PASS",
+      "fidelity": "real",
+      "evidence_path": "RED_LOOP/runs/m6-refresh-demo-rerun/evidence/journey-bulk-payouts-failure.json",
+      "merchant_id": "ARENAM97698466",
+      "duration_s": 5.3,
+      "checks_passed": 6,
+      "checks_total": 6,
+      "notes": null,
+      "failed_checks": null
+    },
+    {
+      "id": "journey:bulk-payouts/idempotency",
+      "family": "family:bulk-payouts",
+      "variant": "idempotency",
+      "priority": "P1",
+      "result": "PASS",
+      "fidelity": "real",
+      "evidence_path": "RED_LOOP/runs/m6-refresh-demo-rerun/evidence/journey-bulk-payouts-idempotency.json",
+      "merchant_id": "ARENAM97698466",
+      "duration_s": 3.9,
+      "checks_passed": 8,
+      "checks_total": 8,
+      "notes": "bulk creates are deduplicated through payouts' `bulk_idempotency_keys` table, not the middleware `idempotency_keys` table used by POST /v1/payouts",
+      "failed_checks": null
+    },
+    {
+      "id": "journey:bulk-payouts/cancel_or_reverse",
+      "family": "family:bulk-payouts",
+      "variant": "cancel_or_reverse",
+      "priority": "P1",
+      "result": "PASS",
+      "fidelity": "real",
+      "evidence_path": "RED_LOOP/runs/m6-refresh-demo-rerun/evidence/journey-bulk-payouts-cancel-or-reverse.json",
+      "merchant_id": "ARENAM97698466",
+      "duration_s": 10.3,
+      "checks_passed": 8,
+      "checks_total": 8,
+      "notes": "DEFECT (reported, not fixed): POST /v1/payouts/payouts_internal/{id}/approve answers HTTP 500 server_error when {id} is the PUBLIC `pout_`-prefixed payout id, instead of accepting it or refusing it with a 4xx. The real bulk-approval file (payout_approval.json, column `payout_id (do not edit)`) carries exactly that public form, so a bulk-approval batch built from a dashboard export fails every row with API_SERVER_DOWN after 5 retries. Reproduced independently from journey:approval-workflow/idempotency, where the same call with the bare id answers 409.",
+      "failed_checks": null
+    },
+    {
+      "id": "journey:bulk-payouts/async_state",
+      "family": "family:bulk-payouts",
+      "variant": "async_state",
+      "priority": "P1",
+      "result": "PASS",
+      "fidelity": "real",
+      "evidence_path": "RED_LOOP/runs/m6-refresh-demo-rerun/evidence/journey-bulk-payouts-async-state.json",
+      "merchant_id": "ARENAM97698466",
+      "duration_s": 6.1,
+      "checks_passed": 5,
+      "checks_total": 5,
+      "notes": null,
+      "failed_checks": null
+    }
+  ]
+}

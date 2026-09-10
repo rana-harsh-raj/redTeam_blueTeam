@@ -1,0 +1,15 @@
+scripts/m4.sh — Milestone 4 one-command entry-point dispatcher.
+
+Every subcommand ECHOES what it will do, then runs a REAL project script.
+All subcommands are rerunnable. This dispatcher never mutates the LIVE arena
+destructively: `m4-clean` refuses to touch the live compose project.
+
+Usage: scripts/m4.sh <subcommand> [args...]
+  boot            bring up / verify the full Env2 arena (clean-boot per README)
+  self-check      provision + self_check a FRESH Direct merchant (disposable)
+  test            verifier golden-run + boundary + BAS/XAS journey drivers
+  assurance-run   4-context autonomous run (gateway-backed) + rollup
+  replay          clean-state replay driver (STUB; coordinator fills)
+  acceptance      evaluate all 74 gates -> m4-direct-e2e-acceptance.json
+  evidence-verify build+verify the M4 evidence manifest (G68/G69)
+  clean           safe teardown of a DISPOSABLE instance (never the live arena)

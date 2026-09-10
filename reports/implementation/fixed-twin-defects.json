@@ -1,0 +1,46 @@
+{
+  "schema_version": 1,
+  "note": "Twin-side defects corrected during Milestone 1. A historical failed/timed-out result maps here (by `evidence_run`) instead of to TWIN_SPEC/expected-failures.yaml when the cause was the twin, not the pinned production source. ENV2_COMPOSE/scripts/local-acceptance.py embeds this list and BLOCKS the gate if it is empty, so every entry must be completed with real values before the freeze: no placeholder text may remain in `fix` or `evidence_run`.",
+  "placeholder": false,
+  "defects": [
+    {
+      "id": "FD-001",
+      "title": "payouts [kafka_producer].Brokers carried the upstream dummy, crashing the Kafka consumer on any failed message",
+      "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml (rendered to generated/payouts/arena.toml:460); ENV2_COMPOSE/config/routes.py:58-63 rewrites only the FTS producer",
+      "symptom": "After the Shared PROCESSED enqueue failure, HandleFailedMessage republishes to the retry topic; provider.GetKafkaProducerProvider returns a nil interface because the container cannot build a producer against [\"broker:9092\",\"broker1:9092\"] (getter.go:161-166, container.go:110-113). The nil is unchecked and the processMessages goroutine has no recover, so payouts-kafka-fts-status-updates-consumer panics at taskHandlers/fts_status_updates.go:105 and exits 2. The next scenario (Direct-after-Shared) then times out with no consumer group member. Reproduced at reports/implementation/runs/claude-audit-kafka-repro-20260905T152544Z/.",
+      "fix": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml [kafka_producer].Brokers = [\"kafka:9092\"] (was the upstream default.toml:429 dummy); ENV2_COMPOSE/docker-compose.yml restart: on-failure on payouts-kafka-fts-status-updates-consumer and -retry-consumer (deployed restartPolicy: Always). No core source change: the unchecked nil producer and the unrecovered goroutine remain as in source (registered as a declared robustness gap).",
+      "evidence_run": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+      "supersedes": [
+        {
+          "run": "reports/implementation/runs/profile-kafka/direct-account",
+          "result": "direct_success timed out after the failing Shared message",
+          "was_recorded_as": "inconclusive"
+        },
+        {
+          "run": "reports/implementation/runs/claude-audit-kafka-repro-20260905T152544Z/direct-after-shared",
+          "result": "direct_success timed out; consumer container exited 2 after the panic",
+          "was_recorded_as": "reproduced and diagnosed (audit)"
+        }
+      ],
+      "evidence_expectation": "kafka-results.json: shared_source_failure matches EF-001 and direct_after_shared passed in the same boot; route-evidence-*.json consumer_state shows both consumers running with restart_count 0 and the retry consumer group with the republished Shared message."
+    },
+    {
+      "id": "FD-002",
+      "title": "ledger-gate stripped idempotency-key and the SDK correlation headers on the Payouts-to-Ledger leg",
+      "location": "ENV2_COMPOSE/substitutes/ledger-gate/server.py:15",
+      "symptom": "Only five headers were forwarded, so ledger pkg/idempotency/interceptor.go:115-118 short-circuited on the empty key and Ledger's request-idempotency layer was disabled for that leg. V04 therefore measured one fewer layer than production. FTS and the monolith reach ledger-api directly and kept the header.",
+      "fix": "ENV2_COMPOSE/substitutes/ledger-gate/server.py forward_headers(): every inbound header is forwarded except the hop-by-hop/transport set (host, content-length, connection, transfer-encoding, keep-alive, te, trailer(s), upgrade, accept-encoding, proxy-*), so idempotency-key, Request-ID, Trace-ID, Country-Code reach ledger-api; contract test ENV2_COMPOSE/substitutes/ledger-gate/test_contract.py. Ledger [mutex].ttl restored to 60000 (prod-live.toml:326) in the same change set (DEV-002).",
+      "evidence_run": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full",
+      "evidence_expectation": "V04 passes with the index catalogue non-empty guard; ledger-gate image rebuilt from the corrected server.py before the boot (arena-fingerprint.json hashes substitutes/ledger-gate/server.py)."
+    },
+    {
+      "id": "FD-003",
+      "title": "Generated arena passwords could start with '-' and were then parsed as CLI options by the CFA seed step",
+      "location": "ENV2_COMPOSE/secrets/gen-secrets.sh rand_password(); consumer ENV2_COMPOSE/scripts/up.sh:94-95 (mongosh --password \"$MONGO_CFA_ROOT_PW\")",
+      "symptom": "rand_password mapped base64 '+' to '-', so roughly one boot in 32 produced a Mongo root password beginning with '-'. mongosh treated it as an option, printed its usage text and the seeds step aborted, so the whole boot failed (retained: reports/implementation/runs/m1-20260905T165255Z/profile-kafka-failed-boot/up.log). Intermittent, secret-dependent boot failure; no service behaviour involved.",
+      "fix": "rand_password now draws the first character from [A-Za-z0-9] and keeps the remaining 43 base64url characters; no seed or service file changed, so run fingerprints are unaffected (secrets/ is never fingerprinted).",
+      "evidence_run": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka",
+      "evidence_expectation": "up.exit 0 on the rerun with a freshly generated password; the failed boot directory is retained beside it."
+    }
+  ]
+}

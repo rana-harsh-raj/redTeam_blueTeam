@@ -1,0 +1,19 @@
+component,plane,fidelity,real_anchor,notes
+workflow create RPC,interface,byte-compatible,workflow_create.go WfCreate/CreateRequestBody/CreateHttpResponse,non-empty wfl_ id => pending
+approve/reject callbacks,interface,byte-compatible,payout_internal_routes.go :71/:77 + getCallbackDetails/Headers,Basic rzp_live + x-creator-id/X-Razorpay-Account; 200/201/409 success
+service inbound auth,interface,real-config,arena.toml [workflow.auth] workflow/workflow,
+callback identity,interface,real-config,arena.toml [auth.workflow] rzp_live+secret,payout-sink enforces it
+state pending->approved/rejected,semantics,faithful,state_machine.go,rejected only from pending
+organizations,engine-internal,reconstructed,none (engine repo unavailable),observable semantics only
+actor identity + roles,engine-internal,reconstructed,none,bearer token; requester/approver/operator/service/admin
+approval policy (N/separation/eligible/expiry),engine-internal,reconstructed,none,evaluation order reconstructed
+N-of-M distinct-approver counting,engine-internal,reconstructed,none,idempotent duplicate approvals
+stale-version (optimistic concurrency),engine-internal,reconstructed,none,version bumped per transition
+terminal-state freeze,engine-internal,reconstructed,none,
+cancellation,engine-internal,reconstructed,none,creator/operator
+expiry (lazy + swept),engine-internal,reconstructed,none,
+durable state + restart recovery,engine-internal,reconstructed,none,SQLite WAL single source of truth
+idempotent retried callbacks,engine-internal,reconstructed,none,at-least-once; resume on boot
+payout-sink,test-harness,substitute,payouts internal routes,standalone benchmark only; real arena uses real routes
+Cadence timers/heartbeats,engine-internal,out-of-scope,none,deliberate final-1%
+production RBAC/permission service,engine-internal,out-of-scope,none,deliberate final-1%

@@ -1,0 +1,2959 @@
+# Env 2 (public API payout, idempotency + webhooks) — runnable compose scaffold.
+#
+# SAFETY GATE (see README.md and preflight/preflight.py for the enforced version):
+#   - rzp-arena is `internal: true` -- no container on it can reach the real
+#     internet or real razorpay.{com,in,vpc} hosts, by construction.
+#   - rzp-ingress is the ONLY network with a path to the HOST; kong-lite is
+#     the sole entrypoint a developer's shell/test runner on the host can
+#     reach. (verifier also joins both networks, but it is itself a
+#     container-internal test harness, not the host -- it needs rzp-arena
+#     directly for its datastore-assertion helpers, same as any other
+#     in-arena service; it never gives the host a second path in.)
+#   - Runtime images (build/*.Dockerfile) contain no credentials. Credentials
+#     live only in ./secrets/*.txt (generated per-arena by secrets/gen-secrets.sh,
+#     destroyed by secrets/destroy.sh) and in ./generated/<svc>/*.toml (rendered
+#     per-arena by config/generate.py from arena.yaml + secrets/*.txt), both
+#     bind-mounted read-only. Neither directory is baked into any image.
+#   - No service mounts the host home directory, the Docker socket, or any
+#     host credential path.
+#
+# Invocation: always `docker compose --env-file .env.arena -f docker-compose.yml <cmd>`
+# (scripts/*.sh do this for you) -- .env.arena supplies the ${VAR} interpolation
+# below (ports, image tag, subnet); it holds NO credentials.
+
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 5s
+  timeout: 3s
+  retries: 20
+  start_period: 10s
+
+x-twirp-health: &twirp-health
+  # Confirmed pattern for payouts (:9400) and ledger (:8080) from each repo's
+  # build/docker/*/probe.sh. Used for the two services where it's actually
+  # confirmed; fts/cfa/x-balances use a plain TCP check instead (see below)
+  # because the exact health path was NOT confirmed against their router code
+  # in the time available for this scaffold -- flagged in findings/29.
+  test: ["CMD", "wget", "-q", "-O", "/dev/null", "--post-data={\"service\":\"\"}",
+         "--header=Content-Type: application/json",
+         "http://127.0.0.1:__PORT__/twirp/rzp.common.health.v1.HealthCheckAPI/Check"]
+  <<: *healthcheck-defaults
+
+x-runtime-security: &runtime-security
+  # No service in this file mounts the host home directory, the docker
+  # socket, or a host credential path -- enforced by review, not by a
+  # mechanism docker-compose itself provides. read_only root FS + explicit
+  # tmpfs for the one writable path Go binaries typically need (none of
+  # these write local files besides logs to stdout, so tmpfs is just /tmp).
+  read_only: true
+  tmpfs:
+    - /tmp
+  security_opt:
+    - no-new-privileges:true
+
+# Belt-and-suspenders egress block for the 5 real services, on top of
+# rzp-arena's `internal: true` network-level block (see top-of-file
+# comment): a Go process that ignores that and tries an HTTP(S) call
+# honours HTTP_PROXY/HTTPS_PROXY by default (net/http's
+# ProxyFromEnvironment) -- pointing both at a closed local port
+# (127.0.0.1:9, the "discard" port, nothing ever listens there) makes any
+# such call fail fast instead of hanging or, on a misconfigured network,
+# escaping. NO_PROXY lists every arena-internal hostname (every service in
+# this file, on rzp-arena or rzp-ingress, by its compose service name) so
+# in-arena traffic between substitutes/datastores/core services is
+# completely unaffected -- only a call to an unlisted (i.e. real-world)
+# host would ever hit the blackhole proxy.
+#
+# M6 (I3) FIX: workflow-sim and workflow-engine were MISSING from NO_PROXY. Go's
+# net/http honours HTTP_PROXY via ProxyFromEnvironment, so the moment
+# ARENA_WORKFLOW_HOST pointed payouts at either of them, every WorkflowAPI/Create
+# would have been routed to the blackhole proxy (127.0.0.1:9) and failed. It was
+# invisible until now only because ARENA_WORKFLOW_HOST defaulted to the frozen
+# dead address. Both are now listed, as is batch-sim.
+x-proxy-env: &proxy-env
+  # arena-only synthetic AWS credentials: LocalStack accepts any value but derives the region from the
+  # SigV4 signature, and the AWS SDK refuses to sign without credentials. Never real; internal network only.
+  AWS_ACCESS_KEY_ID: "ARENA_LOCALSTACK"
+  AWS_SECRET_ACCESS_KEY: "arena-localstack-synthetic"
+  AWS_REGION: "ap-south-1"
+  AWS_DEFAULT_REGION: "ap-south-1"
+  WORKDIR: /app
+  APP_ENV: arena
+  HTTP_PROXY: "http://127.0.0.1:9"
+  HTTPS_PROXY: "http://127.0.0.1:9"
+  NO_PROXY: "localhost,127.0.0.1,0.0.0.0,ledger-gate,payouts-api,payouts-worker-webhook-event,payouts-worker-queued-payout,payouts-worker-schedule-payout,payouts-worker-on-hold-payout,payouts-worker-fts-async-processing,payouts-worker-fts-async-hv-processing,payouts-worker-payout-create-failure-handling,payouts-worker-payout-update-failure-handling,payouts-worker-transaction-create,payouts-worker-generic-processing,payouts-worker-async-dual-write,payouts-worker-x-balances-balance-refresh,payouts-worker-payout-source-updater,payouts-worker-partner-bank-hold-payouts,payouts-worker-bulk-payouts,payouts-worker-batch-submitted-merchants,payouts-worker-data-consistency-checker,payouts-worker-data-consistency-event,payouts-worker-fund-management-payout-check,payouts-worker-fund-management-payout-initiate,payouts-worker-payout-usage-event-processing,payouts-worker-x-account-statement-source-event,payouts-worker-x-balance-payouts-event,payouts-worker-api-queue-for-async-dual-write-direct-push,payouts-kafka-fts-status-updates-consumer,payouts-kafka-fts-status-updates-retry-consumer,ledger-api,ledger-worker,ledger-scheduler,fts-web,fts-worker-default,fts-worker-initiate-transfer,fts-worker-check-transfer-status,fts-worker-fire-transfer-status-webhook,fts-worker-retry-transfer,fts-worker-retry-transfer-preprocessor,fts-worker-retry-transfer-source-update,fts-worker-rbl-initiate-transfer,fts-worker-rbl-check-transfer-status,fts-worker-rbl-imps-initiate-transfer,fts-worker-rbl-imps-check-transfer-status,fts-worker-rbl-direct-imps-initiate-transfer,fts-worker-rbl-direct-imps-check-transfer-status,fts-worker-hv-fire-transfer-status-webhook,fts-worker-hv-initiate-transfer,fts-worker-slow-lane-initiate-transfer,fts-worker-rbl-upi-initiate-transfer,fts-worker-rbl-upi-check-transfer-status,fts-worker-rbl-upi-hv-initiate-transfer,fts-worker-rbl-upi-hv-check-transfer-status,fts-worker-rbl-direct-initiate-transfer,fts-worker-rbl-direct-check-transfer-status,fts-worker-rbl-direct-upi-initiate-transfer,fts-worker-rbl-direct-upi-check-transfer-status,fts-worker-rbl-direct-imps-hv-initiate-transfer,fts-worker-rbl-direct-slow-lane-initiate-transfer,cfa-server,cfa-worker-contact,cfa-worker-fa,xbalances-server,xbalances-worker,api-ingress,kong-lite,monolith-stub,dcs-stub,splitz-stub,shield-stub,pricing-stub,asv-stub,bankingaccounts-stub,stork-capture,merchant-webhook-sink,xas-sim,mozart-mock,mozart-sim,workflow-sim,workflow-engine,batch-sim,mysql-payouts,mysql-fts,mysql-xbalances,mysql-apidb-stub,postgres-ledger,mongo-cfa,redis,localstack,kafka"
+
+networks:
+  rzp-arena:
+    name: "rzp-arena${ARENA_SUFFIX:-}"
+    internal: true
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${ARENA_SUBNET:-172.28.16.0/24}
+  rzp-ingress:
+    name: "rzp-ingress${ARENA_SUFFIX:-}"
+    internal: true
+    driver: bridge
+    ipam:
+      config:
+        - subnet: ${INGRESS_SUBNET:-172.28.17.0/24}
+
+volumes:
+  # Generated synthetic material only; initialized with narrow consumer scope.
+  config-payouts:
+    name: "rzp-arena-config-payouts${ARENA_SUFFIX:-}"
+  config-ledger:
+    name: "rzp-arena-config-ledger${ARENA_SUFFIX:-}"
+  config-fts:
+    name: "rzp-arena-config-fts${ARENA_SUFFIX:-}"
+  config-cfa:
+    name: "rzp-arena-config-cfa${ARENA_SUFFIX:-}"
+  config-xbalances:
+    name: "rzp-arena-config-xbalances${ARENA_SUFFIX:-}"
+  config-mozart-mock:
+    name: "rzp-arena-config-mozart-mock${ARENA_SUFFIX:-}"
+  secrets-kong:
+    name: "rzp-arena-secrets-kong${ARENA_SUFFIX:-}"
+  secrets-monolith:
+    name: "rzp-arena-secrets-monolith${ARENA_SUFFIX:-}"
+  # M6 (I3): narrow credential volume for the two Workflow-engine substitutes
+  # (workflow-engine, workflow-sim). Both run as uid 10001, which cannot read
+  # compose file-based secrets (host files stay 0600 / host-owned -- that
+  # mechanism only works for the root-running cron-driver and verifier), so
+  # secrets/materialize.py streams exactly two generated files into this volume
+  # as uid-10001 0400: auth_workflow_payouts (payouts [auth.workflow], the
+  # approve/reject callback credential) and wfe_admin_token (workflow-engine's
+  # admin plane). Deliberately separate from secrets-kong so the admin token is
+  # never on the ingress container's filesystem.
+  secrets-workflow:
+    name: "rzp-arena-secrets-workflow${ARENA_SUFFIX:-}"
+  # M7: shared API-monolith ingress -- app/admin identities + stub credential (never merchant keys, which
+  # stay in secrets-kong and are mounted read-only alongside), and its persistent SQLite state.
+  secrets-ingress:
+    name: "rzp-arena-secrets-ingress${ARENA_SUFFIX:-}"
+  ingress-data:
+    name: "rzp-arena-ingress-data${ARENA_SUFFIX:-}"
+  mysql-payouts-data:
+  mysql-fts-data:
+  mysql-xbalances-data:
+  mysql-apidb-data:
+  postgres-ledger-data:
+  mongo-cfa-data:
+  redis-data:
+  localstack-data:
+  kafka-data:
+  # M6: batch-sim's durable SQLite store (in-flight batches survive a restart
+  # with their original idempotency keys). Declared per its compose-block.yml.
+  batch-sim-data:
+    name: "rzp-arena-batch-sim-data${ARENA_SUFFIX:-}"
+  # M6 (I3): workflow-engine's durable SQLite state (orgs/actors/policies,
+  # workflow instances, approvals, audit_log, callback deliveries). The engine
+  # is restart-recoverable only because this survives a container restart;
+  # `down -v` removes it with every other arena volume.
+  wfengine-data:
+
+secrets:
+  # Datastore bootstrap credentials only (consumed via the official images'
+  # *_FILE env-var convention). Application-level credentials for the 5 real
+  # services are NOT passed as docker secrets -- config/generate.py inlines
+  # them straight into ./generated/<svc>/*.toml at generate time (see header
+  # comment above), because these are custom Go binaries reading a TOML file,
+  # not images with a *_FILE convention.
+  mysql_payouts_root_password:
+    file: ./secrets/mysql_payouts_root_password.txt
+  mysql_fts_root_password:
+    file: ./secrets/mysql_fts_root_password.txt
+  mysql_xbalances_root_password:
+    file: ./secrets/mysql_xbalances_root_password.txt
+  mysql_apidb_root_password:
+    file: ./secrets/mysql_apidb_root_password.txt
+  auth_fastcron_payouts:
+    file: ./secrets/auth_fastcron_payouts.txt
+  postgres_ledger_password:
+    file: ./secrets/postgres_ledger_password.txt
+  mongo_cfa_root_password:
+    file: ./secrets/mongo_cfa_root_password.txt
+  # "user:pass"-format bridge files for verifier/helpers/creds.py's
+  # resolve_basic_auth() (SECRETS_DIR=/run/secrets, looks up files named
+  # exactly by these secret names) -- see secrets/gen-secrets.sh's
+  # verifier-bridge/ step for how each is derived from the auth_* pairs
+  # above (best-effort mapping, documented there as unconfirmed against
+  # VERIFIER_SPEC.md).
+  ledger:
+    file: ./secrets/verifier-bridge/ledger
+  fts:
+    file: ./secrets/verifier-bridge/fts
+  monolith:
+    file: ./secrets/verifier-bridge/monolith
+  ps-fastcron:
+    file: ./secrets/verifier-bridge/ps-fastcron
+  ps-service:
+    file: ./secrets/verifier-bridge/ps-service
+
+services:
+
+  # ======================================================================
+  # datastores profile
+  # ======================================================================
+
+  mysql-payouts:
+    image: mysql:8.0
+    profiles: ["datastores"]
+    networks: [rzp-arena]
+    environment:
+      MYSQL_DATABASE: payouts
+      MYSQL_USER: payouts
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_payouts_root_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_payouts_root_password
+    secrets: [mysql_payouts_root_password]
+    volumes:
+      - mysql-payouts-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root",
+             "-p$$(cat /run/secrets/mysql_payouts_root_password)"]
+      <<: *healthcheck-defaults
+
+  mysql-fts:
+    image: mysql:8.0
+    profiles: ["datastores"]
+    networks: [rzp-arena]
+    environment:
+      MYSQL_DATABASE: fts
+      MYSQL_USER: fts
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_fts_root_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_fts_root_password
+    secrets: [mysql_fts_root_password]
+    volumes:
+      - mysql-fts-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root",
+             "-p$$(cat /run/secrets/mysql_fts_root_password)"]
+      <<: *healthcheck-defaults
+
+  mysql-xbalances:
+    image: mysql:8.0
+    profiles: ["datastores"]
+    networks: [rzp-arena]
+    environment:
+      MYSQL_DATABASE: rx_balances_local
+      MYSQL_USER: rx_balances_rw
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_xbalances_root_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_xbalances_root_password
+    secrets: [mysql_xbalances_root_password]
+    volumes:
+      - mysql-xbalances-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root",
+             "-p$$(cat /run/secrets/mysql_xbalances_root_password)"]
+      <<: *healthcheck-defaults
+
+  mysql-apidb-stub:
+    # DDL-only skeleton standing in for the api-monolith's MySQL (payouts'
+    # [db.api], x-balances' [APIStore.Sql]). No app logic, only the tables
+    # monolith-stub/x-balances/payouts read directly. See seeds/mysql/.
+    image: mysql:8.0
+    profiles: ["datastores"]
+    networks: [rzp-arena]
+    environment:
+      MYSQL_DATABASE: api_local
+      MYSQL_USER: api_rx
+      MYSQL_PASSWORD_FILE: /run/secrets/mysql_apidb_root_password
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_apidb_root_password
+    secrets: [mysql_apidb_root_password]
+    volumes:
+      - mysql-apidb-data:/var/lib/mysql
+      - ./seeds/mysql/apidb-ddl:/docker-entrypoint-initdb.d:ro
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "127.0.0.1", "-u", "root",
+             "-p$$(cat /run/secrets/mysql_apidb_root_password)"]
+      <<: *healthcheck-defaults
+
+  postgres-ledger:
+    image: postgres:15-alpine
+    profiles: ["datastores"]
+    networks: [rzp-arena]
+    environment:
+      POSTGRES_DB: ledger
+      POSTGRES_USER: ledger
+      POSTGRES_PASSWORD_FILE: /run/secrets/postgres_ledger_password
+    secrets: [postgres_ledger_password]
+    volumes:
+      - postgres-ledger-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ledger -d ledger"]
+      <<: *healthcheck-defaults
+
+  mongo-cfa:
+    image: mongo:6.0
+    profiles: ["datastores"]
+    networks: [rzp-arena]
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: cfa_root
+      MONGO_INITDB_ROOT_PASSWORD_FILE: /run/secrets/mongo_cfa_root_password
+      MONGO_INITDB_DATABASE: cfa
+    secrets: [mongo_cfa_root_password]
+    volumes:
+      - mongo-cfa-data:/data/db
+    healthcheck:
+      test: ["CMD", "mongosh", "--quiet", "--eval", "db.adminCommand('ping')"]
+      <<: *healthcheck-defaults
+
+  redis:
+    image: redis:7-alpine
+    profiles: ["datastores"]
+    networks: [rzp-arena]
+    command: ["redis-server", "--save", "", "--appendonly", "no"]
+    healthcheck:
+      test: ["CMD", "redis-cli", "ping"]
+      <<: *healthcheck-defaults
+
+  localstack:
+    image: localstack/localstack:3.8
+    profiles: ["datastores"]
+    networks: [rzp-arena]
+    environment:
+      SERVICES: sqs,sns
+      DEFAULT_REGION: ap-south-1
+      AWS_DEFAULT_REGION: ap-south-1
+      # LocalStack's own test credentials -- not a real AWS account, safe by
+      # construction; preflight.py explicitly allow-lists this pattern.
+      AWS_ACCESS_KEY_ID: test
+      AWS_SECRET_ACCESS_KEY: test
+      EAGER_SERVICE_LOADING: 1
+      PERSISTENCE: 0
+    volumes:
+      - ./seeds/localstack/init-queues.sh:/etc/localstack/init/ready.d/init-queues.sh:ro
+      - localstack-data:/var/lib/localstack
+    healthcheck:
+      test: ["CMD", "curl", "-sf", "http://127.0.0.1:4566/_localstack/health"]
+      <<: *healthcheck-defaults
+
+  kafka:
+    # KRaft single-node, no zookeeper (official Apache image; bitnami/kafka tags were removed from Docker Hub).
+    image: apache/kafka:3.8.0
+    profiles: ["datastores"]
+    networks: [rzp-arena]
+    environment:
+      KAFKA_NODE_ID: "1"
+      KAFKA_PROCESS_ROLES: broker,controller
+      KAFKA_LISTENERS: PLAINTEXT://:9092,CONTROLLER://:9093
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_CONTROLLER_LISTENER_NAMES: CONTROLLER
+      KAFKA_LISTENER_SECURITY_PROTOCOL_MAP: CONTROLLER:PLAINTEXT,PLAINTEXT:PLAINTEXT
+      KAFKA_CONTROLLER_QUORUM_VOTERS: 1@kafka:9093
+      KAFKA_AUTO_CREATE_TOPICS_ENABLE: "true"
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_REPLICATION_FACTOR: "1"
+      KAFKA_TRANSACTION_STATE_LOG_MIN_ISR: "1"
+      KAFKA_LOG_DIRS: /var/lib/kafka/data
+      CLUSTER_ID: "RZPARENA0000000000000A"
+    volumes:
+      - kafka-data:/var/lib/kafka/data
+    healthcheck:
+      test: ["CMD-SHELL", "/opt/kafka/bin/kafka-topics.sh --bootstrap-server 127.0.0.1:9092 --list >/dev/null 2>&1"]
+      <<: *healthcheck-defaults
+
+  # ======================================================================
+  # migrations (one-shot; NOT started by `up` on any of the 4 required
+  # profiles -- run explicitly via `docker compose --profile migrations run
+  # --rm <svc>-migrate`, orchestrated by scripts/up.sh)
+  # ======================================================================
+
+  payouts-migrate:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["migrations"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-migration"]
+    command: ["up"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+      - ${PAYOUTS_REPO_MIGRATIONS_DIR}:/app/internal/database/migrations:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      mysql-apidb-stub: {condition: service_healthy}
+
+  ledger-migrate:
+    # Per findings/28_build_spike_ledger.md: goose-based, dispatches
+    # RX-vs-PG Postgres dialect on the TENANT env var -- Env 2 wants plain
+    # Postgres (TENANT=PG, not X/rx_migrations). `-dir` defaults to
+    # internal/database/migrations, which does NOT exist in a fresh ledger
+    # clone -- it's populated only by a CI-only step
+    # (.github/workflows/review_ci.yml: `cp -r internal/database/pg_migrations/*
+    # internal/database/migrations/`) that has no local-dev Makefile target.
+    # LEDGER_REPO_MIGRATIONS_DIR (.env.arena) must point at that already-
+    # materialized directory on the host (mirroring the CI step) --
+    # `docker compose config -q` validates the YAML shape without that path
+    # needing to exist yet, same convention as MOZART_BUILD_CONTEXT.
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["migrations"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-migration"]
+    command: ["-dir=/app/internal/database/migrations", "up"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+      - ${LEDGER_REPO_MIGRATIONS_DIR:-./build/_ledger_migrations_not_configured}:/app/internal/database/migrations:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      TENANT: "X"
+      LEDGER_ARENA_PG_PASSWORD: "${LEDGER_ARENA_PG_PASSWORD:-}"
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+
+  fts-migrate:
+    # `fts-migrate` binary (`go build ./cmd/migration`) -- see fts-web's
+    # comment on the corrected binary set. `-dir` must point at a mounted
+    # copy of the fts repo's internal/migrations (FTS_REPO_MIGRATIONS_DIR,
+    # .env.arena) -- exact CLI flag name not independently re-confirmed
+    # against fts/cmd/migration/main.go in this pass; `-dir`/`up` mirrors
+    # the goose-based convention ledger's own migration binary uses.
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["migrations"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-migrate"]
+    command: ["-env=arena", "-dir=/app/internal/migrations", "up"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+      - ${FTS_REPO_MIGRATIONS_DIR:-}:/app/internal/migrations:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+
+  cfa-migrate:
+    image: rzp-arena/cfa:${ARENA_TAG:-local}
+    profiles: ["migrations"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/cfa-entry.sh", "/app/cfa-migration"]
+    command: ["-v", "up"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-cfa:/app/config:ro
+    env_file:
+      - ./generated/cfa/cfa.env
+    environment:
+      <<: *proxy-env
+    depends_on:
+      mongo-cfa: {condition: service_healthy}
+
+  xbalances-migrate:
+    image: rzp-arena/xbalances:${ARENA_TAG:-local}
+    profiles: ["migrations"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/xbalances-migration"]
+    command: ["-dir=/app/internal/database/migrations", "up"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-xbalances:/app/config:ro
+      - ${XBALANCES_REPO_MIGRATIONS_DIR}:/app/internal/database/migrations:ro
+    env_file:
+      - ./generated/xbalances/xbalances.env
+    environment:
+      <<: *proxy-env
+    depends_on:
+      mysql-xbalances: {condition: service_healthy}
+      mysql-apidb-stub: {condition: service_healthy}
+
+  # ======================================================================
+  # core profile — the 5 real services this arena exists to run
+  # ======================================================================
+
+  payouts-api:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-api"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      <<: *twirp-health
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      mysql-apidb-stub: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+      kafka: {condition: service_healthy}
+
+  payouts-worker-webhook-event:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "webhook_event"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-queued-payout:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "queued_payout"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-schedule-payout:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "schedule_payout"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-on-hold-payout:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "on_hold_payout"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-fts-async-processing:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "fts_async_processing"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-fts-async-hv-processing:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "fts_async_hv_processing"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-payout-create-failure-handling:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "payout_create_failure_handling"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-payout-update-failure-handling:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "payout_update_failure_handling"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-transaction-create:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "transaction_create"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-generic-processing:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "generic_processing"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-async-dual-write:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "async_dual_write"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-x-balances-balance-refresh:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "x_balances_balance_refresh"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-rbl-banking-account-statement:
+    # M4 (T10): the REAL PS bank-statement ingestion worker (payouts internal/job/rbl_banking_account_statement.go,
+    # handler bankingAccountStatement/core.go FetchAccountStatement -> processor/rbl_gateway.go). Same accepted binary as
+    # every other payouts worker; polls the SQS queue named by [job].rbl_banking_account_statement. Fed by
+    # POST /v1/cron/banking_account_statement/fetch/initiate (cron-driver job bas_fetch_initiate), fetches bank
+    # credentials from bankingaccounts-stub and the statement CSV from mozart-sim razorpayx/rbl/v2/account_statement.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "rbl_banking_account_statement"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-payout-source-updater:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "payout_source_updater"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-partner-bank-hold-payouts:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "partner_bank_hold_payouts"
+      PAYOUTS_WORKER_MAXCONCURRENCY: "2"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-bulk-payouts:
+    # M6 (I3): REAL payouts worker, previously absent from the twin.
+    # job bulk_payouts -- internal/job/bulk_payouts.go:19,:39 (appConstants.BulkPayoutsQueue). Drains a merchant's bulk/batch payout submissions.
+    # queue: [job].bulk_payouts = "bulk_payouts" (config/templates/base/payouts/arena.toml),
+    # created by seeds/localstack/init-queues.sh.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "bulk_payouts"
+      # 1 (not 2, as the M1 workers use): these ten are added together and the
+      # docker VM has ~7 GiB headroom; each worker is ~41 MiB, and none of them
+      # is on the latency-critical create path.
+      PAYOUTS_WORKER_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-batch-submitted-merchants:
+    # M6 (I3): REAL payouts worker, previously absent from the twin.
+    # job batch_submitted_merchants -- internal/job/batch_submitted_merchants.go:16,:36 (appConstants.BatchSubmittedMerchantsQueue). Feeds /v1/payouts/batch/process.
+    # queue: [job].batch_submitted_merchants = "batch_submitted_merchants" (config/templates/base/payouts/arena.toml),
+    # created by seeds/localstack/init-queues.sh.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "batch_submitted_merchants"
+      # 1 (not 2, as the M1 workers use): these ten are added together and the
+      # docker VM has ~7 GiB headroom; each worker is ~41 MiB, and none of them
+      # is on the latency-critical create path.
+      PAYOUTS_WORKER_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-data-consistency-checker:
+    # M6 (I3): REAL payouts worker, previously absent from the twin.
+    # job data_consistency_checker -- internal/job/data_consistency_checker.go:19,:48 (custom Constructor at :50; MaxRetries 3, timeout 30s). Consumer for /v1/payouts/consistency_checker.
+    # queue: [job].data_consistency_checker = "data-consistency-checker" (config/templates/base/payouts/arena.toml),
+    # created by seeds/localstack/init-queues.sh.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "data_consistency_checker"
+      # 1 (not 2, as the M1 workers use): these ten are added together and the
+      # docker VM has ~7 GiB headroom; each worker is ~41 MiB, and none of them
+      # is on the latency-critical create path.
+      PAYOUTS_WORKER_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-data-consistency-event:
+    # M6 (I3): REAL payouts worker, previously absent from the twin.
+    # job data_consistency_event -- internal/job/data_consistency_event.go:16,:37. Per-entity consistency events.
+    # queue: [job].data_consistency_event = "data-consistency-event" (config/templates/base/payouts/arena.toml),
+    # created by seeds/localstack/init-queues.sh.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "data_consistency_event"
+      # 1 (not 2, as the M1 workers use): these ten are added together and the
+      # docker VM has ~7 GiB headroom; each worker is ~41 MiB, and none of them
+      # is on the latency-critical create path.
+      PAYOUTS_WORKER_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-fund-management-payout-check:
+    # M6 (I3): REAL payouts worker, previously absent from the twin.
+    # job fund_management_payout_check -- internal/job/fund_management_payout_check.go:18,:38 (appConstants.FundManagementPayoutCheck; MaxRetries 3, timeout 300s). FMP = fund-management payout (auto top-up of a Direct current account).
+    # queue: [job].fund_management_payout_check = "fmp-check" (config/templates/base/payouts/arena.toml),
+    # created by seeds/localstack/init-queues.sh.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "fund_management_payout_check"
+      # 1 (not 2, as the M1 workers use): these ten are added together and the
+      # docker VM has ~7 GiB headroom; each worker is ~41 MiB, and none of them
+      # is on the latency-critical create path.
+      PAYOUTS_WORKER_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-fund-management-payout-initiate:
+    # M6 (I3): REAL payouts worker, previously absent from the twin.
+    # job fund_management_payout_initiate -- internal/job/fund_management_payout_initiate.go:18,:38 (appConstants.FundManagementPayoutInitiate; MaxRetries 3, timeout 100s). Gated by splitz fmp_initiate_experiment.
+    # queue: [job].fund_management_payout_initiate = "fmp-initiate" (config/templates/base/payouts/arena.toml),
+    # created by seeds/localstack/init-queues.sh.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "fund_management_payout_initiate"
+      # 1 (not 2, as the M1 workers use): these ten are added together and the
+      # docker VM has ~7 GiB headroom; each worker is ~41 MiB, and none of them
+      # is on the latency-critical create path.
+      PAYOUTS_WORKER_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-payout-usage-event-processing:
+    # M6 (I3): REAL payouts worker, previously absent from the twin.
+    # job payout_usage_event_processing -- internal/job/payout_usage_event_processing.go:18,:42 (appConstants.PayoutUsageEventProcessing; custom Constructor at :44).
+    # queue: [job].payout_usage_event_processing = "payout_usage_event_processing" (config/templates/base/payouts/arena.toml),
+    # created by seeds/localstack/init-queues.sh.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "payout_usage_event_processing"
+      # 1 (not 2, as the M1 workers use): these ten are added together and the
+      # docker VM has ~7 GiB headroom; each worker is ~41 MiB, and none of them
+      # is on the latency-critical create path.
+      PAYOUTS_WORKER_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-x-account-statement-source-event:
+    # M6 (I3): REAL payouts worker, previously absent from the twin.
+    # job x_account_statement_source_event -- internal/job/x_account_statement_source_event.go:22,:64 (appConstants.XAccountStatementSourceEvent). The CONSUMER side of the REAL PS producer wired in M4/T10; xas-sim also reads this queue -- see substitutes/xas-sim/CONTRACT.md and [configs.account_statement_source_event].
+    # queue: [job].x_account_statement_source_event = "x_account_statement_source_event" (config/templates/base/payouts/arena.toml),
+    # created by seeds/localstack/init-queues.sh.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "x_account_statement_source_event"
+      # 1 (not 2, as the M1 workers use): these ten are added together and the
+      # docker VM has ~7 GiB headroom; each worker is ~41 MiB, and none of them
+      # is on the latency-critical create path.
+      PAYOUTS_WORKER_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-x-balance-payouts-event:
+    # M6 (I3): REAL payouts worker, previously absent from the twin.
+    # job x_balance_payouts_event -- internal/job/x_balances_payouts_event.go:15,:38. NAME ASYMMETRY, verified in source: the registered job name is appConstants.XBalancePayoutsEvent = "x_balance_payouts_event" (SINGULAR 'balance'), while its config key under [job] is x_balances_payouts_event (PLURAL). PAYOUTS_WORKER_NAME must use the singular form or pkg/worker/manager.go:149 returns ErrorStartingUnregisteredJob.
+    # queue: [job].x_balances_payouts_event = "stage-x-balances-payouts-event" (config/templates/base/payouts/arena.toml),
+    # created by seeds/localstack/init-queues.sh.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "x_balance_payouts_event"
+      # 1 (not 2, as the M1 workers use): these ten are added together and the
+      # docker VM has ~7 GiB headroom; each worker is ~41 MiB, and none of them
+      # is on the latency-critical create path.
+      PAYOUTS_WORKER_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-worker-api-queue-for-async-dual-write-direct-push:
+    # M6 (I3): REAL payouts worker, previously absent from the twin.
+    # job api_queue_for_async_dual_write_direct_push -- internal/job/api_queue_for_async_dual_write_direct_push.go:14,:36. Direct-push leg of the API<->PS dual write (the api-side counterpart of async_dual_write).
+    # queue: [job].api_queue_for_async_dual_write_direct_push = "api-payout-service-dual-write-direct-push-live" (config/templates/base/payouts/arena.toml),
+    # created by seeds/localstack/init-queues.sh.
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-workers"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_WORKER_NAME: "api_queue_for_async_dual_write_direct_push"
+      # 1 (not 2, as the M1 workers use): these ten are added together and the
+      # docker VM has ~7 GiB headroom; each worker is ~41 MiB, and none of them
+      # is on the latency-critical create path.
+      PAYOUTS_WORKER_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:9400/status"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+      start_period: 20s
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  payouts-kafka-fts-status-updates-consumer:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-kafka-consumer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_CONSUMER_TASK_NAME: "fts_status_updates"
+      PAYOUTS_CONSUMER_TASK_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    # ARENA FIX (milestone 1, TWIN_V1_AUDIT_AND_NEXT_STEP.md §5.2/§8 item B14, item 4): the deployed object
+    # (kube-manifests/devstack-prod-parity/reports/batch8/drift-check-20260703.html, namespace payouts,
+    # application prod-payouts, revision 418) shows restartPolicy: Always on the live
+    # payouts-kafka-fts-status-updates-consumer Deployment/pod template; the twin previously had no restart:
+    # policy at all, so the nil-producer panic reproduced at reports/implementation/runs/
+    # claude-audit-kafka-repro-20260905T152544Z/ left the container exited rather than restarted as prod would.
+    # `docker compose down` still stops/removes it as usual (an intentional stop suppresses the policy).
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "payouts-kafka-consumer"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      kafka: {condition: service_healthy}
+
+  payouts-kafka-fts-status-updates-retry-consumer:
+    image: rzp-arena/payouts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/payouts-kafka-consumer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-payouts:/app/config:ro
+    env_file:
+      - ./generated/payouts/payouts.env
+    environment:
+      <<: *proxy-env
+      PAYOUTS_CONSUMER_TASK_NAME: "fts_status_updates_retry"
+      PAYOUTS_CONSUMER_TASK_MAXCONCURRENCY: "1"
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    # ARENA FIX: same citation as payouts-kafka-fts-status-updates-consumer above (deployed restartPolicy: Always
+    # on the retry-consumer Deployment template).
+    restart: on-failure
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "payouts-kafka-consumer"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-payouts: {condition: service_healthy}
+      kafka: {condition: service_healthy}
+
+  ledger-api:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-api"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      <<: *twirp-health
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "--post-data={\"service\":\"\"}",
+             "--header=Content-Type: application/json",
+             "http://127.0.0.1:8080/twirp/rzp.common.health.v1.HealthCheckAPI/Check"]
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  ledger-worker:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      LEDGER_WORKER_QUEUENAME: "account_create"
+      LEDGER_WORKER_MAXCONCURRENCY: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ledger-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  ledger-worker-balance-update:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      LEDGER_WORKER_QUEUENAME: "balance_update"
+      LEDGER_WORKER_MAXCONCURRENCY: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ledger-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  ledger-worker-journal-create:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      LEDGER_WORKER_QUEUENAME: "journal_create"
+      LEDGER_WORKER_MAXCONCURRENCY: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ledger-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  ledger-worker-entry-details-create:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      LEDGER_WORKER_QUEUENAME: "ledger_entry_details_create"
+      LEDGER_WORKER_MAXCONCURRENCY: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ledger-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  ledger-worker-entry-details-create-pg:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      LEDGER_WORKER_QUEUENAME: "ledger_entry_details_create_pg"
+      LEDGER_WORKER_MAXCONCURRENCY: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ledger-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  ledger-scheduler:
+    image: rzp-arena/ledger:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/ledger-scheduler"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-ledger:/app/config:ro
+    env_file:
+      - ./generated/ledger/ledger.env
+    environment:
+      <<: *proxy-env
+      # Source: Ledger Config.Scheduler.Command and production CronJob override.
+      # This Compose process runs once; repeated production cadence remains ASSUMED.
+      LEDGER_SCHEDULER_COMMAND: "split-account-balance-update"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "ledger-scheduler"]
+      <<: *healthcheck-defaults
+    depends_on:
+      postgres-ledger: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  fts-web:
+    # CORRECTED in the substitutes pass: build/build-host.sh (confirmed
+    # against the actual image-build pipeline) builds `fts-web` as its own
+    # binary (`go build ./cmd/web`), NOT an nginx-fronted dispatch of a
+    # single combined binary -- the earlier nginx/`command: ["web"]`
+    # assumption (findings/29_env2_scaffold.md, unconfirmed at the time)
+    # was wrong. Listens directly on :8080 per fts.toml.tmpl's
+    # [application] LISTEN_PORT.
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-web", "-env=arena", "-base_path=/app"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "8080"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-default:
+    # fts machinery worker for queue `default` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=default"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-initiate-transfer:
+    # fts machinery worker for queue `initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-check-transfer-status:
+    # fts machinery worker for queue `check_transfer_status` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=check_transfer_status"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-fire-transfer-status-webhook:
+    # fts machinery worker for queue `fire_transfer_status_webhook` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=fire_transfer_status_webhook"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-retry-transfer:
+    # fts machinery worker for queue `retry_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=retry_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-retry-transfer-preprocessor:
+    # fts machinery worker for queue `retry_transfer_preprocessor` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=retry_transfer_preprocessor"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-retry-transfer-source-update:
+    # fts machinery worker for queue `retry_transfer_source_update` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=retry_transfer_source_update"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-initiate-transfer:
+    # fts machinery worker for queue `rbl_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-check-transfer-status:
+    # fts machinery worker for queue `rbl_check_transfer_status` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::check_transfer_status"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-imps-initiate-transfer:
+    # fts machinery worker for queue `rbl_imps_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::imps::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-imps-check-transfer-status:
+    # fts machinery worker for queue `rbl_imps_check_transfer_status` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::imps::check_transfer_status"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-direct-imps-initiate-transfer:
+    # fts machinery worker for queue `rbl_direct_imps_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::direct::imps::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-direct-imps-check-transfer-status:
+    # fts machinery worker for queue `rbl_direct_imps_check_transfer_status` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/env.default.toml [queue.worker_queue_map]); the arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::direct::imps::check_transfer_status"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-hv-fire-transfer-status-webhook:
+    # M6 (I7): fts machinery worker for queue `hv_fire_transfer_status_webhook` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:201). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-hv-fire-transfer-status-webhook-deployment.yaml (args: ["worker", "hv::fire_transfer_status_webhook"]),
+    # replicas 1 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=hv::fire_transfer_status_webhook"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-hv-initiate-transfer:
+    # M6 (I7): fts machinery worker for queue `hv_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:265). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-hv-initiate-transfer-deployment.yaml (args: ["worker", "hv::initiate_transfer"]),
+    # replicas 1 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=hv::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-slow-lane-initiate-transfer:
+    # M6 (I7): fts machinery worker for queue `slow_lane_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:176). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-slow-lane-initiate-transfer-deployment.yaml (args: ["worker", "slow_lane::initiate_transfer"]),
+    # replicas 1 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=slow_lane::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-upi-initiate-transfer:
+    # M6 (I7): fts machinery worker for queue `rbl_upi_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:145). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-rbl-upi-initiate-transfer-deployment.yaml (args: ["worker", "rbl::upi::initiate_transfer"]),
+    # replicas 6 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::upi::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-upi-check-transfer-status:
+    # M6 (I7): fts machinery worker for queue `rbl_upi_check_transfer_status` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:146). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-rbl-upi-check-transfer-status-deployment.yaml (args: ["worker", "rbl::upi::check_transfer_status"]),
+    # replicas 4 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::upi::check_transfer_status"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-upi-hv-initiate-transfer:
+    # M6 (I7): fts machinery worker for queue `rbl_upi_hv_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:278). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-rbl-upi-hv-initiate-transfer-deployment.yaml (args: ["worker", "rbl::upi::hv::initiate_transfer"]),
+    # replicas 1 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::upi::hv::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-upi-hv-check-transfer-status:
+    # M6 (I7): fts machinery worker for queue `rbl_upi_hv_check_transfer_status` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:279). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-rbl-upi-hv-check-transfer-status-deployment.yaml (args: ["worker", "rbl::upi::hv::check_transfer_status"]),
+    # replicas 1 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::upi::hv::check_transfer_status"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-direct-initiate-transfer:
+    # M6 (I7): fts machinery worker for queue `rbl_direct_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:150). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-rbl-direct-initiate-transfer-deployment.yaml (args: ["worker", "rbl::direct::initiate_transfer"]),
+    # replicas 2 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::direct::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-direct-check-transfer-status:
+    # M6 (I7): fts machinery worker for queue `rbl_direct_check_transfer_status` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:151). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-rbl-direct-check-transfer-status-deployment.yaml (args: ["worker", "rbl::direct::check_transfer_status"]),
+    # replicas 1 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::direct::check_transfer_status"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-direct-upi-initiate-transfer:
+    # M6 (I7): fts machinery worker for queue `rbl_direct_upi_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:148). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-rbl-direct-upi-initiate-transfer-deployment.yaml (args: ["worker", "rbl::direct::upi::initiate_transfer"]),
+    # replicas 5 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::direct::upi::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-direct-upi-check-transfer-status:
+    # M6 (I7): fts machinery worker for queue `rbl_direct_upi_check_transfer_status` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:149). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-rbl-direct-upi-check-transfer-status-deployment.yaml (args: ["worker", "rbl::direct::upi::check_transfer_status"]),
+    # replicas 4 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::direct::upi::check_transfer_status"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-direct-imps-hv-initiate-transfer:
+    # M6 (I7): fts machinery worker for queue `rbl_direct_imps_hv_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:141). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-rbl-direct-imps-hv-initiate-transfer-deployment.yaml (args: ["worker", "rbl::direct::imps::hv::initiate_transfer"]),
+    # replicas 2 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::direct::imps::hv::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  fts-worker-rbl-direct-slow-lane-initiate-transfer:
+    # M6 (I7): fts machinery worker for queue `rbl_direct_slow_lane_initiate_transfer` (one process per worker-map KEY [queue.worker_queue_map], like the production Deployments;
+    # config/templates/base/fts/env.default.toml:289). Production counterpart:
+    # kube-manifests/templates/fts/templates/fts-live-worker-rbl-direct-sl-initiate-transfer-deployment.yaml (args: ["worker", "rbl::direct::slow_lane::initiate_transfer"]),
+    # replicas 2 in kube-manifests/prod/fts/values.yaml. The arena channel is RBL (seeds/s4/fts.sql).
+    image: rzp-arena/fts:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/fts-worker", "-env=arena", "-base_path=/app", "-command=rbl::direct::slow_lane::initiate_transfer"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-fts:/app/config:ro
+    env_file:
+      - ./generated/fts/fts.env
+    environment:
+      <<: *proxy-env
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "fts-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-fts: {condition: service_healthy}
+      redis: {condition: service_healthy}
+
+  cfa-server:
+    image: rzp-arena/cfa:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/cfa-entry.sh", "/app/cfa-server"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-cfa:/app/config:ro
+    env_file:
+      - ./generated/cfa/cfa.env
+    environment:
+      <<: *proxy-env
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      # Grpc :8080 / Http :8081 / Internal :8082 (confirmed,
+      # config/default.toml [Server.ServerAddresses]). Twirp health path not
+      # confirmed for cfa -- TCP check on Http port, see findings/29.
+      test: ["CMD", "nc", "-z", "127.0.0.1", "8081"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mongo-cfa: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  cfa-worker-contact:
+    image: rzp-arena/cfa:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/cfa-entry.sh", "/app/cfa-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-cfa:/app/config:ro
+    env_file:
+      - ./generated/cfa/cfa.env
+    environment:
+      # production runs cfa-worker-contact / cfa-worker-fa (kube-manifests/cde/cfa/values.yaml), queue chosen by this env (cfa/pkg/worker/worker.go)
+      CFA_WORKER_QUEUE_NAME: "contact-lazy-load"
+      <<: *proxy-env
+      QUEUE_DRIVER: sqs_local
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "cfa-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mongo-cfa: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  cfa-worker-fa:
+    image: rzp-arena/cfa:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/cfa-entry.sh", "/app/cfa-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-cfa:/app/config:ro
+    env_file:
+      - ./generated/cfa/cfa.env
+    environment:
+      # production runs cfa-worker-contact / cfa-worker-fa (kube-manifests/cde/cfa/values.yaml), queue chosen by this env (cfa/pkg/worker/worker.go)
+      CFA_WORKER_QUEUE_NAME: "fund-account-lazy-load"
+      <<: *proxy-env
+      QUEUE_DRIVER: sqs_local
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "cfa-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mongo-cfa: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  xbalances-server:
+    image: rzp-arena/xbalances:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/xbalances-server"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-xbalances:/app/config:ro
+    env_file:
+      - ./generated/xbalances/xbalances.env
+    environment:
+      <<: *proxy-env
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      # Same Grpc/Http/Internal 8080/8081/8082 shape as cfa (confirmed).
+      test: ["CMD", "nc", "-z", "127.0.0.1", "8081"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-xbalances: {condition: service_healthy}
+      mysql-apidb-stub: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  xbalances-worker:
+    image: rzp-arena/xbalances:${ARENA_TAG:-local}
+    profiles: ["core"]
+    networks: [rzp-arena]
+    entrypoint: ["/app/xbalances-worker"]
+    working_dir: /app
+    user: appuser
+    volumes:
+      - config-xbalances:/app/config:ro
+    env_file:
+      - ./generated/xbalances/xbalances.env
+    environment:
+      <<: *proxy-env
+      ARENA_DCS_URL: "http://dcs-stub:8080"
+      ARENA_STORK_JSON: "1"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "pgrep", "-f", "xbalances-worker"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-xbalances: {condition: service_healthy}
+      redis: {condition: service_healthy}
+      localstack: {condition: service_healthy}
+
+  # ======================================================================
+  # substitutes profile — F2 stand-ins (see substitutes/<name>/CONTRACT.md)
+  # ======================================================================
+
+  kong-lite:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: kong-lite
+        STUB_NAME: kong-lite
+        STUB_PORT: "8080"
+    image: rzp-arena/kong-lite:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena, rzp-ingress]
+    ports:
+      - "127.0.0.1:${KONG_LITE_HOST_PORT:-18080}:8080"
+    volumes:
+      - ./seeds/generated/merchants.json:/app/seed/merchants.json:ro
+      # Only synthetic merchant keys; service and datastore secrets are separate.
+      - secrets-kong:/run/secrets:ro
+    environment:
+      STUB_PORT: "8080"
+      KONG_MERCHANTS_FILE: /app/seed/merchants.json
+      KONG_MERCHANT_SECRETS_DIR: /run/secrets/merchants
+      PASSPORT_PRIVATE_KEY_FILE: /run/secrets/passport_private_key
+      PASSPORT_IDENTIFIER: "arena-passport-1"
+      # Synthetic identity claim, deliberately different from the production issuer.
+      PASSPORT_ISS: "https://identity.arena.invalid"
+      PS_API_AUTH_USER: "api"
+      PS_API_AUTH_PASS_FILE: /run/secrets/auth_api_payouts
+      # M3: source-derived merchant-edge route policy. Default 0 = frozen Twin
+      # v1.0 behaviour (whole-prefix proxy). Set 1 to expose only public merchant
+      # routes and scope cred.API injection (RED_LOOP/registry/merchant-gateway-routes.json).
+      KONG_ENFORCE_ROUTE_POLICY: "${KONG_ENFORCE_ROUTE_POLICY:-0}"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/_arena/health"]
+      <<: *healthcheck-defaults
+
+  ledger-gate:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: ledger-gate
+        STUB_NAME: ledger-gate
+        STUB_PORT: "8080"
+    image: rzp-arena/ledger-gate:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  api-ingress:
+    # M7: the shared API-monolith INGRESS (CONTRACT_FAITHFUL_REPLACEMENT of the monolith's ingress
+    # responsibilities for the selected merchant/dashboard/internal-app/admin surface). payouts'
+    # [api] host points here; fund_accounts_internal / contacts_internal / banking_accounts_internal
+    # are served from explicit merchant-owned records; everything in the payouts-service callback group
+    # is passed through to monolith-stub. See substitutes/api-ingress/CONTRACT.md and contract/routes.json.
+    build:
+      context: ./substitutes
+      dockerfile: api-ingress/Dockerfile
+    image: rzp-arena/api-ingress:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - ./seeds/generated/merchants.json:/app/seed/merchants.json:ro
+      - ./seeds/generated/monolith/merchants.json:/app/seed/monolith_merchants.json:ro
+      - ./seeds/generated/monolith/fund_accounts.json:/app/seed/fund_accounts.json:ro
+      - secrets-kong:/run/secrets/kong:ro
+      - secrets-ingress:/run/secrets/ingress:ro
+      - ingress-data:/data
+    environment:
+      STUB_PORT: "8080"
+      INGRESS_DB: /data/ingress.sqlite
+      PS_API_URL: "http://payouts-api:9400"
+      MONOLITH_STUB_URL: "http://monolith-stub:8080"
+      KONG_MERCHANTS_FILE: /app/seed/merchants.json
+      MONOLITH_MERCHANTS_FILE: /app/seed/monolith_merchants.json
+      MONOLITH_FUND_ACCOUNTS_FILE: /app/seed/fund_accounts.json
+      SECRETS_KONG_DIR: /run/secrets/kong
+      SECRETS_INGRESS_DIR: /run/secrets/ingress
+      PASSPORT_IDENTIFIER: "arena-passport-1"
+      PASSPORT_ISS: "https://identity.arena.invalid"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  monolith-stub:
+    build:
+      context: ./substitutes
+      dockerfile: monolith-stub/Dockerfile
+      args:
+        STUB_DIR: monolith-stub
+        STUB_NAME: monolith-stub
+        STUB_PORT: "8080"
+    image: rzp-arena/monolith-stub:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - ./seeds/generated/monolith/merchants.json:/app/seed/merchants.json:ro
+      - ./seeds/generated/monolith/fund_accounts.json:/app/seed/fund_accounts.json:ro
+      - ./seeds/generated/monolith/misc.json:/app/seed/misc.json:ro
+      - ./seeds/generated/pricing.json:/app/seed/pricing.json:ro
+      # "user:pass" file, same format/convention as verifier's secrets --
+      # base_stub.py's own inbound Basic-Auth check (STUB_BASIC_AUTH_FILE).
+      - secrets-monolith:/run/secrets:ro
+    environment:
+      STUB_PORT: "8080"
+      STUB_BASIC_AUTH_FILE: /run/secrets/monolith_basic_auth
+      MONOLITH_MERCHANTS_FILE: /app/seed/merchants.json
+      MONOLITH_FUND_ACCOUNTS_FILE: /app/seed/fund_accounts.json
+      MONOLITH_MISC_FILE: /app/seed/misc.json
+      MONOLITH_PRICING_FILE: /app/seed/pricing.json
+      PS_RELAY_MODE: "relay"
+      PAYOUTS_API_HOST: payouts-api
+      PAYOUTS_API_PORT: "9400"
+      PS_RELAY_AUTH_USER: "api"
+      PS_RELAY_AUTH_PASS_FILE: /run/secrets/auth_api_payouts
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  dcs-stub:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: dcs-stub
+        STUB_NAME: dcs-stub
+        STUB_PORT: "8080"
+    image: rzp-arena/dcs-stub:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - ./seeds/generated/dcs/merchants.json:/app/seed/merchants.json:ro
+    environment:
+      STUB_PORT: "8080"
+      DCS_SEED_FILE: /app/seed/merchants.json
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  splitz-stub:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: splitz-stub
+        STUB_NAME: splitz-stub
+        STUB_PORT: "8080"
+    image: rzp-arena/splitz-stub:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - ./seeds/generated/splitz/experiments.json:/app/seed/experiments.json:ro
+    environment:
+      STUB_PORT: "8080"
+      SPLITZ_SEED_FILE: /app/seed/experiments.json
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  shield-stub:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: shield-stub
+        STUB_NAME: shield-stub
+        STUB_PORT: "8080"
+    image: rzp-arena/shield-stub:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - ./seeds/generated/shield/rules.json:/app/seed/rules.json:ro
+    environment:
+      STUB_PORT: "8080"
+      SHIELD_RULES_FILE: /app/seed/rules.json
+      SHIELD_LATENCY_MS: "0"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  pricing-stub:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: pricing-stub
+        STUB_NAME: pricing-stub
+        STUB_PORT: "8080"
+    image: rzp-arena/pricing-stub:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - ./seeds/generated/pricing.json:/app/seed/pricing.json:ro
+    environment:
+      STUB_PORT: "8080"
+      PRICING_SEED_FILE: /app/seed/pricing.json
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  asv-stub:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: asv-stub
+        STUB_NAME: asv-stub
+        STUB_PORT: "8080"
+    image: rzp-arena/asv-stub:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    environment:
+      STUB_PORT: "8080"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  bankingaccounts-stub:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: bankingaccounts-stub
+        STUB_NAME: bankingaccounts-stub
+        STUB_PORT: "8080"
+    image: rzp-arena/bankingaccounts-stub:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    environment:
+      STUB_PORT: "8080"
+    volumes:
+      - ./seeds/generated/monolith/merchants.json:/app/seed/merchants.json:ro
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  stork-capture:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: stork-capture
+        STUB_NAME: stork-capture
+        STUB_PORT: "8080"
+    image: rzp-arena/stork-capture:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - ./seeds/generated/stork/subscriptions.json:/app/seed/subscriptions.json:ro
+    environment:
+      STUB_PORT: "8080"
+      STORK_SEED_FILE: /app/seed/subscriptions.json
+      STORK_EVENTS_LOG_FILE: /data/events.jsonl
+      # Set to "1" to deliver out-of-order for a given owner_id (V21) --
+      # left off by default so the golden run's normal flows see in-order
+      # delivery.
+      STORK_REORDER: "0"
+      # M2 (RED_LOOP) additive control; default "0" is byte-identical to frozen behaviour.
+      STORK_DUPLICATE_TERMINAL: "${STORK_DUPLICATE_TERMINAL:-0}"
+    <<: *runtime-security
+    tmpfs:
+      - /tmp
+      - /data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  merchant-webhook-sink:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: merchant-webhook-sink
+        STUB_NAME: merchant-webhook-sink
+        STUB_PORT: "8080"
+    image: rzp-arena/merchant-webhook-sink:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - ./seeds/generated/stork/subscriptions.json:/app/seed/subscriptions.json:ro
+    environment:
+      STUB_PORT: "8080"
+      WEBHOOK_SECRET: "arena_test_secret_min5"
+      DELIVERIES_LOG_FILE: /data/deliveries.jsonl
+    <<: *runtime-security
+    tmpfs:
+      - /tmp
+      - /data
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  # xas-sim -- x-account-statements substitute (M4). Replaces the M1 health-only
+  # xas-sink. Consumes the REAL payouts x_account_statement_source_event SQS
+  # queue, matches statements (utr->grn->cms + balance/account + amount), POSTs
+  # the 9-field payout_update to monolith-stub, and serves
+  # fetch_multiple_by_reference_numbers for the REAL PS VerifyPayoutFailedTransaction
+  # and FTS retry-preprocessor gates. See substitutes/xas-sim/CONTRACT.md.
+  xas-sim:
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: xas-sim
+        STUB_NAME: xas-sim
+        STUB_PORT: "8080"
+    image: rzp-arena/xas-sim:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks:
+      rzp-arena:
+        aliases: [xas-sim]
+    volumes:
+      - secrets-monolith:/run/secrets:ro
+    environment:
+      STUB_PORT: "8080"
+      STUB_NAME: xas-sim
+      XAS_SQS_ENDPOINT: http://localstack:4566
+      XAS_SOURCE_EVENT_QUEUE: x_account_statement_source_event
+      XAS_API_BASE_URL: http://monolith-stub:8080
+      XAS_API_AUTH_FILE: /run/secrets/monolith_basic_auth
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8080/health"]
+      <<: *healthcheck-defaults
+
+  mozart-mock:
+    # OPT-IN ONLY, profile "mozart-real" (NOT "substitutes" -- core does not
+    # depend on this service). CONFIRMED BLOCKED during the Env 2 substitutes
+    # pass: `go build` of a real ../mozart clone fails on the private module
+    # `github.com/razorpay/integrations-utils` (404 for the build identity
+    # used), independent of anything in this scaffold -- see
+    # substitutes/mozart-sim/CONTRACT.md's header for the full note.
+    # mozart-sim (below) is the PRIMARY Mozart substitute; this service is
+    # kept, defined but inert by default, in case a working
+    # integrations-utils credential becomes available later -- explicitly
+    # enable with `--profile mozart-real` (and a real MOZART_BUILD_CONTEXT)
+    # if you have one. See build/mozart.Dockerfile and
+    # substitutes/mozart-mock/CONTRACT.md for the rest of the (still
+    # unconfirmed, since it's never successfully built) `-mock` boot story.
+    build:
+      # PLACEHOLDER: must be set to an ABSOLUTE path to a real `mozart` repo
+      # clone before building this service -- e.g. export
+      # MOZART_BUILD_CONTEXT=/path/to/mozart/clone (build.sh does this for
+      # you by reading it from .env.arena). `docker compose config` still
+      # validates the YAML shape without that path existing (build.context
+      # is not existence-checked by `config`, only by an actual build/up).
+      context: ${MOZART_BUILD_CONTEXT:-./build/_mozart_context_not_configured}
+      # ABSOLUTE path to this scaffold's build/mozart.Dockerfile -- kept
+      # outside `context` (the mozart repo) since we don't modify repo
+      # clones. build.sh exports MOZART_DOCKERFILE_ABS=$(pwd)/build/mozart.Dockerfile.
+      dockerfile: ${MOZART_DOCKERFILE_ABS:-./build/mozart.Dockerfile}
+    image: rzp-arena/mozart:${ARENA_TAG:-local}
+    profiles: ["mozart-real"]
+    networks: [rzp-arena]
+    working_dir: /app
+    volumes:
+      # Mounted directly at the path mozart's own env.<name>.toml convention
+      # expects (conf/env.arena.toml relative to app basepath) -- see
+      # build/mozart.Dockerfile's ASSUMPTION note; NOT baked into the image.
+      - config-mozart-mock:/app/conf:ro
+    environment:
+      APP_ENV: arena
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "nc", "-z", "127.0.0.1", "8085"]
+      <<: *healthcheck-defaults
+
+  mozart-sim:
+    # PRIMARY Mozart substitute for this arena (see mozart-mock's comment
+    # above for why the real binary is off by default) -- see
+    # substitutes/mozart-sim/CONTRACT.md. Runs under `substitutes` (core
+    # depends on this, not on mozart-mock). config/generate.py's
+    # ARENA_MOZART_IMPL default is now "mozart-sim"; set it to "mozart-mock"
+    # (and separately enable --profile mozart-real) only if a working
+    # integrations-utils credential makes the real binary buildable again.
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: mozart-sim
+        STUB_NAME: mozart-sim
+        STUB_PORT: "8085"
+    image: rzp-arena/mozart-sim:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    environment:
+      STUB_PORT: "8085"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8085/health"]
+      <<: *healthcheck-defaults
+
+  workflow-sim:
+    # M2 (RED_LOOP) additive: thin protocol-faithful stand-in for the Workflow/
+    # Cadence approval engine. Serves WorkflowAPI/Create (payout -> pending) and
+    # drives the REAL payouts approve/reject callbacks only via the control-plane
+    # POST /_arena/decide (never automatically). See substitutes/workflow-sim/CONTRACT.md.
+    # Activated by setting ARENA_WORKFLOW_HOST=http://workflow-sim:8092 (payouts
+    # [workflow] host); inert otherwise.
+    build:
+      context: ./substitutes
+      dockerfile: Dockerfile
+      args:
+        STUB_DIR: workflow-sim
+        STUB_NAME: workflow-sim
+        STUB_PORT: "8092"
+    image: rzp-arena/workflow-sim:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      # M6 (I3) FIX: this was secrets-kong, which secrets/materialize.py never
+      # populated with auth_workflow_payouts -- workflow-sim therefore started
+      # with an EMPTY callback password and every approve/reject callback into
+      # payouts would have been 401'd. It was never noticed because
+      # ARENA_WORKFLOW_HOST defaulted to the frozen dead address, so workflow-sim
+      # was never actually wired to payouts. secrets-workflow carries the file.
+      - secrets-workflow:/run/secrets:ro
+    environment:
+      STUB_PORT: "8092"
+      WORKFLOW_INBOUND_USER: "workflow"
+      WORKFLOW_INBOUND_PASS: "workflow"
+      PS_API_URL: "http://payouts-api:9400"
+      WORKFLOW_CALLBACK_USER: "rzp_live"
+      WORKFLOW_CALLBACK_PASS_FILE: /run/secrets/auth_workflow_payouts
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8092/_arena/health"]
+      <<: *healthcheck-defaults
+
+  workflow-engine:
+    # M6 (I3): the DEFAULT Workflow/Cadence substitute for the arena, replacing
+    # workflow-sim as the target of payouts' [workflow] host (.env.arena's
+    # ARENA_WORKFLOW_HOST). Same wire contract as workflow-sim -- Twirp
+    # WorkflowAPI/Create parks a pending workflow and returns a non-empty
+    # 14-char id, terminal callbacks reuse payouts' own callback_details
+    # verbatim, /_arena/{health,pending,decide} control plane -- but backed by
+    # substitutes/workflow-engine, the durable maker/checker engine reconstructed
+    # in M5 (reports/implementation/m5-source-map.md). It adds real orgs, actors,
+    # roles, approval policies, distinct-approver counting, maker!=checker
+    # separation, optimistic-concurrency, expiry and an append-only audit log,
+    # all on restart-recoverable SQLite, so an APPROVER is a first-class identity
+    # in the arena rather than an out-of-band control-plane poke.
+    # See substitutes/workflow-engine/ARENA.md for provisioning + operation.
+    build:
+      # NOT the shared substitutes/Dockerfile: that copies only ${STUB_DIR}/*.py
+      # and the engine is a package (wfengine/). See this Dockerfile's header.
+      context: ./substitutes/workflow-engine
+      dockerfile: Dockerfile
+    image: rzp-arena/workflow-engine:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - secrets-workflow:/run/secrets:ro
+      - wfengine-data:/data
+    environment:
+      WFE_HOST: "0.0.0.0"
+      WFE_PORT: "8093"
+      WFE_DB: /data/wfe.db
+      # admin plane (org/actor/policy provisioning + evidence). Token file only:
+      # never inline, never in `docker inspect`.
+      WFE_ADMIN_TOKEN_FILE: /run/secrets/wfe_admin_token
+      # inbound Create Basic auth == payouts' rendered [workflow.auth]
+      # (config/templates/base/payouts/arena.toml:308-310 -> workflow/workflow)
+      WFE_SERVICE_USER: "workflow"
+      WFE_SERVICE_PASS: "workflow"
+      # terminal callbacks into the REAL payouts approve/reject routes; identity
+      # == cred.Workflow (payouts [auth.workflow]: rzp_live + the generated
+      # auth_workflow_payouts), identical to workflow-sim.
+      PS_API_URL: "http://payouts-api:9400"
+      WFE_CALLBACK_USER: "rzp_live"
+      WFE_CALLBACK_PASS_FILE: /run/secrets/auth_workflow_payouts
+      # payouts stores workflow_id in CHAR(14) columns -> ids must be 14 chars.
+      WFE_WORKFLOW_ID_LEN: "14"
+      # tenant boundary = the payouts merchant (workflow.owner_id), not the
+      # Razorpay org id every merchant shares.
+      WFE_TENANT_KEY: "owner_id"
+      # first Create for an unknown merchant binds the documented default policy
+      # (1 distinct approval, any actor holding `approver` in that org,
+      # maker != checker, 24h expiry). Override per org via POST /admin/policies.
+      WFE_AUTOPROVISION_POLICY: "1"
+      WFE_DEFAULT_REQUIRED_APPROVALS: "1"
+      WFE_DEFAULT_SEPARATION: "1"
+      WFE_DEFAULT_EXPIRY_SECONDS: "86400"
+    # read_only root FS + tmpfs /tmp + no-new-privileges, same as every other
+    # substitute. /data is a named volume, so it stays writable for SQLite
+    # (db + -wal + -shm) even with a read-only root filesystem.
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8093/health"]
+      <<: *healthcheck-defaults
+
+  batch-sim:
+    # M6 (I3) integrated from substitutes/batch-sim/compose-block.yml (lane I2).
+    # M6 additive: HIGH-FIDELITY REPLACEMENT for razorpay/batch's payout batch
+    # types (payout, payout_approval, payouts_*_bene_*_process). Serves a
+    # Batch-compatible API and drives the REAL payouts-api bulk create
+    # (POST /v1/payouts/bulk) and per-row approve/reject
+    # (POST /v1/payouts/payouts_internal/{id}/{approve,reject}).
+    # The monolith hop is collapsed: batch-sim emits the request the monolith
+    # would have forwarded. See substitutes/batch-sim/CONTRACT.md.
+    # Inert unless something calls it — nothing in the arena depends on it.
+    build:
+      context: ./substitutes
+      # NOT the shared substitutes/Dockerfile: batch-sim is the first stateful
+      # stub and needs /data pre-created as `stub` so its named volume is
+      # writable by uid 10001. See substitutes/batch-sim/Dockerfile — it is the
+      # shared file plus exactly one RUN line, and its header describes the
+      # one-line change to substitutes/Dockerfile that would let this go back to
+      # `dockerfile: Dockerfile`.
+      dockerfile: batch-sim/Dockerfile
+      args:
+        STUB_DIR: batch-sim
+        STUB_NAME: batch-sim
+        STUB_PORT: "8094"
+    image: rzp-arena/batch-sim:${ARENA_TAG:-local}
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    volumes:
+      - secrets-kong:/run/secrets:ro
+      - batch-sim-data:/data
+    environment:
+      STUB_PORT: "8094"
+      BATCH_SIM_DATA_DIR: /data
+      # M7: bulk CREATE goes Batch -> shared ingress (monolith payouts/bulk, Route::$proxy, app `batch`
+      # + X-Entity-Id) -> real PS /v1/payouts/bulk. ARENA_BATCH_UPSTREAM=direct restores the M6
+      # collapsed hop. Per-row approve/reject keep the collapsed hop (PS_DIRECT_URL): the monolith's
+      # bulk_approve route is outside the selected ingress surface (M7_INTEGRATION_TOPOLOGY.md).
+      PS_API_URL: "http://api-ingress:8080"
+      PS_DIRECT_URL: "http://payouts-api:9400"
+      BATCH_SIM_UPSTREAM_MODE: "${ARENA_BATCH_UPSTREAM:-monolith}"
+      BATCH_APP_AUTH_PASS_FILE: /run/secrets/app_batch
+      # cred.API on POST /v1/payouts/bulk
+      # (payout_internal_routes_with_passport.go:16)
+      PS_API_AUTH_USER: "api"
+      PS_API_AUTH_PASS_FILE: /run/secrets/auth_api_payouts
+      # X-Passport-JWT-V1 — same signer + claim shape as kong-lite
+      PASSPORT_PRIVATE_KEY_FILE: /run/secrets/passport_private_key
+      PASSPORT_IDENTIFIER: "arena-passport-1"
+      PASSPORT_ISS: "https://identity.arena.invalid"
+      # cred.Workflow on payouts_internal/{id}/approve — same pair as workflow-sim
+      WORKFLOW_CALLBACK_USER: "rzp_live"
+      WORKFLOW_CALLBACK_PASS_FILE: /run/secrets/auth_workflow_payouts
+      # BATCH application.properties:201-202 (max-attempts 5, back-off 5000ms)
+      BATCH_SIM_MAX_ATTEMPTS: "5"
+      BATCH_SIM_BACKOFF_MS: "5000"
+    <<: *runtime-security
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://127.0.0.1:8094/_arena/health"]
+      <<: *healthcheck-defaults
+
+  cron-driver:
+    image: python:3.12-alpine
+    profiles: ["substitutes"]
+    networks: [rzp-arena]
+    entrypoint: ["python3", "/app/driver.py"]
+    volumes:
+      - ./scripts/cron-driver/driver.py:/app/driver.py:ro
+    environment:
+      PAYOUTS_BASE_URL: "http://payouts-api:9400"
+      CRON_BASIC_AUTH_USER: "fast_cron"
+    secrets: [auth_fastcron_payouts]
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    # NO depends_on here on purpose: cron-driver is in `substitutes` (started
+    # BEFORE `core` per scripts/up.sh's stated order), and payouts-api is in
+    # `core` -- a depends_on across those two profiles makes
+    # `docker compose --profile datastores --profile substitutes config -q`
+    # fail with "depends on undefined service" whenever `core` isn't also
+    # enabled in that same invocation. driver.py already tolerates this: it
+    # retries every 5s forever and logs (not crashes on) connection errors,
+    # so it self-heals once payouts-api becomes reachable. scripts/up.sh
+    # still waits for payouts-api's healthcheck before declaring the arena
+    # ready, via scripts/healthcheck.sh, not via this depends_on.
+
+  # ======================================================================
+  # verify profile
+  # ======================================================================
+
+  verifier:
+    # NOTE: substance of verifier/ (pytest suite: helpers/{db,http_client,
+    # passport,creds,wait,payouts_flow}.py, conftest.py, requirements.txt)
+    # is owned by a parallel workstream (VERIFIER_SPEC.md, not authored in
+    # this pass) building a fuller verifier than a single-file placeholder --
+    # this compose entry only wires it in; do not add logic to verifier/
+    # from this scaffold pass, only fix wiring (image/profile/network/mounts)
+    # if it drifts from what verifier/ actually contains.
+    build:
+      context: ./verifier
+      dockerfile: Dockerfile
+    image: rzp-arena/verifier:${ARENA_TAG:-local}
+    profiles: ["verify"]
+    # verifier's helpers/db.py talks to datastores directly (pymysql/psycopg/
+    # pymongo/redis per requirements.txt), not only through kong-lite --
+    # unlike the original placeholder's ingress-only design, it therefore
+    # needs rzp-arena too. rzp-ingress is kept so it can also reach kong-lite
+    # as a real host-equivalent client for the HTTP-facing assertions.
+    networks: [rzp-arena]
+    environment:
+      ARENA_ENTRYPOINT: "http://kong-lite:8080"
+      PASSPORT_SIGNER_URL: "http://kong-lite:8080/_arena/mint"
+      # verifier/conftest.py defaults assume production ports (kong 8000, fts nginx 80); arena ports:
+      KONG_LITE_URL: "http://kong-lite:8080"
+      PS_PUBLIC_URL: "http://payouts-api:9400"
+      # the verifier treats a healthy Mozart substitute as the live bank path (waits for real processing); mozart-sim is primary
+      MOZART_MOCK_URL: "http://mozart-sim:8085"
+      FTS_WEB_URL: "http://fts-web:8080"
+      # merchant fixtures = the seeds/s4 id scheme (SYNTHETIC_FIXTURE_SPEC.md); M1/M3 shared, M2 direct/RBL
+      ARENA_M1_MERCHANT_ID: "ARENAM00000001"
+      ARENA_M1_BALANCE_ID: "ARENABAL000001"
+      ARENA_M1_FUND_ACCOUNT_ID: "ARENAFAX000001"   # API/monolith fund_account id (payouts fetches it from the monolith); payouts-local row is ARENAFA0000001
+      ARENA_M1_ACCOUNT_NUMBER: "2323230099999999"
+      ARENA_M2_MERCHANT_ID: "ARENAM00000002"
+      ARENA_M2_BALANCE_ID: "ARENABAL000002"
+      ARENA_M2_FUND_ACCOUNT_ID: "ARENAFAX000002"
+      ARENA_M2_ACCOUNT_NUMBER: "2323230000000002"
+      ARENA_M3_MERCHANT_ID: "ARENAM00000003"
+      ARENA_M3_BALANCE_ID: "ARENABAL000003"
+      ARENA_M3_FUND_ACCOUNT_ID: "ARENAFAX000003"
+      ARENA_M3_ACCOUNT_NUMBER: "2323230099999999"
+    volumes:
+      - ./verifier:/verifier:ro
+      - ./seeds/generated/scenario-index.json:/fixtures/scenario-index.json:ro
+      - ./seeds/generated/provenance.json:/fixtures/provenance.json:ro
+    # datastore passwords are per-arena generated secrets; verifier/run.sh exports them from /run/secrets
+    secrets: [ledger, fts, monolith, ps-fastcron, ps-service, mysql_payouts_root_password, mysql_fts_root_password, mysql_xbalances_root_password, postgres_ledger_password, mongo_cfa_root_password]
+    # NO depends_on here on purpose (same reasoning as cron-driver above):
+    # kong-lite is in `substitutes`, verifier is in `verify` -- a
+    # cross-profile depends_on breaks `config -q` whenever both profiles
+    # aren't active in the same invocation (e.g. `--profile core --profile
+    # verify` alone). scripts/golden-run.sh waits for kong-lite's
+    # healthcheck via scripts/healthcheck.sh before running
+    # `docker compose --profile verify run --rm verifier`.

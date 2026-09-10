@@ -1,0 +1,18 @@
+Egress audit: passed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpwva_d9zd/evidence/egress.json
+.Egress audit: passed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpjvtyl17u/evidence/egress.json
+.Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpl5egzl_7/evidence/egress.json
+.Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpgbv1gfim/evidence/egress.json
+.Egress audit: passed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmph5wx_6u0/evidence/egress.json
+.Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmp26nw8go2/evidence/egress.json
+.Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmp1evhlmbr/evidence/egress.json
+.Egress audit: passed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpndwtc_hi/evidence/egress.json
+.Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmp6r254x_x/evidence/egress.json
+.Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpm1vxynso/evidence/egress.json
+.Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmp5h0zqbau/evidence/egress.json
+.Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpjwm73850/evidence/egress.json
+.Egress audit: failed; evidence /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/tmpd7wpaszx/evidence/egress.json
+...............
+----------------------------------------------------------------------
+Ran 27 tests in 0.033s
+
+OK

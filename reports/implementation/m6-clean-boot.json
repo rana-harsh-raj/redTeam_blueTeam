@@ -1,0 +1,609 @@
+{
+  "schema_version": 1,
+  "started_at": "20260908T093324Z",
+  "run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m6-clean-boot-20260908T093324Z",
+  "git_head": "409cbe043c7438bc7feae274da2244ac52ca46d9",
+  "pre": {
+    "volumes": [
+      "env2_compose_kafka-data",
+      "env2_compose_localstack-data",
+      "env2_compose_mongo-cfa-data",
+      "env2_compose_mysql-apidb-data",
+      "env2_compose_mysql-fts-data",
+      "env2_compose_mysql-payouts-data",
+      "env2_compose_mysql-xbalances-data",
+      "env2_compose_postgres-ledger-data",
+      "env2_compose_wfengine-data",
+      "rzp-arena-batch-sim-data",
+      "rzp-arena-config-cfa",
+      "rzp-arena-config-fts",
+      "rzp-arena-config-ledger",
+      "rzp-arena-config-mozart-mock",
+      "rzp-arena-config-payouts",
+      "rzp-arena-config-xbalances",
+      "rzp-arena-ingress-data",
+      "rzp-arena-s2p-mysql-data",
+      "rzp-arena-secrets-ingress",
+      "rzp-arena-secrets-kong",
+      "rzp-arena-secrets-monolith",
+      "rzp-arena-secrets-workflow"
+    ],
+    "containers": 98,
+    "secrets": 39,
+    "fingerprint": {
+      "boot_id": "6cdf3d73-c39c-4ff7-aafb-856774ed2fd0",
+      "compose_project": "env2_compose",
+      "route_profile": "monolith",
+      "config_digest": "3ef134253dbc07252b24e0698a2ae6f7dc4ef31ae49040486a5c4706cceda080",
+      "git_head": "e63102de0adda18fdb7d69d7ace709054b3648ad",
+      "generated_at": null
+    }
+  },
+  "empty_state": {
+    "attach": true,
+    "volumes": [
+      "env2_compose_kafka-data",
+      "env2_compose_localstack-data",
+      "env2_compose_mongo-cfa-data",
+      "env2_compose_mysql-apidb-data",
+      "env2_compose_mysql-fts-data",
+      "env2_compose_mysql-payouts-data",
+      "env2_compose_mysql-xbalances-data",
+      "env2_compose_postgres-ledger-data",
+      "env2_compose_wfengine-data",
+      "rzp-arena-batch-sim-data",
+      "rzp-arena-config-cfa",
+      "rzp-arena-config-fts",
+      "rzp-arena-config-ledger",
+      "rzp-arena-config-mozart-mock",
+      "rzp-arena-config-payouts",
+      "rzp-arena-config-xbalances",
+      "rzp-arena-ingress-data",
+      "rzp-arena-secrets-ingress",
+      "rzp-arena-secrets-kong",
+      "rzp-arena-secrets-monolith",
+      "rzp-arena-secrets-workflow"
+    ],
+    "volume_created_first": "2026-09-08T13:15:16+05:30",
+    "volume_created_last": "2026-09-08T13:15:50+05:30",
+    "container_created_first": "2026-09-08T07:45:21.243845153Z",
+    "container_created_last": "2026-09-08T09:25:14.023842896Z",
+    "secrets_mtime_first": "2026-09-08T07:45:14.631618+00:00",
+    "secrets_mtime_last": "2026-09-08T07:45:15.514325+00:00",
+    "boot_window_under_30min": true
+  },
+  "from_empty_state": true,
+  "up_rc": 0,
+  "fingerprint": {
+    "boot_id": "6cdf3d73-c39c-4ff7-aafb-856774ed2fd0",
+    "compose_project": "env2_compose",
+    "route_profile": "monolith",
+    "config_digest": "3ef134253dbc07252b24e0698a2ae6f7dc4ef31ae49040486a5c4706cceda080",
+    "git_head": "e63102de0adda18fdb7d69d7ace709054b3648ad",
+    "generated_at": null
+  },
+  "no_stale_local_state": true,
+  "no_stale_local_state_evidence": "attach mode: all project volumes created 2026-09-08T13:15:16+05:30..2026-09-08T13:15:50+05:30 (down -v removed the previous ones), all secrets regenerated 2026-09-08T07:45:14.631618+00:00..2026-09-08T07:45:15.514325+00:00, boot_id 6cdf3d73-c39c-4ff7-aafb-856774ed2fd0",
+  "containers": [
+    {
+      "name": "env2_compose-api-ingress-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-asv-stub-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-bankingaccounts-stub-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-batch-sim-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-cfa-server-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-cfa-worker-contact-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-cfa-worker-fa-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-cron-driver-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-dcs-stub-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-web-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-check-transfer-status-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-default-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-fire-transfer-status-webhook-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-hv-fire-transfer-status-webhook-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-hv-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-check-transfer-status-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-direct-check-transfer-status-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-direct-imps-check-transfer-status-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-direct-imps-hv-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-direct-imps-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-direct-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-direct-slow-lane-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-direct-upi-check-transfer-status-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-direct-upi-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-imps-check-transfer-status-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-imps-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-upi-check-transfer-status-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-upi-hv-check-transfer-status-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-upi-hv-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-rbl-upi-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-retry-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-retry-transfer-preprocessor-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-retry-transfer-source-update-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-fts-worker-slow-lane-initiate-transfer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-kafka-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-kong-lite-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-ledger-api-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-ledger-gate-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-ledger-scheduler-1",
+      "running": false,
+      "healthy": false
+    },
+    {
+      "name": "env2_compose-ledger-worker-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-ledger-worker-balance-update-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-ledger-worker-entry-details-create-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-ledger-worker-entry-details-create-pg-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-ledger-worker-journal-create-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-localstack-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-merchant-webhook-sink-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-mongo-cfa-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-monolith-stub-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-mozart-sim-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-mysql-apidb-stub-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-mysql-fts-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-mysql-payouts-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-mysql-xbalances-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-api-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-kafka-fts-status-updates-consumer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-kafka-fts-status-updates-retry-consumer-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-api-queue-for-async-dual-write-direct-push-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-async-dual-write-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-batch-submitted-merchants-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-bulk-payouts-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-data-consistency-checker-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-data-consistency-event-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-fts-async-hv-processing-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-fts-async-processing-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-fund-management-payout-check-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-fund-management-payout-initiate-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-generic-processing-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-on-hold-payout-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-partner-bank-hold-payouts-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-payout-create-failure-handling-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-payout-source-updater-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-payout-update-failure-handling-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-payout-usage-event-processing-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-queued-payout-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-rbl-banking-account-statement-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-schedule-payout-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-transaction-create-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-webhook-event-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-x-account-statement-source-event-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-x-balance-payouts-event-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-payouts-worker-x-balances-balance-refresh-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-postgres-ledger-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-pricing-stub-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-redis-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-s2p-kafka-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-s2p-mysql-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-s2p-redis-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-s2p-vp-source-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-shield-stub-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-splitz-stub-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-stork-capture-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-workflow-engine-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-workflow-sim-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-xas-sim-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-xbalances-server-1",
+      "running": true,
+      "healthy": true
+    },
+    {
+      "name": "env2_compose-xbalances-worker-1",
+      "running": true,
+      "healthy": true
+    }
+  ],
+  "container_count": 98,
+  "running": 97,
+  "healthy": 97,
+  "not_running": [
+    "env2_compose-ledger-scheduler-1"
+  ],
+  "unhealthy": [],
+  "post_up": [
+    {
+      "cmd": "python3 RED_LOOP/m7/s2p_stack.py up",
+      "rc": 0,
+      "stdout_tail": "{\"project\": \"env2_compose\", \"image\": \"s2p-architecture-replica/vendor-payments:20c4f4d59970471067388afea8b1d65ac39ee126-550e673322646fbb\", \"containers\": {\"s2p-kafka\": \"running healthy 2026-09-08T09:25:06.708338675Z d3739fb1f9b7969d750646bfa54c2e62042734cee484cbb7512a934da5dc128e\", \"s2p-mysql\": \"running healthy 2026-09-08T09:25:06.78001432Z f1ad64f68e9e74b2193a5eef6c47d5c1304224da9e4506f329be3041d5e00457\", \"s2p-redis\": \"running healthy 2026-09-08T09:25:06.861279423Z 9b3567e08ae194e491181a6866695691d8d5e31abe80436c6aefeec11e224934\", \"s2p-vp-source\": \"running healthy 2026-09-08T09:25:14.660782164Z c95b1329991146121cdf5807009591ea6d68f22634b65380642c3e8ba6c47b10\", \"api-ingress\": \"running healthy 2026-09-08T09:32:48.40346653Z 1dc785ae5b1c24971c3dea95cbacc2a78fa9831ea66f21c5a04b3ecff552f176\"}, \"at\": \"2026-09-08T09:33:29.348543+00:00\", \"vp_source_health_rc\": 0, \"topics\": [\"add-tds-entry\", \"prod.x.vendor-payments.accounting-payouts.status-update\"]}\n",
+      "stderr_tail": ""
+    }
+  ],
+  "journeys_reused_from_same_boot": true,
+  "journeys_run_dir": "RED_LOOP/runs/m6-journeys-20260908T085132Z",
+  "fresh_merchants": 17,
+  "journey_results": {
+    "PASS": 110,
+    "FAIL": 0,
+    "EXPECTED_FAILURE": 1,
+    "BLOCKED": 0
+  },
+  "p0_failures": [],
+  "failures_all": [],
+  "blocked_without_dependency": [],
+  "suite_passed": true,
+  "fingerprint_bound": true,
+  "finished_at": "20260908T093329Z"
+}

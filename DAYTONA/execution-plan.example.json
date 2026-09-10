@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "company_policy_reference": "",
+  "transfer_approved": false,
+  "local_acceptance": "reports/implementation/local-acceptance.json",
+  "resource_profile": "reports/implementation/resource-profile.json",
+  "evidence_files": [],
+  "resources": {"cpu": 4, "memory_gib": 16, "disk_gib": 64},
+  "ttl_minutes": 45,
+  "snapshot": {"name": "", "docker_compose_validated": false},
+  "setup_domains": [],
+  "secret_scan_passed": false,
+  "offline_compose_rehearsal_passed": false,
+  "files": []
+}

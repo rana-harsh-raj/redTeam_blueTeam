@@ -1,0 +1,17 @@
+{
+  "milestone": "M3.1 Phase A - fresh-merchant no-static-reuse (current head, live datastore)",
+  "generated_at_note": "captured on branch milestone-3-1-claude-final, arena enforcement=1",
+  "fresh_merchant_id": "ARENAM90546278",
+  "successful_payout_id": "pout_TYmxm31P2ny22w",
+  "gateway_profile": "hardened (KONG_ENFORCE_ROUTE_POLICY=1)",
+  "assertions": {
+    "payout_row": {"id": "TYmxm31P2ny22w", "merchant_id": "ARENAM90546278",
+      "balance_id": "ARENABAL546278", "pricing_rule_id": "ARENAPLAN6C18F",
+      "pricing_rule_id_len": 14, "status": "processed"},
+    "reuses_m1_merchant_or_balance": 0,
+    "ledger_accounts_owned_by_merchant": ["ARENA78AC0001","ARENA78AC0002","ARENA78AC0003","ARENA78AC0004"],
+    "journal_entry_accounts_for_this_payout": ["ARENA78AC0001","ARENA78AC0002","ARENA78AC0003","ARENA78AC0004","ARENAPOOLACC02"],
+    "shared_nodal_pool": "ARENAPOOLACC02 (declared Shared-account architecture; not static merchant reuse)"
+  },
+  "conclusion": "The fresh merchant uses its OWN merchant id, balance, pricing plan (bounded 14-char), and four Ledger accounts; the only shared account is the declared Shared nodal pool. No M1/M2 static-merchant Ledger/balance/pricing state is reused."
+}

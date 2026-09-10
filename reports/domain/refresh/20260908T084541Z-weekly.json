@@ -1,0 +1,126 @@
+{
+  "_path": "/Users/rana.singh/rzp-payouts-architecture/reports/domain/refresh/20260908T084541Z-weekly.json",
+  "arena_tag": "v1-candidate",
+  "base_build_evidence": ".local/twin-repos/build-evidence-20260905T160213Z",
+  "destination": ".local/twin-repos/refresh-20260908T084541Z",
+  "docker": {
+    "available": null,
+    "reason": null
+  },
+  "executed": false,
+  "generated_at": "2026-09-08T08:45:41Z",
+  "mode": "weekly",
+  "note": "plan only; rerun with --execute to run every step in order (stops at the first failure)",
+  "repos_root": "/Users/rana.singh/rzp-payouts-clones",
+  "root": "/Users/rana.singh/rzp-payouts-architecture",
+  "schema_version": 1,
+  "status": "planned",
+  "steps": [
+    {
+      "argv": [
+        "python3",
+        "ENV2_COMPOSE/build/prepare-repos.py",
+        "--source-root",
+        "/Users/rana.singh/rzp-payouts-clones",
+        "--destination",
+        ".local/twin-repos/refresh-20260908T084541Z"
+      ],
+      "command": "python3 ENV2_COMPOSE/build/prepare-repos.py --source-root /Users/rana.singh/rzp-payouts-clones --destination .local/twin-repos/refresh-20260908T084541Z",
+      "executable": true,
+      "id": "prepare-repos",
+      "kind": "prepare",
+      "note": "fresh admitted copies from the pinned clone HEADs; writes a sibling build-evidence-<UTC>/provenance.json. Refuses to overwrite an existing destination.",
+      "rc": null,
+      "seconds": null,
+      "status": "planned",
+      "stderr_tail": null,
+      "stdout_tail": null
+    },
+    {
+      "argv": [
+        "python3",
+        "ENV2_COMPOSE/build/check-inputs.py",
+        "<new-build-evidence>/provenance.json",
+        "--verify-modules"
+      ],
+      "command": "python3 ENV2_COMPOSE/build/check-inputs.py <new-build-evidence>/provenance.json --verify-modules",
+      "id": "check-inputs",
+      "kind": "verify",
+      "note": "verifies the new copies against their provenance manifest (resolved from .local/twin-repos/build-evidence-* after step 1)",
+      "rc": null,
+      "resolve": "latest_build_evidence",
+      "seconds": null,
+      "status": "planned",
+      "stderr_tail": null,
+      "stdout_tail": null
+    },
+    {
+      "argv": [
+        "bash",
+        "ENV2_COMPOSE/build/build-host.sh",
+        "all"
+      ],
+      "command": "bash ENV2_COMPOSE/build/build-host.sh all",
+      "env": {
+        "ARENA_TAG": "v1-candidate",
+        "REPOS_ROOT": ".local/twin-repos/refresh-20260908T084541Z"
+      },
+      "id": "build-host",
+      "kind": "build",
+      "note": "REPOS_ROOT=.local/twin-repos/refresh-20260908T084541Z ARENA_TAG=v1-candidate; builds all 5 core images on the host",
+      "rc": null,
+      "seconds": null,
+      "status": "planned",
+      "stderr_tail": null,
+      "stdout_tail": null
+    },
+    {
+      "argv": [
+        "python3",
+        "RED_LOOP/m6/clean_boot.py"
+      ],
+      "command": "python3 RED_LOOP/m6/clean_boot.py",
+      "executable": true,
+      "id": "clean-boot",
+      "kind": "boot",
+      "note": "down.sh (volumes+secrets) -> assert empty state -> up.sh -> health; touches the live arena",
+      "rc": null,
+      "seconds": null,
+      "status": "planned",
+      "stderr_tail": null,
+      "stdout_tail": null
+    },
+    {
+      "argv": [
+        "python3",
+        "RED_LOOP/m6/journeys/run.py"
+      ],
+      "command": "python3 RED_LOOP/m6/journeys/run.py",
+      "executable": true,
+      "id": "journeys",
+      "kind": "journeys",
+      "note": "full journey suite",
+      "rc": null,
+      "seconds": null,
+      "status": "planned",
+      "stderr_tail": null,
+      "stdout_tail": null
+    },
+    {
+      "argv": [
+        "python3",
+        "RED_LOOP/surface/m6_acceptance.py"
+      ],
+      "command": "python3 RED_LOOP/surface/m6_acceptance.py",
+      "executable": true,
+      "id": "m6-acceptance",
+      "kind": "acceptance",
+      "note": "evaluate the M6 gates",
+      "rc": null,
+      "seconds": null,
+      "status": "planned",
+      "stderr_tail": null,
+      "stdout_tail": null
+    }
+  ]
+}

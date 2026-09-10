@@ -1,0 +1,4 @@
+{"at": "2026-09-08T18:27:31Z", "backend": "colima", "kind": "create", "profile": "full", "seed": "seed-a"}
+{"at": "2026-09-08T18:29:38Z", "kind": "state", "state": "built"}
+{"at": "2026-09-08T18:31:41Z", "kind": "state", "state": "running"}
+{"at": "2026-09-08T18:33:51Z", "kind": "destroy", "purge": false, "secs": 40.3}

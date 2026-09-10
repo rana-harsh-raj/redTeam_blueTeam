@@ -1,0 +1,361 @@
+# TWIN_SPEC/state-machines.yaml
+# Authoritative state machines for the RazorpayX Payouts Twin.
+# Every transition carries provenance (repo/path:line at the commits listed in README.md).
+# Confidence: CONFIRMED = read in source; INFERRED = derived; UNKNOWN = not derivable.
+version: 2
+generated: 2026-09-05
+updated: 2026-09-07   # M4 T12: fts_to_payout_status_map notes (T02 #5/#6/#12, C-014), ledger_journal.events_direct_account_x (C-004/C-010), inflight_reservation full machine (T04, C-009), new bas_statement_linking + da_journal_events
+sources:
+  payouts: razorpay/payouts@4bf3dbf (shallow, master)
+  fts: razorpay/fts@2a09e76
+  api: razorpay/api@2d665f9
+  ledger: razorpay/ledger@471ff4d
+  workflows: razorpay/workflows@080d71a
+
+machines:
+
+  # --------------------------------------------------------------------------
+  payout:
+    owner: payouts (Payouts Service, PS)
+    source: payouts/internal/app/payouts/state_machine.go (full file); statuses payouts/internal/app/common/appConstants/states.go:4-18
+    initial: create_request_submitted
+    statuses:
+      - create_request_submitted
+      - created
+      - pending
+      - pending_on_otp            # present in enum, no transition targets it (dead/legacy) — states.go:4-18
+      - scheduled
+      - batch_submitted
+      - queued
+      - on_hold
+      - ledger_response_awaited
+      - initiated
+      - processed
+      - reversed
+      - failed
+      - cancelled
+      - rejected
+    public_status_map:            # payouts/internal/app/common/appConstants/status.go:3-18
+      processing: [created, initiated, ledger_response_awaited, create_request_submitted, batch_submitted]
+      queued: [on_hold, queued]
+      pending: [pending_on_otp, pending]
+      processed: [processed]
+      reversed: [reversed]
+      rejected: [rejected]
+      cancelled: [cancelled]
+      failed: [failed]
+    transitions:
+      - event: created
+        to: created
+        from: [create_request_submitted, pending, scheduled, queued, on_hold, ledger_response_awaited, batch_submitted]
+        on_enter: [stork_event payout.initiated]
+        source: state_machine.go:129 (event), :19-27 (enter)
+      - event: ledger_response_awaited
+        to: ledger_response_awaited
+        from: [create_request_submitted, pending, scheduled, queued, on_hold, batch_submitted]
+        on_enter: []
+        source: state_machine.go:151, :28-34
+      - event: initiated
+        to: initiated
+        from: [created, initiated]      # self-loop allowed for FTS async retries (comment cites monolith Status.php)
+        on_enter: []
+        source: state_machine.go:177, :36-41
+      - event: failed
+        to: failed
+        from: [create_request_submitted, created, pending, scheduled, queued, on_hold, ledger_response_awaited, batch_submitted, initiated]
+        on_enter: [stork_event payout.failed]
+        source: state_machine.go:205, :65-72
+      - event: processed
+        to: processed
+        from: [initiated]
+        on_enter: [stork_event payout.processed]
+        source: state_machine.go:243, :44-53
+      - event: reversed
+        to: reversed
+        from: [create_request_submitted, ledger_response_awaited, pending, on_hold, queued, scheduled, processed, failed, initiated, created, batch_submitted]
+        on_enter: [stork_event payout.reversed]
+        source: state_machine.go:266, :55-63
+      - event: pending
+        to: pending
+        from: [create_request_submitted]
+        on_enter: [stork_event payout.pending]
+        source: state_machine.go:297, :105-112
+      - event: schedule
+        to: scheduled
+        from: [create_request_submitted, pending]
+        on_enter: []                    # no Enter hook registered (:117)
+        source: state_machine.go:319
+      - event: batch_summit               # sic — typo preserved from source
+        to: batch_submitted
+        from: [create_request_submitted, pending, scheduled]
+        on_enter: []
+        source: state_machine.go:344, :119-125
+      - event: queued
+        to: queued
+        from: [create_request_submitted, ledger_response_awaited, pending, scheduled, on_hold]
+        on_enter: [stork_event payout.queued]
+        source: state_machine.go:368, :74-81
+      - event: cancelled
+        to: cancelled
+        from: [queued, scheduled, on_hold]
+        on_enter: []                    # NO merchant webhook on cancel (absent from StatusToWebhookEventMap)
+        source: state_machine.go:392, :83-85
+      - event: on_hold
+        to: on_hold
+        from: [create_request_submitted, pending, batch_submitted, scheduled]
+        on_enter: [set on_hold_at, stork_event payout.queued]   # on_hold shares the payout.queued event
+        source: state_machine.go:419, :87-95
+      - event: rejected
+        to: rejected
+        from: [pending]
+        on_enter: [stork_event payout.rejected]
+        source: state_machine.go:444, :97-103
+    terminal: [processed, failed, cancelled, rejected]   # reversed is reachable from processed and failed (post-terminal correction)
+    audit:
+      payout_logs: appended in Payout.OnEvent (payouts/internal/app/payouts/model.go:1411-1419); mode/triggered_by always "system"
+      payout_status_details: one row per FTS/webhook status update (migration 20211026104754); table name is singular payout_status_details
+    ledger_event_map:             # payouts/internal/app/payouts/status.go:52-58
+      ledger_response_awaited: payout_initiated
+      created: payout_initiated
+      processed: payout_processed
+      reversed: payout_reversed
+      failed: payout_failed
+      note: VA-to-VA and charge-collections families use va_to_va_* / cc_debit_* events (status.go:60-73)
+    webhook_event_map:            # payouts/internal/app/common/appConstants/webhooks.go:4-24
+      created: payout.initiated
+      processed: payout.processed
+      reversed: payout.reversed
+      failed: payout.failed
+      queued: payout.queued
+      on_hold: payout.queued
+      rejected: payout.rejected
+      pending: payout.pending
+      detail_update: payout.updated      # fired directly, not via state machine (core.go:2049,2218)
+      money_moved: transaction.created   # after every successful failed/reversed journal (reversalViaLedgerService.go:215-312)
+      cancelled: none
+    guards:
+      fts_webhook_allowed_from: [initiated, processed, reversed, failed]   # states.go:37-54; otherwise HTTP 200 "webhook update skipped due to invalid state transition"
+      terminal_repeat: same terminal status again -> 200 idempotent no-op
+      per_payout_mutex: Redis AcquireResource(ResourcePayout+SourceID, 30s) shared by webhook and Kafka paths
+      approval_expiry: none in PS; monolith cron payouts_auto_cancel_on_expiry (api Service.php:2530-2557 -> Core.php:4482-4525) PENDING->rejected, QUEUED/CREATE_REQUEST_SUBMITTED->failed after 3 months
+      queued_expiry: IsValidQueuedPayout (validation.go:45-70) exists but has zero production call sites (dead code)
+
+  # --------------------------------------------------------------------------
+  fts_to_payout_status_map:
+    owner: payouts
+    source: payouts/internal/app/common/appConstants/states.go:64-128 (FtsToPayoutStatusMap)
+    default_and_shared:
+      created: created
+      initiated: initiated
+      reversed: reversed
+      failed: reversed          # shared/pool accounts remap FTS failed to payout reversed
+      processed: processed
+    direct_channels: [rbl, icici, axis, yesbank, idfc, slice]   # map keyed by LOWER-CASED channel (states.go:84); payouts.channel must match exactly
+    direct:
+      created: created
+      initiated: initiated
+      reversed: reversed
+      failed: failed
+      processed: processed
+    direct_unlisted_channel: "falls to default/default => failed->reversed (+ reversal row) — e.g. jpmc (T02 #6); expected behaviour, not a bug"
+    applies_only_on: "POST /v1/payouts/transfer_status_webhook (fts_transfer_status_webhook.go:1300-1337). The Kafka consumer and the legacy monolith relay enter HandlePayoutStatusUpdateViaFTS (core.go:1465-1585), which uses NO map and NO VerifyPayoutFailedTransaction; Direct-vs-Shared there is only the terminal-event choice in MovePayoutToTerminalStateAsPerWebhookConfig (core.go:3806-3850: Direct => EventFailed, no reversal) — T02 #5"
+    kafka_transport: "FAILED/REVERSED are acked and dropped before any map is consulted (taskHandlers/fts_status_updates.go:57-62) — EF-002/EF-003/EF-006"
+    terminal_event_rule: "PayoutToTerminalStateAsPerWebhookConfig fires EventFailed when subscribedToFailedWebhook || accountType == direct, else EventReversed + reversal entity (core.go:3866-3868); Direct FAILED therefore never creates a reversals row and always emits payout.failed"
+    guards_direct_only: "failed->reversed upgrade when XAS has DEBIT then CREDIT for the payout (:431-501); VerifyPayoutFailedTransaction errors when transaction_id is set (any type) or when a DEBIT statement exists in XAS (Direct only) (:654-710)"
+
+  monolith_fta_to_payout_status_map:
+    owner: api (monolith relay path)
+    source: api/app/Models/Payout/Status.php:243-309,415-421 ($ftaToPayoutStatusMap)
+    lookup: map[account_type][channel][fta_status] ?? map[DEFAULT][DEFAULT][fta_status]
+    default:
+      CREATED: created
+      INITIATED: initiated
+      REVERSED: reversed
+      FAILED: reversed
+      PROCESSED: processed
+    shared:
+      default: same as default
+      YESBANK: {}               # empty branch -> falls to DEFAULT/DEFAULT
+    direct:
+      default: {}               # no DEFAULT for DIRECT -> non-listed channel falls to DEFAULT/DEFAULT (FAILED->reversed)
+      RBL:     {CREATED: created, INITIATED: initiated, REVERSED: reversed, FAILED: failed, PROCESSED: processed}
+      ICICI:   same as RBL
+      AXIS:    same as RBL
+      YESBANK: same as RBL
+      IDFC:    same as RBL
+    slice_divergence: "SLICE is absent here (Status.php:273-307) and from getNonTransactionChannels() (Settlement/Channel.php:304-313) but present in PS FtsToPayoutStatusMap[direct] and DirectChannelsForConnectedBanking — a SLICE Direct payout maps FAILED->reversed on the relay path and FAILED->failed on the PS direct path, and gets preferred_source_account_id from PS but not from monolith create_fta (T02 #12). Twin excludes SLICE (m4-known-limits L-012)"
+    secondary_rule: "initiated/created + REVERSED => reversed only if fts_account_type and fts_fund_account_id both present, else failed (Payout/Core.php:7180-7194)"
+    relay_actions:              # api/app/Models/Payout/Core.php:933-1058
+      PROCESSED: handlePayoutProcessedForPayoutService -> PATCH /payouts/update_payouts_with_fts status=processed
+      REVERSED: reversePayoutService -> PATCH ... status=reversed
+      FAILED: handlePayoutFailed -> PATCH ... status=failed (only reachable for direct channels above)
+      CREATED: no-op
+      INITIATED: no-op
+      unknown: warning UNKNOWN_FTA_STATUS_SENT_TO_PAYOUT, no PS call
+      guard: repeatedFtsStatusUpdateForTerminalStatePayout short-circuits terminal repeats (Core.php:941-944)
+
+  # --------------------------------------------------------------------------
+  fts_transfer:
+    owner: fts
+    source: fts/internal/transfer/state_machine.go:7-114
+    states: [NEW, CREATED, INITIATED, PROCESSED, FAILED, REVERSED, RETRY, USER_PENDING]
+    transitions:
+      - {event: event_created, from: [NEW], to: CREATED}
+      - {event: event_initiated, from: [CREATED, RETRY, USER_PENDING], to: INITIATED}
+      - {event: event_processed, from: [INITIATED], to: PROCESSED}
+      - {event: event_failed, from: [INITIATED, CREATED, RETRY, USER_PENDING], to: FAILED}
+      - {event: event_reversed, from: [PROCESSED], to: REVERSED}
+      - {event: event_retry, from: [FAILED, INITIATED], to: RETRY}
+      - {event: event_user_pending, from: [INITIATED], to: USER_PENDING}
+    event_source: meta.{Processed,Failed,Reversed,Pending} computed by FTS from bank_status_code (fts/internal/providers/mozart/error_code.go:217-952); Mozart wire response has no meta (C57)
+    webhook_skip: no status webhook fires while transfer is RETRY (service.go:1104-1111)
+
+  fts_attempt:
+    owner: fts
+    source: fts/internal/transfer/state_machine.go:37-75
+    states: [NEW, CREATED, INITIATED, PROCESSED, FAILED, REVERSED, RETRY, FAILED_INTERNAL]
+    transitions:
+      - {event: event_created, from: [NEW], to: CREATED}
+      - {event: event_initiated, from: [CREATED, RETRY], to: INITIATED}
+      - {event: event_processed, from: [INITIATED], to: PROCESSED}
+      - {event: event_failed, from: [INITIATED, CREATED], to: FAILED}
+      - {event: "FAILED (literal-string event)", from: [CREATED], to: FAILED, note: second FAILED transition keyed on literal string (:65-69)}
+      - {event: event_reversed, from: [PROCESSED], to: REVERSED}
+      - {event: event_retry, from: [FAILED], to: RETRY}
+      - {event: event_failed_internal, from: [CREATED], to: FAILED_INTERNAL}
+    retry_policy:
+      max_reinitiate_attempt_count: 2   # attempt_processor.go:144
+      high_volume_merchant_retry_sla_s: 86400
+      retry_sla_source: TransferRetry.MerchantConfig[merchant][product][mode].RetrySLA else [integration.api.<bank>.<ver>.<mode>].RETRY_SLA
+      status_polling: self-republishing check_transfer_status until RETRY_SLA elapses (attempt_processor.go:6088-6178)
+      duplicate_gateway_ref_no: attempts_unique_keys -> FailTransfer(FtsDuplicateGatewayRefNo)
+      ambiguous_cutoffs: {IDFC "CBS:188": 8100s -> FAILED, Yesbank "ns:E404": 5400s -> FAILED}   # env.default.toml:8399-8436
+
+  # --------------------------------------------------------------------------
+  monolith_fund_transfer_attempt:
+    owner: api
+    source: api/app/Models/FundTransfer/Attempt/Core.php:487-560 (updateFundTransfer), Status.php:19-58
+    notes:
+      - FTA row saved BEFORE any PS relay call (:530-537)
+      - AttemptStatus::isValidStateTransition rejects with {"message":"webhook update skipped due to invalid state transition"} (:524-528)
+      - relay order: updateWithDetailsBeforeFtaRecon (POST /payouts/update_payouts_details_with_fts) then updateStatusAfterFtaRecon (PATCH /payouts/update_payouts_with_fts) (:835-875)
+      - no monolith-side retry; FTS's own webhook retry (3 x 200s) is the only retry
+
+  # --------------------------------------------------------------------------
+  ledger_journal:
+    owner: ledger (tenant X)
+    source: ledger/internal/journal/ledger_config/seed_data/shared_account_x.go, direct_account_x.go; account discovery ledger/internal/account_discovery/core.go:51-181
+    events_shared_account_x:
+      payout_initiated:   {config: XPayoutInitiatedV2, entries: [debit MerchantBalance amount+commission, credit VendorPayable amount, credit CommissionIncome commission-tax, credit OutputGST tax]}
+      payout_processed:   {config: XPayoutProcessedV2, entries: [debit VendorPayable amount, credit FtsPayable amount], identifiers: [banking_account_id, fts_fund_account_id, fts_account_type]}
+      payout_reversed:    {config: XPayoutReversedV2, entries: [debit FtsReceivable amount, credit MerchantBalance amount+commission, debit CommissionIncome commission-tax, debit OutputGST tax]}
+      payout_failed:      {config: XPayoutFailedV2, entries: [debit VendorPayable amount, credit MerchantBalance amount+commission, debit CommissionIncome commission-tax, debit OutputGST tax]}
+      positive_adjustment_processed: {config: XPositiveAdjustmentProcessedV2, entries: [debit AdjustmentLiability, credit MerchantBalance]}
+    events_direct_account_x:     # ledger/internal/journal/ledger_config/seed_data/direct_account_x.go; ledger/internal/common/constant.go:507-518 (T03 Finding 6)
+      note: DA* accounts keyed by banking_account_stmt_detail_id (the BASD row, basd_<14>), never FtsPayable/Receivable; DA merchant sub-accounts have min_balance NULL (mirror, not the balance authority)
+      transactor_events: [da_payout_processed, da_payout_reversed, da_fee_payout_processed, da_fee_payout_reversed, da_payout_processed_recon, da_payout_reversed_recon, da_ext_debit, da_ext_credit, da_ext_payout_processed, da_ext_payout_reversed, da_ext_fee_payout_processed, da_ext_fee_payout_reversed]
+      no_such_events: [da_payout_initiated, da_payout_failed]
+      da_payout_processed:        {config: XDAPayoutProcessed, entries: [debit MerchantBalance amount, credit VendorPayable amount, debit CommissionReceivable commission, credit CommissionIncome commission-tax, credit OutputGST tax], source: "direct_account_x.go:220-253"}
+      da_payout_processed_recon:  {config: XDAPayoutProcessedRecon, entries: [debit VendorPayable amount, credit MerchantCash amount], source: "direct_account_x.go:383-401"}
+      da_payout_reversed:         {config: XDAPayoutReversed, entries: mirror of da_payout_processed, source: "direct_account_x.go:256-289"}
+      da_payout_reversed_recon:   {config: XDAPayoutReversedRecon, entries: mirror of da_payout_processed_recon, source: "direct_account_x.go:403-421"}
+      da_ext_debit:               {config: XDAExtDebit, entries: [debit MerchantBalance amount, credit MerchantCash amount], source: "direct_account_x.go:609-627"}
+      da_ext_credit:              {config: XDAExtCredit, entries: [credit MerchantBalance amount, debit MerchantCash amount], source: "direct_account_x.go:588-606"}
+      da_ext_payout_processed_reversed: {config: XDAExtToPayoutProcessed/Reversed, entries: 7-entry re-class ext -> payout, source: "direct_account_x.go:292-381"}
+      direct_success: "TWO journals per payout: da_payout_processed then da_payout_processed_recon (api BankingAccountStatement/Core.php:5208-5209); transactor_id pout_<id>; identifiers {banking_account_stmt_detail_id: basd_<id>}; notes {balance_id, transaction_id: bas_<basid>}; api_transaction_id = payout.transaction_id"
+      who_posts: "PS: NOTHING for Direct payouts (SendLedgerEventPostBasLinking commented out at payouts core.go:7284,7356; deprecation note :7208-7215, 2026-02) — C-004/C-010. Monolith XAS-triggered payoutUpdateByBASRecon: also commented (Payout/Core.php:10327,10359). LIVE: monolith statement-fetch linking sendToLedgerPostSourceEntityProcessing -> processLedgerPayoutForDirect (BankingAccountStatement/Core.php:5175-5228,5243-5278; feature da_ledger_journal_writes), which defers to PS for PS-owned payouts under Splitz payout_service_txn_recon => nobody posts (EF-004). PS still posts da_ext_debit/da_ext_credit on ART external linking (bankingAccountStatement/core.go:735-798). Twin: monolith-stub substitute emitter (D-006)"
+      discovery_failure: "ErrAccountDiscoveryFailure when no account_details.entities @> {banking_account_stmt_detail_id:[basd]} for merchant+tenant -> SQS message dropped without retry (job_sqs/journal_create.go:277-283)"
+    ps_call_timing:
+      payout_initiated: synchronous at create; failure -> payout_create_failure_handling job (FetchByTransactor then resume)
+      payout_processed: asynchronous via payout_meta_temporary FtsInfoMeta + payout_update_failure_handling job; SHARED accounts only (payouts core.go:2575)
+      payout_reversed/payout_failed: synchronous attempt in reversals/core.go:281-330; Direct skipped; retried via payout_update_failure_handling
+      direct_any_event: "never from PS at this HEAD (see events_direct_account_x.who_posts); Direct create leaves transaction_id NULL until BAS recon sets it to the bas id (core.go:7275)"
+    dedupe: app-level ValidateJournalExist under Redis mutex; no DB unique index on (transactor_id, transactor_event)
+    balance: accounts.balance updated atomically in the journal transaction (UPDATE ... WHERE balance+incr >= min_balance); other accounts async via SQS balance_update
+
+  # --------------------------------------------------------------------------
+  workflow_approval:
+    owner: workflows (WFS, Cadence)
+    source: workflows/internal/client/types/approval/workflow.go; workflows.status taxonomy per raw-findings/23 §A.4
+    workflow_status: [creation_in_progress, created, initiated, init_failed, processed, failed, terminated]
+    domain_status: [created, approved, rejected, closed]
+    payout_side:
+      pending_entry: IsWorkflowApplicable true -> WorkflowAPI/Create -> EventPending (payouts baseHelper.go:29-105); Create error -> whole payout create fails (400)
+      approved: callback POST /v1/payouts/payouts_internal/{id}/approve -> re-enters post-create processing (no dedicated approved event)
+      rejected: callback POST .../reject -> EventRejected (pending -> rejected)
+      expired: none — Cadence ExecutionStartToCloseTimeout only (min ~4 months, default 10 years); no callback fires
+    callback_retry: Cadence activity, InitialInterval 2s, BackoffCoefficient 5.0, MaximumInterval 1h, ExpirationInterval 30d, per-attempt 30s
+    ps_success_codes_for_callbacks: [200, 201, 409]   # payouts/pkg/workflow/workflow_create.go:320-325
+    approver_check: string equality of actor_property_key/value against state rules only (workflows action/interactor.go:300-333); no self-approval prevention
+
+  # --------------------------------------------------------------------------
+  inflight_reservation:
+    owner: payouts (Redis only, no DB table)
+    source: payouts/internal/app/payouts/reservation/{store.go,scripts.go}, reservation_hook.go:34-90, inflight_reservation_reconciler.go:51-56
+    keys:
+      counter: "<prefix>:in_flight:{merchant_id:balance_id}"
+      items: "<prefix>:in_flight_items:{merchant_id:balance_id}"   # payoutID -> "<amount>:<dispatchedAtUnix>:<state>"
+    item_states: [live, awaiting_balance_refresh]   # "released"/"expired" are not states: items are deleted on release; the key pair expires by TTL (store.go:32-39)
+    ttl_s: 21600
+    max_items_per_balance: 2000
+    reserve: atomic Lua script before dispatch (reservation_gate.go:170, store.go:249); admits iff (gatewayBalance - counter - amount) >= threshold (scripts.go:70); same payout_id retry re-evaluates with self-exclusion (scripts.go:53-67)
+    release:
+      processed: -> awaiting_balance_refresh (counter unchanged, scripts.go:112-119); released later by EITHER (A) x_balances_balance_refresh worker on BalanceRefreshEvent OR (B) the reconciler cron housekeeping — both only when dispatched_at + lag < balance.last_fetched_at (never wall-clock)
+      failed|reversed|cancelled|rejected: released immediately (HDEL + DECRBY, floor 0 -> drift; scripts.go:90-99)
+    reconcile: POST /v1/cron/process_inflight_reservation_reconciliation every 5 min (cadence assumed; FastCron; twin cron-driver 300 s); heartbeat TTL 12.5 min, gate fails closed (queues) when heartbeat missing; refreshedAt from x-balances GET /v1/balances/{id}.last_fetched_at; DB-derived rebuild with 60 s grace (scripts.go:175-199)
+    gate_selection: reservationGate iff MerchantConfig.Feature["in_flight_reservation_enabled"]==1 else balanceBufferGate (queueingstrategy/strategy.go)
+    transitions:               # T04 reservation state-machine table (all paths payouts/internal/app/payouts/...)
+      - {from: none, trigger: "Direct dispatch with queue_if_low_balance, gate=reservation", guard: "flag ON, heartbeat present, threshold resolved, (bal - counter - amt) >= threshold, HLEN < 2000", to: live, redis: "INCRBY counter; HSET item amt:now:live; SADD tracked; EXPIRE 6h", source: "reservation_gate.go:241-274 -> store.go:249-275 -> scripts.go:41-75"}
+      - {from: none, trigger: "same, guarantee fails", to: "none (payout queued/low_balance)", redis: none, source: "reservation_gate.go:262-264; fundAccountPayoutDirect.go:369-420"}
+      - {from: none, trigger: "same, heartbeat missing / redis error / threshold unresolved", guard: "fail_open_on_redis_error=false", to: "none (payout queued)", redis: none, source: "reservation_gate.go:207-238"}
+      - {from: live, trigger: "re-dispatch of the same payout", guard: "self-excluded recheck fails", to: none, redis: "HDEL; DECRBY own", source: "scripts.go:53-64"}
+      - {from: live, trigger: "Process errors before FTS handoff", guard: "compensate armed", to: none, redis: "HDEL; DECRBY", source: "fundAccountPayoutDirect.go:140-145,197; reservation_hook.go:167-172"}
+      - {from: live, trigger: "OnEvent(processed)", guard: "Direct, flag ON, store bound", to: awaiting_balance_refresh, redis: "HSET same amt/ts, state flip; counter unchanged", source: "reservation_hook.go:83-86,107-145; scripts.go:112-119"}
+      - {from: "live|awaiting_balance_refresh", trigger: "OnEvent(failed|reversed|cancelled|rejected)", to: none, redis: "HDEL; DECRBY (floor 0 -> drift)", source: "reservation_hook.go:88,176-225; scripts.go:90-99"}
+      - {from: awaiting_balance_refresh, trigger: "BalanceRefreshEvent {balance_id, merchant_id, channel, gateway_balance, balance_last_fetched_at=R, gateway_balance_change_at}", guard: "flag ON; dispatched_at + lag < R", to: none, redis: "HDEL aged; DECRBY sum", source: "reservation_hook.go:349-394,236-333; scripts.go:141-156; job/x_balances_balance_refresh.go:27-36,102-123"}
+      - {from: awaiting_balance_refresh, trigger: "reconciler pass", guard: "x-balances last_fetched_at = R fetched; dispatched_at + lag < R", to: none, redis: "same Lua", source: "inflight_reservation_reconciler.go:387-404,252-288"}
+      - {from: any, trigger: "reconciler pass, Redis != DB-derived", guard: "item older than 60 s and absent from DB set / status terminal", to: "rebuilt or dropped", redis: "DEL + rebuild counter/items", source: "inflight_reservation_reconciler.go:346-385; scripts.go:175-199"}
+      - {from: any, trigger: "6h without any Lua touch", to: "expired (keys gone)", redis: TTL, source: "store.go:150,200-202"}
+      - {from: any, trigger: "counter <= 0 after pass", to: untracked, redis: "SREM tracked", source: "inflight_reservation_reconciler.go:410-421"}
+    lag: debit_visibility_lag_by_channel[channel] else default 3m (inflight_reservation_reconciler.go:614-619; config payout_config.in_flight_reservation)
+    balance_refresh_producer: "x-balances balance_fetch/service.go:378-457 publishes BalanceRefreshEvent after EVERY successful bank fetch iff DCS in_flight_reservation_enabled(mid) -> SQS {env}-x-balances-balance-refresh-live. Twin: UNREACHABLE (x-balances [Queue] Driver=inmemory, env prefix arena- vs stage-, no fetch caller, seeded status='activated', Mozart/banking-accounts Mock=true) — C-009 / EF-007; tests inject the event into SQS or bump balance.last_fetched_at and run the reconciler (T04 handoff)"
+    invariants: "I-A reserved_total == sum(items); I-B processed => awaiting & total unchanged, terminal-failure => item absent & total decremented; I-C no double release; I-D counter never below sum(items) (drift floors); I-E x-balances balance never decremented by payout events; I-F awaiting hold released only when dispatched_at + lag < last_fetched_at; I-G fail-closed without heartbeat; I-H every live item has a non-terminal payout, every awaiting item a processed payout; I-I tracked set contains mid:bal iff counter>0 (T04 §7)"
+
+  # --------------------------------------------------------------------------
+  bas_statement_linking:       # M4 T12 — payouts banking_account_statement entity linking (T03 Findings 2, 4(c), 4(d))
+    owner: payouts (rows) / XAS + monolith + ART (who decides the link)
+    source: payouts/internal/app/bankingAccountStatement/core.go:321-432,434-485,487-591,673-733; internal/app/payouts/core.go:7203-7395; x-account-statements internal/account_statements/enrich/service/service.go:44-148
+    row_states:                # banking_account_statement.entity_type (NULL until linked)
+      unlinked: {entity_id: null, entity_type: null, note: "as ingested by the RBL worker (processor/base.go:55-97)"}
+      payout: {entity_type: payout, condition: "debit statement matched to a payout (XAS: utr->grn->cms + balance/account + amount; ART: recon_status Reconciled|Reconciled_Reversed)"}
+      payout_reversal: {entity_type: payout_reversal, condition: "credit statement matched (XAS type=credit; ART Reversed|Reconciled_Reversed)"}
+      external: {entity_type: external, condition: "no match / entity already linked to a BAS of the same type / ART Unreconciled; PS then posts da_ext_debit|da_ext_credit (core.go:627-663,735-798)"}
+    transitions:
+      - {from: unlinked, event: "ART batch/process Reconciled (debit)", to: payout, side_effects: "SendUpdatesToPayoutSource -> monolith payout_update -> PS UpdatePayoutAfterBASRecon: payouts.transaction_id = bas id; mail/SMS", source: "core.go:321-432,434-485; payouts/core.go:7233-7284"}
+      - {from: unlinked, event: "ART batch/process Reversed (credit)", to: payout_reversal, side_effects: "payout failed -> reversal entity + EventReversed (payouts/core.go:7297-7318); else stamp existing reversal transaction_id (:7320-7345)", source: "core.go:707-733"}
+      - {from: unlinked, event: "ART Unreconciled or no unlinked entity", to: external, side_effects: "NotifyLedgerOnLinking -> da_ext_debit|da_ext_credit journal (transactor_id bas_<id>)", source: "core.go:627-663"}
+      - {from: "payout (debit)", event: "any re-link attempt", to: "unchanged", side_effects: "BankingAccountStatementEntityAlreadyLinkedToBas", source: "core.go:689-705"}
+      - {from: external, event: "dev-admin link / XAS converted_from_external", to: "payout|payout_reversal", side_effects: "XAS PayoutEnricher refuses relink of a statement already linked to a DIFFERENT non-external entity (payout_enricher.go:38-63); PS dev-admin cannot override an existing non-external link", source: "bas_dev_admin_routes.go:20-21; core.go:487-591"}
+    payout_side_effect: "payouts.transaction_id (char(14)) = bas id — the ONLY Direct writer of transaction_id; idempotent when transaction_id == bas_id; shouldSkipUpdateDueToMismatch skips silently when request utr/grn/cms all differ from the payout's (Splitz xas_source_event_utr_and_grn_match_experiment)"
+    statement_vs_status_conflicts:
+      - "FTS failed refused when transaction_id set or a DEBIT statement exists in XAS (VerifyPayoutFailedTransaction, fts_transfer_status_webhook.go:654-720)"
+      - "credit statement on a failed payout converts failed -> reversed with a reversal entity (payouts/core.go:7297-7318)"
+      - "FTS retry gate: credit or both present -> retry allowed; debit-only -> CodeDebitEntryExistInStatement; none -> CodeMissingDebitAndCreditEntryInStatement (fts retry_preprocessor_service.go:249-262)"
+    dedupe: "ingestion 7-tuple {account_number, posted_date, type, bank_serial_number, amount, bank_transaction_id, channel} (processor/rbl_gateway.go:517-662); XAS source_events UNIQUE(event_id, entity_type); a re-emitted event with a new event_id creates a second row"
+    twin: "ART path REAL (recon substitute posts process/batch); XAS path SUBSTITUTE (xas-sim); monolith matcher NOT modelled (D-006, C-013)"
+
+  # --------------------------------------------------------------------------
+  da_journal_events:           # M4 T12 — Direct-account (DA) ledger journal lifecycle per payout (T03 Finding 6; D-006)
+    owner: ledger (tenant X); emitter = monolith (prod) / monolith-stub substitute (twin)
+    source: ledger/internal/journal/ledger_config/seed_data/direct_account_x.go; ledger/internal/job/job_sqs/journal_create.go:224-283; api/app/Models/BankingAccountStatement/Core.php:5175-5278; payouts/internal/app/payouts/core.go:7628-7846 (mirror payload, dead in PS)
+    per_payout_sequence:
+      - {step: create, payout_status: created, journals: none, note: "no da_payout_initiated exists; transaction_id NULL"}
+      - {step: fts_processed, payout_status: processed, journals: none, note: "PS skips ledger for non-Shared (core.go:2575-2577)"}
+      - {step: fts_failed, payout_status: failed, journals: none, note: "no da_payout_failed exists; no reversal row (V08)"}
+      - {step: debit_statement_linked, payout_status: processed, journals: [da_payout_processed, da_payout_processed_recon], gates: "emitter gates: ledger enabled, not Shared, not HIGH_TPS, feature da_ledger_journal_writes; SKIPPED when Splitz payout_service_txn_recon is on for a PS-owned payout (EF-004)", note: "payouts.transaction_id = bas id set by R8 independently of the journal"}
+      - {step: credit_statement_linked, payout_status: reversed, journals: [da_payout_reversed, da_payout_reversed_recon], note: "reversal entity created (failed->reversed) or stamped"}
+      - {step: unmatched_statement, payout_status: n/a, journals: [da_ext_debit | da_ext_credit], emitter: "PS itself (bankingAccountStatement/core.go:735-798, transactor_id bas_<id>) — LIVE in PS"}
+      - {step: external_reclassified, journals: [da_ext_payout_processed | da_ext_payout_reversed], note: "7-entry re-class; monolith sendExtToPayoutEventToLedger (Payout/Core.php:10003-10037)"}
+    idempotency: "(1) idempotency table keyed by uuid idempotency_key — never dedups PS re-publishes (fresh uuid each time); (2) ValidateJournalExist(transactor_id, transactor_event) app-level — the effective guard; (3) validateAPITransactionID. No DB unique on journal(transactor_id, transactor_event)"
+    conservation: "ledger_config validation enforces sum(debits) == sum(credits) per config (ledger_config/validation.go:285-300)"
+    twin_fidelity: "ledger REAL; DA accounts REAL via Twirp (R11); emitter SUBSTITUTE; production reachability of DA journals for PS-recon merchants UNKNOWN (T03 Q1)"

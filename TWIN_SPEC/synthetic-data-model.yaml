@@ -1,0 +1,841 @@
+version: 2
+# updated 2026-09-07 (M4 T12): M2 identity corrections (T07-C1), fts.source_accounts casing (C-005), routing-rule requirement (C-003),
+# x-balances enum/status (C-007/C-008), monolith.banking_accounts.account_type (T02 #11), new section direct_merchant_record_set
+# (fresh Direct merchant record set, BASD row, statement CSV contract, DA ledger accounts) from T07 §12, T02/T03/T04/T05 handoffs.
+# ============================================================================
+# Synthetic Data Model — RazorpayX Payouts Twin (Env 2/4 arena)
+# Synthesized from reports/fidelity/raw/{00..12}_*.md (fidelity-investigation lanes, 2026-09-05),
+# TWIN_SPEC/schema/*.sql|*.json (migration-derived DDL), ENV2_COMPOSE/seeds/{s4,monolith,dcs,splitz}/*
+# (existing twin seed shape reference), and reports/SYNTHETIC_FIXTURE_SPEC.md (prior spec, gap-fill only).
+#
+# Provenance key: every leaf field carries `exactness` (EXACT: migration/proto/DTO-confirmed field
+# name+type; REPRESENTATIVE: table/endpoint identity confirmed but full column list not independently
+# re-verified, or value is a deliberate documented simplification; ASSUMED: no source found, reason given)
+# and a `provenance` citation (repo/path:line, or the lane report that established the fact).
+#
+# Conflicts between lanes are called out inline as `conflict:` keys and resolved in favor of
+# migration/model evidence per the task's instruction; the losing claim is kept for traceability.
+# ============================================================================
+
+merchant_archetypes:
+
+  # --- Existing 3 (ARENAM00000001-3), already seeded in ENV2_COMPOSE/seeds/s4 — reference only ---
+  shared_pool_api:
+    id_pattern: "ARENAM00000001 (M1)"
+    purpose: >
+      Baseline Shared/Lite merchant, ledger-authoritative balance, API-key auth, no workflow,
+      routed through the shared RBL nodal pool. Exercises the default create->created->initiated
+      ->processed happy path and Shared FtsToPayoutStatusMap (FAILED->reversed default).
+    identity_map:
+      monolith_merchant: {id: ARENAM00000001, live: true, activated: true, features: [payout_service_enabled, banking]}
+      payouts.banking_accounts: {id: ARENABA0000001, account_type: shared, channel: null, fts_fund_account_id: "900001", balance_id: ARENABAL000001}
+      x-balances.balance: {id: ARENABAL000001, account_type: pool, channel: null}
+      fts.source_accounts: {id: 900001, bank_account_type: NODAL, account_type: POOL, channel: RBL}
+      ledger.accounts: {MerchantBalance: ARENAM1ACC0001 (opening 10000000 paise), VendorPayable: ARENAM1ACC0002, CommissionIncome: ARENAM1ACC0003, OutputGST: ARENAM1ACC0004}
+      ledger.account_details.entities: {banking_account_id: ARENABA0000001, fund_account_type: [merchant_va|merchant_va_vendor|va_gst]}
+      cfa.fund_accounts: {id: ARENAFAX000001, account_type: bank_account, contact_id: linked}
+      dcs.merchant_config: {Workflows.enable_payout_workflow: false, FundTransfer.enable_payouts: true, direct_accounts/Configs.in_flight_reservation_enabled: false}
+      splitz.variant: "merchant_config_via_asv_and_dcs_experiment=on; payout_workflows_dcs_name_experiment=on; others per splitz/experiments.json"
+      stork.subscriptions: "all payout.* + transaction.created events subscribed"
+      keys.merchant_users_roles: "single primary user, role=owner (no workflow gate)"
+    unlocks: [direct create happy-path, shared FTA/webhook status remap, idempotency replay, free-payout counter]
+
+  direct_rbl_current:
+    id_pattern: "ARENAM00000002 (M2)"
+    purpose: >
+      Direct/current-account merchant on RBL, x-balances-authoritative (not ledger per-merchant
+      accounts), in_flight_reservation_enabled ON, DIRECT FtsToPayoutStatusMap (FAILED->failed,
+      not reversed). Exercises reservation Redis gate and the Direct-vs-Shared ledger skip.
+    identity_map:
+      monolith_merchant: {id: ARENAM00000002, features: [payout_service_enabled, banking, in_flight_reservation_enabled], note: "generator seeds/generator/generate.py:296-297 appends in_flight_reservation_enabled (T07-C1; earlier spec listed only two)"}
+      payouts.banking_accounts: {id: ARENABA0000002, account_type: direct, channel: rbl, fts_fund_account_id: "900002", balance_id: ARENABAL000002}
+      x-balances.balance: {id: ARENABAL000002, account_type: direct, channel: rbl, status: "activated (seed) — code expects active (C-008 OPEN)", balance: 10000000, fts_fund_account_id: "900002"}
+      fts.source_accounts: {id: 900002, bank_account_type: CURRENT, account_type: "DIRECT (seed, uppercase) — code constant is lowercase 'direct' (C-005 OPEN)", channel: RBL, mozart_identifier: v1}
+      fts.direct_account_routing_rules: {merchant_id: ARENAM00000002, channel: RBL, mode: [IMPS,NEFT], source_account_id: 900002, note: "never read with a single source account (C-003)"}
+      payouts.banking_account_statement_details: "NONE in the M2 fixture; Direct create passes because x-balances status is read via Splitz Rjdj0sAd4paXMG=on (T04 §2). M4 fresh Direct merchants get a BASD row (see direct_merchant_record_set)"
+      ledger.accounts: "NO MerchantBalance/VendorPayable/CommissionIncome/OutputGST rows for M2 (Direct skips per-merchant ledger accounts; x-balances is authoritative). Only the shared FtsReceivable/FtsPayable-current pair (ARENAM2NODAC01/02, fts_fund_account_id=900002, fund_account_type=current) exists, keyed by fts_fund_account_id not merchant_id."
+      cfa.fund_accounts: {id: ARENAFAX000002, account_type: bank_account}
+      dcs.merchant_config: {direct_accounts/Configs.in_flight_reservation_enabled: true, FundTransfer.enable_payouts_queue_buffer: true, queue_payout_bal_buffer: 50000, Cfa.skip_ifsc_lookup: true}
+      splitz.variant: "same 8-id table as M1 unless a scenario needs divergence"
+    unlocks: [reservation-gate queueing, Direct FTA status-map divergence, x-balances-as-source-of-truth balance reads, partner-bank-down on-hold]
+
+  shared_workflow_dashboard:
+    id_pattern: "ARENAM00000003 (M3)"
+    purpose: >
+      Shared merchant with dashboard OTP + 2-level approval workflow (finance_l1/finance_l2/owner),
+      block_va_payouts=true, skip_approval_workflow_for_api=true (workflow only reachable via
+      non-Private/dashboard auth). Exercises WorkflowAPI/ActionAPI create+callback and dashboard OTP.
+    identity_map:
+      monolith_merchant: {id: ARENAM00000003, features: [payout_service_enabled, banking, enable_approval_via_oauth (dcs off by default)]}
+      payouts.banking_accounts: {id: ARENABA0000003, account_type: shared, fts_fund_account_id: "900001", balance_id: ARENABAL000003}
+      x-balances.balance: {id: ARENABAL000003, account_type: pool}
+      ledger.accounts: {MerchantBalance: ARENAM3ACC0001 (opening 10000000), VendorPayable: ARENAM3ACC0002, CommissionIncome: ARENAM3ACC0003, OutputGST: ARENAM3ACC0004}
+      cfa.fund_accounts: {id: ARENAFAX000003, account_type: vpa}
+      payouts.workflow_config: {id: ARENAWC0000001, config_type: payout_workflow, enabled: true}
+      payouts.workflow_state_map: {finance_l1: ARENAWST000001, finance_l2: ARENAWST000002, owner: ARENAWST000003}
+      dcs.merchant_config: {Workflows.enable_payout_workflow: true, Workflows.skip_approval_workflow_for_api: true, Workflows.skip_workflow_for_payroll: true, FundTransfer.block_va_payouts: true}
+      keys.merchant_users_roles: "3 dashboard users: finance_l1, finance_l2, owner (per merchant_users role column); OTP required for create_payout/approve_payout unless OAuth-partner path"
+    unlocks: [workflow create/approve/reject via WFS ActionAPI, dashboard OTP flow, bulk_approve batch path, self-approval guard test]
+
+  # --- 6 new archetypes proposed to close scenario gaps the existing 3 don't cover ---
+  partner_sub_merchant:
+    id_pattern: "ARENAM00000004 (M4)"
+    purpose: >
+      Sub-merchant transacting on a Direct master's (M2's) nodal/current pool — exercises
+      shouldFetchSourceFtsFundAccountId's SHARED && (subMerchantOnDirectMaster || subAccountPayout)
+      branch (fetch source fts_fund_account_id, IS DIRECT-flavoured) and x-balances sub_balances
+      decomposition (master_balance_id/sub_balance_id), which no existing archetype exercises.
+    identity_map:
+      monolith_merchant: "id=ARENAM00000004, features=[payout_service_enabled, banking]; parent_relationship: sub-merchant of ARENAM00000002 (INFERRED: monolith-side partner/sub-merchant linkage table not traced by any lane — see cross_service_consistency_rules)"
+      payouts.banking_accounts: "id=ARENABA0000004, account_type=shared, fts_fund_account_id=900002 (shares M2's dedicated current pool, not the RBL shared pool), balance_id=ARENABAL000004"
+      x-balances.balance: "id=ARENABAL000004, account_type=sub_balance"
+      x-balances.sub_balances: "out-of-band, queries.sql only: id=subbal_ARENA0001, master_balance_id=ARENABAL000002, sub_balance_id=ARENABAL000004, sub_account_number=<distinct, per-sub-merchant virtual account number>"
+      fts.source_accounts: "reuses M2's 900002 (CURRENT/DIRECT) — no new source_account row"
+      cfa.fund_accounts: "id=ARENAFAX000005, account_type=bank_account"
+    unlocks: ["sub-merchant routing (shouldFetchSourceFtsFundAccountId SHARED+subMerchant branch)", "x-balances sub_balances/sub_balance_limits decomposition path"]
+    provenance: "L01 (FundTransfer.php:2053-2073 shouldFetchSourceFtsFundAccountId); L05/x-balances.mysql.sql (sub_balances out-of-band DDL); L07 (x-balances sub_balance overwritten-from-ledger enrichment only for Shared/sub_balance)"
+    exactness: "ASSUMED — identity map is this synthesis's construction; no lane traced a live partner/sub-merchant example end-to-end. Cite the mechanism evidence above; the specific id layout is new."
+
+  scheduled_queue_low_balance:
+    id_pattern: "ARENAM00000005 (M5)"
+    purpose: >
+      Shared merchant seeded with an intentionally low MerchantBalance opening balance (100 paise)
+      to trigger queued_reason=low_balance via the reservation/balance-buffer gate, and used for
+      scheduled_at slot testing ({9,13,17,21} IST) plus the 3-month auto-cancel sweep
+      (PENDING->rejected, QUEUED/CREATE_REQUEST_SUBMITTED->failed).
+    identity_map:
+      monolith_merchant: {id: ARENAM00000005, features: [payout_service_enabled, banking]}
+      payouts.banking_accounts: {id: ARENABA0000005, account_type: shared, fts_fund_account_id: "900001", balance_id: ARENABAL000005}
+      ledger.accounts: "MerchantBalance=ARENAM5ACC0001 (opening 100 paise, deliberately below any tested payout amount); VendorPayable/CommissionIncome/OutputGST=ARENAM5ACC0002-4"
+      x-balances.balance: {id: ARENABAL000005, account_type: pool, balance: 100}
+      cfa.fund_accounts: {id: ARENAFAX000006, account_type: bank_account}
+      dcs.merchant_config: {FundTransfer.enable_payouts_queue_buffer: true, queue_payout_bal_buffer: 0}
+    unlocks: [queueingstrategy balanceBufferGate low-balance path, cron process_queued_low_balance_payouts, schedule.go slot selection, 3-month auto-expiry]
+    provenance: "L04 (queueingstrategy/strategy.go; schedule.go:23,55 slots; core.go:4482-4525 auto-expiry); L02 (Service.php:2530-2557 monolith auto-cancel)"
+    exactness: REPRESENTATIVE — mechanism confirmed; opening-balance value (100 paise) is this synthesis's deliberate scenario choice, not a prod-observed value.
+
+  high_value_neft_rtgs:
+    id_pattern: "ARENAM00000006 (M6)"
+    purpose: >
+      Direct RBL-current merchant with increase_per_payout_amount_limit=true (DCS FundTransfer),
+      used to exercise RTGS (>=200000 paise, 08:00-17:30 window) and NEFT (1..1e8 paise day slot,
+      1.5e9 slot2 cap) boundary amounts and the 10cr/50cr/300cr payout-limit tiers.
+    identity_map:
+      monolith_merchant: {id: ARENAM00000006, features: [payout_service_enabled, banking, IncreasePayoutLimit]}
+      payouts.banking_accounts: {id: ARENABA0000006, account_type: direct, channel: rbl, fts_fund_account_id: "900006", balance_id: ARENABAL000006}
+      x-balances.balance: {id: ARENABAL000006, account_type: direct, channel: rbl, balance: 100000000000}
+      x-balances.balance._note: "balance = Rs 10,00,00,000 — large enough to fund a 50cr-tier test payout"
+      fts.source_accounts: {id: 900006, bank_account_type: CURRENT, account_type: DIRECT, channel: RBL}
+      dcs.merchant_config: {FundTransfer.increase_per_payout_amount_limit: true}
+    unlocks: [RTGS/NEFT amount-slab validation, IncreasePayoutLimit 50cr/300cr tier, NEFT working-window + slot2 cap]
+    provenance: "L06 (env.default.toml RBL v1 caps: RTGS 200000..1e8 08:00-17:30, NEFT 1..1e8 + slot2 1.5e9); L04 (payoutCreate.go limits: min 100, max 10cr/50cr/300cr, RTGS>=2L)"
+    exactness: EXACT (boundary values); ASSUMED (this archetype's specific merchant construction/balance sizing)
+
+  vpa_upi_beneficiary:
+    id_pattern: "ARENAM00000007 (M7)"
+    purpose: >
+      Shared merchant whose fund account is a UPI VPA, used for the UPI <=100000-paise cap and
+      the allowed_upi_channels DCS field (icici/axis/yesbank gating which channel serves UPI mode).
+    identity_map:
+      monolith_merchant: {id: ARENAM00000007, features: [payout_service_enabled, banking]}
+      payouts.banking_accounts: {id: ARENABA0000007, account_type: shared, fts_fund_account_id: "900001", balance_id: ARENABAL000007}
+      cfa.fund_accounts: {id: ARENAFAX000007, account_type: vpa, vpa: {handle: "arenabank", username: "arenamerchant007"}}
+      payouts.fund_accounts (thin pointer): {account_type: vpa, account_id: ARENAFAX000007}
+      dcs.merchant_config: {direct_accounts/PayoutModeConfig.allowed_upi_channels: [icici, axis]}
+    unlocks: [UPI mode amount cap (<=100000 paise), VPA account_type discriminated-union validation, PayoutModeConfig channel gating]
+    provenance: "L04 (payoutCreate.go UPI<=1L); schema/cfa.mongo.json (fund_accounts.vpa sub-document); L04 (DCS direct_accounts/PayoutModeConfig.allowed_upi_channels)"
+    exactness: EXACT (cap value, VPA field shape); ASSUMED (this merchant's specific vpa handle/username, clearly synthetic)
+
+  wallet_amazonpay:
+    id_pattern: "ARENAM00000008 (M8)"
+    purpose: >
+      Merchant paying out to an AmazonPay wallet fund account — the ONLY wallet provider CFA's
+      ValidateWallet() actually accepts at create time (paytm/phonepe/gpay are declared but
+      rejected) — exercising the AMAZON_PAY preferred_channel remap and the <=10000-paisa cap.
+    identity_map:
+      monolith_merchant: {id: ARENAM00000008, features: [payout_service_enabled, banking]}
+      payouts.banking_accounts: {id: ARENABA0000008, account_type: shared, fts_fund_account_id: "900001", balance_id: ARENABAL000008}
+      cfa.fund_accounts: {id: ARENAFAX000008, account_type: wallet_account, wallet: {provider: amazonpay, phone: "ARENAPHONE01"}}
+      fts.transfers/attempts: "preferred_channel=AMAZON_PAY, mode=WALLET_TRANSFER (enum-drift value, see never_seed/cross-service notes)"
+    unlocks: [wallet fund-account validation (amazonpay-only gap), AMAZON_PAY channel remap (YESBANK->ICICI substitution N/A here), AmazonPay <=10000 paisa cap]
+    provenance: "L05/schema/cfa.mongo.json (wallet provider_enum_enforced: [amazonpay] only); L01 (FundTransfer.php:424-551 preferred_channel AMAZONPAY->amazon_pay_fts); L06 (env.default.toml amazon_pay wallet 1..10000)"
+    exactness: EXACT (provider gap, cap, enum-drift mode value); ASSUMED (phone number, clearly synthetic placeholder)
+
+  test_mode_merchant:
+    id_pattern: "ARENAM00000009 (M9)"
+    purpose: >
+      Test-mode (rzp_test_*) merchant used to exercise disallow_traffic_for_test_transactions
+      (DCS dual-named skip_test_txn_for_dmt/disallow_traffic_for_test_transactions) and to confirm
+      test-mode static FTS/payout credentials are distinct from live-mode ones.
+    identity_map:
+      monolith_merchant: {id: ARENAM00000009, live: false, mode: test, features: [payout_service_enabled]}
+      keys: {id: "ARENAKEY0000009", key_string: "rzp_test_ARENAM0009xx", merchant_id: ARENAM00000009}
+      payouts.banking_accounts: {id: ARENABA0000009, account_type: shared, fts_fund_account_id: "900001", balance_id: ARENABAL000009}
+      dcs.merchant_config: {ApiInterface.disallow_traffic_for_test_transactions: true}
+    unlocks: [test-mode auth path (rzp_test_ key resolution), DMT test-transaction block, test-vs-live static-credential separation]
+    provenance: "L04 (DCS dual-naming table: skip_test_txn_for_dmt/disallow_traffic_for_test_transactions); L03 (keys.merchant_id via Key/Entity.php:261-282; key format rzp_<mode>_<14 random base62>)"
+    exactness: EXACT (feature name, key format); ASSUMED (this merchant's specific test-mode wiring — no lane traced a live test-mode payout end-to-end)
+
+# ============================================================================
+record_families:
+
+  # -------------------------------------------------------------------------
+  # PAYOUTS SERVICE — payouts/internal/database/migrations/*.go
+  # -------------------------------------------------------------------------
+  payouts.payouts:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:26-71 (20200615182810_create_payouts_table.go + 20260305000000, 20260720000001 ALTERs)", "L05 CRITICAL FACT: this IS the same logical table the API monolith's own `payouts` table represents via a second (payout_service_database) connection — NOT a separate ps_payouts shadow (that is CI-only, api/database/migrations/2022_07_01_095954_create_ps_payouts.php:12-14)"]
+    fields:
+      - {name: id, type: CHAR(14), nullable: false, constraints: PRIMARY KEY, generation_rule: "uniqueid.New()-style 14-char base62, ARENA-prefixed synthetic", exactness: EXACT, provenance: "payouts.mysql.sql:27"}
+      - {name: merchant_id, type: CHAR(14), nullable: false, fk: merchants.id, generation_rule: "one of the 9 archetype merchant ids", exactness: EXACT, provenance: "payouts.mysql.sql:30"}
+      - {name: balance_id, type: CHAR(14), nullable: true, fk: "x-balances.balance.id (via banking_accounts.balance_id)", exactness: EXACT, provenance: "payouts.mysql.sql:31"}
+      - {name: method, type: VARCHAR(255), nullable: false, allowed_values: "bank_account|card (payout methods; card mode referenced L02 Service.php card mode branch)", exactness: REPRESENTATIVE, provenance: "payouts.mysql.sql:32; L02"}
+      - {name: mode, type: VARCHAR(255), nullable: true, allowed_values: "IMPS|NEFT|RTGS|UPI|WALLET_TRANSFER (enum-drift, see cross_service_consistency_rules)", distribution_matters: true, generation_rule: "vary per scenario family to exercise per-mode caps/routing", exactness: EXACT, provenance: "payouts.mysql.sql:33; L06 fts.mysql.sql mode ENUM"}
+      - {name: fund_account_id, type: CHAR(14), nullable: true, fk: "payouts.fund_accounts.id (thin pointer) -> cfa fund_accounts.id", exactness: EXACT, provenance: "payouts.mysql.sql:34"}
+      - {name: batch_id, type: CHAR(14), nullable: true, generation_rule: "set only for batch-created payouts (payout.json bulk); CustomIdGenerator 14-char", exactness: EXACT, provenance: "payouts.mysql.sql:35; L08 (batch bulkSize 5, idempotency batch_+id)"}
+      - {name: idempotency_key, type: VARCHAR(255), nullable: true, generation_rule: "caller-supplied X-Payout-Idempotency header value, mirrored here", exactness: EXACT, provenance: "payouts.mysql.sql:36"}
+      - {name: user_id, type: CHAR(14), nullable: true, generation_rule: "set for dashboard/user-initiated payouts (M3); null for API-key-only merchants", exactness: EXACT, provenance: "payouts.mysql.sql:37"}
+      - {name: purpose, type: VARCHAR(255), nullable: false, constraints: "max30 (DTO)", allowed_values: "refund|cashback|vendor_bill|utility bill|salary|rzp_fees|refund (special no-Shield/no-fee purposes)", exactness: EXACT, provenance: "payouts.mysql.sql:38; payouts s4 payout_purpose seed; L04 payoutCreate.go:11-39 purpose required max30; s4/shield_fixtures.json purpose_rzp_fees/refund special-case"}
+      - {name: amount, type: BIGINT UNSIGNED, nullable: false, constraints: "min 100 paise; max 10cr default / 50cr IncreasePayoutLimit / 300cr", distribution_matters: true, generation_rule: "see value_distributions.amount_boundaries", exactness: EXACT, provenance: "payouts.mysql.sql:40; L04 payoutCreate.go:11-39"}
+      - {name: currency, type: VARCHAR(10), nullable: false, allowed_values: "INR|MYR|USD|EUR|GBP|SGD|AED", generation_rule: "INR for all 9 archetypes (payouts is an India-first product); other currencies ASSUMED unused unless a specific cross-border scenario is added", exactness: EXACT, provenance: "payouts.mysql.sql:41; L04 payoutCreate.go currency oneof"}
+      - {name: fees, type: INT UNSIGNED, nullable: true, default: 0, generation_rule: "derive from pricing.plans rule (flat 200 paisa + 36 tax for IMPS/NEFT per s4/pricing_fixtures.json), 0 for purpose=rzp_fees/refund", exactness: EXACT, provenance: "payouts.mysql.sql:43; s4/pricing_fixtures.json special_case_overrides"}
+      - {name: tax, type: INT UNSIGNED, nullable: true, default: 0, exactness: EXACT, provenance: "payouts.mysql.sql:44"}
+      - {name: status, type: VARCHAR(255), nullable: false, allowed_values: "created|initiated|failed|processed|reversed|pending|scheduled|batch_submitted|queued|cancelled|on_hold|rejected|create_request_submitted|ledger_response_awaited|pending_on_otp(dead)", distribution_matters: true, state_rules: "see state-machines.yaml (FSM already extracted); each scenario family must cover at least one transition", exactness: EXACT, provenance: "payouts.mysql.sql:45; L04 appConstants/states.go:4-18, state_machine.go"}
+      - {name: fts_transfer_id, type: BIGINT, nullable: true, note: "widened int->bigint by 20260720000001, irreversible", fk: "fts.transfers.id", exactness: EXACT, provenance: "payouts.mysql.sql:46"}
+      - {name: channel, type: VARCHAR(255), nullable: true, allowed_values: "RBL|AXIS|ICICI|YESBANK|IDFC|AMAZON_PAY (twin scope: RBL only, per L06 seed comment)", exactness: EXACT, provenance: "payouts.mysql.sql:48; L06"}
+      - {name: utr, type: VARCHAR(255), nullable: true, generation_rule: "populate on processed/reversed only, from mozart_scenarios.json gateway_ref_no/utr", exactness: EXACT, provenance: "payouts.mysql.sql:49"}
+      - {name: failure_reason, type: VARCHAR(255), nullable: true, exactness: EXACT, provenance: "payouts.mysql.sql:50"}
+      - {name: gateway_ref_no, type: "VARCHAR(255) utf8mb4_bin", nullable: true, constraints: "UNIQUE KEY idx_gateway_ref_no", exactness: EXACT, provenance: "payouts.mysql.sql:67-68 (20260305000000)"}
+      - {name: created_at/updated_at, type: INT, nullable: false, generation_rule: "unix epoch, runtime-set", exactness: EXACT, provenance: "payouts.mysql.sql:54-55"}
+      - {name: destination_id/destination_type/initiated_at, type: "n/a", note: "Go struct fields with gorm:\"-\" — explicitly NOT persisted; do NOT add these columns", exactness: EXACT, provenance: "payouts.mysql.sql:69-70"}
+    invariants:
+      - "No DB-level CHECK/ENUM on status (VARCHAR only) — application FSM is the sole guard (L04 state_machine.go)"
+      - "UNIQUE(gateway_ref_no) added 20260305000000 — twin must not insert two rows with the same non-null gateway_ref_no"
+      - "This table is shared across the payouts-service AND the monolith's payout_service_database connection — seed ONCE, not twice (do not also populate a ps_payouts CI-only table)"
+    seed_policy: "runtime-only (per s4/payouts.sql header: 'Not seeded here — populated at runtime by golden-flow traffic')"
+
+  payouts.payout_details:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:167-177 (20210902153752_create_payout_details_table.go)"]
+    fields:
+      - {name: id, type: CHAR(14), constraints: PRIMARY KEY, exactness: EXACT, provenance: "payouts.mysql.sql:168"}
+      - {name: payout_id, type: CHAR(14), fk: payouts.payouts.id, exactness: EXACT, provenance: "payouts.mysql.sql:169"}
+      - {name: queue_if_low_balance_flag, type: TINYINT, default: 0, exactness: EXACT, provenance: "payouts.mysql.sql:170"}
+      - {name: tds_category_id, type: INT UNSIGNED, nullable: true, exactness: EXACT, provenance: "payouts.mysql.sql:171"}
+      - {name: tax_payment_id, type: VARCHAR(30), nullable: true, exactness: EXACT, provenance: "payouts.mysql.sql:172"}
+      - {name: additional_info, type: JSON, nullable: true, exactness: EXACT, provenance: "payouts.mysql.sql:173"}
+      - {name: beneficiary_bank_code, type: VARCHAR(50), nullable: true, note: "OUT-OF-BAND column, no migration ever adds it; test bootstrap ALTERs it in 9+ files", exactness: "EXACT (name/nullability), ASSUMED (exact VARCHAR(50) length, inferred from Go string usage)", provenance: "payouts.mysql.sql:9-19,174; L05"}
+    invariants:
+      - "beneficiary_bank_code is PRESENT in payouts-service's own payout_details but the monolith's API-DB payouts_details table PERMANENTLY UNSET this column on dual-write (DualWrite/PayoutDetails.php:10-13,63-64) — do NOT add beneficiary_bank_code to the monolith-side apidb-subset payouts_details seed/schema; its absence there is intentional by-design, confirmed independent of the out-of-band-DDL drift on the payouts-service side."
+    seed_policy: runtime-only
+
+  monolith.payouts_details:
+    source_evidence: ["TWIN_SPEC/schema/apidb-subset.mysql.sql:65-76 (2021_06_08_195420_create_payouts_details_table.php:20-49)"]
+    fields:
+      - {name: payout_id, type: CHAR(14), constraints: "PRIMARY KEY (NOT a separate id column — differs from payouts-service's own payout_details)", exactness: EXACT, provenance: "apidb-subset.mysql.sql:66"}
+      - {name: queue_if_low_balance_flag, type: TINYINT, default: 0, exactness: EXACT, provenance: "apidb-subset.mysql.sql:67"}
+      - {name: tax_payment_id, type: VARCHAR(255), nullable: true, exactness: EXACT, provenance: "apidb-subset.mysql.sql:70"}
+      - {name: tds_category_id, type: INT UNSIGNED, nullable: true, exactness: EXACT, provenance: "apidb-subset.mysql.sql:71"}
+      - {name: additional_info, type: JSON, nullable: true, exactness: EXACT, provenance: "apidb-subset.mysql.sql:72"}
+    invariants: ["NO beneficiary_bank_code column — permanent, by-design (see payouts.payout_details invariant above)"]
+    seed_policy: runtime-only
+
+  payouts.payout_status_details:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:179-189 (20211026104754)", "L04 (table name SINGULAR payout_status_details; twin's prior draft used plural — WRONG, corrected here)"]
+    fields:
+      - {name: id, type: CHAR(14), constraints: PRIMARY KEY, exactness: EXACT, provenance: "payouts.mysql.sql:180"}
+      - {name: payout_id, type: CHAR(14), exactness: EXACT, provenance: "payouts.mysql.sql:181"}
+      - {name: status, type: VARCHAR(15), exactness: EXACT, provenance: "payouts.mysql.sql:182; L04"}
+      - {name: reason, type: VARCHAR(55), exactness: EXACT, provenance: "payouts.mysql.sql:183"}
+      - {name: description, type: VARCHAR(255), exactness: EXACT, provenance: "payouts.mysql.sql:184"}
+      - {name: mode, type: VARCHAR(20), generation_rule: "always 'system' per OnEvent (model.go:1411-1419)", exactness: EXACT, provenance: "payouts.mysql.sql:185; L04"}
+      - {name: triggered_by, type: VARCHAR(255), nullable: true, generation_rule: "always 'system' in practice", exactness: EXACT, provenance: "L04"}
+    invariants: ["No secondary index beyond payout_id — confirmed"]
+    seed_policy: runtime-only
+
+  payouts.reversals:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:103-117 (20201113232006) — DISTINCT columns from the monolith's own reversals table"]
+    fields:
+      - {name: id, type: CHAR(14), constraints: PRIMARY KEY, exactness: EXACT, provenance: "payouts.mysql.sql:104"}
+      - {name: payout_id, type: CHAR(14), note: "payouts-service reversals HAS payout_id (monolith's reversals table does NOT — polymorphic entity_id/entity_type only)", exactness: EXACT, provenance: "payouts.mysql.sql:106; apidb-subset.mysql.sql:90"}
+      - {name: balance_id, type: CHAR(14), nullable: true, exactness: EXACT, provenance: "payouts.mysql.sql:107"}
+      - {name: amount, type: BIGINT UNSIGNED, exactness: EXACT, provenance: "payouts.mysql.sql:108"}
+      - {name: fees/tax, type: INT UNSIGNED, default: 0, note: "column is 'fees' (plural) here; monolith's reversals column is 'fee' (singular) — cross-service rename on dual-write", exactness: EXACT, provenance: "payouts.mysql.sql:109-110; L05 Reversal.php:12-15 columnsToUnset renames fees->fee"}
+      - {name: channel, type: VARCHAR(255), nullable: true, exactness: EXACT, provenance: "payouts.mysql.sql:112"}
+      - {name: utr, type: VARCHAR(255), nullable: true, exactness: EXACT, provenance: "payouts.mysql.sql:115"}
+    invariants: ["Dual-write to monolith renames payout_id->entity_id (+entity_type='payout') and fees->fee — twin's monolith-stub must apply the same rename, not just copy columns 1:1"]
+    seed_policy: runtime-only
+
+  monolith.reversals:
+    source_evidence: ["TWIN_SPEC/schema/apidb-subset.mysql.sql:90-114 (2016_12_19_110546_create_reversals.php:23-91)"]
+    fields:
+      - {name: entity_id/entity_type, type: "CHAR(14)/CHAR(255)", note: "polymorphic — NO payout_id column exists here", exactness: EXACT, provenance: "apidb-subset.mysql.sql:94-95"}
+      - {name: fee, type: INT UNSIGNED, default: 0, note: "singular, not 'fees'", exactness: EXACT, provenance: "apidb-subset.mysql.sql:98"}
+      - {name: transaction_id/transaction_type/initiator_id/customer_refund_id, type: mixed, nullable: true, note: "exist here, absent from payouts-service's own reversals table", exactness: EXACT, provenance: "apidb-subset.mysql.sql:104-107"}
+    invariants: ["No unique index beyond the listed KEYs; utr indexed for fast lookup"]
+    seed_policy: runtime-only
+
+  payouts.idempotency_keys:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:262-274 (20221004002554)"]
+    fields:
+      - {name: idempotency_key, type: VARCHAR(255), exactness: EXACT, provenance: "payouts.mysql.sql:264"}
+      - {name: merchant_id, type: CHAR(14), exactness: EXACT, provenance: "payouts.mysql.sql:265"}
+      - {name: source_id/source_type, type: "CHAR(14)/VARCHAR(64)", nullable: true, exactness: EXACT, provenance: "payouts.mysql.sql:266-267"}
+      - {name: request_hash, type: VARCHAR(255), nullable: true, generation_rule: "SHA-256 canonical-JSON body hash (L03 idempotency_key.go:34)", exactness: EXACT, provenance: "payouts.mysql.sql:268; L03"}
+    invariants: ["UNIQUE(idempotency_key, merchant_id) — both payouts-service's own AND the monolith's copy of this table enforce the identical composite unique key; do not diverge"]
+    seed_policy: runtime-only
+
+  monolith.idempotency_keys:
+    source_evidence: ["TWIN_SPEC/schema/apidb-subset.mysql.sql:170-183 (2020_03_13_162700)"]
+    fields:
+      - {name: idempotency_key/merchant_id, constraints: "UNIQUE(idempotency_key,merchant_id)", exactness: EXACT, provenance: "apidb-subset.mysql.sql:178"}
+      - {name: request_hash, type: VARCHAR(255), nullable: true, exactness: EXACT, provenance: "apidb-subset.mysql.sql:176"}
+    invariants: ["FK merchant_id -> merchants(id) ON DELETE RESTRICT — the ONLY declared FK constraint found across any table in this model"]
+    seed_policy: runtime-only (mutex TTL 1200s; "config-gated IKEY_MANDATORY + Splitz ramp" per L02)
+
+  payouts.banking_accounts:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:89-101 (20200922102712)"]
+    fields:
+      - {name: id, type: CHAR(14), constraints: PRIMARY KEY, generation_rule: "ARENABA000000<N> per archetype", exactness: EXACT, provenance: "payouts.mysql.sql:90"}
+      - {name: merchant_id, type: CHAR(14), exactness: EXACT, provenance: "payouts.mysql.sql:91"}
+      - {name: balance_id, type: CHAR(14), fk: "x-balances.balance.id — ALWAYS, for every account_type (x-balances performs account selection for all types; Ledger remains balance-NUMBER source of truth for Shared underneath the same x-balances row)", exactness: EXACT, provenance: "payouts.mysql.sql:92; s4/payouts.sql:34-42 reconciliation note"}
+      - {name: channel, type: VARCHAR(255), nullable: true, allowed_values: "rbl|axis|icici|yesbank|idfc (lowercase — payouts' own channel constants; contrast FTS's uppercase channel enum)", generation_rule: "NULL for shared/pool accounts (not itself bank-specific); set for direct accounts", exactness: EXACT, provenance: "payouts.mysql.sql:93; s4/payouts.sql:22-31 CORRECTION note; appConstants/constants.go:61-70"}
+      - {name: status, type: VARCHAR(255), allowed_values: "activated (twin scope)", exactness: REPRESENTATIVE, provenance: "payouts.mysql.sql:94"}
+      - {name: account_type, type: VARCHAR(255), allowed_values: "shared|direct", distribution_matters: true, exactness: EXACT, provenance: "payouts.mysql.sql:96"}
+      - {name: fts_fund_account_id, type: CHAR(14), note: "stored as the STRING form of FTS's own INT AUTO_INCREMENT fund_accounts.id (e.g. '900001') — confirmed cross-service type mismatch, not a bug", fk: "fts.fund_accounts.id (cast)", exactness: EXACT, provenance: "payouts.mysql.sql:97; s4/payouts.sql:18-20"}
+      - {name: payout_service_enabled/counter_migrated, type: TINYINT(1), generation_rule: "1/1 for all seeded archetypes", exactness: EXACT, provenance: "payouts.mysql.sql:98-99"}
+    invariants: []
+    seed_policy: seed
+
+  monolith.banking_accounts:
+    source_evidence: ["TWIN_SPEC/schema/apidb-subset.mysql.sql:216-232 (2019_05_28_105812, truncated read at line 60 — REPRESENTATIVE not EXACT beyond the 14 listed columns)"]
+    fields:
+      - {name: account_ifsc, type: CHAR(11), nullable: true, exactness: REPRESENTATIVE, provenance: "apidb-subset.mysql.sql:219"}
+      - {name: fts_fund_account_id, type: CHAR(14), nullable: true, exactness: REPRESENTATIVE, provenance: "apidb-subset.mysql.sql:226"}
+      - {name: gateway_balance, type: BIGINT, nullable: true, exactness: REPRESENTATIVE, provenance: "apidb-subset.mysql.sql:228"}
+      - {name: account_type, type: "string(255) NOT NULL", allowed_values: "NODAL|SAVINGS|CURRENT|DIRECT|CORP_CARD (api app/Models/BankingAccount/AccountType.php:7-11) but ALWAYS hard-coded CURRENT for current accounts (BankingAccount/Core.php:583; BankLms/Core.php:119). 'direct' is the monolith balance.account_type value (Merchant/Balance/AccountType.php:19-33) and is what GET /banking_accounts/* returns in the wire field account_type (BankingAccount/Service.php:1744,1819)", generation_rule: "twin apidb seed / provisioner: banking_accounts.account_type='current', balance.account_type='direct', channel='rbl' — a seed that writes 'direct' into banking_accounts.account_type is wire-compatible for PS but not schema-faithful (T02 #11)", exactness: EXACT, provenance: "api database/migrations/2019_05_28_105812_create_banking_account_table.php; T02 §A1/#11"}
+    invariants: ["additional columns beyond line 60 of the migration exist but were not independently re-transcribed — do not treat this list as complete"]
+    seed_policy: runtime-only
+
+  payouts.counters:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:206-214 (20220526144631)"]
+    fields:
+      - {name: id, type: CHAR(14), constraints: PRIMARY KEY, exactness: EXACT, provenance: "payouts.mysql.sql:207"}
+      - {name: balance_id, type: CHAR(14), fk: "x-balances.balance.id", exactness: EXACT, provenance: "payouts.mysql.sql:208"}
+      - {name: free_payouts_consumed_last_reset_at, type: INT UNSIGNED, exactness: EXACT, provenance: "payouts.mysql.sql:209"}
+      - {name: free_payouts_consumed, type: INT, default: 0, generation_rule: "0 for all archetypes at seed time (task requirement, s4/pricing_fixtures.json)", exactness: EXACT, provenance: "payouts.mysql.sql:210; s4/pricing_fixtures.json"}
+      - {name: account_type, type: VARCHAR(255), allowed_values: "shared|direct", exactness: EXACT, provenance: "payouts.mysql.sql:211"}
+    invariants: []
+    seed_policy: seed
+
+  payouts.counter_transaction:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:238-246 (20220822132631)"]
+    fields:
+      - {name: counter_id, type: CHAR(14), fk: payouts.counters.id, exactness: EXACT, provenance: "payouts.mysql.sql:240"}
+      - {name: payout_status, type: VARCHAR(255), exactness: EXACT, provenance: "payouts.mysql.sql:242"}
+      - {name: transaction_type, type: VARCHAR(32), exactness: EXACT, provenance: "payouts.mysql.sql:243"}
+    invariants: []
+    seed_policy: runtime-only
+
+  payouts.payout_sources / payouts.payout_logs / payouts.payout_purpose:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:119-144"]
+    fields:
+      - {name: "payout_sources.priority", type: INT, nullable: true, exactness: EXACT, provenance: "payouts.mysql.sql:124"}
+      - {name: "payout_logs.*", type: mixed, note: "NO secondary index at all (not even payout_id) — CONFIRMED", exactness: EXACT, provenance: "payouts.mysql.sql:128-137"}
+      - {name: "payout_purpose.purpose_type", type: JSON, generation_rule: "['refund','cashback','vendor_bill','utility bill','salary'] per merchant — publicly-documented standard purposes, not sensitive", exactness: EXACT, provenance: "payouts.mysql.sql:139-144; s4/payouts.sql:66-77"}
+    invariants: ["payout_logs has zero indexes — a twin performance/scan-cost test could exploit this deliberately"]
+    seed_policy: "payout_sources/payout_logs: runtime-only; payout_purpose: seed"
+
+  payouts.workflow_config / workflow_entity_map / workflow_state_map:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:146-165,248-260"]
+    fields:
+      - {name: "workflow_config.config_type/enabled", type: "VARCHAR(255)/TINYINT(1)", generation_rule: "'payout_workflow', enabled=1 for M3 only", exactness: EXACT, provenance: "payouts.mysql.sql:149-150; s4/payouts.sql:89-91"}
+      - {name: "workflow_entity_map (payouts-service's OWN copy, distinct from the monolith's own workflow_entity_map)", type: "n/a", note: "created at runtime when WFS.Create succeeds; not pre-seeded", exactness: EXACT, provenance: "payouts.mysql.sql:156-165"}
+      - {name: "workflow_state_map.actor_role/state_status/group_name/type", type: VARCHAR(255), generation_rule: "finance_l1/finance_l2/owner roles, group_name approvers_l1/l2/owner, state_status 'pending', type 'approval', count_of_approvals_needed=1", exactness: "REPRESENTATIVE (schema EXACT, free-text taxonomy values TODO(confirm) per s4/payouts.sql:83-86)", provenance: "payouts.mysql.sql:248-260; s4/payouts.sql:79-99"}
+    invariants: ["workflow_entity_map (both copies) is populated ONLY at runtime by a successful WorkflowAPI.Create — never seed rows here directly; a seeded row with no matching real WFS workflow_id would be inconsistent"]
+    seed_policy: "workflow_config/workflow_state_map: seed (M3 only); workflow_entity_map: never_seed (runtime-only)"
+
+  monolith.workflow_entity_map:
+    source_evidence: ["TWIN_SPEC/schema/apidb-subset.mysql.sql:116-127 (2020_08_13_104459) — DISTINCT table from payouts-service's own copy"]
+    seed_policy: runtime-only
+
+  payouts.fund_accounts / payouts.bank_accounts (thin pointer tables):
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:191-204 (20220120161944, 20220120172736)"]
+    fields:
+      - {name: "fund_accounts.account_type", type: VARCHAR(255), allowed_values: "bank_account|vpa (per s4 comment; wallet_account addable for M8)", exactness: EXACT, provenance: "payouts.mysql.sql:193; s4/payouts.sql:102-110"}
+      - {name: "fund_accounts.account_id", type: CHAR(14), fk: "cfa fund_accounts.id (external, cross-service, NOT enforced by DB)", exactness: EXACT, provenance: "payouts.mysql.sql:194"}
+      - {name: "bank_accounts.ifsc_code", type: CHAR(11), generation_rule: "synthetic ARNA0000001-style IFSC, obviously fake", exactness: EXACT, provenance: "payouts.mysql.sql:200; s4/payouts.sql:119-123"}
+    invariants: ["This is payouts-service's OWN thin pointer copy, distinct from cfa's Mongo fund_accounts (the real document) and from FTS's own fund_accounts (INT PK, distinct DB)"]
+    seed_policy: seed
+
+  payouts.bulk_idempotency_keys / duplicate_prevention_config / merchant_configurations / idempotency_key_exclusions / settings / payout_meta_temporary / payout_meta_permanent / payout_attempts:
+    source_evidence: ["TWIN_SPEC/schema/payouts.mysql.sql:216-329"]
+    fields:
+      - {name: "duplicate_prevention_config.detection_period", type: BIGINT, nullable: true, exactness: EXACT, provenance: "payouts.mysql.sql:304"}
+      - {name: "payout_attempts.gateway_ref_no/cms_ref_no", type: VARCHAR(255), note: "all indexes NON-unique here, unlike payouts.gateway_ref_no", exactness: EXACT, provenance: "payouts.mysql.sql:276-286"}
+    invariants: ["merchant_configurations/settings/duplicate_prevention_config: no confirmed real key/value taxonomy found by any lane — leave UNSEEDED per s4/payouts.sql header rather than fabricate plausible-looking config keys"]
+    seed_policy: never_seed (merchant_configurations, settings, duplicate_prevention_config — no confirmed taxonomy); runtime-only (bulk_idempotency_keys, payout_attempts, payout_meta_*, idempotency_key_exclusions)
+
+  # -------------------------------------------------------------------------
+  # FTS (Fund Transfer Service) — fts/internal/migrations/*.go
+  # -------------------------------------------------------------------------
+  fts.bank_accounts:
+    source_evidence: ["TWIN_SPEC/schema/fts.mysql.sql:20-32 (00001)"]
+    fields:
+      - {name: id, type: "INT(11) AUTO_INCREMENT", note: "differs from payouts/x-balances CHAR(14) convention", generation_rule: "900001+ block, well clear of default auto-increment start, per s4/fts.sql header", exactness: EXACT, provenance: "fts.mysql.sql:21; s4/fts.sql:6-11"}
+      - {name: ifsc/account_number/beneficiary_name, type: "VARCHAR(20)/VARCHAR(40)/VARCHAR(255)", generation_rule: "obviously synthetic (ARNA0000001, 2323230099999999, 'ARENA RZPX POOL NODAL ACCOUNT')", exactness: REPRESENTATIVE, provenance: "fts.mysql.sql:22-24; s4/fts.sql:25-30"}
+    invariants: ["Only the twin-seeded column subset independently confirmed; other columns REPRESENTATIVE not EXACT"]
+    seed_policy: seed
+
+  fts.fund_accounts:
+    source_evidence: ["TWIN_SPEC/schema/fts.mysql.sql:34-43 (00003) — FTS's OWN generic account_type+account_id pointer, distinct from cfa's Mongo fund_accounts AND payouts-service's own fund_accounts"]
+    fields:
+      - {name: account_type, type: VARCHAR(50), allowed_values: "BANK_ACCOUNT (twin scope; VPA/WALLET/CARD plausible per fts channel support, ASSUMED for those not yet seeded)", exactness: EXACT, provenance: "fts.mysql.sql:36"}
+      - {name: default_channel, type: "n/a in DDL shown; present in twin seed as 'RBL'", exactness: REPRESENTATIVE, provenance: "s4/fts.sql:36-41"}
+    seed_policy: seed
+
+  fts.transfers:
+    source_evidence: ["TWIN_SPEC/schema/fts.mysql.sql:45-93 (00005, verbatim CREATE + WALLET_TRANSFER enum-drift extension)"]
+    fields:
+      - {name: id, type: "INT(11) AUTO_INCREMENT", exactness: EXACT, provenance: "fts.mysql.sql:46"}
+      - {name: product, type: ENUM, allowed_values: "PAYOUT|PAYOUT_REFUND|SETTLEMENT|REFUND|PENNY_TESTING|ES_ON_DEMAND|CA_PAYOUT|CUSTOMER_WALLET|CUSTOMER_PAYOUT", generation_rule: "'PAYOUT' for all payout-twin scenarios", exactness: EXACT, provenance: "fts.mysql.sql:47"}
+      - {name: source_type/source_id, type: "VARCHAR(50)/VARCHAR(14)", generation_rule: "source_type='payout', source_id=payouts.payouts.id (bare id, no prefix, per L01)", exactness: EXACT, provenance: "fts.mysql.sql:49-50; L01 (FundTransfer.php:313-356 source_id bare id)"}
+      - {name: preferred_mode/mode, type: ENUM, allowed_values: "IMPS|NEFT|RTGS|IFT|UPI|CT|WALLET_TRANSFER|DUITNOW|IBG", conflict: "WALLET_TRANSFER required by code (AMAZON_PAY channel) but ABSENT from every numbered goose migration's ENUM — only in untracked queries.txt. Twin schema INCLUDES it as a 9th enum value to avoid rejecting AMAZON_PAY payouts; prod's real tracked-migration schema would reject it (sql_mode-dependent).", exactness: "EXACT (values), CONFIRMED CONFLICT (production schema drift, not a modeling choice)", provenance: "fts.mysql.sql:8-14,51,60; L06"}
+      - {name: preferred_channel/channel, type: ENUM, allowed_values: "AXIS|CITI|HDFC|ICICI|RBL|YESBANK|M2P|AMAZON_PAY|INDUSIND|MCS|IDFC|OCBC|SLICE|JPMC_INTL_BANK_TRANSFER", note: "INDUSIND present in ENUM since migration 00047 but ZERO code references — schema would accept it, application can never produce/validate it", exactness: EXACT, provenance: "fts.mysql.sql:52,56; header enum-drift note"}
+      - {name: fund_account_id, type: "INT(11) NOT NULL", fk: fts.fund_accounts.id, exactness: EXACT, provenance: "fts.mysql.sql:54"}
+      - {name: amount, type: "BIGINT(20) UNSIGNED", distribution_matters: true, generation_rule: "mirrors payouts.payouts.amount", exactness: EXACT, provenance: "fts.mysql.sql:59"}
+      - {name: status, type: ENUM, allowed_values: "CREATED|INITIATED|PROCESSED|FAILED|REVERSED|RETRY|USER_PENDING", state_rules: "see L06 FSM (state_machine.go:7-114)", distribution_matters: true, exactness: EXACT, provenance: "fts.mysql.sql:61; L06"}
+      - {name: utr/return_utr, type: VARCHAR(255), generation_rule: "from mozart_scenarios.json per scenario", exactness: EXACT, provenance: "fts.mysql.sql:62-63"}
+      - {name: bank_status_code, type: VARCHAR(100), allowed_values: "SUCCESS|INSUFFICIENT_FUND|MERCHANT_INSUFFICIENT_FUND|RETURNED|INVALID_VPA|DUPLICATE_TXN|CBS:188|ns:E404|... (~140 real codes; twin/mozart-sim models only 6, per L06)", distribution_matters: true, generation_rule: "see value_distributions.mozart_bank_status_codes", exactness: "EXACT (schema), REPRESENTATIVE (6-of-140 coverage is a documented twin gap)", provenance: "fts.mysql.sql:66; L06 mozart error_code.go:217-952"}
+      - {name: is_credited/is_debited, type: TINYINT(1), distribution_matters: true, generation_rule: "set independently to cover all 4 combinations (needed for retry-preprocessor branches, per lane 11)", exactness: EXACT, provenance: "fts.mysql.sql:80-81; lane-11 Synthetic-data table"}
+    invariants:
+      - "UNIQUE KEY unique_source (source_type, source_id) — dedupe key; a twin retrying the same payout_id must hit this constraint, not create a second transfer row"
+    seed_policy: runtime-only (created by /v1/transfer traffic)
+
+  fts.attempts:
+    source_evidence: ["TWIN_SPEC/schema/fts.mysql.sql:95-140 (00006, verbatim + WALLET_TRANSFER addition)"]
+    fields:
+      - {name: transfer_id, type: "INT(11) NOT NULL", fk: fts.transfers.id, exactness: EXACT, provenance: "fts.mysql.sql:99"}
+      - {name: status, type: ENUM, allowed_values: "CREATED|INITIATED|PROCESSED|FAILED|REVERSED|RETRY|FAILED_INTERNAL", note: "attempt-level FSM has FAILED_INTERNAL (not on transfers); RETURNED is NOT a state anywhere (confirms no dedicated RETURNED status exists — RETURNED is a bank_status_code, remapped to FAILED at this layer)", exactness: EXACT, provenance: "fts.mysql.sql:107; lane-11 Synthetic-data table"}
+      - {name: gateway_ref_no, type: VARCHAR(50), constraints: "UNIQUE KEY gateway_ref_no_unique", generation_rule: "ARENAUTR000000N per mozart_scenarios.json", exactness: EXACT, provenance: "fts.mysql.sql:110,131"}
+      - {name: cms_ref_no, type: VARCHAR(255), nullable: true, exactness: EXACT, provenance: "fts.mysql.sql:115"}
+      - {name: re_initiate_count, type: TINYINT, default: 0, constraints: "MaxReInitiateAttemptCount=2 caps this", generation_rule: "0 for most seeded rows", exactness: EXACT, provenance: "fts.mysql.sql:130; L06 attempt_processor.go:144"}
+    invariants: ["UNIQUE(gateway_ref_no) — dedupe: FTS FailTransfer(FtsDuplicateGatewayRefNo) on collision"]
+    seed_policy: runtime-only
+
+  fts.attempts_unique_keys:
+    source_evidence: ["TWIN_SPEC/schema/fts.mysql.sql:151-154 (00021) — single-column PK dedup table, gateway_ref_no IS the PK"]
+    seed_policy: runtime-only
+
+  fts.source_accounts:
+    source_evidence: ["TWIN_SPEC/schema/fts.mysql.sql:142-149 (00007) + s4/fts.sql:44-56 for the fuller twin-used column set"]
+    fields:
+      - {name: bank_account_type, type: VARCHAR, allowed_values: "NODAL|CURRENT|CORP_CARD", distribution_matters: true, generation_rule: "NODAL for shared pool (900001), CURRENT for direct accounts (900002+)", exactness: EXACT, provenance: "L07 (fts/internal/account/source_account.go:99-101,182)"}
+      - {name: account_type, type: "VARCHAR(255)", allowed_values: "direct|pool|rx_wallet — LOWERCASE per fts internal/account/source_account.go:94-96,183 (case-sensitive == at attempt_processor.go:4053-4054,4340-4341,1142,1186; service.go:1399). The twin seed writes 'DIRECT'/'POOL' (s4/fts.sql:54-55): routing still works (lookup is by fund_account_id) but the == TypeDirect checks fail (pool-named tasks/queues, egress bucket off). C-005 OPEN — fresh Direct merchants must use lowercase 'direct'; M2 seed left untouched pending T09 runtime observation", exactness: EXACT, provenance: "T05 §1.3; s4/fts.sql:54-55", conflict: "seed uppercase vs code lowercase (C-005)"}
+      - {name: mozart_identifier, type: VARCHAR, generation_rule: "'v1' placeholder — exact string format fts/internal/providers/mozart expects NOT independently confirmed", exactness: ASSUMED, provenance: "s4/fts.sql:45-49 TODO(confirm)"}
+      - {name: credentials/configuration, type: JSON, generation_rule: "synthetic JSON object (client_id/client_secret/corp_id/user_id, all obviously fake); mozart-sim ignores contents", exactness: EXACT (must-be-JSON-object constraint), provenance: "s4/fts.sql:53; L06 gateway/service.go:291,325"}
+    seed_policy: seed
+
+  fts.source_account_mappings / account_type_mappings / preferred_routing_weights / direct_account_routing_rules / channel_information_status:
+    source_evidence: ["TWIN_SPEC/schema/fts.mysql.sql:171-175 (REPRESENTATIVE, not re-verified column-by-column); L06 (routing/channel-health mechanism)"]
+    fields:
+      - {name: "source_account_mappings.priority", type: INT, note: "WHERE priority IS NOT NULL required for shared-route selection ordering", exactness: REPRESENTATIVE, provenance: "L06 repo.go:281-289"}
+      - {name: "channel_information_status status", type: INT, allowed_values: "100=up (only value meaning healthy); any other value = down/degraded", distribution_matters: true, generation_rule: "seed at least one DOWN row per lane-06's own gap-flag ('no DOWN rows' currently) to test partner-bank-down on-hold", exactness: EXACT, provenance: "L06 channel/service.go:590-622; s4/fts.sql:112-125 (currently all-UP, a documented gap)"}
+      - {name: "direct_account_routing_rules (merchant_id NULL = default rule)", type: "id int AI, merchant_id char(14) NULL, product varchar(50), channel varchar(50) in {ICICI,RBL,YESBANK}, mozart_identifier varchar(50) NULL, source_account_id int NULL (= source_accounts.id), mode varchar(50)", generation_rule: "NOT REQUIRED (C-003 resolved): rules are consulted only when more than one source_accounts row matches (product, fund_account_id = preferred_source_account_id); with one SA per merchant (the twin's shape) the rule is never read, and with several SAs and no rule FTS falls back to sourceAccounts[0] with an INFO log. Seeding a merchant rule per Direct merchant is harmless parity; a global (merchant_id NULL) rule is only needed if a merchant has both v1 and v2 SAs (prod onboarding shape)", exactness: EXACT, provenance: "fts internal/account/service.go:5334-5349,5356-5382,5385-5410,5413-5448; migrations/00020 (T02 §3/§B-D, T05 §1.2)"}
+    invariants: ["UNIQUE(channel,mode,mozart_identifier,integration_type,account_type,source_account_type) on channel_information_status"]
+    seed_policy: seed
+
+  fts.transfer_meta:
+    source_evidence: ["TWIN_SPEC/schema/fts.mysql.sql:156-169 (00045)"]
+    fields:
+      - {name: origin_service, type: VARCHAR(255), allowed_values: "API|payouts", generation_rule: "'payouts' for PS-originated transfers; written ONLY if Splitz CreateTransferMetaRollout enabled (ON in twin per splitz/experiments.json)", exactness: EXACT, provenance: "fts.mysql.sql:160; L06 transfer_meta.go:9-34, service.go:399-418"}
+    invariants: ["NO unique index despite looking dedup-shaped — dedup (if any) is app-level only"]
+    seed_policy: runtime-only
+
+  # -------------------------------------------------------------------------
+  # LEDGER — ledger/internal/database/pg_migrations/*.go (Postgres, tenant X)
+  # -------------------------------------------------------------------------
+  ledger.accounts:
+    source_evidence: ["TWIN_SPEC/schema/ledger.postgres.sql:20-31 (20201001011117)"]
+    fields:
+      - {name: id, type: CHAR(14), constraints: PRIMARY KEY, exactness: EXACT, provenance: "ledger.postgres.sql:21"}
+      - {name: merchant_id, type: CHAR(14), note: "for PARENT/system accounts this is a REAL production constant merchant_id (e.g. Gg614JldVI2nJi), reused deliberately rather than invented — safe either way since real ledger code resolves against these literal ids by definition", exactness: EXACT, provenance: "ledger.postgres.sql:22; s4/ledger.sql:30-46"}
+      - {name: status, type: VARCHAR(20), allowed_values: "ACTIVATED|IN_REVIEW|ARCHIVED|SUSPENDED", note: "app enum only, no DB CHECK", exactness: EXACT, provenance: "ledger.postgres.sql:23"}
+      - {name: balance, type: "NUMERIC(26,6)", distribution_matters: true, generation_rule: "PAISA-as-integer written into NUMERIC (TODO(confirm) unit — see s4/ledger.sql:19-25 header); opening 10,000,000 for M1/M3 MerchantBalance; 100 for M5 (low-balance scenario)", exactness: "EXACT (type), ASSUMED (paisa-vs-rupee unit convention)", provenance: "ledger.postgres.sql:24; s4/ledger.sql:19-25"}
+    invariants: []
+    seed_policy: "both (parent/system accounts + per-merchant sub-accounts: seed; opening-balance top-ups: prefer ledger_accounts_via_api.sh CreateOnEvent RPC over raw SQL, per s4/README.md)"
+
+  ledger.account_details:
+    source_evidence: ["TWIN_SPEC/schema/ledger.postgres.sql:78-99 (20201022184734 + additions)"]
+    fields:
+      - {name: account_category, type: VARCHAR(20), allowed_values: "Asset|Liability|Revenue|Equity|Gain|Loss|Expense", note: "app enum, no DB CHECK", exactness: EXACT, provenance: "ledger.postgres.sql:85"}
+      - {name: business_category, type: VARCHAR(20), allowed_values: "Real|Nominal|Personal", exactness: EXACT, provenance: "ledger.postgres.sql:86"}
+      - {name: entities, type: jsonb, distribution_matters: true, generation_rule: "identifier bag: {fund_account_type, account_type, banking_account_id | fts_fund_account_id}. See cross_service_consistency_rules for the exact fund_account_type vocabulary and the lowercasing rule.", exactness: EXACT, provenance: "ledger.postgres.sql:87,96 (GIN index); L07 shared_account_x.go:54-130"}
+      - {name: parent_account_id, type: CHAR(14), nullable: true, generation_rule: "sub-accounts point at the matching parent (MerchantBalance/VendorPayable/CommissionIncome/OutputGST/Nodal-Receivable/Nodal-Payable/Current-Receivable/Current-Payable/Adjustment-parent)", exactness: EXACT, provenance: "ledger.postgres.sql:83; s4/ledger.sql (parent/child structure throughout)"}
+      - {name: use_split_accounts, type: SMALLINT, default: 0, exactness: EXACT, provenance: "ledger.postgres.sql:93 (added 20221211115222)"}
+    invariants:
+      - "UNIQUE INDEX ON account_details(account_name) WHERE deleted_at IS NULL — parent account names must be globally unique among non-deleted rows"
+      - "Account discovery (identifier-less config entries) searches SUB-accounts only (parent_account_id NOT NULL) — a synthetic account meant to be found by discovery MUST have a parent_account_id set, even if that parent is itself a thin placeholder (see ledger.sql's Adjustment Payable parent pattern)"
+      - "conflict/resolved: L07 flagged ledger.sql's M2 (fts_fund_account_id=900002, CURRENT) as seeded with fund_account_type=nodal and missing its Current parent pair. The CURRENT s4/ledger.sql (as read in this pass, lines 98-104,120-124) already contains a dedicated Current Receivable/Payable parent pair (ARENAPRACC0009/0010) and keys M2's FtsReceivable/Payable rows (ARENAM2NODAC01/02) to fund_account_type:['current'] — i.e. this fix APPEARS APPLIED in the current seed file, superseding lane 07's finding. Re-verify against a live ledger-api DEBUG log before trusting this is fully resolved (lane 07's other open question — the M1 V06 failure — is separately still unexplained)."
+    seed_policy: seed
+
+  ledger.journal:
+    source_evidence: ["TWIN_SPEC/schema/ledger.postgres.sql:33-54 (20201001011143 + renames/widenings)"]
+    fields:
+      - {name: transactor_id, type: VARCHAR(50), generation_rule: "signed payout id for payout_initiated/processed; reversal id for failed/reversed (per L04 ledger_journal_create.go:155-234)", exactness: EXACT, provenance: "ledger.postgres.sql:39"}
+      - {name: transactor_event, type: VARCHAR(60), allowed_values: "payout_initiated|payout_processed|payout_reversed|payout_failed|fav_*|fund_loading_processed|positive_adjustment_processed|negative_adjustment_processed|va_to_va_*|cc_debit_*|... (closed list enforced ONLY in the backfill validator, not a DB constraint)", exactness: EXACT, provenance: "ledger.postgres.sql:40; L04 status.go:52-58; L07 shared_account_x.go event list"}
+      - {name: tenant, type: VARCHAR(50), default: "X (app requires it; DB allows NULL — soft drift)", generation_rule: "'X' for all payouts-twin rows", exactness: EXACT, provenance: "ledger.postgres.sql:46"}
+    invariants:
+      - "KNOWN INVARIANT GAP, MUST NOT FIX IN TWIN: dedup key (transactor_id, transactor_event) has NO unique index/constraint anywhere in pg_migrations — exhaustive grep confirms. Dedup is pure application-layer check-then-insert (a real race window). A twin that adds this unique constraint would be MORE correct than production, which defeats the purpose of a faithful twin — do NOT add it."
+    seed_policy: "both (opening-balance journal rows: seed via s4/ledger.sql §5, ideally superseded by the real LedgerConfigAPI/CreateInBulk + AccountAPI.CreateOnEvent RPC path per scripts/up.sh; payout-driven journal rows: runtime-only)"
+
+  ledger.ledger_entries:
+    source_evidence: ["TWIN_SPEC/schema/ledger.postgres.sql:56-76 (20201001011149 + additions)"]
+    fields:
+      - {name: type, type: VARCHAR(20), allowed_values: "credit|debit", note: "app enum only, no DB CHECK/ENUM", exactness: EXACT, provenance: "ledger.postgres.sql:63"}
+      - {name: balance, type: "NUMERIC(26,6)", nullable: true, note: "per-entry ASYNC snapshot, NOT a running SUM — added 20210628101139", exactness: EXACT, provenance: "ledger.postgres.sql:69"}
+    invariants: []
+    seed_policy: "both (opening-balance entries: seed; payout-driven entries: runtime-only)"
+
+  ledger.ledger_config:
+    source_evidence: ["s4/README.md:72-75; s4/ledger.sql:127-163 (commented out, superseded by LedgerConfigAPI/CreateInBulk); L07 (rx_migrations/20210810170948)"]
+    fields:
+      - {name: transactor_event_name, type: VARCHAR, allowed_values: "34 real configs total (26 primary shared_account_x + 8 legacy) per GetXSharedAccountingLedgerConfigs(); twin's hand-transcribed sample covers only XPayoutInitiatedV2 + XPayoutProcessedV2", exactness: "REPRESENTATIVE (2-of-34 coverage is a documented, acknowledged gap)", provenance: "L07; s4/README.md:72-75"}
+      - {name: rule/config, type: jsonb, generation_rule: "PREFER generating the full 34-row set programmatically from ledger/internal/journal/ledger_config/seed_data/shared_account_x.go's GetXSharedAccountingLedgerConfigs() (and direct_account_x.go's ~23 configs) rather than hand-transcribing — this is what production itself calls", exactness: "EXACT (schema), REPRESENTATIVE (twin's partial hand-transcription)", provenance: "L07 shared_account_x.go:~34 configs, direct_account_x.go:~23 configs"}
+    invariants: ["UNIQUE(tenant,transactor_event_name) WHERE deleted_at IS NULL; UNIQUE(tenant,rule) WHERE deleted_at IS NULL"]
+    seed_policy: seed (prefer LedgerConfigAPI/CreateInBulk RPC over raw SQL — s4/ledger.sql's hand-transcribed INSERT matched the wrong rule first and produced zero ledger entries, per the file's own ARENA NOTE)
+
+  ledger.idempotency:
+    source_evidence: ["TWIN_SPEC/schema/ledger.postgres.sql:109-114 (20210527121244) — separate HTTP-level idempotency table, UNRELATED to journal transactor dedup"]
+    seed_policy: runtime-only
+
+  # -------------------------------------------------------------------------
+  # CFA (Contacts / Fund Accounts) — MongoDB / DocumentDB
+  # -------------------------------------------------------------------------
+  cfa.contacts:
+    source_evidence: ["TWIN_SPEC/schema/cfa.mongo.json:21-46 (internal/contacts/model.go:23-58)"]
+    fields:
+      - {name: id, type: string, generation_rule: "app-generated uniqueid.New(), 14-char, ARENA-prefixed", exactness: EXACT, provenance: "cfa.mongo.json:24"}
+      - {name: type, type: string, allowed_values: "customer|employee|vendor|self|rzp_fees|rzp_tax_pay|rzp_xpayroll|rzp_capital_collections|rzp_charge_collections", note: "enum DECLARED but NOT enforced as a blanket field constraint — only gated downstream for one internal-app-permission call path", exactness: EXACT, provenance: "cfa.mongo.json:30"}
+      - {name: hash, type: string, generation_rule: "SHA3-256 dedup hash, computed by seeding script (see cfa.js hand-computed hashes)", exactness: EXACT, provenance: "cfa.mongo.json:33"}
+      - {name: merchant_id, type: string, required: true, exactness: EXACT, provenance: "cfa.mongo.json:34"}
+    invariants: ["NO unique index on id anywhere (commented-out code only) — duplicates are POSSIBLE in prod (confirmed by the migration that exists specifically to identify them); do NOT add a unique index to a twin seeking to reproduce production"]
+    seed_policy: seed
+
+  cfa.fund_accounts:
+    source_evidence: ["TWIN_SPEC/schema/cfa.mongo.json:47-89 (internal/fund_accounts/model.go:67-85, polymorphic 5-subtype union)"]
+    fields:
+      - {name: account_type, type: string, discriminator: true, allowed_values: "bank_account|vpa|wallet_account|card|mobile", note: "mobile is DECLARED but REJECTED at create time (ValidateWithConfig has no case for it) — confirmed gap, not speculative; do NOT seed a mobile fund account expecting it to validate", exactness: EXACT, provenance: "cfa.mongo.json:55-59"}
+      - {name: bank_account, type: object, present_iff: "account_type=bank_account", fields: [id, ifsc, bank_name, name, account_number, beneficiary_code, bank_identifier, identifier_type], exactness: EXACT, provenance: "cfa.mongo.json:60"}
+      - {name: vpa, type: object, present_iff: "account_type=vpa", fields: [id, handle, username], exactness: EXACT, provenance: "cfa.mongo.json:61 (used by vpa_upi_beneficiary archetype)"}
+      - {name: wallet, type: object, present_iff: "account_type=wallet_account (NOT 'wallet' despite a stale code comment)", fields: {provider: "declared [paytm,amazonpay,phonepe,gpay], ENFORCED ONLY amazonpay — confirmed gap"}, exactness: EXACT, provenance: "cfa.mongo.json:62-66 (used by wallet_amazonpay archetype)"}
+      - {name: card, type: object, present_iff: "account_type=card", note: "ValidateCard() is a hard no-op — NO field-level enforcement at the Mongo-model layer", exactness: EXACT, provenance: "cfa.mongo.json:67-68"}
+      - {name: hash, type: string, generation_rule: "app always sets via GenerateHash() SHA3-256", exactness: EXACT, provenance: "cfa.mongo.json:73"}
+    invariants: ["NO unique index on id, bank_account.id, vpa.id, wallet.id, card.id, hash — none, anywhere. A twin's own hand-computed hashes are the ONLY thing preventing duplicate inserts on re-seed (per s4/README.md); this is intentional non-enforcement matching prod, not a gap to fix."]
+    seed_policy: seed
+
+  cfa.hash_lookup:
+    source_evidence: ["TWIN_SPEC/schema/cfa.mongo.json:90-102 (internal/hashlookup/model.go:22-42)"]
+    fields:
+      - {name: entity_type, type: string, allowed_values: "contacts|fund_accounts", exactness: EXACT, provenance: "cfa.mongo.json:95"}
+    invariants: ["NO indexes created at all for this collection — not even on hash — UNKNOWN whether one was added out-of-band in prod (ask cfa/DocumentDB owner)"]
+    seed_policy: seed (mirrors cfa.contacts/fund_accounts hash values)
+
+  cfa.tokenized_iin / cfa.iins:
+    source_evidence: ["TWIN_SPEC/schema/cfa.mongo.json:103-126"]
+    invariants: ["No SetDefaults/Validate logic (no-ops) and no known indexes for either collection — UNKNOWN"]
+    seed_policy: never_seed (no payout-twin flow needs card fund accounts yet; out of scope for the 9 archetypes above unless a card-payout scenario is added)
+
+  # -------------------------------------------------------------------------
+  # x-BALANCES — x-balances/internal/database/migrations/*.go
+  # -------------------------------------------------------------------------
+  x-balances.balance:
+    source_evidence: ["TWIN_SPEC/schema/x-balances.mysql.sql:16-38 (20250127224555, verbatim)"]
+    fields:
+      - {name: id, type: VARCHAR(14), constraints: PRIMARY KEY, generation_rule: "ARENABAL00000<N> per archetype", exactness: EXACT, provenance: "x-balances.mysql.sql:17"}
+      - {name: account_type, type: VARCHAR(50), allowed_values: "direct|shared|sub_balance (service constants x-balances internal/constant/constant.go:38,61,63,65; enrichment/needs.go:32). 'pool' and 'master' appear ONLY in the unwired queries.sql:6-10 comment and are not recognised by code; the enricher treats 'pool' as 'no enrichment' so Shared rows keep the seeded static number. Twin seeds 'pool' for Shared (C-007 OPEN; PS copies balanceEntity.AccountType into banking_accounts.account_type when the x-balances overlay is on, bankingAccount/core.go:200)", distribution_matters: true, exactness: EXACT, provenance: "x-balances.mysql.sql:23 (no DDL enum); T04 C7; T02 #9", conflict: "seed pool|master vs code shared (C-007)"}
+      - {name: status, type: VARCHAR(50), allowed_values: "active|under_maintenance (constant.go:37,39; filters at balance_fetch/repo/repo.go:63,84,108,155). No DDL enum. Twin seeds 'activated' for all 32 rows: GET /v1/balances/{id} and /v1/accounts have no status filter (unaffected) but FetchBalance, TriggerManualBalanceFetch, InitiateBalanceFetch, CreateBalance idempotency and payouts getBalanceIdsFromXBalancesWithFilters all miss the rows. C-008 OPEN; fresh Direct merchants must use 'active'", exactness: EXACT, provenance: "T04 C1", conflict: "seed activated vs code active (C-008)"}
+      - {name: channel, type: VARCHAR(50), generation_rule: "'rbl' for direct accounts (lowercase enum rbl|axis|icici|yesbank|idfc|slice, x-balances internal/enum/channel/channel.go:26-43); empty/null for pool", exactness: EXACT, provenance: "x-balances.mysql.sql:24"}
+      - {name: "balance / last_fetched_at / last_change_at / last_attempted_at", type: BIGINT, generation_rule: "balance is overwritten ONLY by a bank fetch (balance_fetch/service.go:296-319), never by payout events; last_fetched_at is the 'proof instant' the payouts reservation release compares against (dispatched_at + lag < last_fetched_at) — in the twin it never advances unless a test bumps it (EF-007)", exactness: EXACT, provenance: "T04 §1, §5"}
+      - {name: balance, type: BIGINT, distribution_matters: true, generation_rule: "authoritative for Direct/DA merchants; overwritten from Ledger for Shared/sub_balance per enrichment/enricher.go:35-98", exactness: EXACT, provenance: "x-balances.mysql.sql:26; L07"}
+      - {name: fts_fund_account_id, type: VARCHAR(255), fk: "fts.fund_accounts.id (as string)", exactness: EXACT, provenance: "x-balances.mysql.sql:32"}
+    invariants: []
+    seed_policy: seed
+
+  x-balances.sub_balances / sub_balance_limits:
+    source_evidence: ["TWIN_SPEC/schema/x-balances.mysql.sql:40-96 — OUT-OF-BAND DDL, only in queries.sql, never wired into goose; NOT part of the actual migrated schema"]
+    fields:
+      - {name: "sub_balances.master_balance_id/sub_balance_id", type: VARCHAR(14), note: "code-current design resolves master/sub merchant ids and account number via JOIN against balance, NOT via the denormalised master_merchant_id/sub_merchant_id/sub_account_number columns queries.sql declares — those are vestigial per repo.go's own comments", exactness: "EXACT (id columns), CONFLICT: code vs DDL disagreement on `name`/`deleted_at` (code requires, DDL lacks) and on the denormalised columns (DDL has, code ignores)", provenance: "x-balances.mysql.sql:40-68"}
+      - {name: "sub_balance_limits.status", type: VARCHAR(20), allowed_values: "created|processed|failed", note: "queries.sql comment also lists 'processing' but no such Go const exists", exactness: EXACT, provenance: "x-balances.mysql.sql:79"}
+    invariants: ["A twin must pick ONE of: (a) build DDL exactly as queries.sql documents (matches a real deploy of that file) or (b) build for current code (add name/deleted_at columns). This synthesis recommends (b) since the Go code is more likely to reflect the CURRENT running behavior."]
+    seed_policy: seed (only if the partner_sub_merchant archetype (M4) is exercised; otherwise never_seed — the table does not exist in this codebase's actual migrated schema per s4/README.md's own "Known gaps")
+
+  monolith.balance:
+    source_evidence: ["TWIN_SPEC/schema/apidb-subset.mysql.sql:194-211 (2014_07_12_083930, REPRESENTATIVE column list per x-balances.APIBalance's own field mapping)"]
+    fields:
+      - {name: "type/account_type/channel", type: VARCHAR(32), note: "NO `primary` column (type='primary' instead) — a documented twin drift to avoid re-introducing", exactness: REPRESENTATIVE, provenance: "apidb-subset.mysql.sql:197,206-207; L01 (API-DB drift note)"}
+      - {name: reward_fee_credits, type: "n/a", note: "column MISSING from this table per L01's drift finding — do not add it expecting it to exist", exactness: EXACT (absence confirmed), provenance: "L01"}
+    seed_policy: runtime-only
+
+  monolith.features:
+    source_evidence: ["TWIN_SPEC/schema/apidb-subset.mysql.sql:185-192 (2016_10_24_081731) + L01 drift note"]
+    fields:
+      - {name: name, type: VARCHAR(255), note: "L01: real column is VARCHAR(25), NOT 255 as some twin drafts had it", conflict: "TWIN_SPEC schema file says VARCHAR(255); L01's synthesis note says 'features real name VARCHAR(25)' — this synthesis flags the DISCREPANCY and prefers the migration-derived schema file (VARCHAR(255)) as the more directly-sourced artifact, but records L01's claim since it was evidently checked against the actual migration too. TODO(confirm): re-open the exact migration file to resolve.", exactness: "CONFLICTING — see note", provenance: "apidb-subset.mysql.sql:189; L01"}
+      - {name: entity_type, type: VARCHAR(32), note: "L01 says real length is 255, not 32", conflict: "same pattern as `name` above — schema file vs L01 note disagree on length; TODO(confirm)", exactness: "CONFLICTING", provenance: "apidb-subset.mysql.sql:188; L01"}
+    invariants: ["UNIQUE(name,entity_id) exists in production but is MISSING from the twin's current schema — this is a twin gap, not a prod fact to avoid; add it"]
+    seed_policy: seed (payout_service_enabled, banking, enable_approval_via_oauth per archetype)
+
+  monolith.merchants / merchant_details / merchant_users / keys / contacts / fund_accounts / bank_accounts / vpas / payout_sources:
+    source_evidence: ["TWIN_SPEC/schema/apidb-subset.mysql.sql:233-241 — REPRESENTATIVE, table identity/PK confirmed via Table.php constants only, full DDL not independently re-transcribed"]
+    fields:
+      - {name: "keys.id", type: CHAR(14), generation_rule: "rzp_<mode>_<14-char base62>; merchant via keys.merchant_id", exactness: EXACT (format), provenance: "L03 (Key/Entity.php:261-282,308; migrations 2014_04_23_221828)"}
+      - {name: "merchant_users unique(merchant_id,product,user_id,role)", type: "n/a", generation_rule: "product default 'primary'", exactness: EXACT, provenance: "L03 (2017_03_28_104101)"}
+    invariants: ["Twin's merchants.json embeds the merchant id INSIDE the key string as a shortcut — L03 flags this as REPRESENTATIVE, not a confirmed real key-derivation mechanism (real keys.merchant_id is a separate FK column, not string-embedded)"]
+    seed_policy: seed (merchants, keys, merchant_users, contacts/fund_accounts/bank_accounts/vpas as needed per archetype's fund-account type)
+
+  # -------------------------------------------------------------------------
+  # DCS (Dynamic Config Service) — per-merchant feature-flag KV, config-proto
+  # -------------------------------------------------------------------------
+  dcs.merchant_config:
+    source_evidence: ["ENV2_COMPOSE/seeds/dcs/merchants.json (proto field names cross-checked against config-proto/rzp/x/merchant/payouts/{workflows,fund_transfer,api_interface,cfa}.proto + direct_accounts/{configs,payout_mode_config}.proto)"]
+    fields:
+      - {name: "Workflows.enable_payout_workflow", type: bool, distribution_matters: true, generation_rule: "true for M3 only; false elsewhere (default)", exactness: EXACT, provenance: "L04/L08 (config-proto/.../workflows.proto); dcs/merchants.json:9-15"}
+      - {name: "Workflows.skip_approval_workflow_for_api", type: bool, generation_rule: "true for M3 (workflow only reachable via non-Private auth)", exactness: EXACT, provenance: "L08 baseHelper.go:107-193"}
+      - {name: "FundTransfer.increase_per_payout_amount_limit", type: bool, generation_rule: "true for M6 only", exactness: EXACT, provenance: "L04 (dual-naming table)"}
+      - {name: "direct_accounts/Configs.in_flight_reservation_enabled", type: bool, distribution_matters: true, generation_rule: "true for M2 (Direct); false for Shared archetypes — need at least one true/one false to test both queueingstrategy branches", exactness: EXACT, provenance: "L04 queueingstrategy/strategy.go; lane-10 Synthetic-data table"}
+      - {name: "direct_accounts/PayoutModeConfig.allowed_upi_channels", type: "repeated string", generation_rule: "['icici','axis'] for M2 (per existing seed); ['yesbank'] for M3; [] default; set per M7 (vpa/UPI archetype) to test channel gating", exactness: EXACT, provenance: "dcs/merchants.json:39,84,129"}
+      - {name: "ApiInterface.disallow_traffic_for_test_transactions", type: bool, generation_rule: "true for M9 (test-mode archetype) only", exactness: EXACT, provenance: "L04 dual-naming table (skip_test_txn_for_dmt/disallow_traffic_for_test_transactions)"}
+      - {name: "18 dual-named legacy/DCS field pairs (10 confirmed mismatches)", type: bool, note: "e.g. null_narration_allowed/enable_null_narration, payout/enable_payouts, increase_payout_limit/increase_per_payout_amount_limit, payouts_blocked_on_lite/payouts_blocked_via_lite_account, skip_wf_at_payouts/skip_workflow_for_dashboard, skip_wf_for_payroll/skip_workflow_for_payroll, skip_workflow_for_api/skip_approval_workflow_for_api, payout_workflows/enable_payout_workflow (only pair with OR-experiment semantics), payout_process_async/enable_intelligent_payouts, skip_test_txn_for_dmt/disallow_traffic_for_test_transactions", exactness: EXACT, provenance: "L04 (10 confirmed dual-naming mismatches)"}
+    invariants:
+      - "proto3 wire semantics: false is the WIRE-OMITTED zero-value for bool fields — a twin encoder must omit false fields, not send them explicitly, to match real DCS wire behavior"
+      - "DCS values OVERRIDE API-DB features table values when both exist (core.go:458-469) — do not let a monolith.features seed row silently contradict a dcs.merchant_config seed row for the same logical flag without intending the override test"
+    seed_policy: seed (per-merchant, all 9 archetypes)
+
+  # -------------------------------------------------------------------------
+  # SPLITZ — experiment/variant assignment (per-merchant bucketing)
+  # -------------------------------------------------------------------------
+  splitz.experiment_assignment:
+    source_evidence: ["ENV2_COMPOSE/seeds/splitz/experiments.json, variant_table.json"]
+    fields:
+      - {name: "experiments.<id>.variants.<merchant_id>", type: string, allowed_values: "on|off|proxy (experiment-specific)", distribution_matters: true, generation_rule: "assign explicitly per merchant for the 8 real prod experiment ids payouts/fts reference; do not rely on default_variant for any experiment whose outcome a scenario depends on", exactness: "REPRESENTATIVE (experiment ids are real prod ids per F26; the merchant->variant assignment itself is HAND-PICKED, 'not reverse-engineered from any real Splitz data' per the seed file's own note)", provenance: "splitz/experiments.json:2; L10 Synthetic-data table"}
+      - {name: default_variant, type: string, generation_rule: "top-level fallback = 'on'", conflict: "L04 flags this AS-BUILT default ('on' for any UNSEEDED experiment) as INCORRECT — most real Splitz experiments default OFF; an unseeded experiment silently resolving to 'on' is a documented twin bug, not a modeling choice. Fix: default should be 'off' unless a specific experiment's real semantics call for an 'on' default.", exactness: "CONFIRMED BUG (per L04), not yet fixed in the seed file read this pass", provenance: "L04 (twin splitz-stub DEFAULT_VARIANT); splitz/experiments.json:4"}
+    invariants:
+      - "MECHANISM GAP (not a data-model issue but blocks the data from ever being read): splitz-stub's server-side Evaluate/EvaluateBulk correctly resolves this table, but payouts' CLIENT-SIDE eval path (FetchDecisionContext) always returns an empty experiment list — so for payouts specifically, this whole table is currently UNREACHABLE regardless of its contents (per lane 10 F26/§B.2). A faithful twin must implement FetchDecisionContext for real (see cross_service_consistency_rules) before this data has any effect on payouts behavior."
+    seed_policy: seed
+
+  # -------------------------------------------------------------------------
+  # PRICING (monolith fetch_pricing_info / Charge-Collections Rule schema)
+  # -------------------------------------------------------------------------
+  pricing.rule:
+    source_evidence: ["ENV2_COMPOSE/seeds/s4/pricing_fixtures.json; lane-10 Synthetic-data table (api/database/migrations/2014_07_22_114552_create_pricing.php)"]
+    fields:
+      - {name: "percent_rate/fixed_rate/min_fee/max_fee", type: "unsigned int", default: "0/0/0/null", exactness: EXACT, provenance: "lane-10 pricing row citation"}
+      - {name: "amount_range_min/max/active", type: "unsigned bigint/tinyint", nullable: true, note: "slab boundaries NOT modeled in current twin at all — a flat single rule per mode is used instead", exactness: "ASSUMED-MISSING (documented gap)", provenance: "lane-10 Synthetic-data table"}
+      - {name: fixed_rate_paisa, type: int, generation_rule: "200 (Rs 2) flat for IMPS/NEFT, all 3 existing archetypes — task-specified deliberate deviation from the SDK mock's own built-in default (fee=500,tax=90)", exactness: REPRESENTATIVE, provenance: "s4/pricing_fixtures.json:3"}
+      - {name: tax_paisa, type: int, generation_rule: "18% GST on fixed_rate = 36 paisa", exactness: EXACT (formula), provenance: "s4/pricing_fixtures.json:3"}
+      - {name: "special_case_overrides (purpose=rzp_fees|refund, fee_type=free_payout)", type: "n/a", generation_rule: "fee=0,tax=0 — mirrors real ccSdk mock's own override precedence", exactness: EXACT, provenance: "s4/pricing_fixtures.json:29-34"}
+    invariants: ["Real pricing supports amount-range slabs and per-channel differentiation; twin's flat rule is a documented, deliberate simplification — extend seeds/pricing.json with distinct per-mode fees if a slab-sensitive scenario is added (per lane-10 recommendation)"]
+    seed_policy: seed
+
+  # -------------------------------------------------------------------------
+  # SHIELD (fraud/risk rule evaluation)
+  # -------------------------------------------------------------------------
+  shield.rule:
+    source_evidence: ["ENV2_COMPOSE/seeds/s4/shield_fixtures.json"]
+    fields:
+      - {name: match, type: object, allowed_values: "eq|ends_with|starts_with|contains, and-nestable", exactness: REPRESENTATIVE, provenance: "s4/shield_fixtures.json:37,43,49"}
+      - {name: "response.action", type: string, allowed_values: "allow|block|review", note: "payouts only branches on action=='block' — 'review' is treated as non-blocking, a confirmed real-code gap, not a twin simplification", exactness: EXACT, provenance: "s4/shield_fixtures.json:8"}
+    invariants: ["First-match-wins, top-to-bottom evaluation order; scripted rules here are REPRESENTATIVE (not derived from the real Shield rule catalogue, which no lane could access)"]
+    seed_policy: seed
+
+  # -------------------------------------------------------------------------
+  # STORK (webhooks)
+  # -------------------------------------------------------------------------
+  stork.webhooks_and_subscriptions:
+    source_evidence: ["L09; ENV2_COMPOSE/seeds/s4/stork_subscriptions.json"]
+    fields:
+      - {name: "subscriptions.eventmeta.name", type: string, allowed_values: "payout.initiated|payout.queued|payout.pending|payout.rejected|payout.processed|payout.reversed|payout.failed|payout.updated|transaction.created|fund_account.validation.completed|fund_account.validation.failed|payout.downtime.started|payout.downtime.updated|payout.downtime.resolved", note: "NO webhook fires for initiated/scheduled/batch_submitted/cancelled/crs/lra internal states", distribution_matters: true, exactness: EXACT, provenance: "L09"}
+      - {name: secret, type: "VARBINARY (AES)", generation_rule: "5-255 char synthetic secret per merchant", exactness: EXACT, provenance: "L09 (webhooks table)"}
+    invariants: ["max 30 subscription rows per owner; one subscription row per event"]
+    seed_policy: seed
+
+  # -------------------------------------------------------------------------
+  # WORKFLOWS SERVICE (WFS) — currently MISSING from twin per L08; data shape for when built
+  # -------------------------------------------------------------------------
+  workflows.config_and_state:
+    source_evidence: ["L08 (WFS Twirp services: WorkflowAPI/ActionAPI/ConfigAPI/CommentAPI; tables configs, workflows, states, actions, comments, state_change_logs, assignee)"]
+    fields:
+      - {name: "ConfigAPI config_type", type: string, allowed_values: "payout-approval (domain payouts, task list payouts-approval, callback rx_live)", exactness: EXACT, provenance: "L08"}
+      - {name: "WorkflowAPI RoleName", type: string, allowed_values: "role|user_id|email|manager|group_head", exactness: EXACT, provenance: "L08"}
+      - {name: "WorkflowAPI Op", type: string, allowed_values: "AND|OR", exactness: EXACT, provenance: "L08"}
+    invariants: ["No expiry callback exists; WorkflowExpireTime bounded [~4 months, 10 years]; DecisionTaskTimeout=10"]
+    seed_policy: never_seed (WFS is currently MISSING from the twin entirely — building the substitute is a mechanism task, not a data-seeding task; once built, config rows should be created via WorkflowAPI/ConfigAPI calls at scenario setup, not raw DB seed, mirroring how ledger's AccountAPI.CreateOnEvent is preferred over raw SQL)
+
+  # -------------------------------------------------------------------------
+  # x-account-statements (XAS) / recon — periphery, lane 11
+  # -------------------------------------------------------------------------
+  xas.account_statements:
+    source_evidence: ["lane-11 Synthetic-data table (x-account-statements/internal/database/model/account_statements.go)"]
+    fields:
+      - {name: entity_type, type: string, allowed_values: "payout|payout_reversal|external", distribution_matters: true, generation_rule: "debit->payout, credit->payout_reversal, unmatched->external; seed ~70/30 matched:external ratio for representative coverage", exactness: EXACT, provenance: "lane-11"}
+      - {name: type, type: string, allowed_values: "credit|debit", generation_rule: "pair a debit + a later credit (return) row per reversed-payout scenario", exactness: EXACT, provenance: "lane-11"}
+      - {name: "utr/gateway_ref_number/bank_transaction_id", type: string, note: "matching precedence UTR->GRN->CMS; one of the three must be present for a match", exactness: EXACT, provenance: "lane-11 (enrich/service/service.go:198-217)"}
+    invariants: ["posted_date >= transaction_date; fetched_at_nano after posted_date"]
+    seed_policy: seed (only if the XAS substitute / return-credit reversal scenario family is in scope)
+
+  recon.workflow_configs:
+    source_evidence: ["lane-11 (recon/app/post_recon_service/workflow.py:9-60)"]
+    fields:
+      - {name: end_point, type: string, constraints: "must be one of FTS's registered /v1/attempts/* routes for FTS-bound rows", exactness: EXACT, provenance: "lane-11"}
+    invariants: ["gates: file_type match AND (is_last_recon_pair => is_last_recon_run) AND is_automatic_workflow"]
+    seed_policy: "seed (2-3 representative rows: one FTS-update, one FTS-reconcile, one manual-only — real row content is DB-only, not derivable from any repo, so twin rows are inherently REPRESENTATIVE)"
+
+# ============================================================================
+# M4 T12 — fresh Direct merchant record set (RED_LOOP provisioner_direct), BASD row, statement CSV contract, DA ledger accounts.
+# Sources: T07 §12 recipe, T02 handoff instructions, T03 Findings 7/8 and §6, T04 handoff, T05 handoff. Every value here is
+# either a column constraint read in source (EXACT) or the twin's deliberate synthetic choice (REPRESENTATIVE), marked per row.
+direct_merchant_record_set:
+  ids:
+    mid: {rule: "14-char, ARENA-prefixed synthetic (provisioner _ids_for)", exactness: REPRESENTATIVE}
+    balance_id: {rule: "14-char; MUST be the same string in apidb balance.id, x-balances balance.id, payouts banking_accounts.balance_id, counters.balance_id and BASD.balance_id (payouts resolves the banking account by balance_id: payouts/internal/app/payouts/repo.go:954-963)", exactness: EXACT}
+    fts_id: {rule: "integer disjoint from generator namespaces 900001..900400 (e.g. 910000 + num % 90000); used for FTS bank_accounts.id, fund_accounts.id, source_accounts.id; its decimal string (<=14 chars) is payouts banking_accounts.fts_fund_account_id and x-balances balance.fts_fund_account_id (payouts pkg/fts/transfer_init_create.go:277-299 int64 parse)", exactness: EXACT}
+    account_number: {rule: "merchant's OWN current-account number, 16 digits, unique, not the pool number 2323230099999999 (e.g. '2323' + 12-digit)", exactness: REPRESENTATIVE}
+    basd_id: {rule: "14-char UniqueId; signed basd_<14> (payouts bankingAccountStatementDetails/model.go:34,67-69); the SAME value must appear in the ledger CreateOnEvent entities", exactness: EXACT}
+  records:
+    apidb.merchants: {row: "id=<mid>, name, live=1, activated=1, created_at", provenance: "T07 §1 apidb.sql:3"}
+    apidb.balance: {row: "id=<balance_id>, merchant_id, balance=<opening>, currency=INR, type=banking, account_number=<own>, account_type=direct, channel=rbl, on_hold=0, credits=0, ...", note: "monolith balance.account_type is the Shared/Direct discriminator (T02 §A1)", provenance: "T07 §2 row 1"}
+    apidb.features: {rows: ["(id 14-char, entity_id=<mid>, entity_type='merchant', name='in_flight_reservation_enabled')", "(…, name='da_ledger_journal_writes') — required for the DA emitter gate (T03 Finding 7 item 5)"], constraint: "UNIQUE(name, entity_id)", provenance: "T07 §2 row 2; T03 §6 S-A"}
+    xbalances.balance: {row: "id=<balance_id>, merchant_id, account_number=<own>, account_type='direct', channel='rbl', currency='INR', balance=<opening paise>, priority=0, status='active' (NOT 'activated' — C-008), last_fetched_at=<now>, last_change_at=<now>, last_attempted_at=0, metadata=JSON_OBJECT(), fts_fund_account_id='<fts_id>'", alternative: "POST {xbalances}/v1/balance/create {merchant_id, account_number, channel:'rbl', account_type:'direct', priority:0, fts_fund_account_id} with Server.Auth.BankingAccounts creds — generates its own id; then reuse it everywhere", provenance: "T04 handoff item 1"}
+    payouts.banking_accounts: {row: "id, merchant_id, balance_id=<balance_id>, channel='rbl', status='activated', account_number=<own>, account_type='direct', fts_fund_account_id='<fts_id>', payout_service_enabled=1, counter_migrated=1", provenance: "T07 §2 row 4; T02 handoff item 4"}
+    payouts.counters: {row: "id, balance_id, free_payouts_consumed_last_reset_at, free_payouts_consumed=0, account_type='direct'", provenance: "T07 §2 row 5"}
+    payouts.fund_accounts_and_bank_accounts: {row: "as Shared (beneficiary side)", provenance: "T07 §2 row 6"}
+    payouts.banking_account_statement_details: {row: "id=<basd_id>, merchant_id=<mid>, balance_id=<balance_id>, account_number=<own>, channel='rbl', status='active', account_type='direct', gateway_balance=<paise>, statement_closing_balance=<paise>, gateway_balance_change_at=<ts>, statement_closing_balance_change_at=<ts>, last_statement_attempt_at=0, balance_last_fetched_at=0, pagination_key=NULL, metadata=JSON {\"statement_fetched_till_date\":\"DD-MM-YYYY\"}, created_at, updated_at", why: "prod: inserted by the monolith at CA onboarding (api Details/Core.php:219-237); PS never creates it. Needed for (a) the create precondition when x-balances is not the status source, (b) the rbl_banking_account_statement worker's account selection, (c) GetBasDetailsID at journal-build time", constraints: "DDL payouts migrations/20230128010223…:16-36 (status varchar(64) active|archived|inactive; account_number varchar(48); channel varchar(32); metadata json)", provenance: "T03 Finding 2, Finding 8 precondition (i), §6 S-A; D-006 (1)"}
+    fts.bank_accounts: {row: "id=<fts_id>, product='PAYOUT', merchant_id=<mid>, account_type='CURRENT', account_number=<own>, ifsc_code='ARNA0000001', bank_identifier=NULL, identifier_type=NULL, is_virtual_account=0, beneficiary_name='<NAME> PRIVATE LIMITED'", provenance: "T07 §2 row 8; T05 handoff 1"}
+    fts.fund_accounts: {row: "id=<fts_id>, product='PAYOUT', merchant_id=<mid>, account_type='BANK_ACCOUNT', account_id=<fts_id>, default_channel='RBL'", provenance: "T07 §2 row 9; T05 handoff 2"}
+    fts.source_accounts: {row: "id=<fts_id>, product='PAYOUT', channel='RBL', fund_account_id=<fts_id>, mozart_identifier='v1', bank_account_type='CURRENT', account_type='direct' (LOWERCASE — C-005), credentials='{\"auth_username\":..,\"auth_password\":..,\"client_id\":..,\"client_secret\":..,\"corp_id\":..}', configuration='{\"beneficiary_required\":false}'", optional: "second row mozart_identifier='v2' to mirror prod RBL onboarding (then a merchant routing rule becomes meaningful)", provenance: "T05 handoff 3; T07 §2 row 10 (uses M2's uppercase JSON — superseded by T05 casing finding)"}
+    fts.direct_account_routing_rules: {rows: "per mode IMPS|NEFT: (merchant_id=<mid>, product='PAYOUT', channel='RBL', mozart_identifier='v1', source_account_id=<fts_id>, mode, created_by='arena'); omit id (verify AUTO_INCREMENT)", required: "NO with one SA (C-003); harmless parity", provenance: "T05 handoff 4; T07 §2 row 14"}
+    fts.source_account_mappings_account_type_mappings_preferred_routing_weights: {note: "NOT read on the Direct branch (T05 §1.2 step 6); seed only for parity with M2 (source_account_type CURRENT, account_type DIRECT, IMPS+NEFT, weight 100)", provenance: "T07 §2 rows 11-13"}
+    fts.channel_information_status: {note: "global UP rows for (RBL, IMPS|NEFT, v1, API) already seeded; nothing per merchant", provenance: "T05 handoff 5"}
+    cfa: {rows: "contact + fund_account (bank_account.account_type 'current' optional) + hash_lookup as Shared", provenance: "T07 §2 row 16"}
+    monolith_stub.merchants_json: {row: "account_type:'direct', channel:'rbl', balance_id, fts_fund_account_id:<fts_id>, fts_source_account_id:<fts_id>, merchant:{feature:[payout_service_enabled, banking, in_flight_reservation_enabled, da_ledger_journal_writes], pricing_plan_id, business_banking:true, ...}, merchant_detail:{business_type:'private_limited', ...}", note: "account_type drives the relay FAILED->failed mapping (server.py:610-612) and the create_fta marker (:406-409)", provenance: "T07 §2 row 17"}
+    monolith_stub.fund_accounts_json_and_pricing_json: {rows: "as Shared (plan reserved via pricing_ids.reserve_plan_id; free_payout_counter keyed by balance)", provenance: "T07 §2 rows 18-19"}
+    dcs_stub: {row: "direct_accounts/Configs.in_flight_reservation_enabled=true; FundTransfer.{enable_payouts:true, enable_payouts_queue_buffer:true, queue_payout_bal_buffer:50000, payouts_to_fts_async_processing:true}; ApiInterface.payout_service_enabled:true; Cfa.skip_ifsc_lookup:true; direct_accounts/PayoutModeConfig.allowed_upi_channels:[icici,axis]; legacy block as M2", mechanism: "write into seeds/generated/dcs/merchants.json + restart dcs-stub, or runtime POST /v1/kv/put (proto-encoded, not persisted)", provenance: "T07 §2 row 21; T04 handoff item 2"}
+    splitz_stub: {row: "<mid>: on for Rjdj0sAd4paXMG (fetch_balance_entity_from_x_balance), Qnc6b4fg1Hi36k, Sg7tEnMoxCbTzM, CreateTransferMetaRollout, _by_name_alias.fts_request_from_payouts_service, arena_fts_meta/arena_fts_kafka per route profile; TUnTsUB8Os2kX0: proxy; S9qQNxNd9dpYYE and SQg4o8tfP5GwVq off; plus account_statement_source_event (P9jMHiqpMI81A5 or by name) on for the XAS source-event leg", mechanism: "no write endpoint — edit seeds/generated/splitz/experiments.json + restart splitz-stub", provenance: "T07 §2 row 22; T04 handoff item 3; T03 handoff 3"}
+    stork_capture: {row: "WebhookAPI/Create {owner_id:<mid>, owner_type:merchant, service:rx-live, url:'http://merchant-webhook-sink:8080/webhook/<mid>', secret:'arena_test_secret_min5' (must equal the sink's WEBHOOK_SECRET fallback), subscriptions: 8 payout.* events} + append to seeds/generated/stork/subscriptions.json", provenance: "T07 §2 row 23"}
+    kong_lite: {row: "merchants.json key ids + secret file into volume rzp-arena-secrets-kong; restart", provenance: "T07 §2 row 24"}
+    bankingaccounts_stub: {note: "reads merchants.json at import — restart after writing; M4 also needs the credentials route (route-matrix R2)", provenance: "T07 §2 row 20; T03 Finding 8 (ii)"}
+    ledger.direct_account_x_parents: {call: "POST /twirp/rzp.ledger.account.v1.AccountAPI/CreateInBulk {\"account_data_identifier\":\"direct_account_x\"} header Ledger-Tenant: X — ONCE per arena", creates: "7 parent accounts (Direct Merchant Balance/Vendor Payable/Commission Income/Output GST/Commission Receivable/Merchant Cash/Reward…), merchant ids Gg614JldVI2nDA etc. (ledger internal/account/seed_data/direct_account_x.go:53-189)", provenance: "T03 Finding 7 item 2"}
+    ledger.direct_merchant_sub_accounts: {call: "POST /twirp/rzp.ledger.account.v1.AccountAPI/CreateOnEvent {\"merchant_id\":\"<mid>\",\"events\":[{\"name\":\"direct_merchant_onboarding\",\"description\":\"…\",\"entities\":{\"banking_account_stmt_detail_id\":[\"basd_<basd_id>\"]}}],\"currency\":\"INR\",\"merchant_balance_opening_balance\":\"<paise>\"} headers Ledger-Tenant: X, idempotency-key: <uuid>", creates: "one sub-account per parent carrying direct_merchant_onboarding; accounts(status='ACTIVATED', min_balance NULL); account_details(entities={\"account_type\":[…],\"fund_account_type\":[merchant_da|merchant_da_vendor|da_gst|…],\"banking_account_stmt_detail_id\":[\"basd_<id>\"]}, tenant 'X', account_name '<parent name> - <mid> - basd_<id>' UNIQUE)", verify: "SELECT … FROM account_details WHERE entities @> '{\"banking_account_stmt_detail_id\":[\"basd_<id>\"]}' returns the 6 roles needed by XDAPayoutProcessed + XDAPayoutProcessedRecon", provenance: "T03 Finding 7 items 3-4; ledger proto account_api.proto:72-83,92-96"}
+    ledger.fts_current_pair: {note: "OPTIONAL parity with M2: FtsReceivable/FtsPayable-current pair under ARENAPRACC0009/0010 keyed by fts_fund_account_id=<fts_id>, fund_account_type current, owner merchant ids Gh0YfsxpRlykwn/Gh0Yfp7SMMBIRp — unused by any Direct flow in live evidence (0 journals after 6 processed M2 payouts)", provenance: "T07 §2 row 7"}
+  restarts_and_side_effects: "monolith-stub, bankingaccounts-stub, dcs-stub (unless kv/put), splitz-stub, kong-lite — each restart wipes that stub's in-memory state (relay controls, /_arena/log, free-payout counters) for ALL tenants (T07 §2 tail)"
+  self_verify: "IMPS 1000 via kong with mozart scenario success: payout created -> initiated -> processed; banking_accounts.account_type='direct' row used; FTS transfers.source_account_id == <fts_id>; GET /v1/inflight_reservations shows live -> awaiting_balance_refresh; x-balances balance row unchanged; sink delivery payout.processed signature_valid; ledger journal count for <mid> == 0 (before any statement). Then scenario failure: payout failed, no reversals row, still 0 journals (T07 §12 step 13)"
+
+direct_statement_and_reconciliation_records:   # M4 T12 — T03 Findings 8, §6 S-B/S-C/S-D
+  mozart_account_statement_response:
+    route: "POST /razorpayx/rbl/v2/account_statement (mozart-sim)"
+    request: "RblRequest{attempt{id=<unix-ts>, transaction_type:'B', from_date, to_date (02-01-2006) | next_key}, source_account{account_number, credentials{auth_username, auth_password, client_id, client_secret, corp_id}}}"
+    response: "{FetchAccStmtRes:{Header:{Code, Corp_ID, Status:'Success'|'Failure', Status_Desc, TranID:<attempt.id>, account_no, from_date, to_date, next_key}, AccStmtData:{File_Data:<base64 CSV>}}}; success iff Status=='Success' || (Status=='Failure' && Status_Desc=='No Records Found')"
+    provenance: "payouts processor/rbl_gateway.go:168-231,413-460; rbl_statement.go:9-32; mozart app/config/razorpayx/rbl/v2/account_statement.json"
+  statement_csv_contract:
+    header: "TRAN_ID,PTSN_NUM,TRAN_DATE,PSTD_DATE,TRAN_TYPE,C/D,TRAN_PARTICULAR,TRAN_AMT,TRAN_BALANCE (exact; 9 columns per row)"
+    example_debit_row: "S12345678,1,07-09-2026,07-09-2026 10:15:00,TCI,D,<UTR>-IMPS/PAYOUT RZP<GRN10>,50.00,99950.00"
+    rules:
+      - "TRAN_ID non-empty -> bank_transaction_id varchar(255); PTSN_NUM numeric -> bank_serial_number"
+      - "PSTD_DATE fmt 02-01-2006 15:04:05, TRAN_DATE fmt 02-01-2006 (IST); posted_date must be < now - 60 s or the row is skipped and next_key suppressed"
+      - "TRAN_AMT rupees with decimals -> paise bigint unsigned; TRAN_BALANCE -> balance"
+      - "C/D -> type credit|debit; TRAN_TYPE category map TCI->customer_initiated, TBI->bank_initiated, CNP->cash_withdrawal, CNR->cash_deposit, else others"
+      - "UTR regex — debit: ^(RTGS/|NEFT/)(?P<utr>.*?)(/), ^(UPI/)(?P<utr>.*?)(/), ^(?P<utr>.*?)- (IMPS: everything before the first '-'); credit: ^(?P<utr>[0-9]{12})_IMPS and the RTGS/NEFT/UPI forms"
+      - "GRN regex \\sRZP([0-9A-Z]{10})$ -> gateway_ref_number varchar(48)"
+      - "dedupe tuple {account_number, posted_date, type, bank_serial_number, amount, bank_transaction_id, channel}; replaying the same CSV must add no rows"
+      - "paging: attempt limit 5; 'has more' if >=5000 rows or to_date < today; pagination key '<last_posted_ts>_<bank next_key>'; 'No Records' with next_key advances statement_fetched_till_date by 4 weeks"
+    provenance: "payouts processor/rbl_constants.go:6-61; rbl_gateway.go:355-411,517-662,664-703; T03 Finding 8"
+  resulting_bas_row: "banking_account_statement{id char(14) auto (bas_<14>), merchant_id=<BASD.merchant_id>, entity_id NULL, entity_type NULL, channel 'rbl', account_number, bank_transaction_id, type debit|credit, utr, amount paise, currency 'INR', description, category, bank_serial_number, balance, balance_currency 'INR', transaction_date <unix midnight IST>, posted_date <unix>, gateway_ref_number, created_at, updated_at}"
+  success_scenario: "payout pout_P processed with utr=U, amount=A, gateway_ref_no=G; statement row utr=U, amount=A, type='debit', account_number=<own>, channel='rbl', gateway_ref_number=G; source event {entity_id:P, entity_type:'payout', utr:U, event_id:<14>, status:'processed', mode, amount:A, balance_id:<balance_id>, gateway_ref_no:G, cms_ref_no:''} -> match -> payout_update -> payouts.transaction_id = <bas14>; journals da_payout_processed + da_payout_processed_recon iff the DA emitter gate is on (T03 §6 S-B/S-D)"
+  return_credit_scenario: "second statement row type='credit', utr=U (or return UTR), amount=A -> link payout_reversal -> payout_update{entity_type:'payout_reversal'} -> PS creates reversal + reversed (T03 §6 S-C)"
+  art_batch_body: "[{\"data\": base64({\"banking_account_statement_id\":\"<bas14>\",\"recon_status\":\"Reconciled\",\"entity_id\":\"x,y,<pout14>\",\"entity_type\":\"payout\"}), \"idempotent_id\":\"<any>\"}] to POST /v1/banking_account_statement/process/batch (cred.API|Workflow)"
+  xas_shaped_records: "accounts{id14, status:'active', merchant_id, account_number, account_type:'direct', channel (casing per xas enum — unverified, T03 Q5), balance_id, statement_metadata} UNIQUE(account_number, channel); account_statements as PS BAS + fetched_at_nano; source_events per route-matrix R5 with UNIQUE(event_id, entity_type)"
+
+# ============================================================================
+cross_service_consistency_rules:
+  - rule: "fts.source_accounts.bank_account_type in {NODAL,CURRENT,CORP_CARD} propagates via the FTS webhook's bank_account_type field, which Payouts Service LOWERCASES before writing into ledger's journal identifiers.fts_account_type -> ledger.account_details.entities.fund_account_type must match that LOWERCASED value exactly (nodal|current|corp_card), never the uppercase FTS-side spelling."
+    provenance: "L07 (source_account.go:99-101,182; ledger_journal_create.go:217 lowercase)"
+  - rule: "fts_fund_account_id equality is the join key across FOUR services for the same underlying nodal/current pool: payouts.banking_accounts.fts_fund_account_id (string) == fts.fund_accounts.id (int, cast to string) == x-balances.balance.fts_fund_account_id (string) == ledger.account_details.entities.fts_fund_account_id (jsonb array element, string). All four must agree bit-for-bit as strings even though the underlying types differ (CHAR(14) / INT / VARCHAR(255) / jsonb) across the four services. M4 sharpening (T05 §1.2): FTS matches transfers.preferred_source_account_id against source_accounts.fund_account_id, NOT source_accounts.id — seeds that set both to the same integer hide the distinction; PS must send the fund_accounts.id."
+    provenance: "L07 identity map table; payouts.mysql.sql:18-20; s4/payouts.sql header; fts internal/account/service.go:5320"
+  - rule: "banking_account_stmt_detail_id (basd_<14>) is the Direct-account join key between the PS banking_account_statement_details row and the ledger account_details.entities of every DA merchant sub-account; the value used in AccountAPI/CreateOnEvent must equal BASD.GetSignedID() of the row whose balance_id is the payout's balance_id (payouts bankingAccountStatementDetails/core.go:587-593), otherwise every DA journal is dropped as ErrAccountDiscoveryFailure."
+    provenance: "T03 Finding 2, Finding 6 discovery; ledger internal/account_discovery/core.go:49-110"
+  - rule: "ledger parent accounts are keyed strictly per fund_account_type, one Receivable/Payable pair each: MerchantBalance/VendorPayable/CommissionIncome/OutputGST (banking_account_id-keyed, per-merchant) vs FtsReceivable/FtsPayable-nodal and FtsReceivable/FtsPayable-current (fts_fund_account_id-keyed, shared across merchants routing through the same pool/current account, NOT per-merchant). Do not create a per-merchant FtsReceivable/Payable pair — that contradicts the pooled-account design."
+    provenance: "L07 (account hierarchy table); s4/ledger.sql §1,§3"
+  - rule: "DCS Workflows.enable_payout_workflow gates whether IsWorkflowApplicable even reaches the auth-type check; Workflows.skip_approval_workflow_for_api additionally means a workflow-enabled merchant's workflow ONLY fires for non-Private (dashboard/xperience/vendor-payments) auth, never for direct API-key calls. A merchant seeded with enable_payout_workflow=true but skip_approval_workflow_for_api also true (M3's actual seed) will silently skip workflow for API-authenticated payouts — this is intentional per baseHelper.go's guard order, not a seeding mistake."
+    provenance: "L08 baseHelper.go:107-193"
+  - rule: "splitz.experiment client_side_eval must be false / server-side Evaluate must be used in any faithful twin path — the real production convention is server-side; a payouts binary relying on FetchDecisionContext (client-side) will see an empty experiment list regardless of what is seeded in splitz.experiment_assignment (see that family's invariants). Twin scenarios that need a Splitz-gated payouts behavior must route through server-side Evaluate/EvaluateBulk, or fix FetchDecisionContext first."
+    provenance: "L10 (Splitz client-side eval verdict: INCORRECT SUBSTITUTE)"
+  - rule: "monolith payouts_details.beneficiary_bank_code must NEVER be added (by-design absence, DualWrite unset()); payouts-service's own payout_details.beneficiary_bank_code (out-of-band column) SHOULD be present. These are the SAME logical entity across a dual-write boundary with a deliberate, permanent column-set asymmetry — a twin's monolith-stub write path must apply the same unset(), not copy 1:1."
+    provenance: "L05; payouts.mysql.sql:9-19; apidb-subset.mysql.sql:35-40"
+  - rule: "reversals column rename on dual-write: payouts-service's reversals.fees (plural) -> monolith's reversals.fee (singular); payouts-service's reversals.payout_id -> monolith's reversals.entity_id (+ entity_type='payout', since monolith's reversals table has no payout_id column at all)."
+    provenance: "L05 Reversal.php:12-15"
+  - rule: "idempotency_keys UNIQUE(idempotency_key, merchant_id) is enforced IDENTICALLY in both payouts-service's own table and the monolith's copy — a twin testing cross-service idempotency replay must seed/observe the same composite key in both, not just one."
+    provenance: "L05; payouts.mysql.sql:270; apidb-subset.mysql.sql:178"
+  - rule: "FTS mode/channel ENUM includes WALLET_TRANSFER (code-required for AMAZON_PAY, absent from tracked migrations) and INDUSIND (migration-present, code-dead). A twin schema should include WALLET_TRANSFER (or AMAZON_PAY payouts will be rejected) but should NOT expect any code path to ever produce/consume INDUSIND."
+    provenance: "L05, fts.mysql.sql:8-18, L06"
+  - rule: "AmazonPay wallet fund accounts are the ONLY wallet provider CFA's ValidateWallet() accepts at create time — paytm/phonepe/gpay are declared enum values but will be REJECTED. Any wallet_amazonpay-style archetype must use provider=amazonpay."
+    provenance: "cfa.mongo.json:62-66"
+  - rule: "payouts.payouts and the monolith's apidb payouts table are THE SAME PRODUCTION TABLE (accessed via a second `payout_service_database` connection), not two independently-seeded copies. A twin must seed this table exactly ONCE in the payouts-service's own database and have the monolith-stub read/write it over its own connection, never maintain a separate ps_payouts-shaped mirror."
+    provenance: "L01, L05; payouts.mysql.sql:9-33 header"
+
+# ============================================================================
+value_distributions:
+  amount_boundaries_paise:
+    global_min: 100                     # payoutCreate.go DTO min (all payout creates)
+    global_max_default: 1000000000      # 10cr default cap
+    global_max_increase_payout_limit: 5000000000   # 50cr, DCS FundTransfer.increase_per_payout_amount_limit=true
+    global_max_absolute: 30000000000    # 300cr, highest documented tier
+    RTGS_min: 200000                    # >=2L required
+    IMPS_max: 500000                    # <=5L
+    UPI_max: 100000                     # <=1L
+    AMAZON_PAY_max: 10000                # <=10k (wallet)
+    RBL_v1_IMPS_range: [1, 200000]       # env.default.toml RBL caps, 24x7
+    RBL_v1_UPI_range: [1, 200000]
+    RBL_v1_RTGS_range: [200000, 100000000]   # 08:00-17:30 window
+    RBL_v1_NEFT_day_range: [1, 100000000]     # 02:00-18:00 window
+    RBL_v1_NEFT_slot2_cap: 1500000000         # 18:00-02:00 window
+    generation_rule: "each archetype's scenario set should include at least: one amount at global_min, one just below/at each mode-specific cap, one mid-range typical value (e.g. 10000-100000), and (for M6) one value requiring IncreasePayoutLimit"
+    provenance: "L04 payoutCreate.go:11-39; L06 env.default.toml RBL v1 caps"
+  status_coverage:
+    payout_statuses_15: [created, initiated, ledger_response_awaited, processed, failed, reversed, pending, pending_on_otp(dead), scheduled, batch_submitted, queued, cancelled, on_hold, rejected, create_request_submitted]
+    fts_transfer_statuses_7: [CREATED, INITIATED, PROCESSED, FAILED, REVERSED, RETRY, USER_PENDING]
+    fts_attempt_statuses_7: [CREATED, INITIATED, PROCESSED, FAILED, REVERSED, RETRY, FAILED_INTERNAL]
+    generation_rule: "each scenario family must exercise at least one state_machines.yaml transition; distribution across archetypes should ensure every guard (Shared vs Direct FtsToPayoutStatusMap divergence, workflow gate, reservation gate, low-balance queue) is hit at least once"
+    provenance: "L04 appConstants/states.go:4-18; L06 state_machine.go:7-114"
+  mozart_bank_status_code_coverage:
+    modeled_in_twin: [SUCCESS, INSUFFICIENT_FUND, "PENDING (stateful, mozart-sim only)", "CBS:188 (ambiguous, with UTR)", DUPLICATE_TXN, RETURNED]
+    real_total: "~140 codes (fts error_code.go:217-952, bank-agnostic defaultErrorCodes + per-bank transferErrorCodes overrides)"
+    gap: "6 of ~140 real codes modeled — documented, deliberate twin scope-narrowing, not an oversight to silently accept as complete"
+    provenance: "L06; s4/mozart_scenarios.json"
+  fee_and_tax:
+    flat_fee_paisa: 200      # Rs 2, IMPS/NEFT
+    gst_rate_pct: 18
+    tax_paisa: 36
+    special_zero_cases: ["purpose=rzp_fees", "purpose=refund", "fee_type=free_payout"]
+    provenance: "s4/pricing_fixtures.json (task-specified deliberate deviation from ccSdk mock's own default fee=500,tax=90)"
+  channel_scope:
+    modeled: [RBL]
+    real_channels: [AXIS, CITI, HDFC, ICICI, RBL, YESBANK, M2P, AMAZON_PAY, INDUSIND, MCS, IDFC, OCBC, SLICE, JPMC_INTL_BANK_TRANSFER]
+    provenance: "fts.mysql.sql channel ENUM; s4/fts.sql (RBL-only twin scope)"
+
+# ============================================================================
+never_seed:
+  runtime_only_tables:
+    - "payouts.payouts, payouts.payout_details, payouts.payout_status_details, payouts.reversals, payouts.payout_sources, payouts.payout_logs, payouts.payout_attempts, payouts.idempotency_keys, payouts.bulk_idempotency_keys, payouts.idempotency_key_exclusions, payouts.counter_transaction, payouts.payout_meta_temporary, payouts.payout_meta_permanent, payouts.workflow_entity_map — all populated by golden-flow traffic, not fixture data (per s4/payouts.sql header)"
+    - "fts.transfers, fts.attempts, fts.attempts_unique_keys, fts.transfer_meta — created by /v1/transfer traffic, not pre-seeded"
+    - "ledger.journal, ledger.ledger_entries — payout-driven rows are runtime-only; ONLY the opening-balance rows are seeded (and even those should prefer the AccountAPI.CreateOnEvent RPC path over raw INSERT)"
+    - "monolith.payouts_details, monolith.reversals, monolith.idempotency_keys, monolith.workflow_entity_map, monolith.balance — runtime-only (dual-write targets)"
+    - "in-flight reservation Redis keys (<prefix>:in_flight:{mid:balID}), channel_information_status writers beyond the seeded baseline, workflow_state_map runtime states — process-managed, not fixture data"
+  ci_only_tables_do_not_exist_in_prod:
+    - "ps_payouts, ps_payout_details, ps_payout_status_details, ps_reversals, ps_workflow_entity_map, ps_payout_sources, ps_idempotency_keys, ps_payout_logs, ps_payout_meta_temporary, ps_payout_meta_permanent, ps_bulk_idempotency_keys, ps_banking_accounts, ps_banking_account_statement(_details) — production doc-comment: 'This table doesn't exist on prod. It only exists on CI.' (2022_07_01_095954_create_ps_payouts.php:12-14). Do not model these at all in a production-faithful twin."
+  dead_or_unconfirmed_tables:
+    - "payouts.source_request_id_mapping — migration exists, zero code references anywhere in the repo; omit unless a consuming service/PR is later found"
+    - "payouts.merchant_configurations, payouts.settings, payouts.duplicate_prevention_config, fts.merchant_configurations — no confirmed real key/value taxonomy found by any lane; leave unseeded rather than fabricate plausible-looking config keys"
+  must_not_add_constraints_prod_lacks:
+    - "ledger.journal UNIQUE(transactor_id, transactor_event) — production has NO such constraint (app-level check-then-insert race window only); adding it would make the twin MORE correct than production, defeating twin fidelity"
+    - "cfa.contacts / cfa.fund_accounts / cfa.hash_lookup unique indexes on id/hash — production has NONE (confirmed by the migration that exists specifically to de-duplicate found dupes); do not add"
+  mechanism_gaps_not_data_gaps:
+    - "Workflows Service (WFS) is currently MISSING from the twin entirely — this is a substitute/mechanism task (build a contract-faithful WFS stub), not something fixable by seeding more rows into payouts.workflow_config/workflow_state_map"
+    - "Splitz client-side eval (FetchDecisionContext) always returns empty for payouts — no amount of splitz.experiment_assignment seed data changes this until the mechanism is fixed"

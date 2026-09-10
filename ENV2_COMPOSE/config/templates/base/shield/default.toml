@@ -1,0 +1,1004 @@
+[app]
+    env = ""
+    debugMode = false
+    geographies = "IN"
+    listenIp = ""
+    listenPort = "80"
+    gracefulshutdowntimeout = 30
+    gracefulshutdowndelay = 10
+    readtimeout = 10
+    writetimeout = 30
+    idletimeout = 15
+    payoutDualWriteEnabled = false
+    useNewStore = false
+    [app.precheckevaluator]
+        ruleCodes = ""
+        isEnabled = false
+        rampPercent = 0
+[prom]
+    listenPort = "8080"
+
+[jaeger]
+    enabled = false
+    hostName = "localhost"
+    port = "6831"
+
+[db]
+    host = "localhost"
+    replica_host = "localhost"
+    name = "shield"
+    protocol = "tcp"
+    port = "3306"
+    retryInterval = 5000
+    maxRetryAttempts = 5
+    maxIdleConnections = 5
+    maxOpenConnections = 10
+    maxLifetime = 120
+    healthPingTimeoutMs = 1500
+    [db.user]
+        username = "root"
+        password = "12345678"
+    [db.partitionUser]
+        username = "root"
+        password = "12345678"
+
+[apiDb]
+    host = "localhost"
+    name = "api"
+    protocol = "tcp"
+    port = "3306"
+    maxIdleConnections = 5
+    maxOpenConnections = 5
+    maxLifetime = 300
+    [apiDb.user]
+        username = "root"
+        password = "12345678"
+
+[redis]
+    host = "localhost"
+    port = "6379"
+    password = ""
+    maxRetryAttempts = 5
+    poolSize = 20
+    poolTimeout = 4
+    minIdleConns = 5
+    dialTimeoutMs = 5000
+    readTimeoutMs = 3000
+    writeTimeoutMs = 3000
+
+[payoutRedis]
+    host = "stage-rzp-payouts-shield.np.razorpay.vpc"
+    port = "6379"
+    password = ""
+    maxRetryAttempts = 5
+    poolSize = 10
+    poolTimeout = 5
+    minIdleConns = 5
+
+[crossBorderRedis]
+    host = "localhost"
+    port = "6379"
+    password = ""
+    maxRetryAttempts = 5
+
+[es]
+    paymentsIndex = ""
+    geoipIndex = ""
+    host = ""
+    port = "9200"
+
+[shieldAuthUser]
+    [shieldAuthUser.api]
+        username = ""
+        password = ""
+    [shieldAuthUser.apiOld]
+        username = ""
+        password = ""
+    [shieldAuthUser.harvester]
+        username = ""
+        password = ""
+    [shieldAuthUser.lumberjack]
+        username = ""
+        password = ""
+    [shieldAuthUser.nbPlus]
+        username = ""
+        password = ""
+    [shieldAuthUser.cps]
+        username = ""
+        password = ""
+    [shieldAuthUser.pcp]
+        username = ""
+        password = ""
+    [shieldAuthUser.scrooge]
+        username = ""
+        password = ""
+    [shieldAuthUser.upi]
+        username = ""
+        password = ""
+    [shieldAuthUser.payout]
+        username = ""
+        password = ""
+    [shieldAuthUser.acs]
+        username = ""
+        password = ""
+    [shieldAuthUser.cms]
+        username = ""
+        password = ""
+    [shieldAuthUser.shield]
+       username = ""
+       password = ""
+    [shieldAuthUser.optimizer]
+        username = ""
+        password = ""
+    [shieldAuthUser.shieldUs]
+        username = ""
+        password = ""
+
+    [shieldAuthUser.wafService]
+        username = ""
+        password = ""
+    [shieldAuthUser.paymentsCrossBorder]
+        username = ""
+        password = ""
+
+[queue]
+    driver = ""
+    name = ""
+    sqsRegion = ""
+    sqsPrefix = ""
+    sqsEndpoint = ""
+
+[worker]
+    name = ""
+    promListenPort = "8080"
+    listenPort = "8000" # required as before app was running on 8000 before and nginx on 80 moved app to 80 need config for workerlistenport
+
+[cybersafe]
+    bearerToken = ""
+    key = ""
+    postbackUrl = ""
+
+[sift]
+    scoreUrl = ""
+    eventUrl = ""
+    decisionUrl = ""
+    apiKey = ""
+    accountId = ""
+    excludedEmails = ""
+    fraudReasonCodes = ""
+
+[cybersource]
+    baseUrl = ""
+    vcMerchantId = ""
+    keyId = ""
+    secretKey = ""
+    hostName = ""
+    # Skip Cybersource DM calls when input amount is strictly below this many paisa.
+    # 1000 paisa = 10 INR. Set to 0 to disable the skip.
+    minAmountPaisa = 1000
+
+[itrm]
+    url = "https://international-transactions-risk-model.concierge.stage.razorpay.in/predict"
+    maxRetryAttempts = 1
+    timeoutMs = 500
+
+[itrmV2]
+    bearer = "env|ITRMV2_BEARER"
+    maxRetryAttempts = 1
+    timeoutMs = 50000
+    [itrmV2.redis]
+        [itrmV2.redis.pipeline]
+            concurrency = 10
+            batchSize = 100
+    itrmEnabledCohort = 20
+    cybersourceDisabledCohort = 10
+    ipHighTrafficThreshold = 3
+    ipHighTrafficCacheTTLSeconds = 300
+
+[mailgun]
+    mock = true
+    domain = "smtp.mailgun.org"
+    port = "587"
+    smtpUser = "analytics.shield@razorpay.com"
+    smtpPassword = ""
+    recipients = "analytics.developers@razorpay.com,risk.reports@razorpay.com,payments-onlinepayments-txn-risk@razorpay.com"
+
+[throttle]
+    cardFingerprintThresholdKey = ""
+    upithresholdKey = ""
+
+[ras]
+    baseUrl = "https://ras-web.concierge.stage.razorpay.in"
+    maxRetryAttempts = 3
+    timeoutMs = 2000 # now driven via [clients.downstreams.riskalert].requestTimeoutMs
+    [ras.auth]
+        key = ""
+        secret = ""
+
+[cms]
+    baseUrl = "https://case-management-service.dev.razorpay.in"
+    maxRetryAttempts = 3
+    timeoutMs = 10000
+    [cms.auth]
+        key = ""
+        secret = ""
+
+[acs]
+    baseUrl = "https://cas-admin-ui-backend.dev.razorpay.in"
+    maxRetryAttempts = 3
+    timeoutMs = 2000
+    [acs.auth]
+        key = ""
+        secret = ""
+
+[frm]
+    merchantIDs = "PBytbITZ50MsHP,PBytbF6Fk1tTgT"
+    baseUrl = "https://shield-uat-transaction.dev.razorpay.in"
+
+[splitz]
+    baseUrl = ""
+    timeoutMs = 500
+    travelModelExperimentId = ""
+    itrmv2ExperimentId = ""
+    itrmv2EnablerExperimentId = ""
+    cbEvaluateMerchantWithHighRiskProfile = ""
+    cbEvaluateMerchantWithLowRiskProfile = ""
+    cbEvaluateMerchantWithMediumRiskProfile = ""
+    cbEvaluateSardineMerchantDecisionMaker = ""
+    cbEvaluateSkip3dsUseDcsForRiskProfile = "SqlmeDoFmorr97"
+    cbStripeRadarEvaluateRequest = "TDLeyGtrGT14He"
+    cbParallelProviderEvaluation = ""
+    cbParallelRuleEngine = ""
+    cbConsiderPrismDecision = ""
+    cbConsiderSardineDecision = ""
+    cbConsiderStripeRadarDecision = ""
+    cbConsiderRiskifiedDecision = ""
+    [splitz.auth]
+        key = ""
+        secret = ""
+
+[harvester]
+    baseUrl = ""
+    accessToken = ""
+
+[pinot]
+    host = ""
+    authToken = ""
+
+[slack]
+    mock = true
+    webhookUrl = "https://hooks.slack.com/services/T0276T56F/B8W81UJCB/"
+
+[trustwave]
+    tldReportEmailRecipients = ""
+    tldBlockRuleId = -1
+
+[capAlerts]
+    recipients = ""
+
+[report]
+    defaultRecipients = ""
+
+[sentry]
+    mock = true
+    dsn = ""
+
+[decrypt]
+    tokenKey = ""
+
+# HMAC secret shared with the CloudFront edge fn that mints razorpay.js shield tokens.
+# Provisioned in shield pods via credstash env SHIELDCONTEXTE2_SECRET (viper key
+# shieldContextE2.secret); must equal the edge fn's secret. Empty disables the "2-" path.
+[shieldContextE2]
+    secret = ""
+
+[events]
+    diagnosticEventsMerchantIds = ""
+    enableDiagnosticEvents = true
+    processableModes = "live,test"
+    enableMSKafka = false
+    enablePush = "off"
+    enableFeedbackTxnEventsPush = "off"
+    [events.kafka]
+        enable = false
+        broker = "stage-kafka.razorpay.in:9090"
+        topicPrefix = ""
+    [events.mskafka]
+        enable = false
+        broker = "devserve-kafka-msk.np.razorpay.vpc:9094"
+        topicPrefix = ""
+
+[dataLists]
+    internationalRiskScoreExemptMids = ""
+    internationialParamsEnabledMids = ""
+    multiAggregationEnabledMids = ""
+
+[createRuleAnalytics]
+    name = ""
+
+[cbpRealtime]
+    baseUrl = "https://international-transactions-risk-model.concierge.stage.razorpay.in"
+    timeoutMs = 2000 # now driven via [clients.downstreams.cbprealtime].requestTimeoutMs
+    maxRetryAttempts = 1
+    [cbpRealtime.auth]
+        key = "shield"
+        secret = "MRS_AUTH_SECRET"
+
+[fingerprint]
+    encryptionKey    = "env|FINGERPRINT_ENCRYPTION_KEY"
+    secretKey        = "env|FINGERPRINT_SECRET_KEY"
+
+[trino]
+    username              = "shield"
+    host                  = "trino-coordinator.concierge.stage.razorpay.in"
+    port                  = 443
+    custom_key            = "trinoclient"
+    catalog               = "hive"
+    driver                = "trino"
+    mock                  = true
+    refresh_time          = 86400
+
+[watchtower]
+    host = "https://watchtower2.dev.razorpay.in"
+
+[governor]
+    appName = "shield"
+    hostname=  "https://governor.dev.razorpay.in"
+    timeout = 1000
+    prettyLog = false
+    verbose = false
+    [governor.namespaces]
+        [governor.namespaces.Skip3DS]
+            id = "QgGAlXhE9vAP0f"
+            [governor.namespaces.Skip3DS.RuleChains.DefaultRejection]
+                name = "DefaultRejection"
+                id = "QjQv6WPd2g47si"
+            [governor.namespaces.Skip3DS.RuleChains.DefaultScoring]
+                name = "DefaultScoring"
+                id = "QjQvIf8Y9lJgBQ"
+            [governor.namespaces.Skip3DS.RuleChains.HighRiskMerchantRejection]
+                name = "HighRiskMerchantRejection"
+                id = "QmG1ZCqsjRAdT7"
+            [governor.namespaces.Skip3DS.RuleChains.HighRiskMerchantScoring]
+                name = "HighRiskMerchantScoring"
+                id = "QmG1ktOy0gAGiS"
+            [governor.namespaces.Skip3DS.RuleChains.MediumRiskMerchantRejection]
+                name = "MediumRiskMerchantRejection"
+                id = "QmG1yskBVC9svz"
+            [governor.namespaces.Skip3DS.RuleChains.MediumRiskMerchantScoring]
+                name = "MediumRiskMerchantScoring"
+                id = "QmG2MjNM6JiPCY"
+            [governor.namespaces.Skip3DS.RuleChains.LowRiskMerchantRejection]
+                name = "LowRiskMerchantRejection"
+                id = "QmG2Ywbwc6ZBPo"
+            [governor.namespaces.Skip3DS.RuleChains.LowRiskMerchantScoring]
+                name = "LowRiskMerchantScoring"
+                id = "QmG2tq1Y7PyhXf"
+            [governor.namespaces.Skip3DS.RuleChains.DecisionMaker]
+                name = "DecisionMaker"
+                id = "QmG3Aiyy8v25M5"
+            [governor.namespaces.Skip3DS.RuleChains.SardineMerchantRejection]
+                name = "SardineMerchantRejection"
+                id = "SNuzPdaPQMreFN"
+            [governor.namespaces.Skip3DS.RuleChains.SardineDecisionMaker]
+                name = "SardineDecisionMaker"
+                id = "SNuzeIoy4dlqPc"
+        [governor.namespaces.Prism]
+            id = "T52eL1HjtVeT4J"
+            [governor.namespaces.Prism.RuleChains.DefaultRejection]
+                name = "DefaultRejection"
+                id = "T6AIAzABmB5iAe"
+            [governor.namespaces.Prism.RuleChains.DefaultScoring]
+                name = "DefaultScoring"
+                id = "T6AIDxdOVuzka8"
+            [governor.namespaces.Prism.RuleChains.DecisionMaker]
+                name = "DecisionMaker"
+                id = "T6AIHcKjOwWHql"
+        [governor.namespaces.Sardine]
+            id = "T53KhRSmiFLmTO"
+            [governor.namespaces.Sardine.RuleChains.DefaultRejection]
+                name = "DefaultRejection"
+                id = "TPE1flNTHiRQvV"
+            [governor.namespaces.Sardine.RuleChains.DefaultScoring]
+                name = "DefaultScoring"
+                id = "TPE1tJanaNaPRG"
+            [governor.namespaces.Sardine.RuleChains.DecisionMaker]
+                name = "DecisionMaker"
+                id = "TPE1vm31uiYmLK"
+        [governor.namespaces.StripeRadar]
+            id = "T53WvGHr6jaaHS"
+            [governor.namespaces.StripeRadar.RuleChains.DefaultRejection]
+                name = "DefaultRejection"
+                id = "TPE1yCEaE9aux0"
+            [governor.namespaces.StripeRadar.RuleChains.DefaultScoring]
+                name = "DefaultScoring"
+                id = "TPE20d6fUbqnUZ"
+            [governor.namespaces.StripeRadar.RuleChains.DecisionMaker]
+                name = "DecisionMaker"
+                id = "TPE22tIajnYDO5"
+        [governor.namespaces.Riskified]
+            id = "T53dunmwjoRrlG"
+            [governor.namespaces.Riskified.RuleChains.DefaultRejection]
+                name = "DefaultRejection"
+                id = "TPE26Bgw7T4r1x"
+            [governor.namespaces.Riskified.RuleChains.DefaultScoring]
+                name = "DefaultScoring"
+                id = "TPE28QFO4ka27v"
+            [governor.namespaces.Riskified.RuleChains.DecisionMaker]
+                name = "DecisionMaker"
+                id = "TPE2As032dBpU5"
+        [governor.namespaces.SmartAuthnOrchestrator]
+            id = "T2nGN3Ql2nnt62"
+            [governor.namespaces.SmartAuthnOrchestrator.RuleChains.FingerpintAllowed]
+                name = "FingerpintAllowed"
+                id = "TPDx4LuIDbHNwx"
+            [governor.namespaces.SmartAuthnOrchestrator.RuleChains.StripeRadarAllowed]
+                name = "StripeRadarAllowed"
+                id = "TPDxHHyWFkXqbY"
+            [governor.namespaces.SmartAuthnOrchestrator.RuleChains.SardineAllowed]
+                name = "SardineAllowed"
+                id = "TPDxP0iW0UsN4M"
+            [governor.namespaces.SmartAuthnOrchestrator.RuleChains.RiskifiedAllowed]
+                name = "RiskifiedAllowed"
+                id = "TPDxat2BkgTFCM"
+            [governor.namespaces.SmartAuthnOrchestrator.RuleChains.FinalDecisionMaker]
+                name = "FinalDecisionMaker"
+                id = "TPE2DFjuy8yxpO"
+    [governor.Auth]
+        key = "shield"
+        secret = "password"
+
+[cbQueue]
+    driver                = "sqs"
+    region                  = "ap-south-1"
+    maxRetries              = 5
+    visibilityTimeout       = 60 # 1 minute
+    waitTimeout             = 20  # 20 seconds
+    endpoint                = "https://sqs.ap-south-1.amazonaws.com"
+    prefix                  = "https://sqs.ap-south-1.amazonaws.com/101860328116"
+    useAnonymousCredentials = false
+    ConnectTimeoutMs            = 60001
+    ConnKeepAliveMs             = 0
+    ExpectContinueTimeoutMs     = 60001
+    IdleConnTimeoutMs           = 0
+    MaxAllIdleConns             = 0
+    MaxHostIdleConns            = 100
+    ResponseHeaderTimeoutMs     = 60001
+    TLSHandshakeTimeoutMs       = 60001
+
+[cbWorker]
+    queueName            = "stage-shield-cross-border"
+    paramsQueueName      = "stage-shield-cross-border-params"
+    maxConcurrency       = 1
+    waitTime             = "10"
+    retryDelay           = "30"
+    promListenPort       = "8080"
+    repeatCustomerWriteRateLimit   = 0
+    repeatCustomerTTLJitterSeconds = 0
+
+[crossBorderManualSync]
+    allowedBuckets = "rzp-1018-nonprod-cross-border-bucket,rzp-1415-prod-cross-border-bucket"
+
+[sardine]
+    baseUrl = "https://api.sandbox.sardine.ai"
+    secretKey = "env|SARDINE_SECRETKEY"
+    workflowName = "env|SARDINE_WORKFLOWNAME"
+    [sardine.httpClient]
+        connectTimeoutMs = 1000
+        connKeepAliveMs = 30000
+        expectContinueTimeoutMs = 500
+        idleConnTimeoutMs = 90000
+        maxAllIdleConns = 1000
+        maxHostIdleConns = 1000
+        responseHeaderTimeoutMs = 2000
+        tLSHandshakeTimeoutMs = 1000
+        requestTimeoutMs = 2500
+
+[stripe]
+    baseUrl = "https://api.stripe.com"
+    secretKey = "env|STRIPE_SECRETKEY"
+    [stripe.httpClient]
+        connectTimeoutMs = 1000
+        connKeepAliveMs = 30000
+        expectContinueTimeoutMs = 500
+        idleConnTimeoutMs = 90000
+        maxAllIdleConns = 1000
+        maxHostIdleConns = 1000
+        responseHeaderTimeoutMs = 2000
+        tLSHandshakeTimeoutMs = 1000
+        requestTimeoutMs = 2500
+
+[shieldUs]
+    baseUrl = "env|SHIELD_US_BASEURL"
+    [shieldUs.auth]
+        key = "env|SHIELDUS_AUTH_KEY"
+        secret = "env|SHIELDUS_AUTH_SECRET"
+    [shieldUs.httpClient]
+        connectTimeoutMs = 7000
+        connKeepAliveMs = 30000
+        expectContinueTimeoutMs = 1000
+        idleConnTimeoutMs = 90000
+        maxAllIdleConns = 1000
+        maxHostIdleConns = 1000
+        responseHeaderTimeoutMs = 3000
+        tLSHandshakeTimeoutMs = 7000
+
+[accertify]
+    baseUrl = "https://icnow01.accertify.net"
+    [accertify.httpClient]
+        connectTimeoutMs = 7000
+        connKeepAliveMs = 30000
+        expectContinueTimeoutMs = 1000
+        idleConnTimeoutMs = 90000
+        maxAllIdleConns = 1000
+        maxHostIdleConns = 1000
+        responseHeaderTimeoutMs = 3000
+        tLSHandshakeTimeoutMs = 7000
+    [accertify.credentials.IzR8nTbFYstXjE]
+        username = "username"
+        password = "password"
+        importerId = "importerId"
+
+[cbEvents]
+    enabled = false
+    debug = true
+    msKafkaEnabled = false
+    msKafkaTopicPrefix = ""
+    [cbEvents.kafka]
+        retryBackoff = 2
+        maxRetry = 10
+        maxMessages = 100
+        broker = "stage-kafka.razorpay.in:9090"
+        enableTLS = true
+        debugEnabled = true
+    [cbEvents.msKafka]
+        retryBackoff = 2
+        maxRetry = 10
+        maxMessages = 100
+        broker = "devserve-kafka-msk.np.razorpay.vpc:9094"
+        enableTLS = true
+        debugEnabled = true
+
+[taskExecutor]
+    concurrency = 1
+    shutdown_timeout = 30
+    app_name = "shield"
+    [taskExecutor.queues]
+        critical = 10
+        default = 1
+
+[blockOverride]
+    rampPercentage = 0
+
+[effectiveTLD]
+    rolloutPercentage = 0
+
+[geofence]
+    s3_bucket        = "rzp-1018-nonprod-shield-geofences"
+    s3_region        = "ap-south-1"
+    s3_key_prefix    = ""
+
+[dcs]
+    username = "env|DCS_USERNAME"
+    password = "env|DCS_PASSWORD"
+    mock = true
+    mode = "live"
+    CacheEvictionTimeInSeconds = 3600
+[ipWafBlock]
+    enabled = false
+    redisKeyTTLSeconds = 172800
+    abuseIpDbConfidenceScoreThreshold = 50
+
+    [ipWafBlock.repeatOffender]
+        enabled = false
+        shadowMode = true
+        lookbackDays = 7
+        minPriorBlocks = 1
+        durationMultiplier = 2.0
+        maxBlockDurationSeconds = 86400
+
+    [ipWafBlock.abuseIpDb]
+        enabled = true
+        mock = true
+        baseUrl = "https://api.abuseipdb.com"
+        apiKey = "env|ABUSE_IP_DB_API_KEY"
+        timeoutMs = 2000 # now driven via [clients.downstreams.abuseipdb].requestTimeoutMs
+        maxRetryAttempts = 1
+        responseCacheTTLSeconds = 7200
+
+    [ipWafBlock.observers.slack]
+        enabled = true
+        mock = false
+        botToken = "env|IP_WAF_BLOCK_SLACK_BOT_TOKEN"
+        channel = ""
+        timeoutMs = 2000 # now driven via [clients.downstreams.slack].requestTimeoutMs
+        notifyNewBlocks = true
+        notifyEscalations = true
+        escalationCooldownSeconds = 60
+        userTags = ["U08BR1LR06R"]
+        groupTags = []
+
+    [ipWafBlock.observers.kafka]
+        enabled = false
+
+    [ipWafBlock.windows.w1]
+        name = "w1_300s"
+        durationSeconds = 300
+        blockThresholdScore = 0.12
+        minAttemptsRequired = 3
+        minDeclineRateRequired = 0.0
+        blockDurationSeconds = 300
+        microTxnAmountThreshold = 10
+        [ipWafBlock.windows.w1.weights]
+            declineRate = 0.35
+            microTxnRatio = 0.25
+            cardSpray = 0.40
+
+    [ipWafBlock.windows.w2]
+        name = "w2_600s"
+        durationSeconds = 600
+        blockThresholdScore = 0.25
+        minAttemptsRequired = 4
+        minDeclineRateRequired = 0.0
+        blockDurationSeconds = 900
+        microTxnAmountThreshold = 20
+        [ipWafBlock.windows.w2.weights]
+            declineRate = 0.30
+            microTxnRatio = 0.25
+            cardSpray = 0.45
+
+[penaltyBox.retention]
+    enabled = true
+    batchSize = 1000
+    hardDeleteAfterDays = 180
+
+# Card WAF block (stage 3) — detects a single card hammered across merchants/IPs, mirroring the IP
+# subject on the shared penaltybox core. card_number is sourced from the Stage-2 enrich store
+# (AES-256, recovered in-process) and stored as its deterministic AES-256-GCM ciphertext — the same
+# value the enrich store persists, the raw PAN is never stored. Disabled by default; windows/weights
+# are placeholders pending analytics (no card-spray term). The card_number cipher key/IV are the
+# [paymentEnrich] encryptionKey/encryptionIV (Kubestash/credstash), shared so both sides agree.
+[cardWafBlock]
+    enabled = true
+    redisKeyTTLSeconds = 1200
+
+    [cardWafBlock.repeatOffender]
+        enabled = false
+        shadowMode = true
+        lookbackDays = 7
+        minPriorBlocks = 1
+        durationMultiplier = 2.0
+        maxBlockDurationSeconds = 86400
+
+    [cardWafBlock.observers.slack]
+        enabled = true
+        mock = false
+        # Bot token from credstash per env (never the raw token in config).
+        botToken = "env|CARDWAFBLOCK_OBSERVERS_SLACK_BOTTOKEN"
+        channel = "C0BUEC51ZD4"
+        timeoutMs = 2000
+        notifyNewBlocks = true
+        notifyEscalations = true
+        escalationCooldownSeconds = 3600
+        userTags = []
+        groupTags = []
+
+    [cardWafBlock.observers.kafka]
+        enabled = false
+
+    [cardWafBlock.windows.w1]
+        name = "w1_300s"
+        durationSeconds = 300
+        blockThresholdScore = 0.12
+        minAttemptsRequired = 3
+        minDeclineRateRequired = 0.0
+        blockDurationSeconds = 300
+        microTxnAmountThreshold = 10
+        [cardWafBlock.windows.w1.weights]
+            declineRate = 0.35
+            microTxnRatio = 0.25
+            merchantSpray = 0.40
+
+    [cardWafBlock.windows.w2]
+        name = "w2_600s"
+        durationSeconds = 600
+        blockThresholdScore = 0.25
+        minAttemptsRequired = 4
+        minDeclineRateRequired = 0.0
+        blockDurationSeconds = 900
+        microTxnAmountThreshold = 20
+        [cardWafBlock.windows.w2.weights]
+            declineRate = 0.30
+            microTxnRatio = 0.25
+            merchantSpray = 0.45
+
+[paymentEnrich]
+    enabled = true
+    ttlSeconds = 3600
+    encryptionKey = "0123456789abcdef0123456789abcdef"
+    encryptionIV = "abcdef0123456789"
+
+[telemetry]
+    enabled               = true
+    serviceName           = "shield"
+    serviceNamespace      = "rzp/payments"
+    environment           = "development"
+    exporterHost          = "localhost"
+    exporterPort          = "4318"
+    samplingRatio         = 1.0
+    # /v1/status is the kubelet probe: it sends the pod IP:port as its Host header and the
+    # inbound span name embeds Host, so tracing it mints one span name per pod. Skipped in
+    # every env — keep this array's element order identical in every conf/<env>.toml, viper
+    # merges slices element-wise (see app/config/config_test.go).
+    httpSkipPaths         = ["/commit.txt", "/metrics", "/v1/status"]
+    disableClientSpans    = false   # CLIENT spans ON; pin vs goutils default drift
+
+# clients: per-downstream egress control surface (app/clients). See app/clients/README.md
+# for config examples (resilience opt-in, transport tuning). Whole-call timeouts are
+# driven here via requestTimeoutMs.
+[clients]
+    [clients.global]
+        requestTimeoutMs = 30000
+        circuit_breaker = "off"
+        bulkhead        = "off"
+        retry_max       = 0
+        # parity floor: internal downstreams use http.DefaultTransport; a bespoke
+        # [.transport] block opts back out via shared_transport=false. See README.
+        shared_transport = true
+
+    # ⚠️ INERT when shared_transport = true (the global default above).
+    # baseTransport returns lazyDefaultTransport (http.DefaultTransport) for every
+    # shared downstream, so none of the values below reach the wire — the effective
+    # MaxIdleConnsPerHost is http.DefaultTransport's 2, NOT the 10 set here.
+    # This block only takes effect for a downstream that sets shared_transport = false
+    # and does NOT carry its own [clients.downstreams.<slug>.transport] block (in which
+    # case the downstream's own block wins). Today every non-shared downstream carries
+    # its own block, so this is a fallback that nothing exercises.
+    # Pinned by TestGlobalTransport_InertWhenSharedTransportTrue in factory_test.go.
+    [clients.global.transport]
+        max_conns_per_host      = 0
+        max_idle_conns          = 100
+        max_idle_conns_per_host = 10
+        idle_conn_timeout       = "90s"
+        dial_timeout            = "5s"
+        keep_alive              = "30s"
+        tls_handshake_timeout   = "10s"
+        expect_continue_timeout = "1s"
+        force_attempt_http2     = true
+
+    # external = true marks a third-party vendor: egress emits our CLIENT span but
+    # strips every trace-context/correlation header on the wire (nothing leaks).
+    # Classification is NOT config-only: clients.mustBeExternal is the in-code default, so a
+    # vendor slug with no block here still resolves external (fail-closed). What config adds is
+    # the loud path — app/clients.Factory.validateDownstreams REJECTS a configured vendor block
+    # that omits the flag or sets external=false. It does NOT panic: clients.Init RETURNS that
+    # error, app.Setup aborts boot on it, and main.go logs "boot failed" + exit 1.
+    # This file is the merge base in every env
+    # served by dockerconf/entrypoint.sh (it runs `cp conf/default.toml conf/dev.toml`,
+    # and pkg/config loads conf/dev.toml then merges conf/$APP_MODE.toml), so the flag
+    # set here covers those envs. It is NOT loaded where a build overwrites the base:
+    # build/docker/slit/Dockerfile copies conf/stage.toml and dockerconf/ci-codegen.sh
+    # copies conf/testing.toml, so those two files carry their own [clients] block.
+    [clients.downstreams.abuseipdb]
+        requestTimeoutMs = 2000
+        external         = true
+
+    [clients.downstreams.riskalert]
+        requestTimeoutMs = 2000
+
+    [clients.downstreams.slack]
+        requestTimeoutMs = 2000
+        external         = true
+
+    [clients.downstreams.watchtower]
+        requestTimeoutMs = 30000
+        shared_transport = false   # keep the bespoke HTTP/1.1 transport below (overrides global)
+        [clients.downstreams.watchtower.transport]
+            dial_timeout            = "10s"
+            keep_alive              = "30s"
+            tls_handshake_timeout   = "10s"
+            response_header_timeout = "20s"
+            expect_continue_timeout = "1s"
+            max_idle_conns          = 100
+            max_idle_conns_per_host = 10
+            idle_conn_timeout       = "90s"
+            force_attempt_http2     = false
+
+    # internal downstreams (full trace propagation). The values below are the dev ones;
+    # each conf/<env>.toml merges over this file and overrides requestTimeoutMs to match
+    # its own [pinot]/[wda].timeoutMs (see conf/prod.toml, conf/stage.toml).
+    [clients.downstreams.pinot]
+        requestTimeoutMs = 3000
+
+    [clients.downstreams.wda]
+        requestTimeoutMs = 10000
+
+    [clients.downstreams.cbprealtime]
+        requestTimeoutMs = 2000
+
+    [clients.downstreams.itrm]
+        requestTimeoutMs = 500     # [itrm].timeoutMs
+
+    # itrmv2's legacy budget (50s) is LARGER than [clients.global].requestTimeoutMs (30s), so
+    # this block is not optional: drop it and ITRM v2 silently loses 20s of budget. Every conf
+    # file that is a merge base must repeat it (conf/stage.toml, conf/testing.toml).
+    [clients.downstreams.itrmv2]
+        requestTimeoutMs = 50000   # [itrmV2].timeoutMs
+
+    # cybersource (api.in.cybersource.com) is a third-party vendor: external = true strips
+    # every trace/correlation header on the wire while still emitting our own CLIENT span.
+    # The HMAC signature is unaffected — it covers host/date/(request-target)/digest/
+    # v-c-merchant-id, none of which the strip transport touches.
+    # This file's [cybersource] block has no timeoutMs, so the legacy client here was
+    # UNBOUNDED (http.Client{Timeout: 0}). The factory cannot express unbounded, so the value
+    # below is the 3000 that every real env (prod/stage/automation/bvt/e2e/slit) already sets.
+    [clients.downstreams.cybersource]
+        requestTimeoutMs = 3000    # [cybersource].timeoutMs in every env that sets one
+        external         = true
+
+    [clients.downstreams.acs]
+        requestTimeoutMs = 2000    # [acs].timeoutMs (2000 in every env)
+
+    # cms diverges per env (2000 on prod/rzpx*, 10000 on dev/stage), so those files carry
+    # their own override — see conf/prod.toml, conf/rzpxprod.toml, conf/rzpx_sbic_prod.toml.
+    [clients.downstreams.cms]
+        requestTimeoutMs = 10000   # [cms].timeoutMs
+
+    # elasticsearch has no legacy timeout anywhere: olivere/elastic defaulted to
+    # http.DefaultClient, i.e. unbounded. The factory has no way to express unbounded (it
+    # floors at clients.defaultRequestTimeout), so this pins the same 30s as
+    # [clients.global].requestTimeoutMs and makes the new bound explicit rather than inherited.
+    [clients.downstreams.elasticsearch]
+        requestTimeoutMs = 30000
+
+    # ---- wave 3: the two remaining held clients ------------------------------------------
+    # Both were on a bare &http.Client{} (i.e. http.DefaultTransport), so neither had a
+    # bespoke connection pool to preserve: they stay on [clients.global].shared_transport =
+    # true and get NO [.transport] block. Adding one here would be a pooling change, not a
+    # migration.
+
+    # cybersafe.gov.in:8443 — Government of India CyberSafe portal, a third party.
+    # external = true strips traceparent/tracestate/baggage/X-Razorpay-Request-Id on the
+    # wire; the postback's `Authorization: Bearer` header is not on that list and survives.
+    [clients.downstreams.cybersafe]
+        requestTimeoutMs = 5000    # the 5s http.Client.Timeout the postback client hard-coded
+        external         = true
+
+    # hooks.slack.com — Slack Incoming WebHooks, a third party. Distinct from the `slack`
+    # slug above, which is the bot-token Web API on slack.com (see downstreams.go).
+    # The legacy client was slackhook.New()'s http.DefaultClient, i.e. Timeout 0 =
+    # UNBOUNDED, so this is a deliberate new bound rather than a preserved one: an
+    # unbounded webhook POST on the alerting path is its own hazard. 3000 gives more
+    # headroom than the Web API's 2000 because this path has no retry and drops the alert
+    # on timeout, while still bounding it (Slack's webhook p99 is well under 1s).
+    [clients.downstreams.alertingslack]
+        requestTimeoutMs = 3000
+        external         = true
+
+    # ---- wave 4: the last held client ----------------------------------------------------
+    # api.sift.com — third-party fraud-scoring vendor. external = true strips
+    # traceparent/tracestate/baggage/X-Razorpay-Request-Id/X-Devstack-Label on the wire.
+    # Sift's credentials are not on that list: the $create_order/$transaction/$chargeback
+    # events carry the key inside the JSON body ($api_key) and the apply_decision call uses
+    # HTTP Basic auth, i.e. an `Authorization` header — so auth survives on both paths.
+    # This file's [sift] block has no timeoutMs, so the legacy client here was UNBOUNDED
+    # (http.Client{Timeout: 0}). The factory cannot express unbounded, so the value below is
+    # the 2000 that every env setting one already uses (prod/stage/automation/bvt/e2e/slit/
+    # testing) — the same call already made for cybersource/elasticsearch above.
+    # The legacy client was a bare &http.Client{} (i.e. http.DefaultTransport), so it stays on
+    # [clients.global].shared_transport = true and gets NO [.transport] block; adding one
+    # would be a pooling change, not a migration. Sift has no hystrix and keeps its own
+    # in-process retry loop, so no resilience policy is opted in here either.
+    [clients.downstreams.sift]
+        requestTimeoutMs = 2000    # [sift].timeoutMs in every env that sets one
+        external         = true
+
+    # harvester — Razorpay's internal analytics/PQL service (analytics/pokedex). Migrated off
+    # heimdall.NewHystrixHTTPClient(time.Second*5, ...) in app/providers/harvester.go.
+    #
+    # 5000 preserves the EFFECTIVE whole-call budget verbatim: the legacy client set BOTH the
+    # heimdall client timeout (time.Second*5) AND the hystrix command Timeout (5000ms) to five
+    # seconds, so 5s was the bound either way.
+    #
+    # NO external flag: harvester is a Razorpay-internal host, so it keeps full trace propagation.
+    #
+    # RESILIENCE DELTA — deliberate, and larger than "the circuit breaker". Only two hystrix
+    # fields were set explicitly (ErrorPercentThreshold 20, Timeout 5000); hystrix DEFAULTS filled
+    # the rest, so the real effective baseline was: ErrorPercentThreshold 20, command Timeout
+    # 5000ms, MaxConcurrentRequests 10 (i.e. it was also a BULKHEAD), RequestVolumeThreshold 20,
+    # SleepWindow 5000ms, retries 0, failure predicate = transport error OR status >= 500. The
+    # breaker, the bulkhead, the volume threshold and the sleep window are all gone. Heimdall also
+    # set request.Close = true, so the baseline used NO keep-alive; the factory client pools on
+    # http.DefaultTransport — a change, and an improvement.
+    #
+    # Not re-expressed via config because it CANNOT be: policy.PolicyConfig exposes only the
+    # breaker owner string, so circuit_breaker = "sdk" would give SDK defaults (50%, not 20%) — a
+    # different breaker, not a restoration (goutils gap F4). Note also that
+    # [clients.global].circuit_breaker = "off" is PRE-EXISTING (8465dd997 conf/default.toml:589),
+    # not a weakening introduced with this migration.
+    #
+    # Acceptable ONLY because harvesterClient.Query is UNREACHABLE: its sole caller
+    # app/services/params/harvester.go was deleted 2023-07-21 in 588728a45 "Removed Harvester
+    # Params", and today only Setup() is called (app/app.go:203 + three test harnesses), which
+    # builds a client and reads config but issues no request. If Query ever becomes reachable the
+    # delta is real — unbounded concurrency instead of shedding at 10, and +5s tail latency on a
+    # slow-but-alive harvester instead of fast-fail once the circuit opened. Revisit this line
+    # first. The cleaner fix is deleting the dead client (app/clients/README.md T6).
+    [clients.downstreams.harvester]
+        requestTimeoutMs = 5000    # the 5s heimdall/hystrix budget the legacy client hard-coded
+
+    # ---- cross-border egress (wave 2) ---------------------------------------------------
+    # These four came off app/crossBorder/app/integrations/httpClient (sardine, accertify,
+    # shieldus) and .../stripe_radar (striperadar). READ THIS BEFORE CHANGING A NUMBER:
+    # that wrapper set http.Client.Timeout to *connectTimeoutMs*, so the connect budget was
+    # also the whole-call budget. requestTimeoutMs below therefore mirrors each service's
+    # legacy [<svc>.httpClient].connectTimeoutMs — NOT [sardine.httpClient].requestTimeoutMs,
+    # which the wrapper never read (striperadar is the exception: its vendored client did read
+    # RequestTimeoutMs, so 2500 is [stripe.httpClient].requestTimeoutMs).
+    # The [<svc>.httpClient] blocks above are now dead for these four; they are left in place
+    # because config_mapping.go still exports their keys.
+
+    # api.sardine.ai — third-party risk vendor.
+    [clients.downstreams.sardine]
+        requestTimeoutMs = 1000    # [sardine.httpClient].connectTimeoutMs
+        external         = true
+        shared_transport = false   # own pool, restoring [sardine.httpClient]'s tuning
+    [clients.downstreams.sardine.transport]
+        max_idle_conns         = 1000
+        max_idle_conns_per_host = 1000
+        idle_conn_timeout      = "90s"
+        dial_timeout           = "1s"
+        keep_alive             = "30s"
+        response_header_timeout = "2s"
+        tls_handshake_timeout  = "1s"
+        expect_continue_timeout = "500ms"
+
+    # icnow01.accertify.net — third-party risk vendor.
+    [clients.downstreams.accertify]
+        requestTimeoutMs = 7000    # [accertify.httpClient].connectTimeoutMs
+        external         = true
+        shared_transport = false   # own pool, restoring [accertify.httpClient]'s tuning
+    [clients.downstreams.accertify.transport]
+        max_idle_conns         = 1000
+        max_idle_conns_per_host = 1000
+        idle_conn_timeout      = "90s"
+        dial_timeout           = "7s"
+        keep_alive             = "30s"
+        response_header_timeout = "3s"
+        tls_handshake_timeout  = "7s"
+        expect_continue_timeout = "1s"
+
+    # api.stripe.com — third-party risk vendor, reached only from the Shield US deployment.
+    [clients.downstreams.striperadar]
+        requestTimeoutMs = 2500    # [stripe.httpClient].requestTimeoutMs (this client did read it)
+        external         = true
+        shared_transport = false   # own pool, restoring [stripe.httpClient]'s tuning
+    [clients.downstreams.striperadar.transport]
+        max_idle_conns         = 1000
+        max_idle_conns_per_host = 1000
+        idle_conn_timeout      = "90s"
+        dial_timeout           = "1s"
+        keep_alive             = "30s"
+        response_header_timeout = "2s"
+        tls_handshake_timeout  = "1s"
+        expect_continue_timeout = "500ms"
+
+    # Shield's own US-region deployment (/v1/stripe-radar/proxy) — INTERNAL. Deliberately no
+    # `external` flag: setting it would strip traceparent and split the India<->US trace in
+    # two while the CLIENT span kept emitting, so no dashboard would show the loss.
+    # app/clients.mustBeExternal omits shieldus for the same reason.
+    [clients.downstreams.shieldus]
+        requestTimeoutMs = 7000    # [shieldUs.httpClient].connectTimeoutMs
+
+        shared_transport = false   # own pool, restoring [shieldUs.httpClient]'s tuning
+    [clients.downstreams.shieldus.transport]
+        max_idle_conns         = 1000
+        max_idle_conns_per_host = 1000
+        idle_conn_timeout      = "90s"
+        dial_timeout           = "7s"
+        keep_alive             = "30s"
+        response_header_timeout = "3s"
+        tls_handshake_timeout  = "7s"
+        expect_continue_timeout = "1s"
+[preAuth]
+    enabled = false

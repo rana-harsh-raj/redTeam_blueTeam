@@ -1,0 +1,16 @@
+### make m41-canonical-paths
+OK: 19 mandatory evidence paths are canonical (tracked, not ignored, present).
+exit=0
+
+### make m41-evidence-verify
+{
+  "ok": true,
+  "manifest": "/Users/rana.singh/rzp-payouts-architecture/reports/implementation/m4-direct-e2e-evidence-manifest.json",
+  "self_sha256_ok": true,
+  "companion_sha256_ok": true,
+  "artifacts_checked": 19,
+  "mismatches": [],
+  "missing": [],
+  "missing_expected_at_build": []
+}
+exit=0

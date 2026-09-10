@@ -1,0 +1,13 @@
+test_attempt_existence_and_initiated_state_are_insufficient (test_held_handoff_wait.HeldHandoffWait.test_attempt_existence_and_initiated_state_are_insufficient) ... ok
+test_mismatched_channel_is_not_accepted (test_held_handoff_wait.HeldHandoffWait.test_mismatched_channel_is_not_accepted) ... ok
+test_no_bank_response_fails_at_bound (test_held_handoff_wait.HeldHandoffWait.test_no_bank_response_fails_at_bound) ... ok
+test_no_details_callback_fails_at_bound (test_held_handoff_wait.HeldHandoffWait.test_no_details_callback_fails_at_bound) ... ok
+test_journal_after_first_worker_retry_is_observed (test_processed_journal_wait.ProcessedJournalWait.test_journal_after_first_worker_retry_is_observed) ... ok
+test_missing_journal_still_fails_at_explicit_bound (test_processed_journal_wait.ProcessedJournalWait.test_missing_journal_still_fails_at_explicit_bound) ... ok
+test_wait_policy_matches_arena_worker_retry_config (test_processed_journal_wait.ProcessedJournalWait.test_wait_policy_matches_arena_worker_retry_config) ... ok
+test_mysql_tuple_rows_include_empty_reversals_and_full_attempt_chain (test_trace_snapshot.SnapshotTests.test_mysql_tuple_rows_include_empty_reversals_and_full_attempt_chain) ... ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.008s
+
+OK

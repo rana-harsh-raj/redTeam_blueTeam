@@ -1,0 +1,70 @@
+# M7: Source-to-Pay stack inside the Payouts arena (compose overlay; profile `s2p`).
+#
+#   docker compose --env-file .env.arena -f docker-compose.yml -f docker-compose.s2p.yml \
+#       --profile datastores --profile substitutes --profile core --profile s2p up -d
+#
+# The pinned vendor-payments source driver (DOMAIN_REPLICAS/source_to_pay/runtime/source-driver,
+# image built by DOMAIN_REPLICAS/source_to_pay/scripts/build-runtime.sh -> .build/runtime-image.env)
+# keeps its own Kafka/MySQL/Redis on a private internal network exactly as the standalone replica does
+# (runtime/source-driver/boot.go hard-codes the hostnames mysql, redis, kafka, boundary). The ONLY
+# difference from the standalone replica is the `boundary` alias: it now resolves to api-ingress, the
+# shared API-monolith ingress, instead of the local Python boundary replacement, which is NOT started.
+# vp-source is deliberately not attached to rzp-arena (the arena has its own `kafka`/`redis` names).
+name: ${COMPOSE_PROJECT_NAME:-env2_compose}
+services:
+  s2p-kafka:
+    image: redpandadata/redpanda:v24.2.18@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8
+    profiles: ["s2p"]
+    command: [redpanda, start, --smp, "1", --memory, 512M, --reserve-memory, 0M, --overprovisioned, --node-id, "0", --check=false, --kafka-addr, PLAINTEXT://0.0.0.0:9092, --advertise-kafka-addr, PLAINTEXT://kafka:9092]
+    healthcheck: {test: [CMD-SHELL, "rpk cluster health --exit-when-healthy"], interval: 3s, timeout: 3s, retries: 30}
+    networks:
+      s2p-internal:
+        aliases: [kafka]
+  s2p-mysql:
+    image: mysql:8.4@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb
+    profiles: ["s2p"]
+    environment: {MYSQL_ROOT_PASSWORD: root-local-only, MYSQL_DATABASE: s2p, MYSQL_USER: s2p, MYSQL_PASSWORD: s2p}
+    volumes:
+      - s2p-mysql-data:/var/lib/mysql
+      - ../DOMAIN_REPLICAS/source_to_pay/runtime/mysql/init.sql:/docker-entrypoint-initdb.d/001-source.sql:ro
+    healthcheck: {test: [CMD-SHELL, "mysqladmin ping -h 127.0.0.1 -uroot -proot-local-only --silent && mysql -h 127.0.0.1 -uroot -proot-local-only -Nse 'SELECT 1'"], interval: 3s, timeout: 3s, retries: 40}
+    networks:
+      s2p-internal:
+        aliases: [mysql]
+  s2p-redis:
+    image: redis:7-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf
+    profiles: ["s2p"]
+    command: [redis-server, --save, "", --appendonly, "no"]
+    healthcheck: {test: [CMD, redis-cli, ping], interval: 3s, timeout: 3s, retries: 30}
+    networks:
+      s2p-internal:
+        aliases: [redis]
+  s2p-vp-source:
+    image: ${S2P_SOURCE_IMAGE:?run DOMAIN_REPLICAS/source_to_pay/scripts/build-runtime.sh (or RED_LOOP/m7/s2p_stack.py build) first}
+    profiles: ["s2p"]
+    environment: {SOURCE_SHA: 20c4f4d59970471067388afea8b1d65ac39ee126}
+    restart: on-failure:5
+    depends_on:
+      s2p-kafka: {condition: service_healthy}
+      s2p-mysql: {condition: service_healthy}
+      s2p-redis: {condition: service_healthy}
+      api-ingress: {condition: service_healthy}
+    healthcheck: {test: [CMD, /service, health], interval: 3s, timeout: 3s, retries: 40}
+    networks:
+      s2p-internal:
+        aliases: [vp-source]
+  api-ingress:
+    # the shared ingress joins the S2P private network as `boundary` (boot.go: Api.Url = http://boundary:8080)
+    networks:
+      s2p-internal:
+        aliases: [boundary]
+    environment:
+      S2P_VP_SOURCE_URL: "http://vp-source:8080"
+networks:
+  s2p-internal:
+    name: "rzp-s2p-internal${ARENA_SUFFIX:-}"
+    internal: true
+    driver: bridge
+volumes:
+  s2p-mysql-data:
+    name: "rzp-arena-s2p-mysql-data${ARENA_SUFFIX:-}"

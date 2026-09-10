@@ -1,0 +1,50 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-08T08:48:22.503224+00:00",
+  "runs": [
+    {
+      "run_id": "s2p-connected-1",
+      "started_at": "2026-09-08T08:45:41.948314+00:00",
+      "reset_before": true,
+      "s2p_fresh_up_rc": 0,
+      "rc": 0,
+      "stdout_tail": "run_dir  = /Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m7-s2p-connected-1-20260908T084555Z\ncampaign = m6i4-260908t0845   (fresh deterministic ARENA-prefixed merchants)\njourneys = 1\n\n[journey:cross-domain-s2p/success                    ] PASS             24/24  40.9s \n\n{\"total\": 1, \"pass\": 1, \"fail\": 0, \"expected_failure\": 0, \"blocked\": 0}\nreports/implementation/m6-journeys.json\nreports/implementation/m6-journey-coverage.md\n",
+      "success": "PASS",
+      "checks": "24/24",
+      "merchant_id": "ARENAM95603388",
+      "remittance_payout_id": "TZTvGuvznkUbPV",
+      "evidence_path": "RED_LOOP/runs/m7-s2p-connected-1-20260908T084555Z/evidence/journey-cross-domain-s2p-success.json",
+      "run_dir": "RED_LOOP/runs/m7-s2p-connected-1-20260908T084555Z"
+    },
+    {
+      "run_id": "s2p-connected-2",
+      "started_at": "2026-09-08T08:46:37.009150+00:00",
+      "reset_before": true,
+      "s2p_fresh_up_rc": 0,
+      "rc": 0,
+      "stdout_tail": "run_dir  = /Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m7-s2p-connected-2-20260908T084650Z\ncampaign = m6i4-260908t0846   (fresh deterministic ARENA-prefixed merchants)\njourneys = 1\n\n[journey:cross-domain-s2p/success                    ] PASS             24/24  38.3s \n\n{\"total\": 1, \"pass\": 1, \"fail\": 0, \"expected_failure\": 0, \"blocked\": 0}\nreports/implementation/m6-journeys.json\nreports/implementation/m6-journey-coverage.md\n",
+      "success": "PASS",
+      "checks": "24/24",
+      "merchant_id": "ARENAM96415191",
+      "remittance_payout_id": "TZTwEEGUt5mkK3",
+      "evidence_path": "RED_LOOP/runs/m7-s2p-connected-2-20260908T084650Z/evidence/journey-cross-domain-s2p-success.json",
+      "run_dir": "RED_LOOP/runs/m7-s2p-connected-2-20260908T084650Z"
+    },
+    {
+      "run_id": "s2p-connected-3",
+      "started_at": "2026-09-08T08:47:29.087249+00:00",
+      "reset_before": true,
+      "s2p_fresh_up_rc": 0,
+      "rc": 0,
+      "stdout_tail": "run_dir  = /Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m7-s2p-connected-3-20260908T084742Z\ncampaign = m6i4-260908t0847   (fresh deterministic ARENA-prefixed merchants)\njourneys = 1\n\n[journey:cross-domain-s2p/success                    ] PASS             24/24  39.6s \n\n{\"total\": 1, \"pass\": 1, \"fail\": 0, \"expected_failure\": 0, \"blocked\": 0}\nreports/implementation/m6-journeys.json\nreports/implementation/m6-journey-coverage.md\n",
+      "success": "PASS",
+      "checks": "24/24",
+      "merchant_id": "ARENAM97722090",
+      "remittance_payout_id": "TZTx8AgunE4aKA",
+      "evidence_path": "RED_LOOP/runs/m7-s2p-connected-3-20260908T084742Z/evidence/journey-cross-domain-s2p-success.json",
+      "run_dir": "RED_LOOP/runs/m7-s2p-connected-3-20260908T084742Z"
+    }
+  ],
+  "all_passed": true,
+  "canonical_evidence_preserved": true
+}

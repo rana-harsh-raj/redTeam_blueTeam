@@ -1,0 +1,352 @@
+# Runtime topology: production (cde/prod k8s overlays) vs the Env2 twin (ENV2_COMPOSE).
+# Sources: reports/fidelity/raw/12_runtime_topology_effective_config.md (primary, "L12"),
+# 04_payouts_service_core.md §6/§8 ("L04"), 06_fts_routing_status_mozart.md §2.5 ("L06"),
+# 07_ledger_balances_cfa_banking.md §5-7 ("L07"), 09_stork_webhooks_kafka.md §4 ("L09"),
+# 10_dcs_splitz_pricing_shield_asv.md §A-B ("L10"). Prod paths are relative to the REPOS root
+# L12 defines (kube-manifests/, payouts/, fts/, ledger/, cfa/, x-balances/, spinacode/); twin
+# paths are relative to ENV2_COMPOSE/. No secret values recorded; no real internal IPs recorded.
+version: 1
+
+clusters:
+  # CONFIRMED structural fact (L12 top): kube-manifests has two disjoint top-level prod
+  # overlays. This is a real RBI/PCI network-segmentation boundary, not a naming artifact.
+  cde:
+    - payouts        # kube-manifests/cde/payouts
+    - cfa             # kube-manifests/cde/cfa
+    - mozart          # kube-manifests/cde/mozart (+ mozart-dark, mozart-pagination, mozart-test, mozart-whitelisted variants)
+    - batch-clearing  # kube-manifests/cde/batch-clearing (not independently profiled this pass)
+  prod:
+    - fts
+    - ledger
+    - dcs
+    - splitz
+    - stork
+    - workflows
+    - x-account-statements
+    - x-balances
+    - batch
+    - banking-account
+  unclustered_or_unconfirmed:
+    # api (monolith) has ~45 payout-relevant SQS/Kafka Deployments (L12 §1) but its own
+    # cde-vs-prod cluster placement was not independently confirmed in this lane — UNKNOWN.
+    - api
+    - api-cron
+
+services:
+  payouts:
+    tier_in_twin: REAL
+    production_deployments:
+      - {name: payouts (api), args: "[api]", role_selector: "APP_MODE/APP_ENV=prod", replicas: "10 (12-25 HPA) + canary(1) + baseline(1)", source: "kube-manifests/cde/payouts/values.yaml:1,19-21; templates/payouts/templates/payouts-deployment.yaml"}
+      - {name: payouts-worker-queued-processing-live, role_env: "PAYOUTS_WORKER_NAME=queued_payout", replicas: "1 (1-5 HPA)", queue: "job.queued_payout (prod-payouts-queued-live)", source: "templates/payouts/templates/payouts-worker-queued-processing-live.yaml"}
+      - {name: payouts-worker-schedule-processing-live, role_env: "PAYOUTS_WORKER_NAME=schedule_payout", replicas: "1 (1-5 HPA)", queue: job.schedule_payout, source: "templates/payouts/templates/payouts-worker-schedule-processing-live.yaml"}
+      - {name: payouts-worker-on-hold-processing-live, role_env: "PAYOUTS_WORKER_NAME=on_hold_payout", replicas: "1 (1-5 HPA)", queue: job.on_hold_payout, source: "templates/payouts/templates/payouts-worker-on-hold-processing-live.yaml"}
+      - {name: payouts-worker-partner-bank-hold-payouts-live, role_env: "PAYOUTS_WORKER_NAME=partner_bank_hold_payouts", replicas: "1 (1-5 HPA)", queue: job.partner_bank_hold_payouts, source: "templates/payouts/templates/payouts-worker-partner-bank-hold-payouts-live.yaml"}
+      - {name: payouts-worker-transaction-create-live, role_env: "PAYOUTS_WORKER_NAME=transaction_create", replicas: "10 (10-20 HPA)", queue: job.transaction_create, source: "templates/payouts/templates/payouts-worker-transaction-create-live.yaml"}
+      - {name: payouts-worker-fts-async-processing-live, role_env: "PAYOUTS_WORKER_NAME=fts_async_processing", replicas: "30 (30-50 HPA)", queue: job.fts_async_processing, source: "templates/payouts/templates/payouts-worker-fts-async-processing-live.yaml"}
+      - {name: payouts-worker-fts-async-hv-processing-live, role_env: "PAYOUTS_WORKER_NAME=fts_async_hv_processing", replicas: "10 (10-20 HPA)", queue: job.fts_async_hv_processing, source: "templates/payouts/templates/payouts-worker-fts-async-hv-processing-live.yaml"}
+      - {name: payouts-worker-generic-processing-live, role_env: "PAYOUTS_WORKER_NAME=generic_processing", replicas: "1 (1-5 HPA)", queue: job.generic_processing, source: "templates/payouts/templates/payouts-worker-generic-processing-live.yaml"}
+      - {name: payouts-worker-async-dual-write-live, role_env: "PAYOUTS_WORKER_NAME=async_dual_write", replicas: "1 (1-5 HPA)", queue: job.async_dual_write, source: "templates/payouts/templates/payouts-worker-async-dual-write-live.yaml:1-135"}
+      - {name: payouts-worker-x-balances-balance-refresh-live, role_env: "PAYOUTS_WORKER_NAME=x_balances_balance_refresh", replicas: "2 (2-5 HPA)", queue: "job.x_balances_balance_refresh (prod-x-balances-balance-refresh-live)", source: "templates/payouts/templates/payouts-worker-x-balances-balance-refresh-live.yaml"}
+      - {name: payouts-worker-source-updater-live, role_env: "PAYOUTS_WORKER_NAME=payout_source_updater", replicas: "0 (no HPA row found)", queue: job.source_updater, source: "cde/payouts/values.yaml:96"}
+      - {name: payouts-worker-webhook-event-live, role_env: "PAYOUTS_WORKER_NAME=webhook_event", replicas: "1 (1-5 HPA)", queue: job.webhook_event, source: "templates/payouts/templates/payouts-worker-webhook-event-live.yaml"}
+      - {name: payouts-worker-payout-create-failure-handlng-live (repo typo, missing "i"), role_env: "PAYOUTS_WORKER_NAME=payout_create_failure_handling", replicas: "1 (1-5 HPA)", queue: job.payout_create_failure_handling, source: "templates/payouts/templates/payouts-worker-payout-create-failure-handlng-live.yaml"}
+      - {name: payouts-worker-payout-update-failure-handlng-live (same typo), role_env: "PAYOUTS_WORKER_NAME=payout_update_failure_handling", replicas: "1 (1-5 HPA)", queue: job.payout_update_failure_handling, source: "templates/payouts/templates/payouts-worker-payout-update-failure-handlng-live.yaml"}
+      - {name: payouts-worker-batch-submitted-merchants-live, role_env: "PAYOUTS_WORKER_NAME=batch_submitted_merchants", replicas: "1 (1-5 HPA)", queue: job.batch_submitted_merchants, source: "templates/payouts/templates/payouts-worker-batch-submitted-merchants-live.yaml"}
+      - {name: payouts-worker-bulk-payouts-live, role_env: "PAYOUTS_WORKER_NAME=bulk_payouts", replicas: "1 (1-5 HPA)", queue: job.bulk_payouts, source: "templates/payouts/templates/payouts-worker-bulk-payouts-live.yaml"}
+      - {name: payouts-worker-data-consistency-checker-processing-live, role_env: "PAYOUTS_WORKER_NAME=data_consistency_checker", replicas: "5 (5-12 HPA)", queue: job.data_consistency_checker, source: "templates/payouts/templates/payouts-worker-data-consistency-checker-processing-live.yaml"}
+      - {name: payouts-worker-data-consistency-event-processing-live, role_env: "PAYOUTS_WORKER_NAME=data_consistency_event", replicas: "1 (1-5 HPA)", queue: job.data_consistency_event, source: "templates/payouts/templates/payouts-worker-data-consistency-event-processing-live.yaml"}
+      - {name: payouts-worker-fmp-check-live, role_env: "PAYOUTS_WORKER_NAME=fund_management_payout_check", replicas: "1 (1-3 HPA)", queue: job.fund_management_payout_check, source: "templates/payouts/templates/payouts-worker-fmp-check-live.yaml"}
+      - {name: payouts-worker-fmp-initiate-live, role_env: "PAYOUTS_WORKER_NAME=fund_management_payout_initiate", replicas: "1 (1-3 HPA)", queue: job.fund_management_payout_initiate, source: "templates/payouts/templates/payouts-worker-fmp-initiate-live.yaml"}
+      - {name: payouts-worker-mail-and-sms-event-live, role_env: "PAYOUTS_WORKER_NAME=mail_and_sms_event", replicas: "0 (HPA min 1)", queue: job.mail_and_sms_event, source: "cde/payouts/values.yaml", note: "deployed-in-prod, not found in payouts/internal/job source per L04 — likely dead/legacy"}
+      - {name: payouts-worker-update-source-event-live, role_env: "PAYOUTS_WORKER_NAME=update_source_event", replicas: "0 (HPA 1-5)", queue: job.update_source_event, source: "cde/payouts/values.yaml", note: "deployed-in-prod, not found in payouts/internal/job source per L04 — likely dead/legacy"}
+      - {name: payouts-worker-payout-usage-event-processing-live, role_env: "PAYOUTS_WORKER_NAME=payout_usage_event_processing", replicas: "2 (2-5 HPA)", queue: job.payout_usage_event_processing, source: "templates/payouts/templates/payouts-worker-payout-usage-event-processing-live.yaml"}
+      - {name: payouts-worker-rbl-account-statement-live, role_env: "PAYOUTS_WORKER_NAME=rbl_banking_account_statement", replicas: "1 (1-8 HPA)", queue: "job.rbl_banking_account_statement", source: "templates/payouts/templates/payouts-worker-rbl-account-statement-live.yaml"}
+      - {name: payouts-kafka-fts-status-updates-consumer, role_env: "PAYOUTS_CONSUMER_TASK_NAME", replicas: "1 (1-5 HPA)", topic: rx-fts-status-update-events, source: "templates/payouts/templates/payouts-kafka-fts-status-updates-consumer.yaml:73"}
+      - {name: payouts-kafka-fts-status-updates-retry-consumer, role_env: "PAYOUTS_CONSUMER_TASK_NAME", replicas: "1 (1-5 HPA)", topic: rx-fts-status-update-retry-events, source: "templates/payouts/templates/payouts-kafka-fts-status-updates-retry-consumer.yaml"}
+      - {name: "FastCron ingress (not a k8s CronJob)", role: "Traefik Middleware payouts-fastcron-ip-whitelist gates Host(payouts-ext)&&PathPrefix(/v1/cron/) to FastCron source IPs -> payouts-edge-redirect Service:8000, fronting 21 /v1/cron/* routes", source: "templates/payouts/templates/ing-v2.yaml:101-135; payouts/internal/routing/router/cron_routes.go:11-176"}
+    twin_processes:
+      # 1 api + 14 workers + 2 kafka consumers = 17 of 25 always-on prod processes (24 workers + 1 api).
+      - payouts-api
+      - payouts-worker-webhook-event
+      - payouts-worker-queued-payout
+      - payouts-worker-schedule-payout
+      - payouts-worker-on-hold-payout
+      - payouts-worker-fts-async-processing
+      - payouts-worker-fts-async-hv-processing
+      - payouts-worker-payout-create-failure-handling
+      - payouts-worker-payout-update-failure-handling
+      - payouts-worker-transaction-create
+      - payouts-worker-generic-processing
+      - payouts-worker-async-dual-write
+      - payouts-worker-x-balances-balance-refresh
+      - payouts-worker-payout-source-updater
+      - payouts-worker-partner-bank-hold-payouts
+      - payouts-kafka-fts-status-updates-consumer
+      - payouts-kafka-fts-status-updates-retry-consumer
+    gaps:
+      - "10 worker roles have no twin container at all: data_consistency_checker, data_consistency_event, fmp_check (fund_management_payout_check), fmp_initiate (fund_management_payout_initiate), batch_submitted_merchants, bulk_payouts, mail_and_sms_event, payout_usage_event_processing, rbl_banking_account_statement, update_source_event. Two of these (mail_and_sms_event, update_source_event) are themselves dead code in the real payouts repo per L04 (deployed but no matching internal/job) — omitting them is contract-faithful, not a gap. The other 8 are real coverage gaps; fmp_check/initiate and data_consistency_* directly affect payout/CA-balance state (per L12 Twin comparison row 'payouts workers')."
+      - "FastCron's 21 HTTP /v1/cron/* routes are only partially modeled: the twin's cron-driver (scripts/cron-driver/driver.py) hits 6 of them; process_batch_submitted_payouts (bulk NEFT/RTGS dispatch, payout-state-affecting) is entirely absent from the driver, as is payouts_sla_breach_monitor and fund_management_payouts/check — see cron section below."
+      - "No canary/baseline/HPA modeled (expected for a single-node arena; no fidelity impact)."
+    required_minimum_for_twin:
+      create: "payouts-api + payouts-worker-transaction-create — present"
+      status: "payouts-kafka-fts-status-updates-consumer(+retry) + payouts-worker-fts-async-processing(+hv) — present"
+      queued_scheduled_on_hold: "payouts-worker-queued-payout, payouts-worker-schedule-payout, payouts-worker-on-hold-payout, payouts-worker-partner-bank-hold-payouts — present"
+      reversal: "handled synchronously in payouts-api's ledger-reversal path (reversalViaLedgerService.go per L04/L07) + payouts-worker-payout-update-failure-handling for async retry — present"
+      webhooks: "payouts-worker-webhook-event — present"
+      bulk: "payouts-worker-bulk-payouts — MISSING (no container)"
+      repair: "payouts-worker-payout-create-failure-handling + payouts-worker-payout-update-failure-handling present; payouts-worker-data-consistency-checker + -data-consistency-event (state-drift repair) — MISSING"
+
+  fts:
+    tier_in_twin: REPRESENTATIVE SUBSTITUTE (real binary, partial topology)
+    production_deployments:
+      - {name: fts-live, args: "[web]", replicas: 11, role: "web API", source: "kube-manifests/prod/fts/values.yaml:6,8; templates/fts/templates/fts-live-deployment.yaml:1-80"}
+      - {name: "157+1 fts-live-worker-*-deployment.yaml files (each renders live/canary/baseline)", role_selector: "positional CLI arg args:[worker,<queue-key>], e.g. rbl::direct::imps::check_transfer_status", banks: "axis, icici, idfc, yesbank, rbl(+direct/v4/v5), slice(+v1), amazon-pay, ocbc, hdfc(bulk), batch-icici-neft", concurrency_source: "fts/config/env.prod-live.toml:45-127 [queue.worker_concurrency_map], per-key 1-45 (default 5)", source: "templates/fts/templates/fts-live-worker-*-deployment.yaml (count via ls|grep -c)"}
+    twin_processes:
+      - fts-web
+      - fts-worker-default
+      - fts-worker-initiate-transfer
+      - fts-worker-check-transfer-status
+      - fts-worker-fire-transfer-status-webhook
+      - fts-worker-retry-transfer
+      - fts-worker-retry-transfer-preprocessor
+      - fts-worker-retry-transfer-source-update
+      - fts-worker-rbl-initiate-transfer
+      - fts-worker-rbl-check-transfer-status
+      - fts-worker-rbl-imps-initiate-transfer
+      - fts-worker-rbl-imps-check-transfer-status
+      - fts-worker-rbl-direct-imps-initiate-transfer
+      - fts-worker-rbl-direct-imps-check-transfer-status
+    gaps:
+      - "~145 of ~157 bank/rail-specific worker roles have no container (icici, idfc, yesbank, slice, amazon-pay, ocbc, hdfc, axis, batch-icici-neft all entirely unmodeled; only a generic set + a partial RBL fan-out exist)."
+      - "CONFIRMED (config/templates/base/fts/env.default.toml:106-166 vs env.arena.toml:72-90): the twin's env.arena.toml does NOT override [queue.worker_queue_map] — that key is absent from arena.toml entirely, so the merged config inherits ALL ~90 real bank/rail worker_queue_map entries unmodified from env.default.toml (config-correct). The gap is purely topological: only 13 of those ~90 keys have a running fts-worker-* container behind them. arena.toml separately defines its OWN unrelated [queue.queue_map]/[queue.task_worker_map] keys (13-14 generic 'default' mappings) which appear to be dead/unused config additions, not an override of worker_queue_map."
+      - "fts's Kafka producer leg (kafka_producers.fire_transfer_status, the async status-update path to payouts) is profile-gated: ARENA_ROUTE_PROFILE defaults to 'monolith' (config/generate.py:90, ARENA_ROUTE_PROFILE not set anywhere in .env.arena/scripts), under which config/routes.py:58-60 sets enabled=false. Prod has this producer permanently enabled=true (fts/config/env.prod-live.toml:315-331). Only the 'kafka' route profile matches prod; the default profile does not."
+    required_minimum_for_twin:
+      create_status: "initiate_transfer + check_transfer_status + rbl fan-out — present"
+      webhooks: "fire_transfer_status_webhook — present"
+      reversal: "handled in-binary via FTS FSM (no dedicated worker needed) — present"
+      repair: "retry_transfer + retry_transfer_preprocessor + retry_transfer_source_update — present"
+      bulk: "no FTS-side bulk-specific worker identified as required"
+
+  ledger:
+    tier_in_twin: CONTRACT-FAITHFUL topology, MECHANISM-BROKEN scheduler (see gaps — high-severity finding)
+    production_deployments:
+      - {name: ledger (web/api), role_selector: "APP_MODE=live,APP_ENV=prod-live", source: "kube-manifests/prod/ledger/values.yaml:3,605; templates/ledger/templates/deployment-live.yaml"}
+      - {name: ledger-account-create-worker-live, role_env: "LEDGER_WORKER_QUEUENAME=account_create_queue_name_live", replicas: 3, queue: prod-ledger-account-create-live, source: "prod/ledger/values.yaml:54"}
+      - {name: ledger-balance-update-worker-live, role_env: "LEDGER_WORKER_QUEUENAME=balance_update_queue_name_live", replicas: 3, queue: prod-ledger-balance-update-live, source: "prod/ledger/values.yaml:67"}
+      - {name: ledger-journal-create-worker-live, role_env: "LEDGER_WORKER_QUEUENAME=journal_create_queue_name_live", replicas: 2, queue: prod-ledger-journal-create-live, source: "prod/ledger/values.yaml:41"}
+      - {name: "ledger-entry-details-create-worker-live (+ -pg variant)", queue: "prod-ledger-entry-details-create-live / -pg-live", source: "templates/ledger/templates/*entry-details-create*.yaml"}
+      - {name: ledger-split-account-balance-update-live (+pg-live), kind: CronJob, schedule: "*/10 * * * * (prod/ledger/values.yaml:610)", role_selector: "env LEDGER_SCHEDULER_COMMAND={{.Values.split_account_balance_update_cronjob_scheduler_cmd}} on image ledger:scheduler-<tag>", source: "kube-manifests/templates/ledger/templates/split-account-balance-update-cronjob-live.yaml:35-43,65"}
+      - {name: "ledger-verify-warm-storage-live (+test)", kind: CronJob, schedule: "0 * * * * (hardcoded)", source: "templates/ledger/templates/verify-warm-storage-cronjob-live.yaml:14"}
+      - {name: "15 journal-create-<product>-pg-* + 13+ makeshift-txn-worker (per non-payouts tenant)", note: "correctly out of scope for a payouts-focused twin", source: "prod/ledger/values.yaml:612-1426"}
+    twin_processes:
+      - ledger-api
+      - ledger-worker
+      - ledger-scheduler
+    gaps:
+      - "CRITICAL, CONFIRMED: ledger-worker is hardcoded to a single queue. config/templates/base/ledger/{default,arena}.toml:333-334 both set [worker].queueName=\"account_create\" and no LEDGER_WORKER_QUEUENAME env override is set on the ledger-worker compose service (docker-compose.yml ledger-worker block has no such env var). Prod runs 4 SEPARATE Deployments (account_create/balance_update/journal_create/entry_details_create(+pg)), each with its own LEDGER_WORKER_QUEUENAME. The twin's single worker ONLY ever consumes account_create; messages published to the balance_update, journal_create, ledger_entry_details_create(+pg) SQS queues (all created by seeds/localstack/init-queues.sh) are never consumed by anything."
+      - "CRITICAL, CONFIRMED: ledger-scheduler runs the WRONG job. Prod's real CronJob passes LEDGER_SCHEDULER_COMMAND=split-account-balance-update (or pg-split-account-balance-update) as an env var (kube-manifests/templates/ledger/templates/split-account-balance-update-cronjob-live.yaml:40-41), consumed at ledger/internal/boot/boot.go:693 (Execute(ctx, Config.Scheduler.Command, ...)). The twin's ledger-scheduler compose service sets NO such env var, so it falls back to config/templates/base/ledger/arena.toml:438-439's static [scheduler].command = \"journal-created-sns-publish\" (same value already in ledger/config/default.toml:425) — i.e. the twin's ledger-scheduler perpetually runs the SNS journal-created outbox publisher, NOT the split-account-balance-update reconciliation prod's CronJob performs every 10 minutes. This directly affects split-account balance correctness testing."
+      - "Mechanism mismatch even once the command is fixed: prod's scheduler is a k8s CronJob (runs-to-completion every 10 min, self-heals on next tick if a run fails); the twin's ledger-scheduler is a long-running compose service (entrypoint /app/ledger-scheduler, pgrep healthcheck, no visible internal loop/interval in the arena.toml [scheduler] block beyond `ttl=10m`) — whether /app/ledger-scheduler's own main loop reproduces a 10-minute cadence internally is UNKNOWN (not read this pass; ledger/cmd/scheduler/main.go was located but its loop body not traced)."
+    required_minimum_for_twin:
+      journal_write: "payout_initiated is synchronous via JournalAPI/Create (Twirp), not queue-mediated — unaffected by the worker gap above; payout_processed (shared-only) IS async via payout_meta_temporary + payout_update_failure_handling on the PAYOUTS side, which does not depend on ledger's own SQS workers"
+      split_account_balance_correctness: "BROKEN until ledger-scheduler's command is corrected (see gaps)"
+
+  cfa:
+    tier_in_twin: REAL
+    production_deployments:
+      - {name: "cfa web(8)/-canary(1)/-baseline(1)", source: "kube-manifests/cde/cfa/values.yaml:19-42, HPA 8-10@65%CPU"}
+      - {name: cfa-worker-fa, role_env: "CFA_WORKER_QUEUE_NAME=prod-api-rx-fund-account-lazy-loading-live", replicas: "1 (1-3 HPA)", source: "cde/cfa/values.yaml:44-67"}
+      - {name: cfa-worker-contact, role_env: "CFA_WORKER_QUEUE_NAME=prod-api-rx-contact-lazy-loading-live", replicas: "1 (1-3 HPA)", source: "cde/cfa/values.yaml:44-67"}
+      - {name: "cron", note: "crons: [] — currently disabled in prod (cde/cfa/values.yaml:69-71)"}
+    twin_processes: [cfa-server, cfa-worker-contact, cfa-worker-fa]
+    gaps:
+      - "None structural — exact 1:1 role match. Queue names differ (twin: contact-lazy-load/fund-account-lazy-load short names vs prod's prod-api-rx-*-lazy-loading-live) — cosmetic per L12, contract-faithful since twin config+seed agree with each other."
+    required_minimum_for_twin: "fully covered"
+
+  x-balances:
+    tier_in_twin: REPRESENTATIVE SUBSTITUTE (real binary, 1 of 5 bank-worker roles)
+    production_deployments:
+      - {name: "web(4)/-canary(1)/-baseline(1)", source: "kube-manifests/prod/x-balances/values.yaml:28-43"}
+      - {name: x-balances-worker-rbl-balance-fetch, replicas: "8 (8-20 HPA)", source: "prod/x-balances/values.yaml:45-236+"}
+      - {name: x-balances-worker-icici-balance-fetch, replicas: "1 (2-8 HPA)"}
+      - {name: x-balances-worker-yesbank-balance-fetch, replicas: "1 (4-8 HPA)"}
+      - {name: x-balances-worker-axis-balance-fetch, replicas: "1 (2-8 HPA)"}
+      - {name: x-balances-worker-idfc-balance-fetch, replicas: "1"}
+    twin_processes: [xbalances-server, xbalances-worker]
+    gaps:
+      - "4 of 5 bank-specific worker roles (icici, yesbank, axis, idfc) have no container; twin's single generic xbalances-worker cannot represent per-bank fetch cadence/failure modes."
+    required_minimum_for_twin: "RBL fetch (matches the golden run's M2 Direct/RBL seed merchant) — plausibly covered if xbalances-worker's queue maps to the rbl-balance-fetch equivalent; other 4 banks not required for the current 3-merchant seed set"
+
+  stork:
+    tier_in_twin: REPRESENTATIVE SUBSTITUTE (appropriate — shared platform service, not payout-state-mutating)
+    production_deployments:
+      - {name: stork-api, replicas: "min 10/max 72 HPA", source: "prod/stork/values.yaml:7-8"}
+      - {name: stork-sms-worker, replicas: 4, source: "prod/stork/values.yaml:23-103"}
+      - {name: "stork-webhook-worker (+ -p1 variant)", replicas: "10 (+10)", source: "prod/stork/values.yaml:23-103"}
+      - {name: scheduler, kind: CronJob, schedule: "*/3 * * * *", source: "prod/stork/values.yaml:422"}
+      - {name: webhook_disabler, kind: CronJob, schedule: "*/30 * * * *", source: "prod/stork/values.yaml:424"}
+      - {name: partitioner, kind: CronJob, schedule: "UNKNOWN — templated (templates/stork/templates/cronjobs.yaml:189) but value not located in prod/stork/values.yaml lines inspected"}
+    twin_processes: [stork-capture]
+    gaps:
+      - "No retry/backoff modeling (real: 15 attempts over 24h+ exponential backoff), no SMS delivery, no cron-driven disable/partition logic. By design (out of the payout-state-mutation critical path)."
+    required_minimum_for_twin: "ProcessEvent/webhook delivery + payout.* event capture — present"
+
+  mozart:
+    tier_in_twin: "REPRESENTATIVE SUBSTITUTE, UNKNOWN-BLOCKED from becoming REAL"
+    production_deployments:
+      - {name: "web(70)/-canary(7)/-baseline(7)", source: "kube-manifests/cde/mozart/values.yaml:1-44"}
+      - {name: worker, replicas: 0, note: "defined but scaled to zero in prod today", source: "cde/mozart/values.yaml:1-44"}
+      - {note: "image tag is a Spinnaker pipeline parameter placeholder (mozart:mozart-${parameters.mozart_prod_commit_id}), not a literal SHA — cde/mozart/values.yaml:20"}
+    twin_processes: ["mozart-sim (primary, ARENA_MOZART_IMPL=mozart-sim default)", "mozart-mock (real binary; opt-in 'mozart-real' compose profile only; CONFIRMED build-blocked on private module github.com/razorpay/integrations-utils)"]
+    gaps:
+      - "mozart-sim ignores gateway/version distinctions, implements only 6 of ~140 real error codes, and matches requests by amount rather than field-accurate matching (per L06). Real bank-gateway routing/error-code logic is entirely unexercised — the single most important substitute-vs-real gap in the lane, since mozart is the actual bank-gateway execution point."
+    required_minimum_for_twin: "gateway_auth/transfer_init/transfer_status endpoints under /fts base path within timeout — structurally present via mozart-sim, not faithfully"
+
+  dcs:
+    tier_in_twin: REPRESENTATIVE SUBSTITUTE
+    production_deployments:
+      - {name: "dcs-server: dcs-live, dcs-live-v2-proxy(+canary/baseline), dcs-live-baseline/canary (6 Deployment variants in one manifest, evidencing an in-flight v1/v2-proxy migration)", source: "templates/dcs/templates/deployment-live.yaml (DCS_ENABLE_V2_PROXY env on v2-proxy variants only, :218,341,463)"}
+      - {name: dcs-consumer, source: "templates/dcs/templates/dual-write-consumer.yaml"}
+      - {name: dcs-dynamo-cdc-worker, note: "own image tags, own CDC_APP_MODE/CDC_APP_ENV env prefix (not APP_MODE/APP_ENV)", source: "templates/dcs/templates/dcs-dynamo-cdc-worker.yaml"}
+    twin_processes: [dcs-stub]
+    gaps:
+      - "No v1/v2-proxy distinction, no CDC path, no consumer role modeled."
+      - "STRUCTURAL, cross-cutting: the ARENA_DCS_URL build patch (build/apply-arena-patches.sh) is applied identically to payouts/pkg/dcs/client.go, cfa/internal/dcsservice/client.go, and x-balances/pkg/dcs/client.go, but in EVERY case only at each client's one-time construction function (NewService/New*) — it injects the override into the BOOT-time context used for login/dcs.New(), never into the per-request ctx that Get()/Patch()/EnabledFeatures() calls use (those originate from live HTTP/worker request contexts). Net effect (L10 §A.4, INFERRED from code, not independently re-run live): login against dcs-stub should succeed, but every subsequent per-request Get/EnabledFeatures call still resolves the SDK's hardcoded real-hostname lookup and fails (no egress from the arena subnet), silently degrading every DCS-gated merchant flag (including in_flight_reservation_enabled) to 'not present'. Affects all three DCS-consuming services identically, not just payouts."
+    required_minimum_for_twin: "Get/EnabledFeatures reachability for merchant-config flags — currently at risk per the per-request-context gap above; fix belongs at the SDK/vendored-patch level (see configuration-manifest.yaml arena_generation_rules), not the topology level"
+
+  splitz:
+    tier_in_twin: REPRESENTATIVE SUBSTITUTE
+    production_deployments:
+      - {name: "web(50)/-canary(10)/-baseline(10)/-shadow(0)", source: "kube-manifests/prod/splitz/values.yaml:10-43"}
+      - {name: splitz-worker, replicas: 2, source: "prod/splitz/values.yaml:53"}
+      - {name: splitz-mcp, replicas: 1, port: 9400, note: "Model-Context-Protocol server — absent from every prior report and from the twin", source: "templates/splitz/templates/splitz-mcp.yaml:57,97; prod/splitz/values.yaml:60"}
+    twin_processes: [splitz-stub]
+    gaps:
+      - "No worker or MCP role modeled (acceptable — MCP is an operator tool, not in the payout critical path)."
+      - "splitz-stub's FetchDecisionContext always returns {\"experiments\": []} regardless of request — this only matters while payouts' client_side_eval remains misconfigured true (see configuration-manifest.yaml); once corrected to prod's false, payouts uses Evaluate/EvaluateBulk instead, which splitz-stub's seed-based per-merchant lookup does implement (L10 §B.2)."
+    required_minimum_for_twin: "Evaluate/EvaluateBulk deterministic per-merchant variant assignment — implemented; FetchDecisionContext path becomes irrelevant once client_side_eval is corrected"
+
+  workflows:
+    tier_in_twin: MISSING
+    production_deployments:
+      - {name: workflows (web), replicas: "5 (5-25 HPA)", source: "kube-manifests/prod/workflows/values.yaml:7-42"}
+      - {name: worker, replicas: "5 (10-40 HPA)"}
+      - {name: worker-asl, replicas: "2 (2-6 HPA)", note: "distinct image (worker_asl_image_tag) — Step-Functions-style ASL state-machine executor, separate from the generic worker"}
+    twin_processes: []
+    gaps:
+      - "Entire service missing. payouts' approval-workflow gate ([workflow] host, 100ms timeout, 3 retries — payouts/config/prod.toml:273-290) has no receiving service in the twin at all."
+    required_minimum_for_twin: "an approval-gate stub implementing WFS's ConfigTypePayoutApproval contract (EFFECTIVE_CONFIG_GAPS.md I1)"
+
+  banking-account:
+    tier_in_twin: REPRESENTATIVE SUBSTITUTE
+    production_deployments:
+      - {name: "banking-account(2)/-baseline(1)/-canary(1)", note: "k8s namespace/Deployment name is 'banking-account' singular; container image is 'banking-accounts' plural", source: "kube-manifests/prod/banking-account/values.yaml:3,17-23,31"}
+    twin_processes: [bankingaccounts-stub]
+    gaps: ["none material beyond expected substitute narrowness"]
+    required_minimum_for_twin: "GET /payouts/shield/merchant/{id}/details — covered per L07"
+
+  x-account-statements:
+    tier_in_twin: REPRESENTATIVE SUBSTITUTE
+    production_deployments:
+      - {name: "web(2)/-canary(1)/-baseline(1) + 7 worker roles", roles: "worker-fetch(4), worker-ybl-fetch(1), worker-statement-save(2), worker-enrichment(2), worker-source-event(2), worker-statement-cdc(10), worker-accounts-cdc(10)", source: "kube-manifests/prod/x-account-statements/values.yaml:42-132+"}
+    twin_processes: [xas-sink]
+    gaps: ["No CDC or enrichment path, no per-source worker fan-out."]
+    required_minimum_for_twin: "worker-source-event contract (feeds payout reconciliation) if source-event correctness is under test — currently narrow coverage only"
+
+  batch:
+    tier_in_twin: MISSING
+    production_deployments:
+      - {name: "web + 7 sqs role variants", roles: "sqs (generic), ingress-sqs, sqs-payment-links, sqs-reconciliation, sqs-sftp-notification, sqs-art-dual-write, sqs-art-prs", note: "repo bug: deployment-batch-sqs-art-dual-write.yaml actually passes args [sqs-prs] and deployment-batch-sqs-art-prs.yaml actually passes args [sqs-dualWrite] — file names and args are swapped (kube-manifests/templates/batch/templates/deployment-batch-sqs-art-{dual-write,prs}.yaml:60-61)", source: "kube-manifests/templates/batch/templates/*.yaml"}
+      - {name: batch_shutdown_recovery, kind: CronJob, schedule: "*/15 * * * *", source: "prod/batch/values.yaml:83"}
+    twin_processes: []
+    gaps: ["Entire service missing — acceptable per L12 (no payouts-named batch queue found; batch primarily serves settlements/reconciliation domains)."]
+    required_minimum_for_twin: "none identified; revisit if bulk-payout CSV ingestion is later found to depend on batch"
+
+  api_monolith_payout_relevant:
+    tier_in_twin: "REPRESENTATIVE SUBSTITUTE — weakest mapping in the lane"
+    production_deployments:
+      - {count: "~45 SQS/Kafka Deployments", role_selector: "args: [sqs_multi_default, <queue-name>, \"10\"] (Laravel-artisan-style)", readiness: "exec file-touch probe (stat /app/ready), preStop rm -f /app/ready", examples: "api-sqs-payouts-live/-test, api-sqs-payout-service-dual-write-live, api-sqs-payout-service-dual-write-direct-push-live, api-sqs-approved-payout-distribution/-processor(-live/-test), api-sqs-batch-payouts-process(-live/-test), api-sqs-on-hold-payouts-process(-live/-test), api-sqs-partner-bank-on-hold-payouts-process(-live/-test), api-sqs-partner-bank-health-notify(-live/-test), api-sqs-queued-payouts-initiate(-live/-test), api-sqs-scheduled-payouts-process(-live/-test), api-sqs-payout-post-create-process(-live/-test)(+low-priority), api-sqs-payout-source-updater(-live/-test), api-sqs-payouts-auto-expire(-live/-test), api-sqs-payout-attachment-email(-live/-test), api-sqs-fund-management-payout-check-live, api-sqs-fund-management-payout-initiate-live, api-sqs-fts(-live/-test), api-sqs-fav-queue-for-fts(-live/-test), api-sqs-cfa-contact-dual-write-live, api-sqs-cfa-fund-account-dual-write-live, api-sqs-x-balance-dual-write-live, api-sqs-account-statement-dual-write-live, api-sqs-banking-account-statement-processor/-recon/-source-linking-live, api-sqs-rbl-banking-account-statement(-live/-test)(+fetch-live), api-sqs-rbl-banking-account-gateway-balance-update(-live/-test), api-sqs-rbl-create-virtual-account(-live/-test), api-sqs-icici-banking-account-statement-fetch-live, api-sqs-icici-banking-account-gateway-balance-update-live, api-sqs-connected-banking-account-gateway-balance-update-live, api-kafka-fts-status-update-consumer(+retry), api-kafka-consumer-pg-ledger(-live/-test)", source: "kube-manifests/templates/api/templates/workers/*.yaml"}
+    twin_processes: [monolith-stub]
+    gaps:
+      - "One stub cannot independently fail/lag/scale one dual-write direction vs another. This is the highest-value fidelity investment identified in the lane (L12's own recommendation)."
+    required_minimum_for_twin: "role-differentiate into at least 2-3 substitutes matching the highest-traffic real roles: sqs_multi_default api-payout-service-dual-write-live, api-payout-post-create-process-live, api-payout-source-updater-live"
+
+datastores:
+  payouts_db: {engine_prod: "mysql (dialect confirmed, version UNKNOWN — no terraform/RDS repo readable)", engine_twin: "mysql:8.0", migrations: "payouts/internal/database/migrations, mounted read-only for the one-shot payouts-migrate job", ddl_owner: "payouts team repo", note: "CONFIRMED schema drift item from EFFECTIVE_CONFIG_GAPS.md §L: payouts payout_details.beneficiary_bank_code is written by code but created by no migration (out-of-band DDL in prod) — patched via seeds/schema-patches/payouts.sql; likely not the only such case"}
+  fts_db: {engine_prod: "mysql, version UNKNOWN", engine_twin: "mysql:8.0", migrations: "fts/internal/migrations"}
+  ledger_db: {engine_prod: "postgres for db.rx/db.pg (ledger/config/prod-live.toml:20,76), mysql dialect for apiDb/makeshift tenants, version UNKNOWN", engine_twin: "postgres:15-alpine", migrations: "ledger/internal/database/rx_migrations — needs a CI-only materialization step first per .env.arena comment"}
+  cfa_store: {engine_prod: "MongoDB (Store.MongoDB), version UNKNOWN", engine_twin: "mongo:6.0", note: "cfa containers run a local socat forward 127.0.0.1:27017 -> mongo-cfa:27017 because cfa's Mongo client only skips TLS when Endpoint is localhost (config/generate.py:358-364)"}
+  xbalances_db: {engine_prod: "mysql (Store/APIStore), version UNKNOWN", engine_twin: "mysql:8.0"}
+  api_db_stub: {engine_twin: "mysql-apidb-stub, standing in for the monolith's own MySQL"}
+  redis: {engine_prod: "version UNKNOWN", engine_twin: "redis:7-alpine"}
+  kafka: {broker_prod: "prod-noncde-kafka.razorpay.com:9090 (MSK), version UNKNOWN", engine_twin: "apache/kafka:3.8.0"}
+  sqs_sns_emulation: {prod: "real AWS SQS/SNS, DLQ/visibility-timeout on the AWS resource (Terraform, not in any readable repo — ledger is the only one of the 5 core services that states visibilityTimeout in app config, 120s)", twin: "localstack/localstack:3.8 via seeds/localstack/init-queues.sh"}
+  ddl_note: "No ConfigMap layer exists for any of the 5 core services in prod (envFrom is secretRef only in every Deployment read) — config is baked into the image; this is CONFIRMED, not inferred (L12 §2)."
+  engine_versions_status: "UNKNOWN-BLOCKED — no terraform/RDS/MSK/ElastiCache infra repo is in the readable REPOS set for this investigation; twin's version choices (mysql:8.0, postgres:15-alpine, mongo:6.0, redis:7-alpine, apache/kafka:3.8.0) are plausible but unverified against real prod versions."
+
+messaging:
+  sqs:
+    payouts: "24 keys under payouts/config/prod.toml:163-188, prefix https://sqs.ap-south-1.amazonaws.com/141592612890/, names prod-payouts-<job>-live (except source_updater/api_queue_for_async_dual_write_direct_push -> prod-api-*, and x_balances_* -> prod-x-balances-*, and x_account_statement_source_event -> prod-x-account-statement-source-event). No DLQ names in app config (Terraform-only)."
+    ledger: "6 queues: prod-ledger-{account-create,balance-update,balance-update-pg,journal-create,entry-details-create,entry-details-create-pg}-live (ledger/config/prod-live.toml:394-399), visibilityTimeout=120s explicit (:359)."
+    cfa: "2 queues: prod-api-rx-{contact,fund-account}-lazy-loading-live (cfa/config/prod.toml:50-51)."
+    twin: "32 SQS queues + 2 SNS topics via seeds/localstack/init-queues.sh, all short unprefixed names (config and seed agree with each other, just not with prod's literal strings — CONTRACT-FAITHFUL internally, not literal-name-faithful). Two stage-flavored residual names: stage-x-balances-balance-refresh-live / stage-x-balances-payouts-event (should be prod-x-balances-balance-refresh-live / prod-x-balances-payout-event, singular 'payout'). Missing entirely vs the 24 prod payouts job keys: rbl_banking_account_statement, x_account_statement_source_event."
+  sns:
+    ledger: "pubSub.journal_created -> prod-ledger-x-journal-created-live (ARN account 141592612890), ledger/config/prod-live.toml:456-457."
+    payouts: "source_update_topics: 9 source types (vendor_payments, payout_links, vendor_settlements, settlements, xpayroll, capital_cards, capital_line_of_credit, tax_payments, generic_accounting), each with its own real topic ARN in prod; twin collapses all 9 to a single stub topic payout-updates-test-dev (config/templates/base/payouts/arena.toml:530-539)."
+  kafka:
+    rx_fts_status_update_events: "2 partitions/3 replicas, ACL payouts-rx-user + fts-rx-user (kube prod/kafka-entity/values.yaml:8725-8730). payouts consumer group rx-payouts-fts-status-update-consumer-group (RetryBackoff=1,MaxRetry=1); fts producer (env.prod-live.toml:315-331) enabled=true, same topic name, retry_backoff=2/max_retry=10."
+    rx_fts_status_update_retry_events: "payouts consumer group rx-payouts-fts-status-update-retry-consumer-group (prod RetryBackoff=30,MaxRetry=2); payouts also republishes onto this topic itself (fts_status_updates.go:105-108)."
+    ledger: "events.kafka.topic=events.ledger.v2.live (prod-live.toml:291); 13+ makeshift_txn_cls_<product>_pg_kafka topics with matching _dlq siblings — not payouts-specific."
+    twin_gap: "fts's producer leg is disabled under the default ARENA_ROUTE_PROFILE=monolith (see fts gaps above) — the async Kafka status-update path is structurally present in code but off by default config, matching prod only under the 'kafka' route profile."
+
+cron:
+  fastcron_routes:
+    # payouts/internal/routing/router/cron_routes.go:11-176, group /v1/cron, BasicAuth(cred.FastCron). 21 routes.
+    # Real cadence is FastCron-dashboard-only (SaaS UI, no API/export found in any cloned repo) — UNKNOWN for every route.
+    critical:
+      - {route: process_queued_payouts, purpose: "partner-bank-on-hold recovery dispatch", modeled_in_twin: true}
+      - {route: process_batch_submitted_payouts, purpose: "bulk NEFT/RTGS dispatch", modeled_in_twin: false, severity: high}
+      - {route: process_beneficiary_bank_on_hold_payouts, modeled_in_twin: true}
+      - {route: process_queued_low_balance_payouts, modeled_in_twin: true}
+      - {route: process_inflight_reservation_reconciliation, purpose: "in-flight reservation heartbeat/reconcile, real cadence ~5min per code constant", modeled_in_twin: true}
+      - {route: process_scheduled_payouts, modeled_in_twin: true}
+      - {route: payouts_dual_write_failure_processing, modeled_in_twin: true}
+      - {route: payouts_sla_breach_monitor, purpose: "SLAMonitorService.CheckSLABreaches — CORRECTION: this route IS registered under the FastCron-gated /v1/cron group (cron_routes.go:143-151), contradicting the twin's own seeds/s4/cron_schedule.yaml claim that it is 'internal, in-process not HTTP-cron'; whether FastCron actually also drives it, or an in-process ticker calls the same handler, is unresolved", modeled_in_twin: false}
+      - {route: "fund_management_payouts/check", purpose: "FMP gateway-balance check", modeled_in_twin: false, severity: high}
+    admin_or_maintenance_not_modeled:
+      - redis_key_set
+      - "banking_account_statement/fetch"
+      - "banking_account_statement/initiate"
+      - reverse_dual_write
+      - "load_test/run"
+      - "merchant_configuration (POST/PUT)"
+      - query_db
+      - tidb_data_consistency_check
+      - "elasticsearch/backfill_index"
+      - "payouts/fetch_multiple"
+      - "elasticsearch/query"
+      - "elasticsearch/mapping (GET/PUT)"
+      - "log_sampling (GET/PUT)"
+  k8s_cronjobs:
+    - {service: ledger, name: "split-account-balance-update-live(+pg-live)", schedule: "*/10 * * * *", suspend: false, source: "prod/ledger/values.yaml:610"}
+    - {service: ledger, name: "verify-warm-storage-live(+test)", schedule: "0 * * * * (hardcoded)", source: "templates/ledger/templates/verify-warm-storage-cronjob-live.yaml:14"}
+    - {service: stork, name: scheduler, schedule: "*/3 * * * *", source: "prod/stork/values.yaml:422"}
+    - {service: stork, name: webhook_disabler, schedule: "*/30 * * * *", source: "prod/stork/values.yaml:424"}
+    - {service: stork, name: partitioner, schedule: "UNKNOWN — templated, value not located", source: "templates/stork/templates/cronjobs.yaml:189"}
+    - {service: batch, name: shutdown_recovery, schedule: "*/15 * * * *", source: "prod/batch/values.yaml:83"}
+    - {service: cfa, name: "(none active)", note: "crons: [] — cde/cfa/values.yaml:69-71"}
+    - {service: "dcs/splitz/workflows/x-balances/x-account-statements/banking-account", note: "no CronJob manifest found — absence confirmed by directory listing"}
+  in_process_schedulers:
+    - {service: fts, job: fetch_healthy_balance_cron, interval: 300s}
+    - {service: fts, job: stuck_payouts_cron, interval: 60s, note: "canary/leader-gated — only the FTS instance with INSTANCE_TYPE=canary runs this"}
+    - {service: fts, job: longer_bank_degradation_alert_cron, interval: UNKNOWN}
+  twin_cron_driver:
+    executable: "scripts/cron-driver/driver.py — VERIFIED CORRECT: all 6 paths it hits match real cron_routes.go routes exactly (process_queued_payouts@300s, process_queued_low_balance_payouts@300s, process_scheduled_payouts@300s, process_beneficiary_bank_on_hold_payouts@300s, process_inflight_reservation_reconciliation@300s, payouts_dual_write_failure_processing@900s)."
+    missing_from_driver: "process_batch_submitted_payouts (bulk NEFT/RTGS dispatch, payout-state-affecting — HIGH severity), payouts_sla_breach_monitor, fund_management_payouts/check, plus the 12 admin/maintenance routes listed above."
+    doc_drift: "seeds/s4/cron_schedule.yaml (a separate DESCRIPTIVE seed doc, self-marked _status: UNVERIFIED, distinct from the executable driver.py) is STALE relative to driver.py's own already-correct implementation: it lists 5 payouts_service jobs, and ALL 5 use invented endpoint paths that match NO real route in cron_routes.go and NO path in driver.py: queued_low_balance_dequeue -> '/v1/cron/queued/dequeue' (real: process_queued_low_balance_payouts), scheduled_payouts_dispatch -> '/v1/cron/scheduled/dispatch' (real: process_scheduled_payouts), on_hold_release -> '/v1/cron/on_hold/release' (real: process_beneficiary_bank_on_hold_payouts), in_flight_reservation_reconcile -> '/v1/cron/reservation/reconcile' (real: process_inflight_reservation_reconciliation), dual_write_failure_processing -> 'POST /v1/payouts/dual_write/failure_processing' (real: '/v1/cron/payouts_dual_write_failure_processing'). NOTE: this is 5 wrong paths, not the '3 wrong paths' shorthand carried in some upstream synthesis notes — recording the verified count here. The executable driver.py is NOT affected by this drift (it already uses the correct paths); only the descriptive doc needs correcting, plus adding process_batch_submitted_payouts as a 6th real job to BOTH driver.py and this doc."
+
+network_boundaries:
+  prod:
+    - "cde <-> non-cde (prod/) crossing calls: payouts(cde), cfa(cde), mozart(cde) all call out to fts/ledger/dcs/splitz/stork/workflows/x-account-statements/x-balances/banking-account (all in the non-cde prod/ cluster). This is a real RBI/PCI network-segmentation boundary (CONFIRMED by the kube-manifests/cde/ vs kube-manifests/prod/ directory split), not a naming artifact. The actual firewall/network-policy rules enforcing this boundary are not in any readable repo — UNKNOWN mechanism, confirmed existence only."
+  twin:
+    - "rzp-arena (internal:true, no egress) hosts every core/substitute/datastore container on one flat network; rzp-ingress is the only network with a path to the host, and kong-lite is the sole container on both (docker-compose.yml top-of-file comment, lines 1-20)."
+    - "The twin does NOT model the prod cde/non-cde segmentation boundary at all — every twin service can reach every other twin service freely. A test that depends on cde/non-cde network policy behavior (e.g. verifying payouts cannot directly reach an fts internal-only port, or that a non-cde compromise cannot reach cde services) has no twin equivalent."

@@ -1,0 +1,44 @@
+test_ambiguous_response_preserves_uncertainty (test_scenarios.BankScenarioContract.test_ambiguous_response_preserves_uncertainty) ... [unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+ok
+test_clear_is_scoped_to_one_attempt (test_scenarios.BankScenarioContract.test_clear_is_scoped_to_one_attempt) ... [unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+ok
+test_delayed_success_counts_status_polls (test_scenarios.BankScenarioContract.test_delayed_success_counts_status_polls) ... [unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_status HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_status HTTP/1.1" 200 -
+ok
+test_held_attempt_remains_held_until_attempt_release (test_scenarios.BankScenarioContract.test_held_attempt_remains_held_until_attempt_release) ... [unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_status HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_status HTTP/1.1" 200 -
+ok
+test_invalid_control_is_rejected_without_mutation (test_scenarios.BankScenarioContract.test_invalid_control_is_rejected_without_mutation) ... [unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 400 -
+/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 400: 'Bad Request'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+[unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 400 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 400 -
+ok
+test_merchants_have_independent_outcomes (test_scenarios.BankScenarioContract.test_merchants_have_independent_outcomes) ... [unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+ok
+test_retryable_insufficient_funds_is_a_separate_scenario (test_scenarios.BankScenarioContract.test_retryable_insufficient_funds_is_a_separate_scenario) ... [unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /payouts/rbl/v1/transfer_init HTTP/1.1" 200 -
+ok
+test_timeout_is_gateway_504_without_a_valid_mozart_envelope (test_scenarios.BankScenarioContract.test_timeout_is_gateway_504_without_a_valid_mozart_envelope) ... [unknown-stub] 2026-09-05T18:46:06 "POST /_arena/scenario HTTP/1.1" 200 -
+[unknown-stub] 2026-09-05T18:46:06 "POST /fts/rbl/v1/transfer_init HTTP/1.1" 504 -
+/opt/homebrew/Cellar/python@3.14/3.14.6/Frameworks/Python.framework/Versions/3.14/lib/python3.14/tempfile.py:484: ResourceWarning: Implicitly cleaning up <HTTPError 504: 'Gateway Timeout'>
+  _warnings.warn(self.warn_message, ResourceWarning)
+ok
+
+----------------------------------------------------------------------
+Ran 8 tests in 0.530s
+
+OK

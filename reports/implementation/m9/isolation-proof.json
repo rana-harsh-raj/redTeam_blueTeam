@@ -1,0 +1,2045 @@
+{
+  "a": "alpha-full",
+  "b": "beta-focused",
+  "finished_at": "2026-09-08T18:32:52Z",
+  "kind": "m9_isolation_proof",
+  "measurements": {
+    "alpha-full": [
+      {
+        "at": "2026-09-08T17:52:18Z",
+        "containers_mem_mib": 6354.6,
+        "docker_system_df": [
+          {
+            "Active": "32",
+            "Reclaimable": "37.64MB (0%)",
+            "Size": "9.189GB",
+            "TotalCount": "34",
+            "Type": "Images"
+          },
+          {
+            "Active": "97",
+            "Reclaimable": "12.29kB (0%)",
+            "Size": "2.454MB",
+            "TotalCount": "98",
+            "Type": "Containers"
+          },
+          {
+            "Active": "27",
+            "Reclaimable": "2.351kB (0%)",
+            "Size": "2.787GB",
+            "TotalCount": "28",
+            "Type": "Local Volumes"
+          },
+          {
+            "Active": "0",
+            "Reclaimable": "0B",
+            "Size": "0B",
+            "TotalCount": "0",
+            "Type": "Build Cache"
+          }
+        ],
+        "label": "before-P1",
+        "sizing": {
+          "cpus": 4,
+          "disk_gib": 40,
+          "memory_gib": 10
+        },
+        "timings": {
+          "boot_secs": 138.4,
+          "build_secs": 129.0,
+          "create_secs": 0.2,
+          "generate_secs": 1.7,
+          "images_secs": 101.9,
+          "provision_secs": 24.1
+        },
+        "vm_dir_kib": 11345236
+      },
+      {
+        "at": "2026-09-08T17:54:33Z",
+        "containers_mem_mib": 6248.0,
+        "docker_system_df": [
+          {
+            "Active": "32",
+            "Reclaimable": "37.64MB (0%)",
+            "Size": "9.189GB",
+            "TotalCount": "34",
+            "Type": "Images"
+          },
+          {
+            "Active": "97",
+            "Reclaimable": "12.29kB (0%)",
+            "Size": "2.454MB",
+            "TotalCount": "98",
+            "Type": "Containers"
+          },
+          {
+            "Active": "27",
+            "Reclaimable": "2.351kB (0%)",
+            "Size": "2.787GB",
+            "TotalCount": "28",
+            "Type": "Local Volumes"
+          },
+          {
+            "Active": "0",
+            "Reclaimable": "0B",
+            "Size": "0B",
+            "TotalCount": "0",
+            "Type": "Build Cache"
+          }
+        ],
+        "label": "before-P5",
+        "sizing": {
+          "cpus": 4,
+          "disk_gib": 40,
+          "memory_gib": 10
+        },
+        "timings": {
+          "boot_secs": 138.4,
+          "build_secs": 129.0,
+          "create_secs": 0.2,
+          "generate_secs": 1.7,
+          "images_secs": 101.9,
+          "provision_secs": 24.1
+        },
+        "vm_dir_kib": 11347240
+      },
+      {
+        "at": "2026-09-08T18:06:21Z",
+        "containers_mem_mib": 5061.4,
+        "docker_system_df": [
+          {
+            "Active": "32",
+            "Reclaimable": "37.64MB (0%)",
+            "Size": "9.19GB",
+            "TotalCount": "34",
+            "Type": "Images"
+          },
+          {
+            "Active": "97",
+            "Reclaimable": "12.29kB (0%)",
+            "Size": "2.761MB",
+            "TotalCount": "98",
+            "Type": "Containers"
+          },
+          {
+            "Active": "27",
+            "Reclaimable": "2.351kB (0%)",
+            "Size": "2.787GB",
+            "TotalCount": "28",
+            "Type": "Local Volumes"
+          },
+          {
+            "Active": "0",
+            "Reclaimable": "0B",
+            "Size": "0B",
+            "TotalCount": "0",
+            "Type": "Build Cache"
+          }
+        ],
+        "label": "before-P9",
+        "sizing": {
+          "cpus": 4,
+          "disk_gib": 40,
+          "memory_gib": 10
+        },
+        "timings": {
+          "boot_secs": 138.4,
+          "build_secs": 129.0,
+          "create_secs": 0.2,
+          "generate_secs": 1.7,
+          "images_secs": 101.9,
+          "provision_secs": 24.1,
+          "restart_secs": 87.7,
+          "stop_secs": 25.5
+        },
+        "vm_dir_kib": 11435656
+      },
+      {
+        "at": "2026-09-08T18:26:42Z",
+        "containers_mem_mib": 5241.3,
+        "docker_system_df": [
+          {
+            "Active": "29",
+            "Reclaimable": "1.848GB (20%)",
+            "Size": "9.189GB",
+            "TotalCount": "33",
+            "Type": "Images"
+          },
+          {
+            "Active": "92",
+            "Reclaimable": "24.58kB (1%)",
+            "Size": "1.868MB",
+            "TotalCount": "94",
+            "Type": "Containers"
+          },
+          {
+            "Active": "24",
+            "Reclaimable": "2.351kB (0%)",
+            "Size": "2.336GB",
+            "TotalCount": "25",
+            "Type": "Local Volumes"
+          },
+          {
+            "Active": "0",
+            "Reclaimable": "0B",
+            "Size": "0B",
+            "TotalCount": "0",
+            "Type": "Build Cache"
+          }
+        ],
+        "label": "before-P9",
+        "sizing": {
+          "cpus": 4,
+          "disk_gib": 40,
+          "memory_gib": 10
+        },
+        "timings": {
+          "build_secs": 594.8,
+          "create_secs": 0.3,
+          "generate_secs": 1.7,
+          "images_secs": 569.3,
+          "provision_secs": 23.6
+        },
+        "vm_dir_kib": 11177140
+      },
+      {
+        "at": "2026-09-08T18:32:09Z",
+        "containers_mem_mib": 6190.3,
+        "docker_system_df": [
+          {
+            "Active": "32",
+            "Reclaimable": "37.55MB (0%)",
+            "Size": "9.189GB",
+            "TotalCount": "33",
+            "Type": "Images"
+          },
+          {
+            "Active": "97",
+            "Reclaimable": "12.29kB (0%)",
+            "Size": "1.925MB",
+            "TotalCount": "98",
+            "Type": "Containers"
+          },
+          {
+            "Active": "27",
+            "Reclaimable": "2.351kB (0%)",
+            "Size": "2.786GB",
+            "TotalCount": "28",
+            "Type": "Local Volumes"
+          },
+          {
+            "Active": "0",
+            "Reclaimable": "0B",
+            "Size": "0B",
+            "TotalCount": "0",
+            "Type": "Build Cache"
+          }
+        ],
+        "label": "final",
+        "sizing": {
+          "cpus": 4,
+          "disk_gib": 40,
+          "memory_gib": 10
+        },
+        "timings": {
+          "boot_secs": 122.3,
+          "build_secs": 126.2,
+          "create_secs": 0.3,
+          "generate_secs": 2.0,
+          "images_secs": 100.5,
+          "provision_secs": 23.3
+        },
+        "vm_dir_kib": 11346096
+      }
+    ],
+    "beta-focused": [
+      {
+        "at": "2026-09-08T17:52:35Z",
+        "containers_mem_mib": 5351.9,
+        "docker_system_df": [
+          {
+            "Active": "28",
+            "Reclaimable": "37.64MB (0%)",
+            "Size": "7.378GB",
+            "TotalCount": "30",
+            "Type": "Images"
+          },
+          {
+            "Active": "92",
+            "Reclaimable": "12.29kB (0%)",
+            "Size": "2.617MB",
+            "TotalCount": "93",
+            "Type": "Containers"
+          },
+          {
+            "Active": "23",
+            "Reclaimable": "2.351kB (0%)",
+            "Size": "2.336GB",
+            "TotalCount": "24",
+            "Type": "Local Volumes"
+          },
+          {
+            "Active": "0",
+            "Reclaimable": "0B",
+            "Size": "0B",
+            "TotalCount": "0",
+            "Type": "Build Cache"
+          }
+        ],
+        "label": "before-P1",
+        "sizing": {
+          "cpus": 4,
+          "disk_gib": 40,
+          "memory_gib": 10
+        },
+        "timings": {
+          "boot_secs": 83.2,
+          "build_secs": 69.4,
+          "create_secs": 0.4,
+          "generate_secs": 1.9,
+          "images_secs": 41.0,
+          "provision_secs": 25.5
+        },
+        "vm_dir_kib": 9390636
+      },
+      {
+        "at": "2026-09-08T17:54:41Z",
+        "containers_mem_mib": 5321.7,
+        "docker_system_df": [
+          {
+            "Active": "28",
+            "Reclaimable": "37.64MB (0%)",
+            "Size": "7.378GB",
+            "TotalCount": "30",
+            "Type": "Images"
+          },
+          {
+            "Active": "92",
+            "Reclaimable": "12.29kB (0%)",
+            "Size": "2.617MB",
+            "TotalCount": "93",
+            "Type": "Containers"
+          },
+          {
+            "Active": "23",
+            "Reclaimable": "2.351kB (0%)",
+            "Size": "2.336GB",
+            "TotalCount": "24",
+            "Type": "Local Volumes"
+          },
+          {
+            "Active": "0",
+            "Reclaimable": "0B",
+            "Size": "0B",
+            "TotalCount": "0",
+            "Type": "Build Cache"
+          }
+        ],
+        "label": "before-P5",
+        "sizing": {
+          "cpus": 4,
+          "disk_gib": 40,
+          "memory_gib": 10
+        },
+        "timings": {
+          "boot_secs": 83.2,
+          "build_secs": 69.4,
+          "create_secs": 0.4,
+          "generate_secs": 1.9,
+          "images_secs": 41.0,
+          "provision_secs": 25.5
+        },
+        "vm_dir_kib": 9393288
+      },
+      {
+        "at": "2026-09-08T18:06:29Z",
+        "containers_mem_mib": 5421.6,
+        "docker_system_df": [
+          {
+            "Active": "28",
+            "Reclaimable": "37.64MB (0%)",
+            "Size": "7.379GB",
+            "TotalCount": "30",
+            "Type": "Images"
+          },
+          {
+            "Active": "92",
+            "Reclaimable": "12.29kB (0%)",
+            "Size": "3.052MB",
+            "TotalCount": "93",
+            "Type": "Containers"
+          },
+          {
+            "Active": "23",
+            "Reclaimable": "2.351kB (0%)",
+            "Size": "2.338GB",
+            "TotalCount": "24",
+            "Type": "Local Volumes"
+          },
+          {
+            "Active": "0",
+            "Reclaimable": "0B",
+            "Size": "0B",
+            "TotalCount": "0",
+            "Type": "Build Cache"
+          }
+        ],
+        "label": "before-P9",
+        "sizing": {
+          "cpus": 4,
+          "disk_gib": 40,
+          "memory_gib": 10
+        },
+        "timings": {
+          "boot_secs": 83.2,
+          "build_secs": 69.4,
+          "create_secs": 0.4,
+          "generate_secs": 1.9,
+          "images_secs": 41.0,
+          "provision_secs": 25.5,
+          "reset_secs": 63.9,
+          "restore_state_secs": 18.8,
+          "snapshot_state_secs": 8.3
+        },
+        "vm_dir_kib": 9430528
+      },
+      {
+        "at": "2026-09-08T18:27:07Z",
+        "containers_mem_mib": 5302.9,
+        "docker_system_df": [
+          {
+            "Active": "28",
+            "Reclaimable": "37.64MB (0%)",
+            "Size": "7.379GB",
+            "TotalCount": "30",
+            "Type": "Images"
+          },
+          {
+            "Active": "92",
+            "Reclaimable": "12.29kB (0%)",
+            "Size": "3.06MB",
+            "TotalCount": "93",
+            "Type": "Containers"
+          },
+          {
+            "Active": "23",
+            "Reclaimable": "2.351kB (0%)",
+            "Size": "2.354GB",
+            "TotalCount": "24",
+            "Type": "Local Volumes"
+          },
+          {
+            "Active": "0",
+            "Reclaimable": "0B",
+            "Size": "0B",
+            "TotalCount": "0",
+            "Type": "Build Cache"
+          }
+        ],
+        "label": "before-P9",
+        "sizing": {
+          "cpus": 4,
+          "disk_gib": 40,
+          "memory_gib": 10
+        },
+        "timings": {
+          "boot_secs": 83.2,
+          "build_secs": 69.4,
+          "create_secs": 0.4,
+          "generate_secs": 1.9,
+          "images_secs": 41.0,
+          "provision_secs": 25.5,
+          "reset_secs": 63.9,
+          "restore_state_secs": 18.8,
+          "snapshot_state_secs": 8.3
+        },
+        "vm_dir_kib": 9473904
+      },
+      {
+        "at": "2026-09-08T18:32:52Z",
+        "containers_mem_mib": 5310.1,
+        "docker_system_df": [
+          {
+            "Active": "28",
+            "Reclaimable": "37.64MB (0%)",
+            "Size": "7.379GB",
+            "TotalCount": "30",
+            "Type": "Images"
+          },
+          {
+            "Active": "92",
+            "Reclaimable": "12.29kB (0%)",
+            "Size": "3.06MB",
+            "TotalCount": "93",
+            "Type": "Containers"
+          },
+          {
+            "Active": "23",
+            "Reclaimable": "2.351kB (0%)",
+            "Size": "2.354GB",
+            "TotalCount": "24",
+            "Type": "Local Volumes"
+          },
+          {
+            "Active": "0",
+            "Reclaimable": "0B",
+            "Size": "0B",
+            "TotalCount": "0",
+            "Type": "Build Cache"
+          }
+        ],
+        "label": "final",
+        "sizing": {
+          "cpus": 4,
+          "disk_gib": 40,
+          "memory_gib": 10
+        },
+        "timings": {
+          "boot_secs": 83.2,
+          "build_secs": 69.4,
+          "create_secs": 0.4,
+          "generate_secs": 1.9,
+          "images_secs": 41.0,
+          "provision_secs": 25.5,
+          "reset_secs": 63.9,
+          "restore_state_secs": 18.8,
+          "snapshot_state_secs": 8.3
+        },
+        "vm_dir_kib": 9481012
+      }
+    ]
+  },
+  "passed": true,
+  "phases": {
+    "P1": {
+      "at": "2026-09-08T17:52:36Z",
+      "detail": {
+        "a": {
+          "backend": "colima",
+          "boundary": true,
+          "identity": {
+            "daemon_id": "be146de3-f74b-4dc8-b5ff-ede8c69455d2",
+            "docker_host": "unix:///Users/rana.singh/.colima/twin-alpha-full/docker.sock",
+            "docker_root": "/var/lib/docker",
+            "kernel": "6.8.0-117-generic",
+            "mem_total": 10404245504,
+            "name": "colima-twin-alpha-full",
+            "ncpu": 4,
+            "os": "Ubuntu 24.04.4 LTS",
+            "reachable": true,
+            "server_version": "29.5.2"
+          },
+          "profile": "full",
+          "state": "running"
+        },
+        "b": {
+          "backend": "colima",
+          "boundary": true,
+          "identity": {
+            "daemon_id": "b794ae9b-af04-4d13-bbaf-2cf9462491c9",
+            "docker_host": "unix:///Users/rana.singh/.colima/twin-beta-focused/docker.sock",
+            "docker_root": "/var/lib/docker",
+            "kernel": "6.8.0-117-generic",
+            "mem_total": 10404249600,
+            "name": "colima-twin-beta-focused",
+            "ncpu": 4,
+            "os": "Ubuntu 24.04.4 LTS",
+            "reachable": true,
+            "server_version": "29.5.2"
+          },
+          "profile": "focused:shared-payouts",
+          "state": "running"
+        },
+        "registry_has_both": true
+      },
+      "passed": true,
+      "secs": 0.8,
+      "title": "separate execution boundaries (distinct Docker daemons/VMs), both running, distinct profiles and seeds"
+    },
+    "P2": {
+      "at": "2026-09-08T17:53:30Z",
+      "detail": {
+        "a_resources_visible_on_b": [],
+        "b_resources_visible_on_a": [],
+        "compose_projects": {
+          "a": "twin_alpha_full",
+          "b": "twin_beta_focused"
+        },
+        "exec_dirs": {
+          "a": "/Users/rana.singh/.twin-factory/instances/alpha-full",
+          "b": "/Users/rana.singh/.twin-factory/instances/beta-focused"
+        },
+        "inputs_hash": {
+          "a": "86423bfb9fe8fdc0deb1c633beb371cd6745190fa863c5c3cbb7da2ec7c1a6f3",
+          "b": "86423bfb9fe8fdc0deb1c633beb371cd6745190fa863c5c3cbb7da2ec7c1a6f3"
+        },
+        "inventory_counts": {
+          "alpha-full": {
+            "container": 98,
+            "network": 6,
+            "volume": 28
+          },
+          "beta-focused": {
+            "container": 93,
+            "network": 5,
+            "volume": 24
+          }
+        },
+        "ports": {
+          "a": 18236,
+          "b": 18855
+        },
+        "rendered_config_hash": {
+          "a": "11cab707d7d76fea63a9b55fcd28f8381b79e7e813640bfe7b35ebf2d91df077",
+          "b": "c9742633af13b4fafe748a8a778786b2aaf06c622fbbedb18655d256c585f044"
+        },
+        "s2p_secret_instance_specific": true,
+        "secrets_manifest_digest": {
+          "a": "b5087640344f114aa3ef3f6e7d233824a67610b0198521d620a6c2f4cdb60fc8",
+          "b": "abf02124f76b578d47e7dbee29da98a0a8e7bece76f41dbeebff6059cc379acc"
+        },
+        "seed_epoch": {
+          "a": 1754641637,
+          "b": 1749805293
+        },
+        "shared_names": [],
+        "subnets": {
+          "a": "172.28.92.0/24",
+          "b": "172.28.206.0/24"
+        }
+      },
+      "passed": true,
+      "secs": 20.7,
+      "title": "no shared container/network/volume/port/subnet/secret/config between the instances"
+    },
+    "P3": {
+      "at": "2026-09-08T17:53:38Z",
+      "detail": {
+        "alpha-full_sees_beta-focused_exec_dir": {
+          "entries": "0",
+          "rc": 0,
+          "verdict": "NOT-VISIBLE",
+          "visible": false
+        },
+        "beta-focused_sees_alpha-full_exec_dir": {
+          "entries": "0",
+          "rc": 0,
+          "verdict": "NOT-VISIBLE",
+          "visible": false
+        }
+      },
+      "passed": true,
+      "secs": 8.0,
+      "title": "each VM mounts only its own execution directory (the other instance's files are not visible)"
+    },
+    "P4": {
+      "at": "2026-09-08T17:54:16Z",
+      "detail": {
+        "alpha-full": {
+          "attach_to_other_network": {
+            "err": "docker: Error response from daemon: failed to set up container networking: network rzp-arena-beta-focused not found\n\nRun 'docker run --help' for more information",
+            "http": "",
+            "network": "rzp-arena-beta-focused",
+            "rc": 125,
+            "url": "http://payouts-api:9400/status"
+          },
+          "other_container_by_name": {
+            "err": "curl: (6) Could not resolve host: twin_beta_focused-payouts-api-1",
+            "http": "000",
+            "network": "rzp-arena-alpha-full",
+            "rc": 6,
+            "url": "http://twin_beta_focused-payouts-api-1:9400/status"
+          },
+          "other_host_port_from_non_internal_bridge_network_informational": {
+            "err": "",
+            "http": "403",
+            "network": "bridge",
+            "rc": 0,
+            "url": "http://host.lima.internal:18855/_bridge/health"
+          },
+          "other_host_port_from_vm": {
+            "err": "curl: (6) Could not resolve host: host.lima.internal",
+            "http": "000",
+            "network": "rzp-arena-alpha-full",
+            "rc": 6,
+            "url": "http://host.lima.internal:18855/_bridge/health"
+          },
+          "own_payouts_api": {
+            "err": "",
+            "http": "200",
+            "network": "rzp-arena-alpha-full",
+            "rc": 0,
+            "url": "http://payouts-api:9400/status"
+          }
+        },
+        "beta-focused": {
+          "attach_to_other_network": {
+            "err": "docker: Error response from daemon: failed to set up container networking: network rzp-arena-alpha-full not found\n\nRun 'docker run --help' for more information",
+            "http": "",
+            "network": "rzp-arena-alpha-full",
+            "rc": 125,
+            "url": "http://payouts-api:9400/status"
+          },
+          "other_container_by_name": {
+            "err": "curl: (28) Resolving timed out after 5004 milliseconds",
+            "http": "000",
+            "network": "rzp-arena-beta-focused",
+            "rc": 28,
+            "url": "http://twin_alpha_full-payouts-api-1:9400/status"
+          },
+          "other_host_port_from_non_internal_bridge_network_informational": {
+            "err": "",
+            "http": "403",
+            "network": "bridge",
+            "rc": 0,
+            "url": "http://host.lima.internal:18236/_bridge/health"
+          },
+          "other_host_port_from_vm": {
+            "err": "curl: (28) Resolving timed out after 5001 milliseconds",
+            "http": "000",
+            "network": "rzp-arena-beta-focused",
+            "rc": 28,
+            "url": "http://host.lima.internal:18236/_bridge/health"
+          },
+          "own_payouts_api": {
+            "err": "",
+            "http": "200",
+            "network": "rzp-arena-beta-focused",
+            "rc": 0,
+            "url": "http://payouts-api:9400/status"
+          }
+        },
+        "host_bridge_pids": {
+          "alpha-full": 22095,
+          "beta-focused": 33316
+        }
+      },
+      "passed": true,
+      "secs": 38.2,
+      "title": "cross-instance names do not resolve, other networks are not attachable, other host ports are unreachable from the VM; own services answer"
+    },
+    "P5": {
+      "at": "2026-09-08T17:57:24Z",
+      "detail": {
+        "a": {
+          "attributed": true,
+          "attribution": {
+            "canonical_report_untouched": true,
+            "compose_project_matches": true,
+            "docker_host_matches": true,
+            "instance_id_matches": true,
+            "run_dir_inside_instance": true,
+            "runtime_instance_id_matches": true
+          },
+          "boot_id_matches_instance": true,
+          "journeys": [
+            {
+              "checks_passed": 24,
+              "checks_total": 24,
+              "duration_s": 93.2,
+              "evidence_path": "/Users/rana.singh/.twin-factory/instances/alpha-full/journeys/run-20260908T175441Z/evidence/journey-cross-domain-s2p-success.json",
+              "expected_failure_ref": null,
+              "failed_checks": null,
+              "id": "journey:cross-domain-s2p/success",
+              "merchant_id": "ARENAM91214567",
+              "missing_dependency": null,
+              "result": "PASS"
+            }
+          ],
+          "run_dir": "/Users/rana.singh/.twin-factory/instances/alpha-full/journeys/run-20260908T175441Z",
+          "secs": 93.57,
+          "summary": {
+            "blocked": 0,
+            "expected_failure": 0,
+            "fail": 0,
+            "pass": 1,
+            "total": 1
+          }
+        },
+        "b": {
+          "attributed": true,
+          "attribution": {
+            "canonical_report_untouched": true,
+            "compose_project_matches": true,
+            "docker_host_matches": true,
+            "instance_id_matches": true,
+            "run_dir_inside_instance": true,
+            "runtime_instance_id_matches": true
+          },
+          "boot_id_matches_instance": true,
+          "journeys": [
+            {
+              "checks_passed": 12,
+              "checks_total": 12,
+              "duration_s": 68.3,
+              "evidence_path": "/Users/rana.singh/.twin-factory/instances/beta-focused/journeys/run-20260908T175615Z/evidence/journey-shared-payouts-success.json",
+              "expected_failure_ref": null,
+              "failed_checks": null,
+              "id": "journey:shared-payouts/success",
+              "merchant_id": "ARENAM96071357",
+              "missing_dependency": null,
+              "result": "PASS"
+            }
+          ],
+          "run_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused/journeys/run-20260908T175615Z",
+          "secs": 68.8,
+          "summary": {
+            "blocked": 0,
+            "expected_failure": 0,
+            "fail": 0,
+            "pass": 1,
+            "total": 1
+          }
+        },
+        "distinct_merchants": true
+      },
+      "passed": true,
+      "secs": 162.4,
+      "title": "representative journeys pass in both instances and are attributed to the right instance"
+    },
+    "P6": {
+      "at": "2026-09-08T18:00:07Z",
+      "detail": {
+        "a_after_restart": true,
+        "a_after_stop": {
+          "healthy": 0,
+          "not_running": [
+            "api-ingress",
+            "asv-stub",
+            "bankingaccounts-stub",
+            "batch-sim",
+            "cfa-server",
+            "cfa-worker-contact",
+            "cfa-worker-fa",
+            "cron-driver",
+            "dcs-stub",
+            "fts-web",
+            "fts-worker-check-transfer-status",
+            "fts-worker-default",
+            "fts-worker-fire-transfer-status-webhook",
+            "fts-worker-hv-fire-transfer-status-webhook",
+            "fts-worker-hv-initiate-transfer",
+            "fts-worker-initiate-transfer",
+            "fts-worker-rbl-check-transfer-status",
+            "fts-worker-rbl-direct-check-transfer-status",
+            "fts-worker-rbl-direct-imps-check-transfer-status",
+            "fts-worker-rbl-direct-imps-hv-initiate-transfer",
+            "fts-worker-rbl-direct-imps-initiate-transfer",
+            "fts-worker-rbl-direct-initiate-transfer",
+            "fts-worker-rbl-direct-slow-lane-initiate-transfer",
+            "fts-worker-rbl-direct-upi-check-transfer-status",
+            "fts-worker-rbl-direct-upi-initiate-transfer",
+            "fts-worker-rbl-imps-check-transfer-status",
+            "fts-worker-rbl-imps-initiate-transfer",
+            "fts-worker-rbl-initiate-transfer",
+            "fts-worker-rbl-upi-check-transfer-status",
+            "fts-worker-rbl-upi-hv-check-transfer-status",
+            "fts-worker-rbl-upi-hv-initiate-transfer",
+            "fts-worker-rbl-upi-initiate-transfer",
+            "fts-worker-retry-transfer",
+            "fts-worker-retry-transfer-preprocessor",
+            "fts-worker-retry-transfer-source-update",
+            "fts-worker-slow-lane-initiate-transfer",
+            "kafka",
+            "kong-lite",
+            "ledger-api",
+            "ledger-gate",
+            "ledger-scheduler",
+            "ledger-worker",
+            "ledger-worker-balance-update",
+            "ledger-worker-entry-details-create",
+            "ledger-worker-entry-details-create-pg",
+            "ledger-worker-journal-create",
+            "localstack",
+            "merchant-webhook-sink",
+            "mongo-cfa",
+            "monolith-stub",
+            "mozart-sim",
+            "mysql-apidb-stub",
+            "mysql-fts",
+            "mysql-payouts",
+            "mysql-xbalances",
+            "payouts-api",
+            "payouts-kafka-fts-status-updates-consumer",
+            "payouts-kafka-fts-status-updates-retry-consumer",
+            "payouts-worker-api-queue-for-async-dual-write-direct-push",
+            "payouts-worker-async-dual-write",
+            "payouts-worker-batch-submitted-merchants",
+            "payouts-worker-bulk-payouts",
+            "payouts-worker-data-consistency-checker",
+            "payouts-worker-data-consistency-event",
+            "payouts-worker-fts-async-hv-processing",
+            "payouts-worker-fts-async-processing",
+            "payouts-worker-fund-management-payout-check",
+            "payouts-worker-fund-management-payout-initiate",
+            "payouts-worker-generic-processing",
+            "payouts-worker-on-hold-payout",
+            "payouts-worker-partner-bank-hold-payouts",
+            "payouts-worker-payout-create-failure-handling",
+            "payouts-worker-payout-source-updater",
+            "payouts-worker-payout-update-failure-handling",
+            "payouts-worker-payout-usage-event-processing",
+            "payouts-worker-queued-payout",
+            "payouts-worker-rbl-banking-account-statement",
+            "payouts-worker-schedule-payout",
+            "payouts-worker-transaction-create",
+            "payouts-worker-webhook-event",
+            "payouts-worker-x-account-statement-source-event",
+            "payouts-worker-x-balance-payouts-event",
+            "payouts-worker-x-balances-balance-refresh",
+            "postgres-ledger",
+            "pricing-stub",
+            "redis",
+            "s2p-kafka",
+            "s2p-mysql",
+            "s2p-redis",
+            "s2p-vp-source",
+            "shield-stub",
+            "splitz-stub",
+            "stork-capture",
+            "workflow-engine",
+            "workflow-sim",
+            "xas-sim",
+            "xbalances-server",
+            "xbalances-worker"
+          ],
+          "running": 0,
+          "total": 98,
+          "unhealthy": []
+        },
+        "b_after_a_restart": true,
+        "b_after_a_stopped": {
+          "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+          "at": "2026-09-08T17:57:53Z",
+          "backend": {
+            "identity": {
+              "daemon_id": "b794ae9b-af04-4d13-bbaf-2cf9462491c9",
+              "docker_host": "unix:///Users/rana.singh/.colima/twin-beta-focused/docker.sock",
+              "docker_root": "/var/lib/docker",
+              "kernel": "6.8.0-117-generic",
+              "mem_total": 10404249600,
+              "name": "colima-twin-beta-focused",
+              "ncpu": 4,
+              "os": "Ubuntu 24.04.4 LTS",
+              "reachable": true,
+              "server_version": "29.5.2"
+            },
+            "kind": "colima",
+            "profile": "twin-beta-focused",
+            "vm": {
+              "arch": "aarch64",
+              "cpus": 4,
+              "disk": 42949672960,
+              "memory": 10737418240,
+              "name": "twin-beta-focused",
+              "runtime": "docker",
+              "status": "Running"
+            }
+          },
+          "bridge": {
+            "body": {
+              "bridge": "payouts-twin",
+              "pid": 33316
+            },
+            "ok": true,
+            "port": 18855
+          },
+          "compose_project": "twin_beta_focused",
+          "containers": {
+            "healthy": 92,
+            "not_running": [
+              "ledger-scheduler"
+            ],
+            "running": 92,
+            "total": 93,
+            "unhealthy": []
+          },
+          "exec_dir": "/Users/rana.singh/.twin-factory/instances/beta-focused",
+          "healthy": true,
+          "instance_id": "beta-focused",
+          "kong_host_port": 18855,
+          "profile": "focused:shared-payouts",
+          "runtime_instance_id": "04926d624a082d27daadb3abf868e8995c0f7ce2c06e99782a5dcace7b9308f8",
+          "state": "running"
+        },
+        "b_before": true,
+        "b_journey_while_a_stopped": {
+          "attributed": true,
+          "summary": {
+            "blocked": 0,
+            "expected_failure": 0,
+            "fail": 0,
+            "pass": 1,
+            "total": 1
+          }
+        },
+        "restart_a": {
+          "secs": 87.7,
+          "state": "running"
+        },
+        "stop_a": {
+          "secs": 25.5,
+          "steps": [
+            {
+              "at": "2026-09-08T17:57:28Z",
+              "log": "01-host-bridge-stop.log",
+              "n": 1,
+              "rc": 0,
+              "secs": 0.36,
+              "step": "host-bridge-stop"
+            },
+            {
+              "at": "2026-09-08T17:57:53Z",
+              "log": "02-stop-arena.log",
+              "n": 2,
+              "rc": 0,
+              "secs": 25.17,
+              "step": "stop-arena"
+            }
+          ],
+          "stopped_at": "2026-09-08T17:57:53Z"
+        }
+      },
+      "passed": true,
+      "secs": 163.8,
+      "title": "stopping/restarting A does not affect B (B stays healthy and passes a journey while A is stopped)"
+    },
+    "P7": {
+      "at": "2026-09-08T18:01:26Z",
+      "detail": {
+        "a_fixtures_before": "11cab707d7d76fea63a9b55fcd28f8381b79e7e813640bfe7b35ebf2d91df077",
+        "a_healthy_after": true,
+        "a_rendered_after": "e6fb49f1ab05c6efb019abf6e93e67fe8108d4c92de9c765fa3958daeb5f3ab7",
+        "a_rendered_before": "e6fb49f1ab05c6efb019abf6e93e67fe8108d4c92de9c765fa3958daeb5f3ab7",
+        "a_rows_after": {
+          "api_local.merchants": "122",
+          "ingress.tables": {
+            "audit": 120,
+            "banking_accounts": 1,
+            "callbacks": 4,
+            "idempotency": 4,
+            "internal_payouts": 2,
+            "otps": 4,
+            "payout_details": 2,
+            "resources": 328,
+            "sessions": 0
+          },
+          "payouts.banking_accounts": "122",
+          "payouts.payouts": "6"
+        },
+        "a_rows_before": {
+          "api_local.merchants": "122",
+          "ingress.tables": {
+            "audit": 120,
+            "banking_accounts": 1,
+            "callbacks": 4,
+            "idempotency": 4,
+            "internal_payouts": 2,
+            "otps": 4,
+            "payout_details": 2,
+            "resources": 328,
+            "sessions": 0
+          },
+          "payouts.banking_accounts": "122",
+          "payouts.payouts": "6"
+        },
+        "a_secrets_before": "b5087640344f114aa3ef3f6e7d233824a67610b0198521d620a6c2f4cdb60fc8",
+        "b_rows_after": {
+          "api_local.merchants": "123",
+          "ingress.tables": {
+            "audit": 0,
+            "banking_accounts": 0,
+            "callbacks": 0,
+            "idempotency": 0,
+            "internal_payouts": 0,
+            "otps": 0,
+            "payout_details": 0,
+            "resources": 326,
+            "sessions": 0
+          },
+          "payouts.banking_accounts": "123",
+          "payouts.payouts": "8"
+        },
+        "b_rows_before": {
+          "api_local.merchants": "123",
+          "ingress.tables": {
+            "audit": 124,
+            "banking_accounts": 0,
+            "callbacks": 0,
+            "idempotency": 0,
+            "internal_payouts": 0,
+            "otps": 0,
+            "payout_details": 0,
+            "resources": 326,
+            "sessions": 0
+          },
+          "payouts.banking_accounts": "123",
+          "payouts.payouts": "8"
+        },
+        "reset_b": {
+          "ingress_reset": true,
+          "queues_purged": 36,
+          "secs": 63.9
+        }
+      },
+      "passed": true,
+      "secs": 78.6,
+      "title": "resetting B leaves A's datastore rows, rendered configuration and secrets unchanged"
+    },
+    "P8": {
+      "at": "2026-09-08T18:06:08Z",
+      "detail": {
+        "mutation_journey": {
+          "blocked": 0,
+          "expected_failure": 0,
+          "fail": 1,
+          "pass": 0,
+          "total": 1
+        },
+        "restore": {
+          "at": "2026-09-08T18:06:06Z",
+          "label": "p8-baseline",
+          "restored": [
+            "mongo-cfa",
+            "mysql-apidb-stub",
+            "mysql-fts",
+            "mysql-payouts",
+            "mysql-xbalances",
+            "postgres-ledger"
+          ],
+          "secs": 18.8
+        },
+        "rows_after_mutation": {
+          "api_local.merchants": "124",
+          "ingress.tables": {
+            "audit": 58,
+            "banking_accounts": 0,
+            "callbacks": 0,
+            "idempotency": 0,
+            "internal_payouts": 0,
+            "otps": 0,
+            "payout_details": 0,
+            "resources": 328,
+            "sessions": 0
+          },
+          "payouts.banking_accounts": "124",
+          "payouts.payouts": "12"
+        },
+        "rows_after_restore": {
+          "api_local.merchants": "123",
+          "ingress.tables": {
+            "audit": 58,
+            "banking_accounts": 0,
+            "callbacks": 0,
+            "idempotency": 0,
+            "internal_payouts": 0,
+            "otps": 0,
+            "payout_details": 0,
+            "resources": 328,
+            "sessions": 0
+          },
+          "payouts.banking_accounts": "123",
+          "payouts.payouts": "8"
+        },
+        "rows_at_snapshot": {
+          "api_local.merchants": "123",
+          "ingress.tables": {
+            "audit": 0,
+            "banking_accounts": 0,
+            "callbacks": 0,
+            "idempotency": 0,
+            "internal_payouts": 0,
+            "otps": 0,
+            "payout_details": 0,
+            "resources": 326,
+            "sessions": 0
+          },
+          "payouts.banking_accounts": "123",
+          "payouts.payouts": "8"
+        },
+        "snapshot": {
+          "files": {
+            "mongo-cfa": "mongo-cfa.archive",
+            "mysql-apidb-stub": "mysql-apidb-stub.sql",
+            "mysql-fts": "mysql-fts.sql",
+            "mysql-payouts": "mysql-payouts.sql",
+            "mysql-xbalances": "mysql-xbalances.sql",
+            "postgres-ledger": "postgres-ledger.sql"
+          },
+          "label": "p8-baseline",
+          "secs": 8.3
+        }
+      },
+      "passed": true,
+      "secs": 281.4,
+      "title": "snapshot-state / restore-state on B returns mutated datastore rows to the snapshot"
+    },
+    "P9": {
+      "at": "2026-09-08T18:31:44Z",
+      "detail": {
+        "a_boundary_gone": true,
+        "a_manifest_before": {
+          "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+          "image_digests": {
+            "apache/kafka:3.8.0": {
+              "image_id": "sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069",
+              "repo_digests": [
+                "apache/kafka@sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069"
+              ],
+              "services": [
+                "kafka"
+              ]
+            },
+            "curlimages/curl:latest": {
+              "image_id": "sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777",
+              "repo_digests": [
+                "curlimages/curl@sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777"
+              ],
+              "services": [
+                "_curlimages-curl"
+              ]
+            },
+            "localstack/localstack:3.8": {
+              "image_id": "sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7",
+              "repo_digests": [
+                "localstack/localstack@sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7"
+              ],
+              "services": [
+                "localstack"
+              ]
+            },
+            "mongo:6.0": {
+              "image_id": "sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac",
+              "repo_digests": [
+                "mongo@sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac"
+              ],
+              "services": [
+                "mongo-cfa"
+              ]
+            },
+            "mysql:8.0": {
+              "image_id": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+              "repo_digests": [
+                "mysql@sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b"
+              ],
+              "services": [
+                "mysql-apidb-stub",
+                "mysql-fts",
+                "mysql-payouts",
+                "mysql-xbalances"
+              ]
+            },
+            "mysql:8.4@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb": {
+              "image_id": "sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+              "repo_digests": [
+                "mysql@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb"
+              ],
+              "services": [
+                "s2p-mysql"
+              ]
+            },
+            "postgres:15-alpine": {
+              "image_id": "sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b",
+              "repo_digests": [
+                "postgres@sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b"
+              ],
+              "services": [
+                "postgres-ledger"
+              ]
+            },
+            "python:3.12-alpine": {
+              "image_id": "sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a",
+              "repo_digests": [
+                "python@sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a"
+              ],
+              "services": [
+                "_python",
+                "cron-driver"
+              ]
+            },
+            "redis:7-alpine": {
+              "image_id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+              "repo_digests": [
+                "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+              ],
+              "services": [
+                "redis"
+              ]
+            },
+            "redis:7-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf": {
+              "image_id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+              "repo_digests": [
+                "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+              ],
+              "services": [
+                "s2p-redis"
+              ]
+            },
+            "redpandadata/redpanda:v24.2.18@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8": {
+              "image_id": "sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+              "repo_digests": [
+                "redpandadata/redpanda@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8"
+              ],
+              "services": [
+                "s2p-kafka"
+              ]
+            },
+            "rzp-arena/api-ingress:v1-candidate": {
+              "image_id": "sha256:8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb",
+              "repo_digests": [
+                "rzp-arena/api-ingress@sha256:8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb"
+              ],
+              "services": [
+                "api-ingress"
+              ]
+            },
+            "rzp-arena/asv-stub:v1-candidate": {
+              "image_id": "sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f",
+              "repo_digests": [
+                "rzp-arena/asv-stub@sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f"
+              ],
+              "services": [
+                "asv-stub"
+              ]
+            },
+            "rzp-arena/bankingaccounts-stub:v1-candidate": {
+              "image_id": "sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d",
+              "repo_digests": [
+                "rzp-arena/bankingaccounts-stub@sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d"
+              ],
+              "services": [
+                "bankingaccounts-stub"
+              ]
+            },
+            "rzp-arena/batch-sim:v1-candidate": {
+              "image_id": "sha256:bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696",
+              "repo_digests": [
+                "rzp-arena/batch-sim@sha256:bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696"
+              ],
+              "services": [
+                "batch-sim"
+              ]
+            },
+            "rzp-arena/cfa:v1-candidate": {
+              "image_id": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+              "repo_digests": [
+                "rzp-arena/cfa@sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206"
+              ],
+              "services": [
+                "cfa-migrate",
+                "cfa-server",
+                "cfa-worker-contact",
+                "cfa-worker-fa"
+              ]
+            },
+            "rzp-arena/dcs-stub:v1-candidate": {
+              "image_id": "sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b",
+              "repo_digests": [
+                "rzp-arena/dcs-stub@sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b"
+              ],
+              "services": [
+                "dcs-stub"
+              ]
+            },
+            "rzp-arena/fts:v1-candidate": {
+              "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+              "repo_digests": [
+                "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+              ],
+              "services": [
+                "fts-migrate",
+                "fts-web",
+                "fts-worker-check-transfer-status",
+                "fts-worker-default",
+                "fts-worker-fire-transfer-status-webhook",
+                "fts-worker-hv-fire-transfer-status-webhook",
+                "fts-worker-hv-initiate-transfer",
+                "fts-worker-initiate-transfer",
+                "fts-worker-rbl-check-transfer-status",
+                "fts-worker-rbl-direct-check-transfer-status",
+                "fts-worker-rbl-direct-imps-check-transfer-status",
+                "fts-worker-rbl-direct-imps-hv-initiate-transfer",
+                "fts-worker-rbl-direct-imps-initiate-transfer",
+                "fts-worker-rbl-direct-initiate-transfer",
+                "fts-worker-rbl-direct-slow-lane-initiate-transfer",
+                "fts-worker-rbl-direct-upi-check-transfer-status",
+                "fts-worker-rbl-direct-upi-initiate-transfer",
+                "fts-worker-rbl-imps-check-transfer-status",
+                "fts-worker-rbl-imps-initiate-transfer",
+                "fts-worker-rbl-initiate-transfer",
+                "fts-worker-rbl-upi-check-transfer-status",
+                "fts-worker-rbl-upi-hv-check-transfer-status",
+                "fts-worker-rbl-upi-hv-initiate-transfer",
+                "fts-worker-rbl-upi-initiate-transfer",
+                "fts-worker-retry-transfer",
+                "fts-worker-retry-transfer-preprocessor",
+                "fts-worker-retry-transfer-source-update",
+                "fts-worker-slow-lane-initiate-transfer"
+              ]
+            },
+            "rzp-arena/kong-lite:v1-candidate": {
+              "image_id": "sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f",
+              "repo_digests": [
+                "rzp-arena/kong-lite@sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f"
+              ],
+              "services": [
+                "kong-lite"
+              ]
+            },
+            "rzp-arena/ledger-gate:v1-candidate": {
+              "image_id": "sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f",
+              "repo_digests": [
+                "rzp-arena/ledger-gate@sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f"
+              ],
+              "services": [
+                "ledger-gate"
+              ]
+            },
+            "rzp-arena/ledger:v1-candidate": {
+              "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+              "repo_digests": [
+                "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+              ],
+              "services": [
+                "ledger-api",
+                "ledger-migrate",
+                "ledger-scheduler",
+                "ledger-worker",
+                "ledger-worker-balance-update",
+                "ledger-worker-entry-details-create",
+                "ledger-worker-entry-details-create-pg",
+                "ledger-worker-journal-create"
+              ]
+            },
+            "rzp-arena/merchant-webhook-sink:v1-candidate": {
+              "image_id": "sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13",
+              "repo_digests": [
+                "rzp-arena/merchant-webhook-sink@sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13"
+              ],
+              "services": [
+                "merchant-webhook-sink"
+              ]
+            },
+            "rzp-arena/monolith-stub:v1-candidate": {
+              "image_id": "sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557",
+              "repo_digests": [
+                "rzp-arena/monolith-stub@sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557"
+              ],
+              "services": [
+                "monolith-stub"
+              ]
+            },
+            "rzp-arena/mozart-sim:v1-candidate": {
+              "image_id": "sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9",
+              "repo_digests": [
+                "rzp-arena/mozart-sim@sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9"
+              ],
+              "services": [
+                "mozart-sim"
+              ]
+            },
+            "rzp-arena/payouts:v1-candidate": {
+              "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+              "repo_digests": [
+                "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+              ],
+              "services": [
+                "payouts-api",
+                "payouts-kafka-fts-status-updates-consumer",
+                "payouts-kafka-fts-status-updates-retry-consumer",
+                "payouts-migrate",
+                "payouts-worker-api-queue-for-async-dual-write-direct-push",
+                "payouts-worker-async-dual-write",
+                "payouts-worker-batch-submitted-merchants",
+                "payouts-worker-bulk-payouts",
+                "payouts-worker-data-consistency-checker",
+                "payouts-worker-data-consistency-event",
+                "payouts-worker-fts-async-hv-processing",
+                "payouts-worker-fts-async-processing",
+                "payouts-worker-fund-management-payout-check",
+                "payouts-worker-fund-management-payout-initiate",
+                "payouts-worker-generic-processing",
+                "payouts-worker-on-hold-payout",
+                "payouts-worker-partner-bank-hold-payouts",
+                "payouts-worker-payout-create-failure-handling",
+                "payouts-worker-payout-source-updater",
+                "payouts-worker-payout-update-failure-handling",
+                "payouts-worker-payout-usage-event-processing",
+                "payouts-worker-queued-payout",
+                "payouts-worker-rbl-banking-account-statement",
+                "payouts-worker-schedule-payout",
+                "payouts-worker-transaction-create",
+                "payouts-worker-webhook-event",
+                "payouts-worker-x-account-statement-source-event",
+                "payouts-worker-x-balance-payouts-event",
+                "payouts-worker-x-balances-balance-refresh"
+              ]
+            },
+            "rzp-arena/pricing-stub:v1-candidate": {
+              "image_id": "sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05",
+              "repo_digests": [
+                "rzp-arena/pricing-stub@sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05"
+              ],
+              "services": [
+                "pricing-stub"
+              ]
+            },
+            "rzp-arena/shield-stub:v1-candidate": {
+              "image_id": "sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43",
+              "repo_digests": [
+                "rzp-arena/shield-stub@sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43"
+              ],
+              "services": [
+                "shield-stub"
+              ]
+            },
+            "rzp-arena/splitz-stub:v1-candidate": {
+              "image_id": "sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a",
+              "repo_digests": [
+                "rzp-arena/splitz-stub@sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a"
+              ],
+              "services": [
+                "splitz-stub"
+              ]
+            },
+            "rzp-arena/stork-capture:v1-candidate": {
+              "image_id": "sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c",
+              "repo_digests": [
+                "rzp-arena/stork-capture@sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c"
+              ],
+              "services": [
+                "stork-capture"
+              ]
+            },
+            "rzp-arena/workflow-engine:v1-candidate": {
+              "image_id": "sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0",
+              "repo_digests": [
+                "rzp-arena/workflow-engine@sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0"
+              ],
+              "services": [
+                "workflow-engine"
+              ]
+            },
+            "rzp-arena/workflow-sim:v1-candidate": {
+              "image_id": "sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96",
+              "repo_digests": [
+                "rzp-arena/workflow-sim@sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96"
+              ],
+              "services": [
+                "workflow-sim"
+              ]
+            },
+            "rzp-arena/xas-sim:v1-candidate": {
+              "image_id": "sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7",
+              "repo_digests": [
+                "rzp-arena/xas-sim@sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7"
+              ],
+              "services": [
+                "xas-sim"
+              ]
+            },
+            "rzp-arena/xbalances:v1-candidate": {
+              "image_id": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+              "repo_digests": [
+                "rzp-arena/xbalances@sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f"
+              ],
+              "services": [
+                "xbalances-migrate",
+                "xbalances-server",
+                "xbalances-worker"
+              ]
+            },
+            "s2p-architecture-replica/vendor-payments:20c4f4d59970471067388afea8b1d65ac39ee126-45fbf8fbbe82efd9": {
+              "image_id": "sha256:18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18",
+              "repo_digests": [
+                "s2p-architecture-replica/vendor-payments@sha256:18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18"
+              ],
+              "services": [
+                "s2p-vp-source"
+              ]
+            }
+          },
+          "inputs_hash": "86423bfb9fe8fdc0deb1c633beb371cd6745190fa863c5c3cbb7da2ec7c1a6f3",
+          "profile_digest": "c6b951c21e695c64d727011f8b8cd372d14078471e6262c577119a7f8fd598ff",
+          "recipe_set_id": "85f237c46431c2af8b1ad9818a9e3b266080c7db829c198bf8811c8c02ee1bc0",
+          "runtime_instance_id": "db7721e10f74939467b536686e5ef68ea5d93acd03ed00d3faebe0741bfb78e2",
+          "seed": "seed-a"
+        },
+        "a_rebuilt": {
+          "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+          "image_digests": {
+            "apache/kafka:3.8.0": {
+              "image_id": "sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069",
+              "repo_digests": [
+                "apache/kafka@sha256:c89f315cff967322c5d2021434b32271393cb193aa7ec1d43e97341924e57069"
+              ],
+              "services": [
+                "kafka"
+              ]
+            },
+            "curlimages/curl:latest": {
+              "image_id": "sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777",
+              "repo_digests": [
+                "curlimages/curl@sha256:58adaa4e8dca9c988bae2aba4ab3434a0bb2da16bbe3f92dec39ec7785166777"
+              ],
+              "services": [
+                "_curlimages-curl"
+              ]
+            },
+            "localstack/localstack:3.8": {
+              "image_id": "sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7",
+              "repo_digests": [
+                "localstack/localstack@sha256:b279c01f4cfb8f985a482e4014cabc1e2697b9d7a6c8c8db2e40f4d9f93687c7"
+              ],
+              "services": [
+                "localstack"
+              ]
+            },
+            "mongo:6.0": {
+              "image_id": "sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac",
+              "repo_digests": [
+                "mongo@sha256:8b6d8f5bbedb25cb73517b65cf99f13aeb75ad5b157a56c479287a840bbad3ac"
+              ],
+              "services": [
+                "mongo-cfa"
+              ]
+            },
+            "mysql:8.0": {
+              "image_id": "sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b",
+              "repo_digests": [
+                "mysql@sha256:7dcddc01f13bab2f15cde676d44d01f61fc9f99fe7785e86196dfc07d358ae2b"
+              ],
+              "services": [
+                "mysql-apidb-stub",
+                "mysql-fts",
+                "mysql-payouts",
+                "mysql-xbalances"
+              ]
+            },
+            "mysql:8.4@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb": {
+              "image_id": "sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb",
+              "repo_digests": [
+                "mysql@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb"
+              ],
+              "services": [
+                "s2p-mysql"
+              ]
+            },
+            "postgres:15-alpine": {
+              "image_id": "sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b",
+              "repo_digests": [
+                "postgres@sha256:fe0737ba566a2c5b2a28f34433c0a423261900ec17b9bf7ad115e1aae7e57f1b"
+              ],
+              "services": [
+                "postgres-ledger"
+              ]
+            },
+            "python:3.12-alpine": {
+              "image_id": "sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a",
+              "repo_digests": [
+                "python@sha256:b64631e04e4920160c50fbe8d8df828f7f35f06f425cb44aa09bca53e708a35a"
+              ],
+              "services": [
+                "_python",
+                "cron-driver"
+              ]
+            },
+            "redis:7-alpine": {
+              "image_id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+              "repo_digests": [
+                "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+              ],
+              "services": [
+                "redis"
+              ]
+            },
+            "redis:7-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf": {
+              "image_id": "sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf",
+              "repo_digests": [
+                "redis@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf"
+              ],
+              "services": [
+                "s2p-redis"
+              ]
+            },
+            "redpandadata/redpanda:v24.2.18@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8": {
+              "image_id": "sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8",
+              "repo_digests": [
+                "redpandadata/redpanda@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8"
+              ],
+              "services": [
+                "s2p-kafka"
+              ]
+            },
+            "rzp-arena/api-ingress:v1-candidate": {
+              "image_id": "sha256:8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb",
+              "repo_digests": [
+                "rzp-arena/api-ingress@sha256:8a96618176b34a2881d2f89c21adc4ea4c547b3e62fe371b7638b9270db2feeb"
+              ],
+              "services": [
+                "api-ingress"
+              ]
+            },
+            "rzp-arena/asv-stub:v1-candidate": {
+              "image_id": "sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f",
+              "repo_digests": [
+                "rzp-arena/asv-stub@sha256:aa2363dae4c52802fdc1686c202c8379798d134152d69d0d44124afeb5cfdb1f"
+              ],
+              "services": [
+                "asv-stub"
+              ]
+            },
+            "rzp-arena/bankingaccounts-stub:v1-candidate": {
+              "image_id": "sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d",
+              "repo_digests": [
+                "rzp-arena/bankingaccounts-stub@sha256:d6db8d41da6113529a32eba2fc610ca1235504af7833cc9eb55f19676d15ef6d"
+              ],
+              "services": [
+                "bankingaccounts-stub"
+              ]
+            },
+            "rzp-arena/batch-sim:v1-candidate": {
+              "image_id": "sha256:bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696",
+              "repo_digests": [
+                "rzp-arena/batch-sim@sha256:bc9ce131a1ab2d64a20c3ebb763b79de3f55c183d00640f005cccb1e6e058696"
+              ],
+              "services": [
+                "batch-sim"
+              ]
+            },
+            "rzp-arena/cfa:v1-candidate": {
+              "image_id": "sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206",
+              "repo_digests": [
+                "rzp-arena/cfa@sha256:1b6cf763e003de35f69032eb1b39179a25b4dc6e76cc329a3140673712e27206"
+              ],
+              "services": [
+                "cfa-migrate",
+                "cfa-server",
+                "cfa-worker-contact",
+                "cfa-worker-fa"
+              ]
+            },
+            "rzp-arena/dcs-stub:v1-candidate": {
+              "image_id": "sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b",
+              "repo_digests": [
+                "rzp-arena/dcs-stub@sha256:9be735d15256dacda5b8c6c5f26047e5b37ac3172f7a8011435314582b78c32b"
+              ],
+              "services": [
+                "dcs-stub"
+              ]
+            },
+            "rzp-arena/fts:v1-candidate": {
+              "image_id": "sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d",
+              "repo_digests": [
+                "rzp-arena/fts@sha256:dac4c76a4686f6f5d4d65fdccfbb5505e74e8fefd55cd1012602dd36f31a930d"
+              ],
+              "services": [
+                "fts-migrate",
+                "fts-web",
+                "fts-worker-check-transfer-status",
+                "fts-worker-default",
+                "fts-worker-fire-transfer-status-webhook",
+                "fts-worker-hv-fire-transfer-status-webhook",
+                "fts-worker-hv-initiate-transfer",
+                "fts-worker-initiate-transfer",
+                "fts-worker-rbl-check-transfer-status",
+                "fts-worker-rbl-direct-check-transfer-status",
+                "fts-worker-rbl-direct-imps-check-transfer-status",
+                "fts-worker-rbl-direct-imps-hv-initiate-transfer",
+                "fts-worker-rbl-direct-imps-initiate-transfer",
+                "fts-worker-rbl-direct-initiate-transfer",
+                "fts-worker-rbl-direct-slow-lane-initiate-transfer",
+                "fts-worker-rbl-direct-upi-check-transfer-status",
+                "fts-worker-rbl-direct-upi-initiate-transfer",
+                "fts-worker-rbl-imps-check-transfer-status",
+                "fts-worker-rbl-imps-initiate-transfer",
+                "fts-worker-rbl-initiate-transfer",
+                "fts-worker-rbl-upi-check-transfer-status",
+                "fts-worker-rbl-upi-hv-check-transfer-status",
+                "fts-worker-rbl-upi-hv-initiate-transfer",
+                "fts-worker-rbl-upi-initiate-transfer",
+                "fts-worker-retry-transfer",
+                "fts-worker-retry-transfer-preprocessor",
+                "fts-worker-retry-transfer-source-update",
+                "fts-worker-slow-lane-initiate-transfer"
+              ]
+            },
+            "rzp-arena/kong-lite:v1-candidate": {
+              "image_id": "sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f",
+              "repo_digests": [
+                "rzp-arena/kong-lite@sha256:fecb0857300d42ecf710d5e60c51ec343e59f41392a4d50e123461fdc85e6b1f"
+              ],
+              "services": [
+                "kong-lite"
+              ]
+            },
+            "rzp-arena/ledger-gate:v1-candidate": {
+              "image_id": "sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f",
+              "repo_digests": [
+                "rzp-arena/ledger-gate@sha256:2803dd3e486430ce4265c32dc2b6189af83cdcc3513076219fb0b88820c7de1f"
+              ],
+              "services": [
+                "ledger-gate"
+              ]
+            },
+            "rzp-arena/ledger:v1-candidate": {
+              "image_id": "sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361",
+              "repo_digests": [
+                "rzp-arena/ledger@sha256:878be96a5f2bbef6af7236660984547a420f27c58d0f7a88b6e5fdb74ada4361"
+              ],
+              "services": [
+                "ledger-api",
+                "ledger-migrate",
+                "ledger-scheduler",
+                "ledger-worker",
+                "ledger-worker-balance-update",
+                "ledger-worker-entry-details-create",
+                "ledger-worker-entry-details-create-pg",
+                "ledger-worker-journal-create"
+              ]
+            },
+            "rzp-arena/merchant-webhook-sink:v1-candidate": {
+              "image_id": "sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13",
+              "repo_digests": [
+                "rzp-arena/merchant-webhook-sink@sha256:75aa185ba5911093015db8348dc07066dd720b2d18d5d03e2c318c81165dcc13"
+              ],
+              "services": [
+                "merchant-webhook-sink"
+              ]
+            },
+            "rzp-arena/monolith-stub:v1-candidate": {
+              "image_id": "sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557",
+              "repo_digests": [
+                "rzp-arena/monolith-stub@sha256:7c9c6d5630e346449cb0e8286680cf3aabaf28c7c542d5ae8b38ee329fb90557"
+              ],
+              "services": [
+                "monolith-stub"
+              ]
+            },
+            "rzp-arena/mozart-sim:v1-candidate": {
+              "image_id": "sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9",
+              "repo_digests": [
+                "rzp-arena/mozart-sim@sha256:cb9ef32ebddd76eeadef1f9db16c89424e345c0fe57b2fb59d621bf72d4511c9"
+              ],
+              "services": [
+                "mozart-sim"
+              ]
+            },
+            "rzp-arena/payouts:v1-candidate": {
+              "image_id": "sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b",
+              "repo_digests": [
+                "rzp-arena/payouts@sha256:915299abaaf234dd7d8be73da9ec18c6b0554703184c6510c8516f3f6698838b"
+              ],
+              "services": [
+                "payouts-api",
+                "payouts-kafka-fts-status-updates-consumer",
+                "payouts-kafka-fts-status-updates-retry-consumer",
+                "payouts-migrate",
+                "payouts-worker-api-queue-for-async-dual-write-direct-push",
+                "payouts-worker-async-dual-write",
+                "payouts-worker-batch-submitted-merchants",
+                "payouts-worker-bulk-payouts",
+                "payouts-worker-data-consistency-checker",
+                "payouts-worker-data-consistency-event",
+                "payouts-worker-fts-async-hv-processing",
+                "payouts-worker-fts-async-processing",
+                "payouts-worker-fund-management-payout-check",
+                "payouts-worker-fund-management-payout-initiate",
+                "payouts-worker-generic-processing",
+                "payouts-worker-on-hold-payout",
+                "payouts-worker-partner-bank-hold-payouts",
+                "payouts-worker-payout-create-failure-handling",
+                "payouts-worker-payout-source-updater",
+                "payouts-worker-payout-update-failure-handling",
+                "payouts-worker-payout-usage-event-processing",
+                "payouts-worker-queued-payout",
+                "payouts-worker-rbl-banking-account-statement",
+                "payouts-worker-schedule-payout",
+                "payouts-worker-transaction-create",
+                "payouts-worker-webhook-event",
+                "payouts-worker-x-account-statement-source-event",
+                "payouts-worker-x-balance-payouts-event",
+                "payouts-worker-x-balances-balance-refresh"
+              ]
+            },
+            "rzp-arena/pricing-stub:v1-candidate": {
+              "image_id": "sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05",
+              "repo_digests": [
+                "rzp-arena/pricing-stub@sha256:8c3a9ab8c7f1061e6e2d75b935f9bf24778896a0023de0eb2f272c473605ee05"
+              ],
+              "services": [
+                "pricing-stub"
+              ]
+            },
+            "rzp-arena/shield-stub:v1-candidate": {
+              "image_id": "sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43",
+              "repo_digests": [
+                "rzp-arena/shield-stub@sha256:6be4ab588d75222e06eb63806ed1084770849f84b1143f1a25ecf7a78786bc43"
+              ],
+              "services": [
+                "shield-stub"
+              ]
+            },
+            "rzp-arena/splitz-stub:v1-candidate": {
+              "image_id": "sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a",
+              "repo_digests": [
+                "rzp-arena/splitz-stub@sha256:4fe02f7e933f83fa49554914332ba601e4c0e245e0c6d203f7027ee8703ecb3a"
+              ],
+              "services": [
+                "splitz-stub"
+              ]
+            },
+            "rzp-arena/stork-capture:v1-candidate": {
+              "image_id": "sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c",
+              "repo_digests": [
+                "rzp-arena/stork-capture@sha256:4f64515ff7ec2084c5c37a05bd418d41026797e09bdd743b315669b8b4f06d6c"
+              ],
+              "services": [
+                "stork-capture"
+              ]
+            },
+            "rzp-arena/workflow-engine:v1-candidate": {
+              "image_id": "sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0",
+              "repo_digests": [
+                "rzp-arena/workflow-engine@sha256:2ff1a64c85a4bc3640b4b2aa0f43eea56782cad6883d0ad5b11e534a439ab5c0"
+              ],
+              "services": [
+                "workflow-engine"
+              ]
+            },
+            "rzp-arena/workflow-sim:v1-candidate": {
+              "image_id": "sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96",
+              "repo_digests": [
+                "rzp-arena/workflow-sim@sha256:81780de2a0dcbbad29675138b8493daca75474d12655a7f583be3df0c0ae7d96"
+              ],
+              "services": [
+                "workflow-sim"
+              ]
+            },
+            "rzp-arena/xas-sim:v1-candidate": {
+              "image_id": "sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7",
+              "repo_digests": [
+                "rzp-arena/xas-sim@sha256:7a3a1307cf2eddfd03dae7081bf9336a9e99289fa3ea8715604683c7457aa6e7"
+              ],
+              "services": [
+                "xas-sim"
+              ]
+            },
+            "rzp-arena/xbalances:v1-candidate": {
+              "image_id": "sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f",
+              "repo_digests": [
+                "rzp-arena/xbalances@sha256:980f8333a3e906a8ed51e865fdde72c9060f92774bdf551674f3c64522733b5f"
+              ],
+              "services": [
+                "xbalances-migrate",
+                "xbalances-server",
+                "xbalances-worker"
+              ]
+            },
+            "s2p-architecture-replica/vendor-payments:20c4f4d59970471067388afea8b1d65ac39ee126-45fbf8fbbe82efd9": {
+              "image_id": "sha256:18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18",
+              "repo_digests": [
+                "s2p-architecture-replica/vendor-payments@sha256:18320563910b83abc3faf449ac9088ebd6fbb3938def64da9697677f75dc4f18"
+              ],
+              "services": [
+                "s2p-vp-source"
+              ]
+            }
+          },
+          "inputs_hash": "86423bfb9fe8fdc0deb1c633beb371cd6745190fa863c5c3cbb7da2ec7c1a6f3",
+          "profile_digest": "c6b951c21e695c64d727011f8b8cd372d14078471e6262c577119a7f8fd598ff",
+          "recipe_set_id": "85f237c46431c2af8b1ad9818a9e3b266080c7db829c198bf8811c8c02ee1bc0",
+          "seed": "seed-a"
+        },
+        "a_restarted": {
+          "boot_secs": 122.3,
+          "healthy": true,
+          "runtime_instance_id": "bf19b122ab39c6dcfbddf3dfc99830cf0c4989b10e45e4f14af26441a2096e1e",
+          "state": "running"
+        },
+        "b_after_destroy": true,
+        "b_after_recreate": true,
+        "destroy_a": {
+          "boundary": {
+            "data_dirs_left": [],
+            "destroyed": true,
+            "rc": 0,
+            "secs": 1.5
+          },
+          "containers_left": [],
+          "instance_id": "alpha-full",
+          "secs": 23.3,
+          "started_at": "2026-09-08T18:27:07Z",
+          "steps": [
+            {
+              "at": "2026-09-08T18:27:08Z",
+              "log": "01-host-bridge-stop.log",
+              "n": 1,
+              "rc": 0,
+              "secs": 0.23,
+              "step": "host-bridge-stop"
+            },
+            {
+              "at": "2026-09-08T18:27:29Z",
+              "log": "02-destroy-down.log",
+              "n": 2,
+              "rc": 0,
+              "secs": 20.19,
+              "step": "destroy-down"
+            }
+          ]
+        },
+        "registry_after_destroy": [
+          "beta-focused"
+        ],
+        "reproducible": {
+          "image_ids": {
+            "apache/kafka:3.8.0": true,
+            "curlimages/curl:latest": true,
+            "localstack/localstack:3.8": true,
+            "mongo:6.0": true,
+            "mysql:8.0": true,
+            "mysql:8.4@sha256:b3b90af2a6552ae30c266fdb7d5dd55f3afb72404bb78d37fe8a23eb857fd3fb": true,
+            "postgres:15-alpine": true,
+            "python:3.12-alpine": true,
+            "redis:7-alpine": true,
+            "redis:7-alpine@sha256:ff02b58f971e7d7d156a1267e283fcbbeee91773b6aa36c49dac28ecfe28eadf": true,
+            "redpandadata/redpanda:v24.2.18@sha256:0270951e8793c77f0dd9178d137198018fa7ffd920e5a2a3b02a050ec76195b8": true,
+            "rzp-arena/api-ingress:v1-candidate": true,
+            "rzp-arena/asv-stub:v1-candidate": true,
+            "rzp-arena/bankingaccounts-stub:v1-candidate": true,
+            "rzp-arena/batch-sim:v1-candidate": true,
+            "rzp-arena/cfa:v1-candidate": true,
+            "rzp-arena/dcs-stub:v1-candidate": true,
+            "rzp-arena/fts:v1-candidate": true,
+            "rzp-arena/kong-lite:v1-candidate": true,
+            "rzp-arena/ledger-gate:v1-candidate": true,
+            "rzp-arena/ledger:v1-candidate": true,
+            "rzp-arena/merchant-webhook-sink:v1-candidate": true,
+            "rzp-arena/monolith-stub:v1-candidate": true,
+            "rzp-arena/mozart-sim:v1-candidate": true,
+            "rzp-arena/payouts:v1-candidate": true,
+            "rzp-arena/pricing-stub:v1-candidate": true,
+            "rzp-arena/shield-stub:v1-candidate": true,
+            "rzp-arena/splitz-stub:v1-candidate": true,
+            "rzp-arena/stork-capture:v1-candidate": true,
+            "rzp-arena/workflow-engine:v1-candidate": true,
+            "rzp-arena/workflow-sim:v1-candidate": true,
+            "rzp-arena/xas-sim:v1-candidate": true,
+            "rzp-arena/xbalances:v1-candidate": true,
+            "s2p-architecture-replica/vendor-payments:20c4f4d59970471067388afea8b1d65ac39ee126-45fbf8fbbe82efd9": true
+          },
+          "inputs_hash": true,
+          "profile_digest": true,
+          "seed_epoch": true
+        }
+      },
+      "passed": true,
+      "secs": 276.6,
+      "title": "destroying A leaves B healthy; A is reproduced from its manifest (same inputs hash, profile, seed epoch and image ids) and boots again"
+    }
+  },
+  "schema_version": "m9.1",
+  "started_at": "2026-09-08T17:51:57Z",
+  "updated_at": "2026-09-08T18:32:52Z"
+}

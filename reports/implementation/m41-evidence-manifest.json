@@ -1,0 +1,179 @@
+{
+  "schema_version": "1.0",
+  "manifest_kind": "m4-direct-e2e-evidence",
+  "milestone": "M4 \u2014 Direct Current-Account, Reconciliation, and Autonomous Architecture Assurance Expansion",
+  "generated_at": "2026-09-07T11:00:06Z",
+  "git": {
+    "branch": "milestone-5-autonomous-discovery-workflows",
+    "commit": "0cb90eb5a5b152698086de06e7fc44d4f94aef9a",
+    "worktree_clean": false
+  },
+  "counts": {
+    "artifacts": 19,
+    "committed": 19,
+    "external": 0,
+    "total_bytes": 479325
+  },
+  "missing_expected": [],
+  "policy": {
+    "external_roots": [
+      "RED_LOOP/runs/"
+    ],
+    "note": "Only SHA-256 + size are recorded, never contents; run directories are git-ignored and hash-bound here. No secrets, DB volumes, gateway keys or provider tokens included."
+  },
+  "artifacts": [
+    {
+      "path": "reports/implementation/m4-direct-e2e-acceptance.json",
+      "sha256": "2d09f11fab8a481e3c74658dec9255dcc1861229a7ba1c1f0b94636f476e06de",
+      "bytes": 53305,
+      "kind": "acceptance_json",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-baseline-report.md",
+      "sha256": "c7264f37804f01d6c5fb3edfa4e8079a1573930ebb412004e1c1194c2712a02d",
+      "bytes": 17700,
+      "kind": "report",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-direct-provision.json",
+      "sha256": "2591bad715ed963b03755c78970264f2518ebc683c3e241ab8c13cd34aa9b4df",
+      "bytes": 79483,
+      "kind": "evidence_json",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-bas-ingest.json",
+      "sha256": "16193568e36617b251ede251fbb1631892e3dc68f17c6f26d0b5c6be380f9592",
+      "bytes": 63485,
+      "kind": "evidence_json",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-xas-ledger.json",
+      "sha256": "c8bb0b498faa14f0b07391e61601056126d311bd095692418efaa3edbe71063e",
+      "bytes": 35168,
+      "kind": "evidence_json",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-boundary-results.json",
+      "sha256": "22c84ad3e536ea1cb0ea4f21a1b65d45c83b60a219f2d9e257d80ed13d33eec9",
+      "bytes": 51599,
+      "kind": "evidence_json",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-assurance-run.json",
+      "sha256": "c09d4207dfac58e92e48a88762f5ff9c1fc51b80b23627695e4a3ac49a1ada74",
+      "bytes": 6754,
+      "kind": "evidence_json",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-hypothesis-lifecycle.json",
+      "sha256": "8017b17b7d0c8b603df9db9c2a8f9fab4d0bda813ae040c75c3849bbafe15197",
+      "bytes": 32436,
+      "kind": "evidence_json",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-lifecycle-validation.json",
+      "sha256": "fae7e8eb5b25492d9092187a1ff31cca587e65232f359562f8dbdae199a7b599",
+      "bytes": 3093,
+      "kind": "evidence_json",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-direct-e2e-coverage.md",
+      "sha256": "c6a70623cf0eb04c2dbee12cb0c02246c9e60eb66e110bb8273c9d0feda7ca0d",
+      "bytes": 4811,
+      "kind": "report",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-route-coverage.json",
+      "sha256": "a99bf87fd2199b12998c1f42ccb84b9b5577d49807dd299e0b7b26bc11b5c127",
+      "bytes": 5092,
+      "kind": "evidence_json",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-invariant-results.json",
+      "sha256": "4ec180bbfd06f514bef80ac526949711543409accf787bdad10bdfda73577d78",
+      "bytes": 8418,
+      "kind": "evidence_json",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-source-map.md",
+      "sha256": "ca1f7e5a7f2731f5311c1c95d6cd545d4ead92bd9984566e989245059a4e7978",
+      "bytes": 67397,
+      "kind": "report",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-decisions.md",
+      "sha256": "2ba0868544791abcab490b1b2d1a8984d1e9445ca37a8e3afbc1592f9f02d12d",
+      "bytes": 9205,
+      "kind": "report",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-known-limits.md",
+      "sha256": "7efd361af8d00d60524e0d1e34fde6f8cce82be08a313edc2855ad9ca9064c6d",
+      "bytes": 7664,
+      "kind": "report",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-contradictions.md",
+      "sha256": "ef854acb49e1647daee0cd2ebbfe8b05331406cc043c92a31f420fbbbbefd271",
+      "bytes": 7237,
+      "kind": "report",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-fidelity-matrix.csv",
+      "sha256": "8c1a0cf95dbe25e0c99ca40a3f6a64ab11040ddcf1438325cc452d27c4c4a881",
+      "bytes": 5489,
+      "kind": "fidelity_matrix",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "reports/implementation/m4-direct-e2e-soak.json",
+      "sha256": "00205fcdfb408013e4fa5bc7c3f05d473146855fbe4b148cdd9a9f4fc7dcf53e",
+      "bytes": 11395,
+      "kind": "soak_run",
+      "committed": true,
+      "committed_expected": true
+    },
+    {
+      "path": "RED_LOOP/m4/gate-catalog.json",
+      "sha256": "e8fdc655cdee4391024307cbd8506f3447cd488c12ad58c67578182c5655b3b2",
+      "bytes": 9594,
+      "kind": "gate_catalog",
+      "committed": true,
+      "committed_expected": true
+    }
+  ],
+  "self_sha256": "8410229d6d8e0e9f7525f6d92bafb89fd7851f9f63dfcd20243301fa81b28197"
+}

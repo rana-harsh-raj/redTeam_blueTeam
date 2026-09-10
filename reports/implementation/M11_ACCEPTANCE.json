@@ -1,0 +1,654 @@
+{
+ "milestone": "M11",
+ "schema": "m11.acceptance.v1",
+ "evaluated_at": "2026-09-09T19:20:08.932880+00:00",
+ "accepted": true,
+ "gates_passed": 17,
+ "gates_total": 17,
+ "gates": [
+  {
+   "id": "M11-01",
+   "desc": "real edge gateway (razorpay/edge Kong + terraform-kong prod-api routes) is the DEFAULT ingress of every derived profile",
+   "pass": true,
+   "detail": {
+    "default_trust_path": "real",
+    "routes": 18,
+    "instance": "m11-real",
+    "route_hosts": {
+     "prod-api": null,
+     "payouts-ext": [
+      "payouts-ext.razorpay.com"
+     ]
+    }
+   }
+  },
+  {
+   "id": "M11-02",
+   "desc": "highest feasible monolith auth path: boot attempt recorded with exact blockers; the monolith replacement verifies the gateway passport (kid edgev2) end to end",
+   "pass": true,
+   "detail": {
+    "blockers": [
+     "no PHP interpreter / composer on this machine (and no credential-free base image carries them: see images)",
+     "18 of 23 private composer VCS repositories are not readable with the current identity (composer install cannot resolve spine, upi-clients, trace, oauth, ufh-sdk-php, dcs-php-sdk ...)",
+     "3 of 3 Dockerfile base images are not pullable without registry credentials (harbor.razorpay.com/razorpay/rzp-docker-image-inventory-multi-arch:rzp-legacy-image-api-curl-v4, harbor.razorpay.com/razorpay/rzp-docker-image-inventory-multi-arch:rzp-legacy-image-php-8.2-opencensus, harbor.razorpay.com/razorpay/rzp-docker-image-inventory-multi-arch:rzp-legacy-image-php-8.2-api-web-v4)"
+    ],
+    "identity_propagation": "PASS",
+    "api_key_auth": "PASS"
+   }
+  },
+  {
+   "id": "M11-03",
+   "desc": "real Shield (razorpay/shield, APP_MODE=rzpxprod) replaces shield-stub and decides payouts",
+   "pass": true,
+   "detail": {
+    "shield_rules": "PASS"
+   }
+  },
+  {
+   "id": "M11-04",
+   "desc": "banking-accounts real where feasible (Direct merchants); account-service blocked with an exact reason",
+   "pass": true,
+   "detail": {
+    "bas_lookup": "PASS",
+    "asv": "razorpay/account-service is not a granted repository (clone 404 for this identity) -- no source to run."
+   }
+  },
+  {
+   "id": "M11-05",
+   "desc": "real Workflow service (razorpay/workflows + Cadence) on LOCAL infrastructure drives maker-checker",
+   "pass": true,
+   "detail": {
+    "maker_checker": "PASS",
+    "placement": [
+     "local (this machine)",
+     "local (this machine)"
+    ]
+   }
+  },
+  {
+   "id": "M11-06",
+   "desc": "every remaining substitute in the real variant carries a precise external blocker",
+   "pass": true,
+   "detail": {
+    "remaining": [
+     "api-ingress",
+     "asv-stub",
+     "batch-sim",
+     "cron-driver",
+     "dcs-stub",
+     "edge-bridge",
+     "ledger-gate",
+     "merchant-webhook-sink",
+     "monolith-stub",
+     "mozart-sim",
+     "mysql-apidb-stub",
+     "pricing-stub",
+     "splitz-stub",
+     "stork-capture",
+     "xas-sim"
+    ],
+    "unlisted": []
+   }
+  },
+  {
+   "id": "M11-07",
+   "desc": "canonical journey suite passes on the real variant (0 FAIL; every BLOCKED names its dependency)",
+   "pass": true,
+   "detail": {
+    "real": {
+     "run_dir": "/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T173309Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T182343Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T184745Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T185350Z",
+     "total": 125,
+     "PASS": 113,
+     "FAIL": null,
+     "BLOCKED": 10,
+     "EXPECTED_FAILURE": 2
+    },
+    "failed": [],
+    "blocked": [
+     [
+      "journey:bulk-payouts/success",
+      "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+     ],
+     [
+      "journey:bulk-payouts/failure",
+      "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+     ],
+     [
+      "journey:bulk-payouts/idempotency",
+      "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+     ],
+     [
+      "journey:bulk-payouts/cancel_or_reverse",
+      "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+     ],
+     [
+      "journey:bulk-payouts/async_state",
+      "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+     ],
+     [
+      "journey:shared-ingress/batch",
+      "batch-sim reachable on the arena network (compose service `batch-sim`, profile `substitutes`; the M9 critical-payouts / "
+     ],
+     [
+      "journey:cross-domain-s2p/success",
+      "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+     ],
+     [
+      "journey:cross-domain-s2p/failure",
+      "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+     ],
+     [
+      "journey:cross-domain-s2p/idempotency",
+      "journey:cross-domain-s2p/success must run first (it establishes the tax payment and remittance)"
+     ],
+     [
+      "journey:cross-domain-s2p/async_state",
+      "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+     ]
+    ]
+   }
+  },
+  {
+   "id": "M11-08",
+   "desc": "differential run (same suite on the substitute variant) exists and every difference is investigated (0 OPEN)",
+   "pass": true,
+   "detail": {
+    "journeys": 125,
+    "identical": 108,
+    "with_differences": 17,
+    "open": 0,
+    "substitute": {
+     "run_dir": "/Users/rana.singh/.twin-factory/instances/m11-sub/journeys/run-20260909T173302Z,/Users/rana.singh/.twin-factory/instances/m11-sub/journeys/run-20260909T182343Z",
+     "total": 125,
+     "PASS": 107,
+     "FAIL": 5,
+     "BLOCKED": 12
+    }
+   }
+  },
+  {
+   "id": "M11-09",
+   "desc": "snapshot, fidelity labels, recipes (pinned SHAs), locks and profiles updated: current snapshot verifies and carries the trust-path recipes",
+   "pass": true,
+   "detail": {
+    "snapshot": "8a52779f05275ea3aaa375e1e44678a33257e02a7ff6a2f4bb7bbf8723cb4db4",
+    "verify": {
+     "snapshot_id": "8a52779f05275ea3aaa375e1e44678a33257e02a7ff6a2f4bb7bbf8723cb4db4",
+     "id_recomputes": true,
+     "manifest_ok": true,
+     "changed_or_missing": []
+    },
+    "recipes": 119,
+    "substitute_profile_services": 98
+   }
+  },
+  {
+   "id": "M11-10",
+   "desc": "clean checkout reproduces the real-variant twin (create + build + start from a fresh clone)",
+   "pass": true,
+   "detail": {
+    "ok": true,
+    "state": "running",
+    "trust_path": "real",
+    "checkout": "/var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/m11-clean-c5uiuljh",
+    "instance_id": "m11-clean",
+    "secs": 241.8,
+    "healthy": true
+   }
+  },
+  {
+   "id": "M11-11",
+   "desc": "resource usage measured (local CPU/memory/disk/build/boot; remote recorded as not used with the reason)",
+   "pass": true,
+   "detail": {
+    "files": [
+     "reports/implementation/m11/resources-m11-real.json",
+     "reports/implementation/m11/resources-m11-sub.json"
+    ]
+   }
+  },
+  {
+   "id": "M11-12",
+   "desc": "historical tags unchanged (every pre-M11 tag still points at its recorded commit)",
+   "pass": true,
+   "detail": {
+    "checked": 11,
+    "mismatch": []
+   }
+  },
+  {
+   "id": "M11-13",
+   "desc": "clean working tree at evaluation (only this acceptance record may differ)",
+   "pass": true,
+   "detail": {
+    "dirty": []
+   }
+  },
+  {
+   "id": "M11-14",
+   "desc": "secrets hygiene: no generated secret values tracked; instance secrets materialized uid 10001 / 0400",
+   "pass": true,
+   "detail": {
+    "tracked_secret_files": [],
+    "secrets_manifest_count": 176
+   }
+  },
+  {
+   "id": "M11-15",
+   "desc": "immutable images: every trust-path image is recorded by image id in the instance manifest and the factory cache",
+   "pass": true,
+   "detail": {
+    "banking-accounts-api": "sha256:00e4285aa644",
+    "cadence": "sha256:cbe9ea2edd91",
+    "edge-kong": "sha256:7718235ac0b1",
+    "shield-web": "sha256:202a9b63f2c9",
+    "workflows-api": "sha256:0336f9583e71",
+    "workflows-worker": "sha256:0336f9583e71"
+   }
+  },
+  {
+   "id": "M11-16",
+   "desc": "twinfactory / archkit / api-ingress contract / controlplane suites green (controlplane package unchanged)",
+   "pass": true,
+   "detail": {
+    "twinfactory": {
+     "rc": 0,
+     "tail": "----------------------------------------------------------------------\nRan 33 tests in 3.212s\n\nOK (skipped=1)\n"
+    },
+    "archkit": {
+     "rc": 0,
+     "tail": "aning up <HTTPError 403: 'Forbidden'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n----------------------------------------------------------------------\nRan 25 tests in 2.460s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 49213)>\n"
+    },
+    "api-ingress-contract": {
+     "rc": 0,
+     "tail": "rror 401: 'Unauthorized'>\n  _warnings.warn(self.warn_message, ResourceWarning)\n...........\n----------------------------------------------------------------------\nRan 13 tests in 0.880s\n\nOK\n<sys>:0: ResourceWarning: unclosed <socket.socket fd=3, family=2, type=1, proto=0, laddr=('127.0.0.1', 49223)>\n"
+    },
+    "controlplane": {
+     "rc": 0,
+     "tail": "----------------------------------------------------------------------\nRan 37 tests in 0.596s\n\nOK\n"
+    }
+   }
+  },
+  {
+   "id": "M11-17",
+   "desc": "controlplane package unchanged since campaign-m10-control-plane",
+   "pass": true,
+   "detail": {
+    "diff_stat": ""
+   }
+  }
+ ],
+ "snapshot_id": "8a52779f05275ea3aaa375e1e44678a33257e02a7ff6a2f4bb7bbf8723cb4db4",
+ "real_instance": "m11-real",
+ "substitute_instance": "m11-sub",
+ "real_run": {
+  "run_dir": "/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T173309Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T182343Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T184745Z,/Users/rana.singh/.twin-factory/instances/m11-real/journeys/run-20260909T185350Z",
+  "total": 125,
+  "PASS": 113,
+  "EXPECTED_FAILURE": 2,
+  "BLOCKED": 10,
+  "failed": [],
+  "blocked": [
+   [
+    "journey:bulk-payouts/success",
+    "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+   ],
+   [
+    "journey:bulk-payouts/failure",
+    "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+   ],
+   [
+    "journey:bulk-payouts/idempotency",
+    "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+   ],
+   [
+    "journey:bulk-payouts/cancel_or_reverse",
+    "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+   ],
+   [
+    "journey:bulk-payouts/async_state",
+    "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+   ],
+   [
+    "journey:shared-ingress/batch",
+    "batch-sim reachable on the arena network (compose service `batch-sim`, profile `substitutes`; the M9 critical-payouts / "
+   ],
+   [
+    "journey:cross-domain-s2p/success",
+    "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   ],
+   [
+    "journey:cross-domain-s2p/failure",
+    "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   ],
+   [
+    "journey:cross-domain-s2p/idempotency",
+    "journey:cross-domain-s2p/success must run first (it establishes the tax payment and remittance)"
+   ],
+   [
+    "journey:cross-domain-s2p/async_state",
+    "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   ]
+  ],
+  "ids": [
+   "journey:shared-payouts/success",
+   "journey:shared-payouts/failure",
+   "journey:shared-payouts/pending",
+   "journey:shared-payouts/duplicate",
+   "journey:shared-payouts/idempotency",
+   "journey:shared-payouts/cancel_or_reverse",
+   "journey:shared-payouts/concurrency",
+   "journey:shared-payouts/accounting",
+   "journey:shared-payouts/restart",
+   "journey:shared-payouts/async_state",
+   "journey:direct-payouts/success",
+   "journey:direct-payouts/failure",
+   "journey:direct-payouts/pending",
+   "journey:direct-payouts/failure_pending",
+   "journey:direct-payouts/statement_first",
+   "journey:direct-payouts/duplicate",
+   "journey:direct-payouts/cancel_or_reverse",
+   "journey:direct-payouts/idempotency",
+   "journey:direct-payouts/async_state",
+   "journey:queued-low-balance/success",
+   "journey:queued-low-balance/failure",
+   "journey:queued-low-balance/idempotency",
+   "journey:queued-low-balance/cancel_or_reverse",
+   "journey:queued-low-balance/async_state",
+   "journey:scheduled-payouts/success",
+   "journey:scheduled-payouts/failure",
+   "journey:scheduled-payouts/idempotency",
+   "journey:scheduled-payouts/cancel_or_reverse",
+   "journey:scheduled-payouts/async_state",
+   "journey:scheduled-payouts/cancel_via_dashboard",
+   "journey:failure-reversal-cancellation/success",
+   "journey:failure-reversal-cancellation/failure",
+   "journey:failure-reversal-cancellation/pending",
+   "journey:failure-reversal-cancellation/idempotency",
+   "journey:failure-reversal-cancellation/cancel_or_reverse",
+   "journey:failure-reversal-cancellation/webhook",
+   "journey:failure-reversal-cancellation/async_state",
+   "journey:pricing-free-payouts/success",
+   "journey:pricing-free-payouts/failure",
+   "journey:pricing-free-payouts/idempotency",
+   "journey:pricing-free-payouts/cancel_or_reverse",
+   "journey:pricing-free-payouts/accounting",
+   "journey:pricing-free-payouts/async_state",
+   "journey:pricing-free-payouts/free_payout",
+   "journey:webhooks/success",
+   "journey:webhooks/failure",
+   "journey:webhooks/duplicate",
+   "journey:webhooks/idempotency",
+   "journey:webhooks/webhook",
+   "journey:webhooks/async_state",
+   "journey:approval-workflow/success",
+   "journey:approval-workflow/failure",
+   "journey:approval-workflow/idempotency",
+   "journey:approval-workflow/cancel_or_reverse",
+   "journey:approval-workflow/concurrency",
+   "journey:approval-workflow/maker_checker",
+   "journey:approval-workflow/n_of_m",
+   "journey:approval-workflow/async_state",
+   "journey:bulk-payouts/success",
+   "journey:bulk-payouts/failure",
+   "journey:bulk-payouts/idempotency",
+   "journey:bulk-payouts/cancel_or_reverse",
+   "journey:bulk-payouts/async_state",
+   "journey:idempotency-retries/success",
+   "journey:idempotency-retries/failure",
+   "journey:idempotency-retries/retry",
+   "journey:idempotency-retries/duplicate",
+   "journey:idempotency-retries/idempotency",
+   "journey:idempotency-retries/async_state",
+   "journey:accounting/success",
+   "journey:accounting/failure",
+   "journey:accounting/idempotency",
+   "journey:accounting/cancel_or_reverse",
+   "journey:accounting/async_state",
+   "journey:on-hold/success",
+   "journey:on-hold/failure",
+   "journey:on-hold/idempotency",
+   "journey:on-hold/cancel_or_reverse",
+   "journey:on-hold/async_state",
+   "journey:fetch-list/success",
+   "journey:fetch-list/failure",
+   "journey:fetch-list/idempotency",
+   "journey:fetch-list/async_state",
+   "journey:source-updates/success",
+   "journey:source-updates/failure",
+   "journey:source-updates/idempotency",
+   "journey:source-updates/async_state",
+   "journey:async-workers/success",
+   "journey:async-workers/failure",
+   "journey:async-workers/idempotency",
+   "journey:async-workers/async_state",
+   "journey:beneficiary-fund-accounts/success",
+   "journey:beneficiary-fund-accounts/failure",
+   "journey:beneficiary-fund-accounts/idempotency",
+   "journey:beneficiary-fund-accounts/async_state",
+   "journey:beneficiary-fund-accounts/tenant_isolation",
+   "journey:beneficiary-fund-accounts/cfa_api",
+   "journey:shared-ingress/success",
+   "journey:shared-ingress/failure",
+   "journey:shared-ingress/idempotency",
+   "journey:shared-ingress/restart",
+   "journey:shared-ingress/async_state",
+   "journey:shared-ingress/tenant_isolation",
+   "journey:shared-ingress/direct",
+   "journey:shared-ingress/approval",
+   "journey:shared-ingress/batch",
+   "journey:shared-ingress/admin",
+   "journey:cross-domain-s2p/success",
+   "journey:cross-domain-s2p/failure",
+   "journey:cross-domain-s2p/idempotency",
+   "journey:cross-domain-s2p/async_state",
+   "journey:trust-path/idempotency",
+   "journey:trust-path/maker_checker",
+   "journey:trust-path/api_key_auth",
+   "journey:trust-path/identity_propagation",
+   "journey:trust-path/dashboard_session",
+   "journey:trust-path/internal_app_auth",
+   "journey:trust-path/route_authorization",
+   "journey:trust-path/cross_merchant_denial",
+   "journey:trust-path/fund_account_ownership",
+   "journey:trust-path/s2s_identity",
+   "journey:trust-path/restart_cache_invalidation",
+   "journey:trust-path/shield_rules",
+   "journey:trust-path/bas_lookup",
+   "journey:trust-path/payouts_ext_direct"
+  ]
+ },
+ "substitute_run": {
+  "run_dir": "/Users/rana.singh/.twin-factory/instances/m11-sub/journeys/run-20260909T173302Z,/Users/rana.singh/.twin-factory/instances/m11-sub/journeys/run-20260909T182343Z",
+  "total": 125,
+  "PASS": 107,
+  "EXPECTED_FAILURE": 1,
+  "BLOCKED": 12,
+  "FAIL": 5,
+  "failed": [
+   "journey:trust-path/idempotency",
+   "journey:trust-path/maker_checker",
+   "journey:trust-path/identity_propagation",
+   "journey:trust-path/route_authorization",
+   "journey:trust-path/cross_merchant_denial"
+  ],
+  "blocked": [
+   [
+    "journey:bulk-payouts/success",
+    "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+   ],
+   [
+    "journey:bulk-payouts/failure",
+    "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+   ],
+   [
+    "journey:bulk-payouts/idempotency",
+    "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+   ],
+   [
+    "journey:bulk-payouts/cancel_or_reverse",
+    "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+   ],
+   [
+    "journey:bulk-payouts/async_state",
+    "batch-sim is not reachable on the arena network -- compose service absent (docker ps: (no batch-sim container in the com"
+   ],
+   [
+    "journey:shared-ingress/batch",
+    "batch-sim reachable on the arena network (compose service `batch-sim`, profile `substitutes`; the M9 critical-payouts / "
+   ],
+   [
+    "journey:cross-domain-s2p/success",
+    "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   ],
+   [
+    "journey:cross-domain-s2p/failure",
+    "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   ],
+   [
+    "journey:cross-domain-s2p/idempotency",
+    "journey:cross-domain-s2p/success must run first (it establishes the tax payment and remittance)"
+   ],
+   [
+    "journey:cross-domain-s2p/async_state",
+    "S2P stack inside the arena (RED_LOOP/m7/s2p_stack.py up) with api-ingress relaying to vp-source"
+   ],
+   [
+    "journey:trust-path/restart_cache_invalidation",
+    "the REAL trust path (ARENA_TRUST_PATH=real): Kong Admin API credential store + Shield rule API"
+   ],
+   [
+    "journey:trust-path/payouts_ext_direct",
+    "the REAL edge gateway (ARENA_INGRESS_IMPL=edge-kong): kong-lite has no payouts-ext service/host routing"
+   ]
+  ],
+  "ids": [
+   "journey:shared-payouts/success",
+   "journey:shared-payouts/failure",
+   "journey:shared-payouts/pending",
+   "journey:shared-payouts/duplicate",
+   "journey:shared-payouts/idempotency",
+   "journey:shared-payouts/cancel_or_reverse",
+   "journey:shared-payouts/concurrency",
+   "journey:shared-payouts/accounting",
+   "journey:shared-payouts/restart",
+   "journey:shared-payouts/async_state",
+   "journey:direct-payouts/success",
+   "journey:direct-payouts/failure",
+   "journey:direct-payouts/pending",
+   "journey:direct-payouts/failure_pending",
+   "journey:direct-payouts/statement_first",
+   "journey:direct-payouts/duplicate",
+   "journey:direct-payouts/cancel_or_reverse",
+   "journey:direct-payouts/idempotency",
+   "journey:direct-payouts/async_state",
+   "journey:queued-low-balance/success",
+   "journey:queued-low-balance/failure",
+   "journey:queued-low-balance/idempotency",
+   "journey:queued-low-balance/cancel_or_reverse",
+   "journey:queued-low-balance/async_state",
+   "journey:scheduled-payouts/success",
+   "journey:scheduled-payouts/failure",
+   "journey:scheduled-payouts/idempotency",
+   "journey:scheduled-payouts/cancel_or_reverse",
+   "journey:scheduled-payouts/async_state",
+   "journey:scheduled-payouts/cancel_via_dashboard",
+   "journey:failure-reversal-cancellation/success",
+   "journey:failure-reversal-cancellation/failure",
+   "journey:failure-reversal-cancellation/pending",
+   "journey:failure-reversal-cancellation/idempotency",
+   "journey:failure-reversal-cancellation/cancel_or_reverse",
+   "journey:failure-reversal-cancellation/webhook",
+   "journey:failure-reversal-cancellation/async_state",
+   "journey:pricing-free-payouts/success",
+   "journey:pricing-free-payouts/failure",
+   "journey:pricing-free-payouts/idempotency",
+   "journey:pricing-free-payouts/cancel_or_reverse",
+   "journey:pricing-free-payouts/accounting",
+   "journey:pricing-free-payouts/async_state",
+   "journey:pricing-free-payouts/free_payout",
+   "journey:webhooks/success",
+   "journey:webhooks/failure",
+   "journey:webhooks/duplicate",
+   "journey:webhooks/idempotency",
+   "journey:webhooks/webhook",
+   "journey:webhooks/async_state",
+   "journey:approval-workflow/success",
+   "journey:approval-workflow/failure",
+   "journey:approval-workflow/idempotency",
+   "journey:approval-workflow/cancel_or_reverse",
+   "journey:approval-workflow/concurrency",
+   "journey:approval-workflow/maker_checker",
+   "journey:approval-workflow/n_of_m",
+   "journey:approval-workflow/async_state",
+   "journey:bulk-payouts/success",
+   "journey:bulk-payouts/failure",
+   "journey:bulk-payouts/idempotency",
+   "journey:bulk-payouts/cancel_or_reverse",
+   "journey:bulk-payouts/async_state",
+   "journey:idempotency-retries/success",
+   "journey:idempotency-retries/failure",
+   "journey:idempotency-retries/retry",
+   "journey:idempotency-retries/duplicate",
+   "journey:idempotency-retries/idempotency",
+   "journey:idempotency-retries/async_state",
+   "journey:accounting/success",
+   "journey:accounting/failure",
+   "journey:accounting/idempotency",
+   "journey:accounting/cancel_or_reverse",
+   "journey:accounting/async_state",
+   "journey:on-hold/success",
+   "journey:on-hold/failure",
+   "journey:on-hold/idempotency",
+   "journey:on-hold/cancel_or_reverse",
+   "journey:on-hold/async_state",
+   "journey:fetch-list/success",
+   "journey:fetch-list/failure",
+   "journey:fetch-list/idempotency",
+   "journey:fetch-list/async_state",
+   "journey:source-updates/success",
+   "journey:source-updates/failure",
+   "journey:source-updates/idempotency",
+   "journey:source-updates/async_state",
+   "journey:async-workers/success",
+   "journey:async-workers/failure",
+   "journey:async-workers/idempotency",
+   "journey:async-workers/async_state",
+   "journey:beneficiary-fund-accounts/success",
+   "journey:beneficiary-fund-accounts/failure",
+   "journey:beneficiary-fund-accounts/idempotency",
+   "journey:beneficiary-fund-accounts/async_state",
+   "journey:beneficiary-fund-accounts/tenant_isolation",
+   "journey:beneficiary-fund-accounts/cfa_api",
+   "journey:shared-ingress/success",
+   "journey:shared-ingress/failure",
+   "journey:shared-ingress/idempotency",
+   "journey:shared-ingress/restart",
+   "journey:shared-ingress/async_state",
+   "journey:shared-ingress/tenant_isolation",
+   "journey:shared-ingress/direct",
+   "journey:shared-ingress/approval",
+   "journey:shared-ingress/batch",
+   "journey:shared-ingress/admin",
+   "journey:cross-domain-s2p/success",
+   "journey:cross-domain-s2p/failure",
+   "journey:cross-domain-s2p/idempotency",
+   "journey:cross-domain-s2p/async_state",
+   "journey:trust-path/idempotency",
+   "journey:trust-path/maker_checker",
+   "journey:trust-path/api_key_auth",
+   "journey:trust-path/identity_propagation",
+   "journey:trust-path/dashboard_session",
+   "journey:trust-path/internal_app_auth",
+   "journey:trust-path/route_authorization",
+   "journey:trust-path/cross_merchant_denial",
+   "journey:trust-path/fund_account_ownership",
+   "journey:trust-path/s2s_identity",
+   "journey:trust-path/restart_cache_invalidation",
+   "journey:trust-path/shield_rules",
+   "journey:trust-path/bas_lookup",
+   "journey:trust-path/payouts_ext_direct"
+  ]
+ },
+ "git_head": "534a58c309f737c60bf7b44fdc92836ca9f135e3"
+}

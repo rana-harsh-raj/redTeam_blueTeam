@@ -1,0 +1,85 @@
+# M11 arena overlay for the REAL razorpay/workflows service (APP_ENV=arena; pkg/config loads default.toml then this
+# file; env prefix WORKFLOWS_). Arena hosts + generated credentials only; everything else is the repository default.
+[app]
+    appEnv = "arena"
+    port = ":9400"
+    metricsPort = ":9401"
+
+[db]
+    dialect = "mysql"
+    protocol = "tcp"
+    url = "mysql-workflows"
+    port = "3306"
+    username = "root"
+    password = "{{SECRET.mysql_workflows_root_password}}"
+    sslMode = "false"
+    name = "workflows"
+
+[cadenceWorker]
+    domain = "payouts"
+    [cadenceWorker.domainConfigs.payouts]
+        hostPort = "cadence:7933"
+        domain = "payouts"
+        taskList = "payouts-approval"
+        createNonexistentDomain = true
+        maxTaskLists = 5
+        workflowType = "approval"
+    [cadenceWorker.domainConfigs.relay]
+        hostPort = "cadence:7933"
+    [cadenceWorker.domainConfigs.asl]
+        hostPort = "cadence:7933"
+    [cadenceWorker.domainConfigs.spr]
+        hostPort = "cadence:7933"
+
+[clients]
+    # payouts' WfCreate names service "payouts_live" for every callback (pkg/workflow/workflow_create.go ServiceCallback+LiveMode);
+    # internal/client/types/common/callback.go resolves it here: host + url_path, Basic username:password
+    [clients.payouts_live]
+        host = "http://payouts-api:9400"
+        username = "rzp_live"
+        password = "{{SECRET.auth_workflow_payouts}}"
+    [clients.payouts_test]
+        host = "http://payouts-api:9400"
+        username = "rzp_live"
+        password = "{{SECRET.auth_workflow_payouts}}"
+    [clients.rx_live]
+        host = "http://api-ingress:8080/v1"
+        username = "rzp_live"
+        password = "{{SECRET.app_workflows}}"
+    [clients.rx_test]
+        host = "http://api-ingress:8080/v1"
+        username = "rzp_live"
+        password = "{{SECRET.app_workflows}}"
+    [clients.dcs]
+        # stub=true is NOT viable for the worker: NewStubService.GetDcsService() returns nil and the approval workflow
+        # dereferences dcs.GetServer().Service() (internal/client/types/approval/workflow.go:217 -> goutils dcs/server
+        # service.go:107 nil pointer panic in Cadence). The real DCS client runs against the twin's dcs-stub, reached as
+        # https://dcs-live.dev.razorpay.in (network alias + twin CA, secrets/gen-tls.sh; APP_ENV=dev selects that host).
+        stub = false
+        username = "workflows"
+        password = "{{SECRET.auth_dcs_workflows}}"
+
+[auth]
+    # payouts [workflow.auth] (config/templates/base/payouts/arena.toml) presents workflow:<auth_payouts_workflows>
+    [auth.payouts]
+        username = "workflow"
+        password = "{{TRUST.workflow_auth_pass}}"
+    [auth.api]
+        username = "api"
+        password = "{{SECRET.auth_monolith_shared}}"
+    # F-M11-1: cmd/api/main.go accepts credentials.VendorPayments on every Twirp service but config/default.toml has no
+    # [auth.vendorPayments] block; the zero-value slot {username "", password ""} matches an ANONYMOUS request in
+    # hooks.Auth (isClientAllowed("") == true, "" == ""). The twin fills the slot (value = twin secret; production value unknown).
+    [auth.vendorPayments]
+        username = "vendor_payments"
+        password = "{{SECRET.auth_workflows_vendor_payments}}"
+
+[log]
+    level = "info"
+
+[tracing]
+    disabled = true
+
+[SplitzConfig]
+    mock = true
+    enabled = true

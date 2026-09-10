@@ -1,0 +1,115 @@
+# This file contains all holiday data
+
+#holiday list for banking type
+
+# Holiday list for IDFC
+[holiday.channel.idfc.mode.neft.date.2026-04-01]
+	description = "Financial Year Closing"
+[holiday.channel.idfc.mode.neft.date.2026-01-26]
+	description = "Republic Day"
+[holiday.channel.idfc.mode.neft.date.2026-08-15]
+	description = "Independence Day"
+[holiday.channel.idfc.mode.neft.date.2026-10-02]
+	description = "Mahatma Gandhi Jayanti"
+
+[holiday.channel.idfc.mode.rtgs.date.2026-04-01]
+	description = "Financial Year Closing"
+[holiday.channel.idfc.mode.rtgs.date.2026-01-26]
+	description = "Republic Day"
+[holiday.channel.idfc.mode.rtgs.date.2026-08-15]
+	description = "Independence Day"
+[holiday.channel.idfc.mode.rtgs.date.2026-10-02]
+	description = "Mahatma Gandhi Jayanti"
+
+# Holiday list for ICICI
+[holiday.channel.icici.mode.neft.date.2026-01-26]
+	description = "Republic Day"
+[holiday.channel.icici.mode.neft.date.2026-04-01]
+	description = "Financial Year Closing"
+[holiday.channel.icici.mode.neft.date.2026-08-15]
+	description = "Independence Day"
+[holiday.channel.icici.mode.neft.date.2026-10-02]
+	description = "Mahatma Gandhi Jayanti"
+[holiday.channel.icici.mode.neft.date.2026-12-25]
+	description = "Christmas"
+
+[holiday.channel.icici.mode.rtgs.date.2026-01-26]
+	description = "Republic Day"
+[holiday.channel.icici.mode.rtgs.date.2026-04-01]
+	description = "Financial Year Closing"
+[holiday.channel.icici.mode.rtgs.date.2026-08-15]
+	description = "Independence Day"
+[holiday.channel.icici.mode.rtgs.date.2026-10-02]
+	description = "Mahatma Gandhi Jayanti"
+[holiday.channel.icici.mode.rtgs.date.2026-12-25]
+	description = "Christmas"
+
+##YESBANK Holiday List
+# No special holidays , Holidays only on weekend (Sun ,2nd and 4th Sat)
+[holiday.channel.yesbank.mode.neft.date.2026-04-01]
+	description = "Financial Year Closing"
+[holiday.channel.yesbank.mode.neft.date.2026-01-26]
+	description = "Republic Day"
+[holiday.channel.yesbank.mode.neft.date.2026-08-15]
+	description = "Independence Day"
+[holiday.channel.yesbank.mode.neft.date.2026-10-02]
+    description = "Mahatma Gandhi Jayanti"
+	
+[holiday.channel.yesbank.mode.rtgs.date.2026-04-01]
+	description = "Financial Year Closing"
+[holiday.channel.yesbank.mode.rtgs.date.2026-01-26]
+	description = "Republic Day"
+[holiday.channel.yesbank.mode.rtgs.date.2026-08-15]
+	description = "Independence Day"
+[holiday.channel.yesbank.mode.rtgs.date.2026-10-02]
+	description = "Mahatma Gandhi Jayanti"
+
+##AXIS Holiday List
+[holiday.channel.axis.mode.neft.date.2026-04-01]
+	description = "Financial Year Closing"
+[holiday.channel.axis.mode.neft.date.2026-01-26]
+	description = "Republic Day"
+[holiday.channel.axis.mode.neft.date.2026-08-15]
+	description = "Independence Day"
+[holiday.channel.axis.mode.neft.date.2026-10-02]
+	description = "Mahatma Gandhi Jayanti"
+
+[holiday.channel.axis.mode.rtgs.date.2026-04-01]
+    description = "Financial Year Closing"
+[holiday.channel.axis.mode.rtgs.date.2026-01-26]
+    description = "Republic Day"
+[holiday.channel.axis.mode.rtgs.date.2026-08-15]
+    description = "Independence Day"
+[holiday.channel.axis.mode.rtgs.date.2026-10-02]
+    description = "Mahatma Gandhi Jayanti"
+
+
+## RBL Holiday List
+[holiday.channel.rbl.mode.neft.date.2026-04-01]
+	description = "Financial Year Closing"
+[holiday.channel.rbl.mode.neft.date.2026-01-26]
+	description = "Republic Day"
+[holiday.channel.rbl.mode.neft.date.2026-08-15]
+	description = "Independence Day"
+[holiday.channel.rbl.mode.neft.date.2026-10-02]
+	description = "Mahatma Gandhi Jayanti"
+[holiday.channel.rbl.mode.neft.date.2026-12-25]
+	description = "Christmas"
+
+[holiday.channel.rbl.mode.rtgs.date.2026-04-01]
+	description = "Financial Year Closing"
+[holiday.channel.rbl.mode.rtgs.date.2026-01-26]
+	description = "Republic Day"
+[holiday.channel.rbl.mode.rtgs.date.2026-08-15]
+	description = "Independence Day"
+[holiday.channel.rbl.mode.rtgs.date.2026-10-02]
+	description = "Mahatma Gandhi Jayanti"
+[holiday.channel.rbl.mode.rtgs.date.2026-12-25]
+	description = "Christmas"
+
+	
+## SLICE Holiday List
+[holiday.channel.slice.mode.neft.date.2026-04-01]
+	description = "Financial Year Closing"
+[holiday.channel.slice.mode.rtgs.date.2026-04-01]
+	description = "Financial Year Closing"

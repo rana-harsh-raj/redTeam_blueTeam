@@ -1,0 +1,500 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "dcs/kv/v1/kv.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "KVService"
+    }
+  ],
+  "schemes": [
+    "https"
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/v1/kv/audit": {
+      "post": {
+        "summary": "GetAuditHistory is used to get the audit history of a key",
+        "operationId": "KVService_GetAuditHistory",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetAuditHistoryResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetAuditHistoryRequest"
+            }
+          }
+        ],
+        "tags": [
+          "KVService"
+        ]
+      }
+    },
+    "/v1/kv/entity": {
+      "post": {
+        "summary": "GetEntityAggregate gets all the data for an entity in all domains\nTODO: aggregate query for only one type of query pattern is allowed at present\nothers support will follow with some long term solution with a columnar storage later",
+        "operationId": "KVService_GetEntityAggregate",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetEntityAggregateResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetEntityAggregateRequest"
+            }
+          }
+        ],
+        "tags": [
+          "KVService"
+        ]
+      }
+    },
+    "/v1/kv/get": {
+      "post": {
+        "summary": "Get gets a list of keys's values This is like a graphql request\nthan a restapi's single resource GET. Clients can specify partial objects\nby using field masks",
+        "operationId": "KVService_Get",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1GetResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1GetRequest"
+            }
+          }
+        ],
+        "tags": [
+          "KVService"
+        ]
+      }
+    },
+    "/v1/kv/patch": {
+      "post": {
+        "summary": "Patch is used to change few fields of an object in one request\nIf you wish to replace the complete object in the kv store, use Put",
+        "operationId": "KVService_Patch",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PatchResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PatchRequest"
+            }
+          }
+        ],
+        "tags": [
+          "KVService"
+        ]
+      }
+    },
+    "/v1/kv/put": {
+      "post": {
+        "summary": "Put adds or replace a key with a value",
+        "operationId": "KVService_Put",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1PutResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "body",
+            "in": "body",
+            "required": true,
+            "schema": {
+              "$ref": "#/definitions/v1PutRequest"
+            }
+          }
+        ],
+        "tags": [
+          "KVService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1Action": {
+      "type": "string",
+      "enum": [
+        "PUT",
+        "PATCH",
+        "GET",
+        "GET_AUDIT"
+      ],
+      "default": "PUT",
+      "title": "Action taken, get, put, patch"
+    },
+    "v1AuditLog": {
+      "type": "object",
+      "properties": {
+        "changeBy": {
+          "type": "string",
+          "title": "change_by store who made the change"
+        },
+        "changeReason": {
+          "type": "string",
+          "title": "change_reason is used to log the reason for change"
+        },
+        "changeApprovedBy": {
+          "type": "string",
+          "title": "change_approved_by log who approved the change"
+        },
+        "changeValue": {
+          "type": "string",
+          "format": "byte",
+          "title": "change_value stores the value of the change\ndo not send this field, overwritten by the kv server"
+        },
+        "serviceName": {
+          "type": "string",
+          "title": "service_name is the name of the service from where the call was made\nto configuration service\ndo not send this field, overwritten by the kv server"
+        },
+        "action": {
+          "$ref": "#/definitions/v1Action",
+          "title": "action is used to find if the change was put or patch\ndo not send this field, overwritten by the kv server"
+        },
+        "createdTime": {
+          "type": "string",
+          "format": "date-time",
+          "title": "created_time at which the log was created"
+        }
+      },
+      "title": "AuditLog for logging the metadata associated with the change"
+    },
+    "v1Field": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        }
+      },
+      "title": "Field represent the field of the object"
+    },
+    "v1GetAuditHistoryRequest": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/definitions/v1Key",
+          "title": "key for which the audit is needed"
+        },
+        "count": {
+          "type": "string",
+          "format": "int64",
+          "title": "count represent the number of audit logs needed\nfrom latest to oldest"
+        }
+      },
+      "title": "GetAuditHistoryRequest is the request for getting audit history"
+    },
+    "v1GetAuditHistoryResponse": {
+      "type": "object",
+      "properties": {
+        "auditLogs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1AuditLog"
+          },
+          "title": "audit_logs return the list of audit logs\nfrom latest to oldest oreder"
+        }
+      },
+      "title": "GetAuditHistoryResponse is the response for audit history"
+    },
+    "v1GetEntityAggregateRequest": {
+      "type": "object",
+      "properties": {
+        "entity": {
+          "type": "string",
+          "title": "entity is same the entity in the Key above"
+        },
+        "entityId": {
+          "type": "string",
+          "title": "entity_id is the same entity_id as in the Key above"
+        }
+      },
+      "title": "GetEntityAggregateRequest is an"
+    },
+    "v1GetEntityAggregateResponse": {
+      "type": "object",
+      "properties": {
+        "kvs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1KeyValue"
+          },
+          "title": "kvs is the list of key-value pairs\nresponse for the get request"
+        }
+      },
+      "title": "GetEntityAggregateResponse returns the entity aggregate response"
+    },
+    "v1GetRequest": {
+      "type": "object",
+      "properties": {
+        "queries": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Query"
+          },
+          "title": "queries is the list of keys the client is interested in"
+        }
+      },
+      "title": "GetRequest gets the values for all the keys specified in querie(s)"
+    },
+    "v1GetResponse": {
+      "type": "object",
+      "properties": {
+        "kvs": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1KeyValue"
+          },
+          "title": "kvs is the list of key-value pairs\nresponse for the get request"
+        }
+      },
+      "title": "GetResponse returns the response for GET request"
+    },
+    "v1Key": {
+      "type": "object",
+      "properties": {
+        "namespace": {
+          "type": "string",
+          "title": "namespace represents an root of Key value tree\nnamespace is the top level dir under which all key-value data exist\nnamespace is: payments, capital, razorpayx\nexamples:\ngithub.com/razorpay/config-proto/payments\ngithub.com/razorpay/config-proto/capital\ngithub.com/razorpay/config-proto/razorpayx"
+        },
+        "domain": {
+          "type": "string",
+          "title": "domain represents the domain in the namespace\ndomain is: refund, settlement, terminal\nexamples:\ngithub.com/razorpay/config-proto/payments/refund\ngithub.com/razorpay/config-proto/capital/settlement\ngithub.com/razorpay/config-proto/platform/stork"
+        },
+        "entity": {
+          "type": "string",
+          "title": "entity represents the entity in that domain\nentity: merchant, email\nexamples:\ngithub.com/razorpay/config-proto/payments/refund/merchant\ngithub.com/razorpay/config-proto/payments/settlement/merchant\ngithub.com/razorpay/config-proto/platform/stork/email"
+        },
+        "entityId": {
+          "type": "string",
+          "title": "entity_id represents a unique key to identify a entity\nexamples:\nentity_id: 67186GHAYZP_mid_swiggy\n/payments/refund/merchant/67186GHAYZP_mid_swiggy"
+        },
+        "objectName": {
+          "type": "string",
+          "description": "dir: github.com/razorpay/config-proto/payments/refund/merchant/transfer_settings.proto\n  object_name: TransferSettings\n\nNot Allowed objects:\n  dir: github.com/razorpay/config-proto/payments/refund/merchant/nested/features.proto\n  object_name: Nested/Features",
+          "title": "object_name represents the name of the object in the key\nit is the name of the message in the proto file\nwe support only one level of proto files under entity at present\nAllowed objects:\n  dir: github.com/razorpay/config-proto/payments/refund/merchant/features.proto\n  object_name: Features"
+        }
+      },
+      "title": "Key represents a key in the key value store\nKey=/namespace/domain/entity/entity_id/object_name\nexamples:\n/payments/refund/merchant/67186GHAYZP_mid_swiggy/refund_flags\n/payments/refund/merchant/67186GHAYZP_mid_swiggy/transfer_settings"
+    },
+    "v1KeyValue": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/definitions/v1Key",
+          "title": "key is the key in the key-value store"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte",
+          "title": "value is the object for the key in the key-value store"
+        }
+      },
+      "title": "KeyValue keeps the key and value together, used for response"
+    },
+    "v1PatchRequest": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/definitions/v1Key",
+          "title": "key is the key, to put into the key-value store"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte",
+          "title": "value contains the partial filled object as bytes"
+        },
+        "fieldmasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Field"
+          },
+          "title": "fieldmasks define the list of fields that are required to be patched in the object"
+        },
+        "auditLog": {
+          "$ref": "#/definitions/v1AuditLog",
+          "title": "audit_log stores the information related to the change"
+        }
+      },
+      "title": "PatchRequest sets the complete object at a key in kv store\nIt is used to create the new resource or replace the existing resource\nIt is idempotent in nature: if you PUT an object twice, it should have\nno additional effect. Two PUT requests would result same thing"
+    },
+    "v1PatchResponse": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/definitions/v1Key",
+          "title": "key that was modified"
+        },
+        "count": {
+          "type": "string",
+          "format": "int64",
+          "title": "count tells the number of fields\nthat was modified in the key"
+        }
+      },
+      "title": "PatchResponse is the response for a PatchRequest"
+    },
+    "v1PutRequest": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/definitions/v1Key",
+          "title": "key is the key, to put into the key-value store"
+        },
+        "value": {
+          "type": "string",
+          "format": "byte",
+          "title": "value is the bytes of the key object in the key-value store"
+        },
+        "auditLog": {
+          "$ref": "#/definitions/v1AuditLog",
+          "title": "audit_log stores the information related to the change"
+        }
+      },
+      "title": "PutRequest sets the complete object at a key in kv store\nIt is used to create the new resource or replace the existing resource\nIt is idempotent in nature: if you PUT an object twice, it should have\nno additional effect. Two PUT requests would result same thing"
+    },
+    "v1PutResponse": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/definitions/v1Key",
+          "title": "key that was modified"
+        }
+      },
+      "title": "PutResponse is the response for a PutRequest"
+    },
+    "v1Query": {
+      "type": "object",
+      "properties": {
+        "key": {
+          "$ref": "#/definitions/v1Key",
+          "title": "key is the key in the key-value store"
+        },
+        "fieldmasks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1Field"
+          },
+          "title": "fieldmasks can be used by clients to get the partial data back in response\ninstead of getting the complete object. specify the fields you are interested in\nthe object as a list of strings"
+        }
+      },
+      "title": "Query is the single get request for one key"
+    }
+  },
+  "securityDefinitions": {
+    "bearer": {
+      "type": "apiKey",
+      "description": "Authentication token, prefixed by bearer: bearer \u003ctoken\u003e",
+      "name": "Authorization",
+      "in": "header"
+    }
+  },
+  "security": [
+    {
+      "bearer": []
+    }
+  ],
+  "externalDocs": {
+    "description": "protobuf definitions for dcs",
+    "url": "https://github.com/razorpay/proto/tree/dcs_protos/dcs"
+  }
+}

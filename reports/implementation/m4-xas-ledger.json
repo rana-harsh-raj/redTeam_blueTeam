@@ -1,0 +1,1031 @@
+{
+  "milestone": "M4-T11 XAS substitute + Ledger Direct accounting",
+  "generated_at": "2026-09-06T20:07:05Z",
+  "tested_commit": "79e166a61cf9ca5dbc7a141e401dc25bb7096867",
+  "arena": {
+    "compose_project": "env2_compose",
+    "network": "rzp-arena",
+    "kong": "http://127.0.0.1:18080"
+  },
+  "merchant": {
+    "campaign_id": "m4-t11-xas",
+    "merchant_id": "ARENAD85474858",
+    "balance_id": "ARENADB5474858",
+    "account_number": "2323000085474858",
+    "fts_fund_account_id": "974858",
+    "channel": "rbl"
+  },
+  "basd_id": "ARENADS5474858",
+  "run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m4-xas-ledger-20260906T200536Z",
+  "steps": {
+    "a": {
+      "passed": 4,
+      "total": 4,
+      "ok": true,
+      "fidelity": "real ledger; substitute XAS account registration"
+    },
+    "b": {
+      "passed": 2,
+      "total": 2,
+      "ok": true,
+      "fidelity": "real payout; source event: real (PS x_account_statement_source_event producer -> SQS -> xas-sim consumer)"
+    },
+    "c": {
+      "passed": 9,
+      "total": 9,
+      "ok": true,
+      "fidelity": "statement: substitute_injected (no real worker row for this UTR; harness inserted the worker-shaped row into the REAL PS table); matching: substitute (xas-sim); PS link + ledger journal: real"
+    },
+    "d": {
+      "passed": 5,
+      "total": 5,
+      "ok": true,
+      "fidelity": "replay via real queue + substitute + real PS + real ledger; layer2: application ValidateJournalExist(transactor_id, transactor_event) -> ErrRecordAlreadyExist (fresh idempotency_key per publish, as the monolith's Uuid::uuid1, so layer1 idempotency table cannot dedup)"
+    },
+    "e": {
+      "passed": 5,
+      "total": 5,
+      "ok": true,
+      "fidelity": "real failed payout; credit statement substitute_injected; source event: substitute_injected (PS producer produced nothing within 24s; exact PS schema enqueued on the REAL queue); PS reversal real; ledger real"
+    },
+    "f": {
+      "passed": 4,
+      "total": 4,
+      "ok": true,
+      "fidelity": "real PS route /v1/payouts/transfer_status_webhook (FTS credential) + real VerifyPayoutFailedTransaction; xas-sim substitute; statement substitute_injected"
+    },
+    "g": {
+      "passed": 4,
+      "total": 4,
+      "ok": true,
+      "fidelity": "real payout + real PS link; DA gap reproduced by the substitute emitter (per-merchant feature payout_service_txn_recon)"
+    },
+    "h": {
+      "passed": 3,
+      "total": 3,
+      "ok": true,
+      "fidelity": "real payout; statement substitute_injected; xas-sim substitute decision"
+    }
+  },
+  "checks": [
+    {
+      "step": "a",
+      "name": "7 DA parent accounts ACTIVATED",
+      "ok": true,
+      "detail": [
+        [
+          "Direct Cash Account Legacy",
+          "ACTIVATED"
+        ],
+        [
+          "Direct Commission Income Account",
+          "ACTIVATED"
+        ],
+        [
+          "Direct Commission Receivable Account",
+          "ACTIVATED"
+        ],
+        [
+          "Direct Merchant Balance Account",
+          "ACTIVATED"
+        ],
+        [
+          "Direct Merchant Cash Account",
+          "ACTIVATED"
+        ],
+        [
+          "Direct Output GST Account",
+          "ACTIVATED"
+        ],
+        [
+          "Direct Vendor Payable Account",
+          "ACTIVATED"
+        ]
+      ]
+    },
+    {
+      "step": "a",
+      "name": "6 DA sub-accounts with entities.banking_account_stmt_detail_id=[basd_<id>]",
+      "ok": true,
+      "detail": [
+        [
+          "Direct Commission Income Account - ARENAD85474858 - basd_ARENADS5474858",
+          "ACTIVATED",
+          "{\"account_type\": [\"cash\"], \"fund_account_type\": [\"merchant_da\"], \"banking_account_stmt_detail_id\": [\"basd_ARENADS5474858\"]}"
+        ],
+        [
+          "Direct Commission Receivable Account - ARENAD85474858 - basd_ARENADS5474858",
+          "ACTIVATED",
+          "{\"account_type\": [\"receivable\"], \"fund_account_type\": [\"merchant_da\"], \"banking_account_stmt_detail_id\": [\"basd_ARENADS5474858\"]}"
+        ],
+        [
+          "Direct Merchant Balance Account - ARENAD85474858 - basd_ARENADS5474858",
+          "ACTIVATED",
+          "{\"account_type\": [\"payable\"], \"fund_account_type\": [\"merchant_da\"], \"banking_account_stmt_detail_id\": [\"basd_ARENADS5474858\"]}"
+        ],
+        [
+          "Direct Merchant Cash Account - ARENAD85474858 - basd_ARENADS5474858",
+          "ACTIVATED",
+          "{\"account_type\": [\"cash\"], \"fund_account_type\": [\"merchant_da\"], \"banking_account_stmt_detail_id\": [\"basd_ARENADS5474858\"]}"
+        ],
+        [
+          "Direct Output GST Account - ARENAD85474858 - basd_ARENADS5474858",
+          "ACTIVATED",
+          "{\"account_type\": [\"payable\"], \"fund_account_type\": [\"da_gst\"], \"banking_account_stmt_detail_id\": [\"basd_ARENADS5474858\"]}"
+        ],
+        [
+          "Direct Vendor Payable Account - ARENAD85474858 - basd_ARENADS5474858",
+          "ACTIVATED",
+          "{\"account_type\": [\"payable\"], \"fund_account_type\": [\"merchant_da_vendor\"], \"banking_account_stmt_detail_id\": [\"basd_ARENADS5474858\"]}"
+        ]
+      ]
+    },
+    {
+      "step": "a",
+      "name": "discovery: every DA role resolves to >=1 sub-account; roles with same entities are split by account_category",
+      "ok": true,
+      "detail": {
+        "MerchantBalance": [
+          [
+            "Direct Merchant Balance Account - ARENAD85474858 - basd_ARENADS5474858",
+            "liability"
+          ]
+        ],
+        "VendorPayable": [
+          [
+            "Direct Vendor Payable Account - ARENAD85474858 - basd_ARENADS5474858",
+            "liability"
+          ]
+        ],
+        "CommissionIncome": [
+          [
+            "Direct Commission Income Account - ARENAD85474858 - basd_ARENADS5474858",
+            "revenue"
+          ],
+          [
+            "Direct Merchant Cash Account - ARENAD85474858 - basd_ARENADS5474858",
+            "asset"
+          ]
+        ],
+        "OutputGST": [
+          [
+            "Direct Output GST Account - ARENAD85474858 - basd_ARENADS5474858",
+            "liability"
+          ]
+        ],
+        "CommissionReceivable": [
+          [
+            "Direct Commission Receivable Account - ARENAD85474858 - basd_ARENADS5474858",
+            "asset"
+          ]
+        ],
+        "MerchantCash": [
+          [
+            "Direct Commission Income Account - ARENAD85474858 - basd_ARENADS5474858",
+            "revenue"
+          ],
+          [
+            "Direct Merchant Cash Account - ARENAD85474858 - basd_ARENADS5474858",
+            "asset"
+          ]
+        ]
+      }
+    },
+    {
+      "step": "a",
+      "name": "pre-existing Shared-style sub-accounts (T09 provisioner) do not match DA discovery",
+      "ok": true,
+      "detail": [
+        {
+          "account_name": "Merchant Balance Account - ARENAD85474858",
+          "entities": "{\"account_type\": [\"payable\"], \"fund_account_type\": [\"merchant_va\"], \"banking_account_id\": [\"bacc_ARENADA5474858\"]}"
+        },
+        {
+          "account_name": "Vendor Payable Account - ARENAD85474858",
+          "entities": "{\"account_type\": [\"payable\"], \"fund_account_type\": [\"merchant_va_vendor\"], \"banking_account_id\": [\"bacc_ARENADA5474858\"]}"
+        },
+        {
+          "account_name": "Commission Income Account - ARENAD85474858",
+          "entities": "{\"account_type\": [\"cash\"], \"fund_account_type\": [\"merchant_va\"], \"banking_account_id\": [\"bacc_ARENADA5474858\"]}"
+        },
+        {
+          "account_name": "Output GST Account - ARENAD85474858",
+          "entities": "{\"account_type\": [\"payable\"], \"fund_account_type\": [\"va_gst\"], \"banking_account_id\": [\"bacc_ARENADA5474858\"]}"
+        }
+      ]
+    },
+    {
+      "step": "b",
+      "name": "Direct payout processed through kong",
+      "ok": true,
+      "detail": {
+        "id": "TYsQMcLKVuoLO4",
+        "status": "processed",
+        "merchant_id": "ARENAD85474858",
+        "balance_id": "ARENADB5474858",
+        "amount": "11400",
+        "fees": "200",
+        "tax": "36",
+        "utr": "ARENA0000000275",
+        "gateway_ref_no": null,
+        "transaction_id": null,
+        "fts_transfer_id": "275",
+        "channel": "rbl",
+        "mode": "IMPS",
+        "purpose": "payout",
+        "fee_type": null,
+        "updated_at": "1788725140",
+        "failure_reason": null,
+        "status_code": null
+      }
+    },
+    {
+      "step": "b",
+      "name": "source event consumed by xas-sim from SQS x_account_statement_source_event (schema mismatch logged)",
+      "ok": true,
+      "detail": {
+        "fidelity": "real",
+        "event": {
+          "entity_id": "TYsQMcLKVuoLO4",
+          "entity_type": "payout",
+          "utr": "ARENA0000000275",
+          "event_create_timestamp": 0,
+          "event_id": "TYsQPSfSFZXAbc",
+          "gateway_reference_number": "",
+          "cms_reference_number": "",
+          "status": "processed",
+          "mode": "IMPS",
+          "amount": 11400,
+          "balance_id": "ARENADB5474858",
+          "_schema": {
+            "event_created_timestamp_present": true,
+            "event_create_timestamp_present": false,
+            "event_created_timestamp_value": 1788725140,
+            "note": "XAS persists event_create_timestamp only; PS field name differs -> 0 stored (production mismatch reproduced)"
+          },
+          "_transport": "sqs:x_account_statement_source_event",
+          "id": "XASSEAE01558CC",
+          "created_at": 1788725140,
+          "updated_at": 1788725140,
+          "_replays": 0
+        }
+      }
+    },
+    {
+      "step": "c",
+      "name": "xas-sim linked the debit statement to the payout (entity_type=payout)",
+      "ok": true,
+      "detail": [
+        {
+          "id": "ARENABS0640052",
+          "entity_id": "TYsQMcLKVuoLO4",
+          "entity_type": "payout",
+          "channel": "rbl",
+          "merchant_id": "ARENAD85474858",
+          "account_number": "2323000085474858",
+          "bank_transaction_id": "S92092189",
+          "type": "debit",
+          "utr": "ARENA0000000275",
+          "amount": 11400,
+          "currency": "INR",
+          "description": "ARENA0000000275-IMPS/PAYOUT",
+          "category": "customer_initiated",
+          "bank_serial_number": "962463",
+          "balance": 9995000,
+          "balance_currency": "INR",
+          "transaction_date": 1788719400,
+          "posted_date": 1788725021,
+          "gateway_ref_number": "",
+          "created_at": 1788725141,
+          "updated_at": 1788725141,
+          "fetched_at_nano": 1788725141683759104,
+          "_source": "ps_table_mirror"
+        }
+      ]
+    },
+    {
+      "step": "c",
+      "name": "xas-sim POSTed the 9-field payout_update to monolith-stub and got 200",
+      "ok": true,
+      "detail": [
+        {
+          "at": 1788725141.684007,
+          "trigger": "cdc_update",
+          "url": "http://monolith-stub:8080/v1/banking_account_statement/payout_update",
+          "request": {
+            "bas_id": "ARENABS0640052",
+            "entity_id": "TYsQMcLKVuoLO4",
+            "entity_type": "payout",
+            "merchant_id": "ARENAD85474858",
+            "transaction_date": 1788719400,
+            "converted_from_external": false,
+            "utr": "ARENA0000000275",
+            "grn": "",
+            "cms_ref_no": "S92092189"
+          },
+          "status": 200,
+          "response": {
+            "status": "success"
+          }
+        }
+      ]
+    },
+    {
+      "step": "c",
+      "name": "REAL PS UpdatePayoutAfterBASRecon set payouts.transaction_id = bas id",
+      "ok": true,
+      "detail": {
+        "id": "TYsQMcLKVuoLO4",
+        "status": "processed",
+        "merchant_id": "ARENAD85474858",
+        "balance_id": "ARENADB5474858",
+        "amount": "11400",
+        "fees": "200",
+        "tax": "36",
+        "utr": "ARENA0000000275",
+        "gateway_ref_no": null,
+        "transaction_id": "ARENABS0640052",
+        "fts_transfer_id": "275",
+        "channel": "rbl",
+        "mode": "IMPS",
+        "purpose": "payout",
+        "fee_type": null,
+        "updated_at": "1788725141",
+        "failure_reason": null,
+        "status_code": null
+      }
+    },
+    {
+      "step": "c",
+      "name": "monolith-stub emitter published da_payout_processed + da_payout_processed_recon via SNS->SQS journal_create",
+      "ok": true,
+      "detail": [
+        [
+          "da_payout_processed",
+          "sns:api-ledger-journal-create-live->sqs:journal_create",
+          null
+        ],
+        [
+          "da_payout_processed_recon",
+          "sns:api-ledger-journal-create-live->sqs:journal_create",
+          null
+        ]
+      ]
+    },
+    {
+      "step": "c",
+      "name": "REAL ledger journal rows da_payout_processed + da_payout_processed_recon exist for pout_<id>",
+      "ok": true,
+      "detail": [
+        "da_payout_processed",
+        "da_payout_processed_recon"
+      ]
+    },
+    {
+      "step": "c",
+      "name": "entries balanced (sum debit == sum credit) for both journals",
+      "ok": true,
+      "detail": [
+        [
+          "da_payout_processed",
+          11600.0,
+          11600.0
+        ],
+        [
+          "da_payout_processed_recon",
+          11400.0,
+          11400.0
+        ]
+      ]
+    },
+    {
+      "step": "c",
+      "name": "every entry account is one of the merchant's 6 DA sub-accounts",
+      "ok": true,
+      "detail": {
+        "used": [
+          [
+            "Direct Commission Income Account - ARENAD85474858 - basd_ARENADS5474858",
+            "credit",
+            "164.000000"
+          ],
+          [
+            "Direct Output GST Account - ARENAD85474858 - basd_ARENADS5474858",
+            "credit",
+            "36.000000"
+          ],
+          [
+            "Direct Vendor Payable Account - ARENAD85474858 - basd_ARENADS5474858",
+            "credit",
+            "11400.000000"
+          ],
+          [
+            "Direct Commission Receivable Account - ARENAD85474858 - basd_ARENADS5474858",
+            "debit",
+            "200.000000"
+          ],
+          [
+            "Direct Merchant Balance Account - ARENAD85474858 - basd_ARENADS5474858",
+            "debit",
+            "11400.000000"
+          ],
+          [
+            "Direct Merchant Cash Account - ARENAD85474858 - basd_ARENADS5474858",
+            "credit",
+            "11400.000000"
+          ],
+          [
+            "Direct Vendor Payable Account - ARENAD85474858 - basd_ARENADS5474858",
+            "debit",
+            "11400.000000"
+          ]
+        ]
+      }
+    },
+    {
+      "step": "c",
+      "name": "amount-sized entries hit the ledger_config roles (Balance->VendorPayable; VendorPayable->MerchantCash)",
+      "ok": true,
+      "detail": null
+    },
+    {
+      "step": "c",
+      "name": "(transactor_id, transactor_event) unique for the merchant",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "step": "d",
+      "name": "replayed source event deduplicated on (event_id, entity_type): one stored row, _replays incremented",
+      "ok": true,
+      "detail": [
+        {
+          "entity_id": "TYsQMcLKVuoLO4",
+          "entity_type": "payout",
+          "utr": "ARENA0000000275",
+          "event_create_timestamp": 0,
+          "event_id": "TYsQPSfSFZXAbc",
+          "gateway_reference_number": "",
+          "cms_reference_number": "",
+          "status": "processed",
+          "mode": "IMPS",
+          "amount": 11400,
+          "balance_id": "ARENADB5474858",
+          "_schema": {
+            "event_created_timestamp_present": true,
+            "event_create_timestamp_present": false,
+            "event_created_timestamp_value": 1788725140,
+            "note": "XAS persists event_create_timestamp only; PS field name differs -> 0 stored (production mismatch reproduced)"
+          },
+          "_transport": "sqs:x_account_statement_source_event",
+          "id": "XASSEAE01558CC",
+          "created_at": 1788725140,
+          "updated_at": 1788725140,
+          "_replays": 1
+        }
+      ]
+    },
+    {
+      "step": "d",
+      "name": "replayed statement + event: no second outbound payout_update (xas-sim dedupe/unchanged-row guard)",
+      "ok": true,
+      "detail": {
+        "before": 1,
+        "after": 1,
+        "link_audit": [
+          {
+            "kind": "PayoutSourceEnrichmentComplete",
+            "at": 1788725141.6837857,
+            "statement_id": "ARENABS0640052",
+            "source_event_id": "XASSEAE01558CC",
+            "entity_type": "payout",
+            "entity_id": "TYsQMcLKVuoLO4",
+            "changed": true,
+            "converted_from_external": false
+          },
+          {
+            "kind": "StatementAlreadyLinkedToSameEntity",
+            "at": 1788725147.8696525,
+            "statement_id": "ARENABS0640052",
+            "entity_id": "TYsQMcLKVuoLO4",
+            "source_event_id": "XASSEAE01558CC"
+          },
+          {
+            "kind": "PayoutSourceEnrichmentComplete",
+            "at": 1788725147.8696692,
+            "statement_id": "ARENABS0640052",
+            "source_event_id": "XASSEAE01558CC",
+            "entity_type": "payout",
+            "entity_id": "TYsQMcLKVuoLO4",
+            "changed": false,
+            "converted_from_external": false
+          }
+        ]
+      }
+    },
+    {
+      "step": "d",
+      "name": "PS answered the replayed payout_update 200 (transaction_id already set -> PayoutTransactionIDAlreadyUpdated) and transaction_id unchanged",
+      "ok": true,
+      "detail": [
+        200,
+        {
+          "status": "success"
+        },
+        "{\"status\": \"success\"}\n"
+      ]
+    },
+    {
+      "step": "d",
+      "name": "no duplicate journal rows after replay (still 2 for pout_<id>)",
+      "ok": true,
+      "detail": {
+        "before": {
+          "journals": 2,
+          "outbound": 1,
+          "emits": 2,
+          "transaction_id": "ARENABS0640052"
+        },
+        "after": {
+          "journals": 2,
+          "transaction_id": "ARENABS0640052",
+          "emits": 4
+        }
+      }
+    },
+    {
+      "step": "d",
+      "name": "duplicate stopped at the ledger application layer (fresh idempotency keys, no duplicate rows)",
+      "ok": true,
+      "detail": {
+        "layer": "layer2: application ValidateJournalExist(transactor_id, transactor_event) -> ErrRecordAlreadyExist (fresh idempotency_key per publish, as the monolith's Uuid::uuid1, so layer1 idempotency table cannot dedup)",
+        "worker_log": [
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T20:05:46.690Z\",\"caller\":\"ledger_builder/core.go:42\",\"message\":\"LEDGER_BUILD_REQUEST\",\"context\":{\"reqId\":\"daesf6njehes73f3bpf0\",\"reqTenant\":\"X\"},\"ledger\":{\"request\":{\"APITransactionID\":{\"String\":\"ARENABS0640052\",\"Valid\":true},\"AdditionalParams\":{},\"Amount\":{},\"BaseAmount\":{},\"Commission\":{},\"Currency\":\"INR\",\"Identifiers\":{\"banking_account_stmt_detail_id\":\"basd_ARENADS5474858\"},\"MerchantId\":\"ARENAD85474858\",\"MoneyParams\":{},\"Notes\":{\"balance_id\":\"bal_ARENADB5474858\",\"transaction_id\":\"bas_ARENABS0640052\"},\"Tax\":{},\"Tenant\":\"X\",\"TransactionDate\":{\"Int64\":1788725141,\"Valid\":true},\"TransactorEvent\":\"da_payout_processed\",\"TransactorID\":\"pout_TYsQMcLKVuoLO4\",\"dynamic_money_params\":[]}}}",
+          "\u001b[0m\u001b[33m[0.305ms] \u001b[34;1m[rows:1]\u001b[0m INSERT INTO \"journal\" (\"id\",\"created_at\",\"updated_at\",\"merchant_id\",\"amount\",\"base_amount\",\"currency\",\"tenant\",\"transactor_id\",\"transactor_event\",\"transaction_date\",\"created_at_microsecond\",\"updated_at_microsecond\") VALUES ('ARENABS0640052',1788725146,1788725146,'ARENAD85474858','11600','11600','INR','X','pout_TYsQMcLKVuoLO4','da_payout_processed',1788725141,1788725146694927,1788725146694927)",
+          "{\"level\":\"INFO\",\"time\":\"2026-09-06T20:05:46.697Z\",\"caller\":\"job_sqs/journal_create.go:302\",\"message\":\"JOURNAL_CREATE_JOB_DATA_SUCCESS\",\"context\":{\"reqId\":\"daesf6njehes73f3bpf0\",\"reqTenant\":\"X\"},\"ledger\":{\"transactor_event\":\"da_payout_processed\",\"transactor_id\":\"pout_TYsQMcLKVuoLO4\"}}"
+        ]
+      }
+    },
+    {
+      "step": "e",
+      "name": "Direct payout failed (mozart failure)",
+      "ok": true,
+      "detail": {
+        "id": "TYsQrd1TDKNXBP",
+        "status": "failed",
+        "merchant_id": "ARENAD85474858",
+        "balance_id": "ARENADB5474858",
+        "amount": "11401",
+        "fees": "200",
+        "tax": "36",
+        "utr": null,
+        "gateway_ref_no": null,
+        "transaction_id": null,
+        "fts_transfer_id": "276",
+        "channel": "rbl",
+        "mode": "IMPS",
+        "purpose": "payout",
+        "fee_type": null,
+        "updated_at": "1788725167",
+        "failure_reason": "",
+        "status_code": "INVALID_ACCOUNT_NUMBER"
+      }
+    },
+    {
+      "step": "e",
+      "name": "xas-sim linked the credit statement as payout_reversal",
+      "ok": true,
+      "detail": [
+        {
+          "id": "ARENABS2876405",
+          "entity_id": "TYsQrd1TDKNXBP",
+          "entity_type": "payout_reversal",
+          "channel": "rbl",
+          "merchant_id": "ARENAD85474858",
+          "account_number": "2323000085474858",
+          "bank_transaction_id": "S1TDKNXBP",
+          "type": "credit",
+          "utr": "RETd1TDKNXBP",
+          "amount": 11401,
+          "currency": "INR",
+          "description": "RETd1TDKNXBP-IMPS/PAYOUT",
+          "category": "customer_initiated",
+          "bank_serial_number": "747669",
+          "balance": 9995000,
+          "balance_currency": "INR",
+          "transaction_date": 1788719400,
+          "posted_date": 1788725075,
+          "gateway_ref_number": "",
+          "created_at": 1788725195,
+          "updated_at": 1788725196,
+          "fetched_at_nano": 1788725196172755968,
+          "_source": "ps_table_mirror"
+        }
+      ]
+    },
+    {
+      "step": "e",
+      "name": "REAL PS converted failed -> reversed (UpdatePayoutAfterBASRecon payout_reversal branch, core.go:7297-7318)",
+      "ok": true,
+      "detail": {
+        "id": "TYsQrd1TDKNXBP",
+        "status": "reversed",
+        "merchant_id": "ARENAD85474858",
+        "balance_id": "ARENADB5474858",
+        "amount": "11401",
+        "fees": "200",
+        "tax": "36",
+        "utr": null,
+        "gateway_ref_no": null,
+        "transaction_id": null,
+        "fts_transfer_id": "276",
+        "channel": "rbl",
+        "mode": "IMPS",
+        "purpose": "payout",
+        "fee_type": null,
+        "updated_at": "1788725196",
+        "failure_reason": "",
+        "status_code": "FAILURE"
+      }
+    },
+    {
+      "step": "e",
+      "name": "reversal row created with transaction_id = credit bas id",
+      "ok": true,
+      "detail": [
+        {
+          "id": "TYsRNzNNP0IyfK",
+          "payout_id": "TYsQrd1TDKNXBP",
+          "transaction_id": "ARENABS2876405",
+          "amount": "11601",
+          "utr": "",
+          "created_at": "1788725196"
+        }
+      ]
+    },
+    {
+      "step": "e",
+      "name": "DA emitter posted da_payout_reversed + da_payout_reversed_recon and the REAL ledger recorded them balanced",
+      "ok": true,
+      "detail": [
+        [
+          "da_payout_reversed",
+          true
+        ],
+        [
+          "da_payout_reversed_recon",
+          true
+        ]
+      ]
+    },
+    {
+      "step": "f",
+      "name": "Direct payout initiated and held at mozart",
+      "ok": true,
+      "detail": {
+        "row": {
+          "id": "TYsRPXZTww4zJw",
+          "status": "initiated",
+          "merchant_id": "ARENAD85474858",
+          "balance_id": "ARENADB5474858",
+          "amount": "11402",
+          "fees": "200",
+          "tax": "36",
+          "utr": null,
+          "gateway_ref_no": null,
+          "transaction_id": null,
+          "fts_transfer_id": "277",
+          "channel": "rbl",
+          "mode": "IMPS",
+          "purpose": "payout",
+          "fee_type": null,
+          "updated_at": "1788725198",
+          "failure_reason": null,
+          "status_code": null
+        },
+        "transfer": {
+          "id": "277",
+          "status": "INITIATED",
+          "preferred_source_account_id": "974858",
+          "source_account_id": "974858",
+          "source_account_primary_id": "974858",
+          "fund_account_id": "974858",
+          "channel": "RBL",
+          "mode": "IMPS",
+          "utr": null,
+          "sa_account_type": "direct",
+          "sa_bank_account_type": "CURRENT",
+          "attempt_id": "277"
+        }
+      }
+    },
+    {
+      "step": "f",
+      "name": "debit statement is in xas-sim as external (no source event yet)",
+      "ok": true,
+      "detail": [
+        {
+          "id": "ARENABS5620850",
+          "entity_id": "",
+          "entity_type": "external",
+          "channel": "rbl",
+          "merchant_id": "ARENAD85474858",
+          "account_number": "2323000085474858",
+          "bank_transaction_id": "S82218206",
+          "type": "debit",
+          "utr": "T11CONFTww4zJw",
+          "amount": 11402,
+          "currency": "INR",
+          "description": "T11CONFTww4zJw-IMPS/PAYOUT",
+          "category": "customer_initiated",
+          "bank_serial_number": "60844",
+          "balance": 9995000,
+          "balance_currency": "INR",
+          "transaction_date": 1788719400,
+          "posted_date": 1788725079,
+          "gateway_ref_number": "",
+          "created_at": 1788725199,
+          "updated_at": 1788725200,
+          "fetched_at_nano": 1788725200016770304,
+          "_source": "ps_table_mirror"
+        }
+      ]
+    },
+    {
+      "step": "f",
+      "name": "REAL PS consulted xas-sim GET fetch_multiple_by_reference_numbers (type=debit, utr, account_number, amount, channel)",
+      "ok": true,
+      "detail": [
+        {
+          "at": 1788725200.5792272,
+          "caller": "Go-http-client/1.1",
+          "auth_user": "payouts",
+          "request": {
+            "type": "debit",
+            "account_number": "2323000085474858",
+            "amount": "11402",
+            "channel": "rbl",
+            "utr": "T11CONFTww4zJw",
+            "gateway_reference_number": null,
+            "cms_reference_number": null
+          },
+          "matched_key": "utr",
+          "returned": 1,
+          "statement_ids": [
+            "ARENABS5620850"
+          ],
+          "entity_types": [
+            "external"
+          ]
+        },
+        {
+          "at": 1788725200.591093,
+          "caller": "Go-http-client/1.1",
+          "auth_user": "payouts",
+          "request": {
+            "type": "credit",
+            "account_number": "2323000085474858",
+            "amount": "11402",
+            "channel": "rbl",
+            "utr": "T11CONFTww4zJw",
+            "gateway_reference_number": null,
+            "cms_reference_number": null
+          },
+          "matched_key": "utr",
+          "returned": 0,
+          "statement_ids": [],
+          "entity_types": []
+        },
+        {
+          "at": 1788725200.5973766,
+          "caller": "Go-http-client/1.1",
+          "auth_user": "payouts",
+          "request": {
+            "type": "debit",
+            "account_number": "2323000085474858",
+            "amount": "11402",
+            "channel": "rbl",
+            "utr": "T11CONFTww4zJw",
+            "gateway_reference_number": null,
+            "cms_reference_number": null
+          },
+          "matched_key": "utr",
+          "returned": 1,
+          "statement_ids": [
+            "ARENABS5620850"
+          ],
+          "entity_types": [
+            "external"
+          ]
+        }
+      ]
+    },
+    {
+      "step": "f",
+      "name": "FTS `failed` webhook refused (non-2xx, PS log FAILED_PAYOUT_HAS_DEBIT_STATEMENT_NEEDS_TO_BE_REVERSED) and payout still initiated",
+      "ok": true,
+      "detail": {
+        "status": 500,
+        "body": "{\"error\":{\"code\":\"server_error\",\"description\":\"The server encountered an error. The incident has been reported to admins.\",\"step\":\"\",\"reason\":\"\",\"field\":\"\",\"source\":\"\",\"metadata\":{}}}\n",
+        "payout": {
+          "id": "TYsRPXZTww4zJw",
+          "status": "initiated",
+          "merchant_id": "ARENAD85474858",
+          "balance_id": "ARENADB5474858",
+          "amount": "11402",
+          "fees": "200",
+          "tax": "36",
+          "utr": "T11CONFTww4zJw",
+          "gateway_ref_no": null,
+          "transaction_id": null,
+          "fts_transfer_id": "277",
+          "channel": "rbl",
+          "mode": "IMPS",
+          "purpose": "payout",
+          "fee_type": null,
+          "updated_at": "1788725200",
+          "failure_reason": "arena t11 conflict",
+          "status_code": "ARENA_FAIL"
+        },
+        "ps_log": [
+          "{\"level\":\"ERROR\",\"time\":\"2026-09-06T20:06:40.598Z\",\"caller\":\"provider/logger_v1.go:79\",\"message\":\"FAILED_PAYOUT_HAS_DEBIT_STATEMENT_NEEDS_TO_BE_REVERSED\",\"context\":{\"balance_id\":{\"balance_id\":\"ARENADB5474858\"},\"commit_id\":\"\",\"env\":\"arena\",\"merchant_id\":{\"merchant_id\":\"ARENAD85474858\"},\"payout_id\":{\"",
+          "{\"level\":\"ERROR\",\"time\":\"2026-09-06T20:06:40.598Z\",\"caller\":\"provider/logger_v1.go:79\",\"message\":\"STATUS_UPDATE_FROM_TRANSFER_STATUS_WEBHOOK_FAILED\",\"context\":{\"balance_id\":{\"balance_id\":\"ARENADB5474858\"},\"commit_id\":\"\",\"env\":\"arena\",\"error\":\"failed_payout_has_debit_statement_needs_to_be_reversed: i"
+        ]
+      }
+    },
+    {
+      "step": "g",
+      "name": "Direct payout processed",
+      "ok": true,
+      "detail": {
+        "id": "TYsRX1dvspzMbH",
+        "status": "processed",
+        "merchant_id": "ARENAD85474858",
+        "balance_id": "ARENADB5474858",
+        "amount": "11403",
+        "fees": "200",
+        "tax": "36",
+        "utr": "ARENA0000000278",
+        "gateway_ref_no": null,
+        "transaction_id": null,
+        "fts_transfer_id": "278",
+        "channel": "rbl",
+        "mode": "IMPS",
+        "purpose": "payout",
+        "fee_type": null,
+        "updated_at": "1788725207",
+        "failure_reason": null,
+        "status_code": null
+      }
+    },
+    {
+      "step": "g",
+      "name": "PS still links the statement (transaction_id set) -- the gap is only the ledger leg",
+      "ok": true,
+      "detail": {
+        "id": "TYsRX1dvspzMbH",
+        "status": "processed",
+        "merchant_id": "ARENAD85474858",
+        "balance_id": "ARENADB5474858",
+        "amount": "11403",
+        "fees": "200",
+        "tax": "36",
+        "utr": "ARENA0000000278",
+        "gateway_ref_no": null,
+        "transaction_id": "ARENABS5388549",
+        "fts_transfer_id": "278",
+        "channel": "rbl",
+        "mode": "IMPS",
+        "purpose": "payout",
+        "fee_type": null,
+        "updated_at": "1788725210",
+        "failure_reason": null,
+        "status_code": null
+      }
+    },
+    {
+      "step": "g",
+      "name": "monolith-stub logged da_ledger_skipped_ps_recon and published nothing",
+      "ok": true,
+      "detail": [
+        {
+          "at": 1788725210.4755013,
+          "skipped": "da_ledger_skipped_ps_recon",
+          "merchant_id": "ARENAD85474858",
+          "entity_id": "TYsRX1dvspzMbH",
+          "entity_type": "payout",
+          "bas_id": "ARENABS5388549",
+          "features": {
+            "payout_service_enabled": true,
+            "banking": true,
+            "in_flight_reservation_enabled": true,
+            "da_ledger_journal_writes": true,
+            "payout_service_txn_recon": true
+          },
+          "note": "production gap preserved: monolith defers to PS UpdatePayoutAfterBASRecon whose ledger call is commented out"
+        }
+      ]
+    },
+    {
+      "step": "g",
+      "name": "NO DA journal rows for pout_<id> (preserved production gap: PS ledger call commented out, monolith defers)",
+      "ok": true,
+      "detail": []
+    },
+    {
+      "step": "h",
+      "name": "Direct payout processed",
+      "ok": true,
+      "detail": {
+        "id": "TYsRjPFgqxAT95",
+        "status": "processed",
+        "merchant_id": "ARENAD85474858",
+        "balance_id": "ARENADB5474858",
+        "amount": "11404",
+        "fees": "200",
+        "tax": "36",
+        "utr": "ARENA0000000279",
+        "gateway_ref_no": null,
+        "transaction_id": null,
+        "fts_transfer_id": "279",
+        "channel": "rbl",
+        "mode": "IMPS",
+        "purpose": "payout",
+        "fee_type": null,
+        "updated_at": "1788725218",
+        "failure_reason": null,
+        "status_code": null
+      }
+    },
+    {
+      "step": "h",
+      "name": "wrong-amount statement marked external, no entity link",
+      "ok": true,
+      "detail": [
+        {
+          "id": "ARENABS7440700",
+          "entity_id": "",
+          "entity_type": "external",
+          "channel": "rbl",
+          "merchant_id": "ARENAD85474858",
+          "account_number": "2323000085474858",
+          "bank_transaction_id": "S36916980",
+          "type": "debit",
+          "utr": "ARENA0000000279",
+          "amount": 11405,
+          "currency": "INR",
+          "description": "ARENA0000000279-IMPS/PAYOUT",
+          "category": "customer_initiated",
+          "bank_serial_number": "627045",
+          "balance": 9995000,
+          "balance_currency": "INR",
+          "transaction_date": 1788719400,
+          "posted_date": 1788725101,
+          "gateway_ref_number": "",
+          "created_at": 1788725221,
+          "updated_at": 1788725221,
+          "fetched_at_nano": 1788725221287237888,
+          "_source": "ps_table_mirror"
+        }
+      ]
+    },
+    {
+      "step": "h",
+      "name": "no outbound payout_update, payout.transaction_id still NULL, no journals",
+      "ok": true,
+      "detail": {
+        "outbound": [],
+        "payout": {
+          "id": "TYsRjPFgqxAT95",
+          "status": "processed",
+          "merchant_id": "ARENAD85474858",
+          "balance_id": "ARENADB5474858",
+          "amount": "11404",
+          "fees": "200",
+          "tax": "36",
+          "utr": "ARENA0000000279",
+          "gateway_ref_no": null,
+          "transaction_id": null,
+          "fts_transfer_id": "279",
+          "channel": "rbl",
+          "mode": "IMPS",
+          "purpose": "payout",
+          "fee_type": null,
+          "updated_at": "1788725218",
+          "failure_reason": null,
+          "status_code": null
+        },
+        "journals": []
+      }
+    }
+  ],
+  "all_green": true,
+  "components": {
+    "xas-sim": "substitute (contract-faithful; ENV2_COMPOSE/substitutes/xas-sim/CONTRACT.md)",
+    "monolith-stub DA emitter": "substitute (reproduces api BankingAccountStatement/Core.php:5175-5278 + Transaction/Processor/Ledger/Payout.php:235-425)",
+    "payouts": "real (accepted binary; UpdatePayoutAfterBASRecon, VerifyPayoutFailedTransaction, source-event producer)",
+    "ledger": "real (AccountAPI CreateInBulk/Activate/CreateOnEvent, journal_create worker, direct_account_x config)",
+    "fts / mozart-sim": "real fts, substitute bank",
+    "statement ingestion": "substitute_injected unless a real rbl_banking_account_statement worker row existed for the UTR (see steps.c.statement_fidelity)"
+  }
+}

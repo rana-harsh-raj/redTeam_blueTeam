@@ -1,0 +1,162 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "dcs/health/v1/health.proto",
+    "version": "version not set"
+  },
+  "tags": [
+    {
+      "name": "HealthService"
+    }
+  ],
+  "consumes": [
+    "application/json"
+  ],
+  "produces": [
+    "application/json"
+  ],
+  "paths": {
+    "/live": {
+      "get": {
+        "operationId": "HealthService_LivenessCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1LivenessResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "service",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HealthService"
+        ]
+      }
+    },
+    "/ready": {
+      "get": {
+        "operationId": "HealthService_ReadinessCheck",
+        "responses": {
+          "200": {
+            "description": "A successful response.",
+            "schema": {
+              "$ref": "#/definitions/v1ReadinessResponse"
+            }
+          },
+          "default": {
+            "description": "An unexpected error response.",
+            "schema": {
+              "$ref": "#/definitions/rpcStatus"
+            }
+          }
+        },
+        "parameters": [
+          {
+            "name": "service",
+            "in": "query",
+            "required": false,
+            "type": "string"
+          }
+        ],
+        "tags": [
+          "HealthService"
+        ]
+      }
+    }
+  },
+  "definitions": {
+    "protobufAny": {
+      "type": "object",
+      "properties": {
+        "@type": {
+          "type": "string"
+        }
+      },
+      "additionalProperties": {}
+    },
+    "rpcStatus": {
+      "type": "object",
+      "properties": {
+        "code": {
+          "type": "integer",
+          "format": "int32"
+        },
+        "message": {
+          "type": "string"
+        },
+        "details": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/protobufAny"
+          }
+        }
+      }
+    },
+    "v1LivenessResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/v1ServingStatus"
+        },
+        "statusChecks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1StatusCheck"
+          }
+        }
+      },
+      "title": "LivenessResponse"
+    },
+    "v1ReadinessResponse": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "$ref": "#/definitions/v1ServingStatus"
+        },
+        "statusChecks": {
+          "type": "array",
+          "items": {
+            "$ref": "#/definitions/v1StatusCheck"
+          }
+        }
+      },
+      "title": "ReadinessResponse"
+    },
+    "v1ServingStatus": {
+      "type": "string",
+      "enum": [
+        "SERVING_STATUS_UNKNOWN_UNSPECIFIED",
+        "SERVING_STATUS_SERVING",
+        "SERVING_STATUS_NOT_SERVING",
+        "SERVING_STATUS_SERVICE_UNKNOWN"
+      ],
+      "default": "SERVING_STATUS_UNKNOWN_UNSPECIFIED",
+      "title": "ServingStatus stores the Status code for the responses"
+    },
+    "v1StatusCheck": {
+      "type": "object",
+      "properties": {
+        "name": {
+          "type": "string"
+        },
+        "status": {
+          "type": "string"
+        }
+      },
+      "title": "StatusCheck define the name of the status check and the error message if any"
+    }
+  }
+}

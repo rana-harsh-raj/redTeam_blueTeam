@@ -1,0 +1,16 @@
+test_interrupted_audit_wrapper_is_terminated_and_waited (test_server.CLITests.test_interrupted_audit_wrapper_is_terminated_and_waited) ... ok
+test_cross_origin_and_parameters_cannot_start_runner (test_server.HTTPTests.test_cross_origin_and_parameters_cannot_start_runner) ... ok
+test_static_private_routes_forbidden (test_server.HTTPTests.test_static_private_routes_forbidden) ... ok
+test_cleanup_failure_does_not_replace_saved_success (test_server.RunnerTests.test_cleanup_failure_does_not_replace_saved_success) ... ok
+test_existing_container_never_removed (test_server.RunnerTests.test_existing_container_never_removed) ... ok
+test_previous_evidence_not_reused (test_server.RunnerTests.test_previous_evidence_not_reused) ... ok
+test_runner_exit_disagreement_fails (test_server.RunnerTests.test_runner_exit_disagreement_fails) ... ok
+test_success_saves_after_cleanup (test_server.RunnerTests.test_success_saves_after_cleanup) ... ok
+test_termination_unwinds_cleanup (test_server.RunnerTests.test_termination_unwinds_cleanup) ... ok
+test_timeout_cleans_runner_and_key (test_server.RunnerTests.test_timeout_cleans_runner_and_key) ... ok
+test_unscoped_container_name_rejected (test_server.RunnerTests.test_unscoped_container_name_rejected) ... ok
+
+----------------------------------------------------------------------
+Ran 11 tests in 0.530s
+
+OK

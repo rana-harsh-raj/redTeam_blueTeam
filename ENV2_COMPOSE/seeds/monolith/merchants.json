@@ -1,0 +1,130 @@
+{
+  "_source": "findings/20_api_monolith.md:47 (internal_merchant_fetch -> MerchantController@internalGetMerchant, route confirmed) + payouts/pkg/api/merchant_config.go (MerchantConfigFetchResponse{Merchant, MerchantDetail} DTO, exact JSON field names read directly from that file -- Merchant.Features has json tag 'feature', singular, not 'features'). Route: GET /internal/merchants/{id}.",
+  "_merchant_id_note": "ARENAM00000001/2/3 -- see seeds/dcs/merchants.json's sibling note.",
+  "_features_todo": "TODO(confirm): findings/20:258 notes the real feature-constant list has ~46 PAYOUT/FUND_ACCOUNT constants (PAYOUT_SERVICE_ENABLED, LEDGER_REVERSE_SHADOW, ENABLE_APPROVAL_VIA_OAUTH, SKIP_HOLD_FUNDS_ON_PAYOUT, BLOCK_VA_PAYOUTS, ICICI_2FA, ENABLE_IP_WHITELIST, ENABLE_IP_WHITELIST_FETCH, ...) -- only the ones this arena's golden flows are documented to need are included below.",
+  "merchants": {
+    "ARENAM00000001": {
+      "merchant": {
+        "id": "ARENAM00000001",
+        "name": "Arena Merchant One (Shared)",
+        "email": "m1@arena.test",
+        "activated": true,
+        "live": true,
+        "billing_label": "Arena Merchant One",
+        "business_banking": true,
+        "hold_funds": false,
+        "feature": [
+          "payout_service_enabled",
+          "banking"
+        ],
+        "org_id": "ARENAORG000001",
+        "created_at": 1735689600,
+        "category": "other",
+        "country_code": "IN",
+        "category2": "other",
+        "pricing_plan_id": "ARENAPLAN00001",
+        "purpose_code": "P0806"
+      },
+      "merchant_detail": {
+        "business_type": "individual",
+        "business_name": "Arena Merchant One",
+        "company_pan": "ARENA0001P",
+        "business_registered_address": "1 Arena Street",
+        "business_registered_address_l2": "",
+        "business_registered_city": "Bengaluru",
+        "business_registered_state": "Karnataka",
+        "business_registered_country": "IN",
+        "business_registered_pin": "560001",
+        "iec_code": ""
+      },
+      "account_type": "shared",
+      "channel": "",
+      "balance_id": "ARENABAL000001",
+      "fts_source_account_id": 900001,
+      "fts_fund_account_id": 900001
+    },
+    "ARENAM00000002": {
+      "merchant": {
+        "id": "ARENAM00000002",
+        "name": "Arena Merchant Two (Direct RBL)",
+        "email": "m2@arena.test",
+        "activated": true,
+        "live": true,
+        "billing_label": "Arena Merchant Two",
+        "business_banking": true,
+        "hold_funds": false,
+        "feature": [
+          "payout_service_enabled",
+          "banking",
+          "in_flight_reservation_enabled"
+        ],
+        "org_id": "ARENAORG000001",
+        "created_at": 1735689600,
+        "category": "other",
+        "country_code": "IN",
+        "category2": "other",
+        "pricing_plan_id": "ARENAPLAN00002",
+        "purpose_code": "P0806"
+      },
+      "merchant_detail": {
+        "business_type": "private_limited",
+        "business_name": "Arena Merchant Two Pvt Ltd",
+        "company_pan": "ARENA0002P",
+        "business_registered_address": "2 Arena Street",
+        "business_registered_address_l2": "",
+        "business_registered_city": "Bengaluru",
+        "business_registered_state": "Karnataka",
+        "business_registered_country": "IN",
+        "business_registered_pin": "560001",
+        "iec_code": ""
+      },
+      "account_type": "direct",
+      "channel": "rbl",
+      "balance_id": "ARENABAL000002",
+      "fts_source_account_id": 900002,
+      "fts_fund_account_id": 900002
+    },
+    "ARENAM00000003": {
+      "merchant": {
+        "id": "ARENAM00000003",
+        "name": "Arena Merchant Three (Shared, Workflow)",
+        "email": "m3@arena.test",
+        "activated": true,
+        "live": true,
+        "billing_label": "Arena Merchant Three",
+        "business_banking": true,
+        "hold_funds": false,
+        "feature": [
+          "payout_service_enabled",
+          "banking",
+          "enable_approval_via_oauth",
+          "payout_workflows"
+        ],
+        "org_id": "ARENAORG000001",
+        "created_at": 1735689600,
+        "category": "other",
+        "country_code": "IN",
+        "category2": "other",
+        "pricing_plan_id": "ARENAPLAN00003",
+        "purpose_code": "P0806"
+      },
+      "merchant_detail": {
+        "business_type": "partnership",
+        "business_name": "Arena Merchant Three & Co",
+        "company_pan": "ARENA0003P",
+        "business_registered_address": "3 Arena Street",
+        "business_registered_address_l2": "",
+        "business_registered_city": "Bengaluru",
+        "business_registered_state": "Karnataka",
+        "business_registered_country": "IN",
+        "business_registered_pin": "560001",
+        "iec_code": ""
+      },
+      "account_type": "shared",
+      "channel": "",
+      "balance_id": "ARENABAL000003",
+      "fts_source_account_id": 900001,
+      "fts_fund_account_id": 900001
+    }
+  }
+}

@@ -1,0 +1,2096 @@
+{
+ "lane": "m7-ingress",
+ "generated_at": "2026-09-08T09:24:53.043519+00:00",
+ "sources": [
+  {
+   "repo": "razorpay/api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "path": "/Users/rana.singh/rzp-payouts-clones/api"
+  },
+  {
+   "repo": "razorpay/payouts",
+   "sha": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+   "path": "/Users/rana.singh/rzp-payouts-clones/payouts"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "sub:api-ingress",
+   "kind": "sub",
+   "label": "api-ingress (shared API-monolith ingress)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md",
+    "ENV2_COMPOSE/substitutes/api-ingress/contract/routes.json"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "entry_points": [
+    "compose service api-ingress :8080"
+   ],
+   "health": "GET :8080/health",
+   "identity_model": "merchant key | dashboard session | internal app secret + X-Razorpay-Account | admin token",
+   "authorization": "Route.php group per route; Route::$internalApps allow-list; merchant-scoped ownership records",
+   "tables": [
+    "table:api-ingress/resources",
+    "table:api-ingress/idempotency",
+    "table:api-ingress/audit",
+    "table:api-ingress/payout_details",
+    "table:api-ingress/banking_accounts"
+   ],
+   "fidelity_evidence": "CONTRACT_FAITHFUL_REPLACEMENT: 13 host contract tests + M7 journeys (reports/implementation/m6-journeys.json family:shared-ingress)",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT"
+  },
+  {
+   "id": "table:api-ingress/resources",
+   "kind": "table",
+   "label": "ownership records (fund accounts, contacts)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py (SQLite /data/ingress.sqlite)",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "notes": "resource_ownership"
+  },
+  {
+   "id": "table:api-ingress/banking_accounts",
+   "kind": "table",
+   "label": "merchant banking accounts",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py (SQLite /data/ingress.sqlite)",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "notes": "resource_ownership"
+  },
+  {
+   "id": "table:api-ingress/idempotency",
+   "kind": "table",
+   "label": "merchant idempotency keys",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py (SQLite /data/ingress.sqlite)",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "notes": "MerchantIdempotencyHandler"
+  },
+  {
+   "id": "table:api-ingress/audit",
+   "kind": "table",
+   "label": "request audit + correlation",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py (SQLite /data/ingress.sqlite)",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "notes": "correlation"
+  },
+  {
+   "id": "table:api-ingress/payout_details",
+   "kind": "table",
+   "label": "tax-payment tag-back",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py (SQLite /data/ingress.sqlite)",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "notes": "PayoutsDetails updateTaxPayment"
+  },
+  {
+   "id": "table:api-ingress/sessions",
+   "kind": "table",
+   "label": "synthetic dashboard sessions",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py (SQLite /data/ingress.sqlite)",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "notes": "proxy auth"
+  },
+  {
+   "id": "table:api-ingress/callbacks",
+   "kind": "table",
+   "label": "SourceUpdater relays to vendor-payments",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py (SQLite /data/ingress.sqlite)",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "notes": "VendorPaymentUpdater"
+  },
+  {
+   "id": "identity:ingress-app-secret",
+   "kind": "identity",
+   "label": "internal application secret (rzp_live + app secret, appAuth)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "api/app/Http/BasicAuth/BasicAuth.php:1145-1200",
+    "api/app/Http/Route.php:12922"
+   ]
+  },
+  {
+   "id": "identity:trust-boundary:public-merchant",
+   "kind": "identity",
+   "label": "trust boundary: public merchant / dashboard user",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ]
+  },
+  {
+   "id": "identity:trust-boundary:internal-service",
+   "kind": "identity",
+   "label": "trust boundary: internal service applications",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "api/app/Http/Route.php:6027",
+    "api/app/Http/Route.php:12922"
+   ]
+  },
+  {
+   "id": "identity:trust-boundary:administrator",
+   "kind": "identity",
+   "label": "trust boundary: administrator",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "api/app/Http/Route.php:8727"
+   ]
+  },
+  {
+   "id": "identity:trust-boundary:payouts-service",
+   "kind": "identity",
+   "label": "trust boundary: payouts-service -> api (auth_monolith_shared)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "ENV2_COMPOSE/config/templates/base/payouts/arena.toml"
+   ]
+  },
+  {
+   "id": "identity:merchant-api-key",
+   "kind": "identity",
+   "label": "merchant-api-key",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "fidelity_evidence": "minted / verified by api-ingress in the twin"
+  },
+  {
+   "id": "identity:dashboard-session",
+   "kind": "identity",
+   "label": "dashboard-session",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "fidelity_evidence": "minted / verified by api-ingress in the twin"
+  },
+  {
+   "id": "identity:dashboard-otp",
+   "kind": "identity",
+   "label": "dashboard-otp",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "fidelity_evidence": "minted / verified by api-ingress in the twin"
+  },
+  {
+   "id": "identity:admin-token",
+   "kind": "identity",
+   "label": "admin-token",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "fidelity_evidence": "minted / verified by api-ingress in the twin"
+  },
+  {
+   "id": "identity:service-basic-auth:batch",
+   "kind": "identity",
+   "label": "service-basic-auth:batch",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "fidelity_evidence": "minted / verified by api-ingress in the twin"
+  },
+  {
+   "id": "identity:service-basic-auth:vendor-payments",
+   "kind": "identity",
+   "label": "service-basic-auth:vendor-payments",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "fidelity_evidence": "minted / verified by api-ingress in the twin"
+  },
+  {
+   "id": "identity:service-basic-auth:workflows",
+   "kind": "identity",
+   "label": "service-basic-auth:workflows",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "fidelity_evidence": "minted / verified by api-ingress in the twin"
+  },
+  {
+   "id": "identity:passport-jwt-minted-by-api",
+   "kind": "identity",
+   "label": "passport-jwt-minted-by-api",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ],
+   "fidelity_evidence": "minted / verified by api-ingress in the twin"
+  },
+  {
+   "id": "route:api-monolith/GET admin/payouts/{balance_id}/free_payout",
+   "kind": "route",
+   "label": "GET /v1/admin/payouts/{balance_id}/free_payout (admin_get_free_payouts_attributes)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:4359",
+    "api/app/Http/Route.php:9890",
+    "api/app/Http/Route.php:15130",
+    "api/app/Http/Route.php:20027"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$admin",
+   "authorization": "Route::$internalApps admin_dashboard,razorassist",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'admin_get_free_payouts_attributes'); PS upstream GET /v1/admin/payouts/:balance_id/free_payout",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "admin_get_free_payouts_attributes"
+  },
+  {
+   "id": "route:api-monolith/GET banking_accounts_internal",
+   "kind": "route",
+   "label": "GET /v1/banking_accounts_internal (banking_accounts_list_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:4152",
+    "api/app/Http/Route.php:6725",
+    "api/app/Http/Route.php:13175",
+    "api/app/Http/Route.php:17709",
+    "api/app/Http/Route.php:18634"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps vendor_payments,payout_links,xpayroll",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'banking_accounts_list_internal'); PS upstream ingress-owned record",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "banking_accounts_list_internal"
+  },
+  {
+   "id": "route:api-monolith/POST contacts_internal",
+   "kind": "route",
+   "label": "POST /v1/contacts_internal (contact_create_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:3951",
+    "api/app/Http/Route.php:6588",
+    "api/app/Http/Route.php:13057",
+    "api/app/Http/Route.php:13110",
+    "api/app/Http/Route.php:13154",
+    "api/app/Http/Route.php:17695",
+    "api/app/Http/Route.php:18492",
+    "api/app/Http/Route.php:18518",
+    "api/app/Http/Route.php:18632",
+    "api/app/Http/Route.php:19411",
+    "api/app/Http/Route.php:19487"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps vendor_experience,accounting_integrations,vendor_payments,payout_links,capital_collections_client,capital_early_settlements,xpayroll,payouts_service,charge_collections_internal",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'contact_create_internal'); PS upstream ingress-owned record",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "contact_create_internal"
+  },
+  {
+   "id": "route:api-monolith/GET contacts_internal/{id}",
+   "kind": "route",
+   "label": "GET /v1/contacts_internal/{id} (contact_get_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:3945",
+    "api/app/Http/Route.php:6586",
+    "api/app/Http/Route.php:12941",
+    "api/app/Http/Route.php:13029",
+    "api/app/Http/Route.php:13064",
+    "api/app/Http/Route.php:13089",
+    "api/app/Http/Route.php:13109",
+    "api/app/Http/Route.php:13151",
+    "api/app/Http/Route.php:17694"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps user_service,xperience,vendor_experience,accounts_receivable,accounting_integrations,vendor_payments,payout_links",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'contact_get_internal'); PS upstream ingress-owned record",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "contact_get_internal"
+  },
+  {
+   "id": "route:api-monolith/GET contacts_internal",
+   "kind": "route",
+   "label": "GET /v1/contacts_internal (contact_list_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:3947",
+    "api/app/Http/Route.php:6280",
+    "api/app/Http/Route.php:13063",
+    "api/app/Http/Route.php:13090",
+    "api/app/Http/Route.php:13111",
+    "api/app/Http/Route.php:13152"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps vendor_experience,accounts_receivable,accounting_integrations,vendor_payments",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'contact_list_internal'); PS upstream ingress-owned record",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "contact_list_internal"
+  },
+  {
+   "id": "route:api-monolith/POST fund_accounts_internal",
+   "kind": "route",
+   "label": "POST /v1/fund_accounts_internal (fund_account_create_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:3987",
+    "api/app/Http/Route.php:6589",
+    "api/app/Http/Route.php:13058",
+    "api/app/Http/Route.php:13114",
+    "api/app/Http/Route.php:13169",
+    "api/app/Http/Route.php:17696",
+    "api/app/Http/Route.php:18493",
+    "api/app/Http/Route.php:18519",
+    "api/app/Http/Route.php:18633",
+    "api/app/Http/Route.php:19412",
+    "api/app/Http/Route.php:19486"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps vendor_experience,accounting_integrations,vendor_payments,payout_links,capital_collections_client,capital_early_settlements,xpayroll,payouts_service,charge_collections_internal",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'fund_account_create_internal'); PS upstream ingress-owned record",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "fund_account_create_internal"
+  },
+  {
+   "id": "route:api-monolith/GET fund_accounts_internal/{id}",
+   "kind": "route",
+   "label": "GET /v1/fund_accounts_internal/{id} (fund_account_get_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:3983",
+    "api/app/Http/Route.php:6591",
+    "api/app/Http/Route.php:13030",
+    "api/app/Http/Route.php:13065",
+    "api/app/Http/Route.php:13113",
+    "api/app/Http/Route.php:13155",
+    "api/app/Http/Route.php:17697",
+    "api/app/Http/Route.php:19386"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps xperience,vendor_experience,accounting_integrations,vendor_payments,payout_links,payouts_service",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'fund_account_get_internal'); PS upstream ingress-owned record",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "fund_account_get_internal"
+  },
+  {
+   "id": "route:api-monolith/GET fund_accounts_internal",
+   "kind": "route",
+   "label": "GET /v1/fund_accounts_internal (fund_account_list_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:3985",
+    "api/app/Http/Route.php:6592",
+    "api/app/Http/Route.php:13062",
+    "api/app/Http/Route.php:13156",
+    "api/app/Http/Route.php:17698"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps vendor_experience,vendor_payments,payout_links",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'fund_account_list_internal'); PS upstream ingress-owned record",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "fund_account_list_internal"
+  },
+  {
+   "id": "route:api-monolith/POST payouts/{id}/approve",
+   "kind": "route",
+   "label": "POST /v1/payouts/{id}/approve (payout_approve)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2330",
+    "api/app/Http/Route.php:5594",
+    "api/app/Http/Route.php:8018",
+    "api/app/Http/Route.php:7360",
+    "api/app/Http/Route.php:14130",
+    "api/app/Http/Route.php:16438"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$private/proxy",
+   "authorization": "Route::$internalApps merchant_dashboard,admin_dashboard",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_approve'); PS upstream POST /v1/payouts/payouts_internal/:payout_id/approve",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_approve"
+  },
+  {
+   "id": "route:api-monolith/POST payouts_internal/{id}/approve",
+   "kind": "route",
+   "label": "POST /v1/payouts_internal/{id}/approve (payout_approve_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2420",
+    "api/app/Http/Route.php:6632",
+    "api/app/Http/Route.php:19098"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps workflows",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_approve_internal'); PS upstream POST /v1/payouts/payouts_internal/:payout_id/approve",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_approve_internal"
+  },
+  {
+   "id": "route:api-monolith/POST payouts/bulk",
+   "kind": "route",
+   "label": "POST /v1/payouts/bulk (payout_bulk_create)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2318",
+    "api/app/Http/Route.php:8034",
+    "api/app/Http/Route.php:14134",
+    "api/app/Http/Route.php:16441",
+    "api/app/Http/Route.php:18748"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$proxy",
+   "authorization": "Route::$internalApps merchant_dashboard,admin_dashboard,batch",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_bulk_create'); PS upstream POST /v1/payouts/bulk",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_bulk_create"
+  },
+  {
+   "id": "route:api-monolith/POST payouts/{id}/cancel",
+   "kind": "route",
+   "label": "POST /v1/payouts/{id}/cancel (payout_cancel)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2769",
+    "api/app/Http/Route.php:5783",
+    "api/app/Http/Route.php:14135",
+    "api/app/Http/Route.php:16442"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$private",
+   "authorization": "Route::$internalApps merchant_dashboard,admin_dashboard",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_cancel'); PS upstream POST /v1/payouts/cancel_payout/:payout_id",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_cancel"
+  },
+  {
+   "id": "route:api-monolith/POST payouts_internal/{id}/cancel",
+   "kind": "route",
+   "label": "POST /v1/payouts_internal/{id}/cancel (payout_cancel_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2770",
+    "api/app/Http/Route.php:6716",
+    "api/app/Http/Route.php:13173"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps vendor_payments",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_cancel_internal'); PS upstream POST /v1/payouts/cancel_payout/:payout_id",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_cancel_internal"
+  },
+  {
+   "id": "route:api-monolith/POST payouts",
+   "kind": "route",
+   "label": "POST /v1/payouts (payout_create)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2311",
+    "api/app/Http/Route.php:5780",
+    "api/app/Http/Route.php:20528",
+    "api/app/Http/Route.php:14136",
+    "api/app/Http/Route.php:16443"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$private",
+   "authorization": "Route::$internalApps merchant_dashboard,admin_dashboard",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_create'); PS upstream POST /v1/payouts",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_create"
+  },
+  {
+   "id": "route:api-monolith/POST payouts_internal",
+   "kind": "route",
+   "label": "POST /v1/payouts_internal (payout_create_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2313",
+    "api/app/Http/Route.php:6593",
+    "api/app/Http/Route.php:20539",
+    "api/app/Http/Route.php:12967",
+    "api/app/Http/Route.php:13096",
+    "api/app/Http/Route.php:13158",
+    "api/app/Http/Route.php:17699",
+    "api/app/Http/Route.php:18521",
+    "api/app/Http/Route.php:18581",
+    "api/app/Http/Route.php:18629",
+    "api/app/Http/Route.php:18719",
+    "api/app/Http/Route.php:18875"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps cross_border_import_service,accounts_receivable,vendor_payments,payout_links,capital_early_settlements,scrooge,xpayroll,fts,settlements_service",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_create_internal'); PS upstream POST /v1/payouts/payouts_internal",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_create_internal"
+  },
+  {
+   "id": "route:api-monolith/POST internalContactPayout",
+   "kind": "route",
+   "label": "POST /v1/internalContactPayout (payout_create_on_internal_contact)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2315",
+    "api/app/Http/Route.php:6713",
+    "api/app/Http/Route.php:20561",
+    "api/app/Http/Route.php:13171",
+    "api/app/Http/Route.php:18494",
+    "api/app/Http/Route.php:18630",
+    "api/app/Http/Route.php:19485"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps vendor_payments,capital_collections_client,xpayroll,charge_collections_internal",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_create_on_internal_contact'); PS upstream POST /v1/payouts/internal_contact_payout",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_create_on_internal_contact"
+  },
+  {
+   "id": "route:api-monolith/POST payouts_with_otp",
+   "kind": "route",
+   "label": "POST /v1/payouts_with_otp (payout_create_with_otp)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2320",
+    "api/app/Http/Route.php:5595",
+    "api/app/Http/Route.php:8002",
+    "api/app/Http/Route.php:7350",
+    "api/app/Http/Route.php:20534",
+    "api/app/Http/Route.php:14141",
+    "api/app/Http/Route.php:16448"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$private/proxy",
+   "authorization": "Route::$internalApps merchant_dashboard,admin_dashboard",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_create_with_otp'); PS upstream POST /v1/payouts",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_create_with_otp"
+  },
+  {
+   "id": "route:api-monolith/GET payouts/{id}",
+   "kind": "route",
+   "label": "GET /v1/payouts/{id} (payout_fetch_by_id)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2351",
+    "api/app/Http/Route.php:5778",
+    "api/app/Http/Route.php:14155",
+    "api/app/Http/Route.php:16453"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$private",
+   "authorization": "Route::$internalApps merchant_dashboard,admin_dashboard",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_fetch_by_id'); PS upstream GET /v1/payouts/:id",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_fetch_by_id"
+  },
+  {
+   "id": "route:api-monolith/GET payouts_internal/{id}",
+   "kind": "route",
+   "label": "GET /v1/payouts_internal/{id} (payout_fetch_by_id_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2352",
+    "api/app/Http/Route.php:6283",
+    "api/app/Http/Route.php:13108",
+    "api/app/Http/Route.php:13157",
+    "api/app/Http/Route.php:17702",
+    "api/app/Http/Route.php:18877",
+    "api/app/Http/Route.php:19383"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps accounting_integrations,vendor_payments,payout_links,settlements_service,payouts_service",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_fetch_by_id_internal'); PS upstream GET /v1/payouts/payouts_internal/:payout_id",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_fetch_by_id_internal"
+  },
+  {
+   "id": "route:api-monolith/GET payouts",
+   "kind": "route",
+   "label": "GET /v1/payouts (payout_fetch_multiple)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2354",
+    "api/app/Http/Route.php:5779",
+    "api/app/Http/Route.php:14156",
+    "api/app/Http/Route.php:16454",
+    "api/app/Http/Route.php:18371"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$private",
+   "authorization": "Route::$internalApps merchant_dashboard,admin_dashboard,mes",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_fetch_multiple'); PS upstream GET /v1/payouts",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_fetch_multiple"
+  },
+  {
+   "id": "route:api-monolith/POST payouts/{id}/reject",
+   "kind": "route",
+   "label": "POST /v1/payouts/{id}/reject (payout_reject)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2332",
+    "api/app/Http/Route.php:5593",
+    "api/app/Http/Route.php:8020",
+    "api/app/Http/Route.php:7362",
+    "api/app/Http/Route.php:14199",
+    "api/app/Http/Route.php:16493"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$private/proxy",
+   "authorization": "Route::$internalApps merchant_dashboard,admin_dashboard",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_reject'); PS upstream POST /v1/payouts/payouts_internal/:payout_id/reject",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_reject"
+  },
+  {
+   "id": "route:api-monolith/POST admin/payouts/cancel",
+   "kind": "route",
+   "label": "POST /v1/admin/payouts/cancel (payout_reject_admin_bulk)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2342",
+    "api/app/Http/Route.php:8889",
+    "api/app/Http/Route.php:16494"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$admin",
+   "authorization": "Route::$internalApps admin_dashboard",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_reject_admin_bulk'); PS upstream POST /v1/payouts/payouts_internal/:payout_id/reject",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_reject_admin_bulk"
+  },
+  {
+   "id": "route:api-monolith/POST payouts_internal/{id}/reject",
+   "kind": "route",
+   "label": "POST /v1/payouts_internal/{id}/reject (payout_reject_internal)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2421",
+    "api/app/Http/Route.php:6633",
+    "api/app/Http/Route.php:19099"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps workflows",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_reject_internal'); PS upstream POST /v1/payouts/payouts_internal/:payout_id/reject",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_reject_internal"
+  },
+  {
+   "id": "route:api-monolith/PATCH payouts_internal/{id}/tax-payment-id",
+   "kind": "route",
+   "label": "PATCH /v1/payouts_internal/{id}/tax-payment-id (payout_update_tax_payment_id)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2339",
+    "api/app/Http/Route.php:7085",
+    "api/app/Http/Route.php:13182"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps vendor_payments",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'payout_update_tax_payment_id'); PS upstream ingress-owned record",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "payout_update_tax_payment_id"
+  },
+  {
+   "id": "route:api-monolith/POST vendor-payments/verify-otp",
+   "kind": "route",
+   "label": "POST /v1/vendor-payments/verify-otp (vendor_payment_verify_otp)",
+   "owner_domain": "api-monolith",
+   "criticality": "P0",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "repo": "repo:api",
+   "sha": "2d665f918b60e917ec92be648fb5816d247f72b1",
+   "source_refs": [
+    "api/app/Http/Route.php:2492",
+    "api/app/Http/Route.php:6282",
+    "api/app/Http/Route.php:13162"
+   ],
+   "twin_ref": "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+   "identity_model": "Route::$internal",
+   "authorization": "Route::$internalApps vendor_payments",
+   "fidelity_evidence": "served by api-ingress (contract/routes.json 'vendor_payment_verify_otp'); PS upstream ingress-owned record",
+   "family": "family:shared-ingress",
+   "m7_label": "CONTRACT_FAITHFUL_REPLACEMENT",
+   "route_name": "vendor_payment_verify_otp"
+  },
+  {
+   "id": "topic:s2p/add-tds-entry",
+   "kind": "topic",
+   "label": "Kafka topic add-tds-entry (vendor-payments initiate-tds input)",
+   "owner_domain": "vendor-payments",
+   "criticality": "P1",
+   "fidelity": "high_fidelity_replacement",
+   "confidence": "confirmed",
+   "twin_ref": "ENV2_COMPOSE/docker-compose.s2p.yml s2p-kafka (Redpanda)",
+   "source_refs": [
+    "DOMAIN_REPLICAS/source_to_pay/spec/interfaces.yaml"
+   ]
+  }
+ ],
+ "edges": [
+  {
+   "from": "sub:api-ingress",
+   "to": "svc:api-monolith",
+   "type": "implements",
+   "via": "ingress responsibilities of the selected surface (contract/routes.json)",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "sub:api-ingress",
+   "to": "table:api-ingress/resources",
+   "type": "writes",
+   "via": "resource_ownership",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "sub:api-ingress",
+   "to": "table:api-ingress/banking_accounts",
+   "type": "writes",
+   "via": "resource_ownership",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "sub:api-ingress",
+   "to": "table:api-ingress/idempotency",
+   "type": "writes",
+   "via": "MerchantIdempotencyHandler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "sub:api-ingress",
+   "to": "table:api-ingress/audit",
+   "type": "writes",
+   "via": "correlation",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "sub:api-ingress",
+   "to": "table:api-ingress/payout_details",
+   "type": "writes",
+   "via": "PayoutsDetails updateTaxPayment",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "sub:api-ingress",
+   "to": "table:api-ingress/sessions",
+   "type": "writes",
+   "via": "proxy auth",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "sub:api-ingress",
+   "to": "table:api-ingress/callbacks",
+   "type": "writes",
+   "via": "VendorPaymentUpdater",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:merchant-api-key",
+   "to": "identity:trust-boundary:public-merchant",
+   "type": "depends_on",
+   "via": "private auth",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:dashboard-session",
+   "to": "identity:trust-boundary:public-merchant",
+   "type": "depends_on",
+   "via": "proxy auth",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "depends_on",
+   "via": "privilege auth",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:admin-token",
+   "to": "identity:trust-boundary:administrator",
+   "type": "depends_on",
+   "via": "admin auth",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:merchant-api-key",
+   "to": "table:api-ingress/resources",
+   "type": "owns",
+   "via": "merchant_id column; findByPublicIdAndMerchant",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Models/FundAccount/Service.php:210-212",
+    "api/app/Base/RepositoryFetch.php:1431"
+   ]
+  },
+  {
+   "from": "identity:service-basic-auth:vendor-payments",
+   "to": "table:api-ingress/resources",
+   "type": "writes",
+   "via": "contact_create_internal / fund_account_create_internal create merchant-owned records",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET admin/payouts/{balance_id}/free_payout",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:admin-token",
+   "to": "route:api-monolith/GET admin/payouts/{balance_id}/free_payout",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:4359",
+    "api/app/Http/Route.php:9890"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET admin/payouts/{balance_id}/free_payout",
+   "to": "identity:trust-boundary:administrator",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET admin/payouts/{balance_id}/free_payout",
+   "to": "route:payouts/GET /v1/admin/payouts/:balance_id/free_payout",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_admin_routes.go:40"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET banking_accounts_internal",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/GET banking_accounts_internal",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:4152",
+    "api/app/Http/Route.php:6725"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET banking_accounts_internal",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET banking_accounts_internal",
+   "to": "table:api-ingress/banking_accounts",
+   "type": "reads",
+   "via": "ingress-owned record",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST contacts_internal",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/POST contacts_internal",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:3951",
+    "api/app/Http/Route.php:6588"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST contacts_internal",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST contacts_internal",
+   "to": "table:api-ingress/resources",
+   "type": "reads",
+   "via": "ingress-owned record",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET contacts_internal/{id}",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/GET contacts_internal/{id}",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:3945",
+    "api/app/Http/Route.php:6586"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET contacts_internal/{id}",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET contacts_internal/{id}",
+   "to": "table:api-ingress/resources",
+   "type": "reads",
+   "via": "ingress-owned record",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET contacts_internal",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/GET contacts_internal",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:3947",
+    "api/app/Http/Route.php:6280"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET contacts_internal",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET contacts_internal",
+   "to": "table:api-ingress/resources",
+   "type": "reads",
+   "via": "ingress-owned record",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST fund_accounts_internal",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/POST fund_accounts_internal",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:3987",
+    "api/app/Http/Route.php:6589"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST fund_accounts_internal",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST fund_accounts_internal",
+   "to": "table:api-ingress/resources",
+   "type": "reads",
+   "via": "ingress-owned record",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET fund_accounts_internal/{id}",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/GET fund_accounts_internal/{id}",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:3983",
+    "api/app/Http/Route.php:6591"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET fund_accounts_internal/{id}",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET fund_accounts_internal/{id}",
+   "to": "table:api-ingress/resources",
+   "type": "reads",
+   "via": "ingress-owned record",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET fund_accounts_internal",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/GET fund_accounts_internal",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:3985",
+    "api/app/Http/Route.php:6592"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET fund_accounts_internal",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET fund_accounts_internal",
+   "to": "table:api-ingress/resources",
+   "type": "reads",
+   "via": "ingress-owned record",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts/{id}/approve",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:dashboard-session",
+   "to": "route:api-monolith/POST payouts/{id}/approve",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2330",
+    "api/app/Http/Route.php:5594"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts/{id}/approve",
+   "to": "identity:trust-boundary:public-merchant",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts/{id}/approve",
+   "to": "route:payouts/POST /v1/payouts/payouts_internal/:payout_id/approve",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_internal_routes.go:70"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal/{id}/approve",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/POST payouts_internal/{id}/approve",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2420",
+    "api/app/Http/Route.php:6632"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal/{id}/approve",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal/{id}/approve",
+   "to": "route:payouts/POST /v1/payouts/payouts_internal/:payout_id/approve",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_internal_routes.go:70"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts/bulk",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:service-basic-auth:batch",
+   "to": "route:api-monolith/POST payouts/bulk",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2318",
+    "api/app/Http/Route.php:8034"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts/bulk",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts/bulk",
+   "to": "route:payouts/POST /v1/payouts/bulk",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_internal_routes_with_passport.go:23"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts/{id}/cancel",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:merchant-api-key",
+   "to": "route:api-monolith/POST payouts/{id}/cancel",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2769",
+    "api/app/Http/Route.php:5783"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts/{id}/cancel",
+   "to": "identity:trust-boundary:public-merchant",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts/{id}/cancel",
+   "to": "route:payouts/POST /v1/payouts/cancel_payout/:payout_id",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_routes.go:70"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal/{id}/cancel",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/POST payouts_internal/{id}/cancel",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2770",
+    "api/app/Http/Route.php:6716"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal/{id}/cancel",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal/{id}/cancel",
+   "to": "route:payouts/POST /v1/payouts/cancel_payout/:payout_id",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_routes.go:70"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:merchant-api-key",
+   "to": "route:api-monolith/POST payouts",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2311",
+    "api/app/Http/Route.php:5780"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts",
+   "to": "identity:trust-boundary:public-merchant",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts",
+   "to": "route:payouts/POST /v1/payouts",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_routes.go:40"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts",
+   "to": "table:api-ingress/idempotency",
+   "type": "writes",
+   "via": "MerchantIdempotencyHandler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/POST payouts_internal",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2313",
+    "api/app/Http/Route.php:6593"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal",
+   "to": "route:payouts/POST /v1/payouts/payouts_internal",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_routes.go:55"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal",
+   "to": "table:api-ingress/idempotency",
+   "type": "writes",
+   "via": "MerchantIdempotencyHandler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST internalContactPayout",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/POST internalContactPayout",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2315",
+    "api/app/Http/Route.php:6713"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST internalContactPayout",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST internalContactPayout",
+   "to": "route:payouts/POST /v1/payouts/internal_contact_payout",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_routes.go:49"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST internalContactPayout",
+   "to": "table:api-ingress/idempotency",
+   "type": "writes",
+   "via": "MerchantIdempotencyHandler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts_with_otp",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:dashboard-session",
+   "to": "route:api-monolith/POST payouts_with_otp",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2320",
+    "api/app/Http/Route.php:5595"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts_with_otp",
+   "to": "identity:trust-boundary:public-merchant",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts_with_otp",
+   "to": "route:payouts/POST /v1/payouts",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_routes.go:40"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts_with_otp",
+   "to": "table:api-ingress/idempotency",
+   "type": "writes",
+   "via": "MerchantIdempotencyHandler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET payouts/{id}",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:merchant-api-key",
+   "to": "route:api-monolith/GET payouts/{id}",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2351",
+    "api/app/Http/Route.php:5778"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET payouts/{id}",
+   "to": "identity:trust-boundary:public-merchant",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET payouts/{id}",
+   "to": "route:payouts/GET /v1/payouts/:id",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_routes.go:31"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET payouts_internal/{id}",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/GET payouts_internal/{id}",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2352",
+    "api/app/Http/Route.php:6283"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET payouts_internal/{id}",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET payouts_internal/{id}",
+   "to": "route:payouts/GET /v1/payouts/payouts_internal/:payout_id",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_internal_routes.go:178"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET payouts",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:merchant-api-key",
+   "to": "route:api-monolith/GET payouts",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2354",
+    "api/app/Http/Route.php:5779"
+   ]
+  },
+  {
+   "from": "route:api-monolith/GET payouts",
+   "to": "identity:trust-boundary:public-merchant",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/GET payouts",
+   "to": "route:payouts/GET /v1/payouts",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_routes.go:61"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts/{id}/reject",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:dashboard-session",
+   "to": "route:api-monolith/POST payouts/{id}/reject",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2332",
+    "api/app/Http/Route.php:5593"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts/{id}/reject",
+   "to": "identity:trust-boundary:public-merchant",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts/{id}/reject",
+   "to": "route:payouts/POST /v1/payouts/payouts_internal/:payout_id/reject",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_internal_routes.go:76"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST admin/payouts/cancel",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:admin-token",
+   "to": "route:api-monolith/POST admin/payouts/cancel",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2342",
+    "api/app/Http/Route.php:8889"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST admin/payouts/cancel",
+   "to": "identity:trust-boundary:administrator",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST admin/payouts/cancel",
+   "to": "route:payouts/POST /v1/payouts/payouts_internal/:payout_id/reject",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_internal_routes.go:76"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal/{id}/reject",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/POST payouts_internal/{id}/reject",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2421",
+    "api/app/Http/Route.php:6633"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal/{id}/reject",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST payouts_internal/{id}/reject",
+   "to": "route:payouts/POST /v1/payouts/payouts_internal/:payout_id/reject",
+   "type": "calls",
+   "via": "forwarded with cred.API + passport",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/routing/router/payout_internal_routes.go:76"
+   ]
+  },
+  {
+   "from": "route:api-monolith/PATCH payouts_internal/{id}/tax-payment-id",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/PATCH payouts_internal/{id}/tax-payment-id",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2339",
+    "api/app/Http/Route.php:7085"
+   ]
+  },
+  {
+   "from": "route:api-monolith/PATCH payouts_internal/{id}/tax-payment-id",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/PATCH payouts_internal/{id}/tax-payment-id",
+   "to": "table:api-ingress/payout_details",
+   "type": "reads",
+   "via": "ingress-owned record",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST vendor-payments/verify-otp",
+   "to": "sub:api-ingress",
+   "type": "implements",
+   "via": "api-ingress route handler",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "identity:ingress-app-secret",
+   "to": "route:api-monolith/POST vendor-payments/verify-otp",
+   "type": "authenticates",
+   "via": "ingress context class",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Http/Route.php:2492",
+    "api/app/Http/Route.php:6282"
+   ]
+  },
+  {
+   "from": "route:api-monolith/POST vendor-payments/verify-otp",
+   "to": "identity:trust-boundary:internal-service",
+   "type": "gated_by",
+   "via": "trust boundary",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:api-monolith/POST vendor-payments/verify-otp",
+   "to": "table:api-ingress/sessions",
+   "type": "reads",
+   "via": "ingress-owned record",
+   "confidence": "confirmed"
+  },
+  {
+   "from": "route:payouts/POST /v1/payouts/internal_contact_payout",
+   "to": "sub:api-ingress",
+   "type": "callback",
+   "via": "PS re-resolves the beneficiary through GET fund_accounts_internal (x-razorpay-account = merchant)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "payouts/internal/app/fundAccountCache/core.go:199"
+   ]
+  },
+  {
+   "from": "sub:api-ingress",
+   "to": "route:vendor-payments/POST /twirp/vendorpayments.Vendorpayments/PayoutStatusChange",
+   "type": "callback",
+   "via": "SourceUpdater relay: payouts_service/source_update (source_type tax_payments) -> PayoutStatusChange",
+   "confidence": "confirmed",
+   "source_refs": [
+    "api/app/Models/Payout/SourceUpdater/Factory.php:31-35",
+    "api/app/Services/VendorPayments/Service.php:480-503"
+   ]
+  },
+  {
+   "from": "queue:prod-api-payout-source-updater-live",
+   "to": "sub:api-ingress",
+   "type": "produces",
+   "via": "payouts payout_source_updater worker -> POST payouts_service/source_update via the ingress",
+   "confidence": "confirmed"
+  }
+ ],
+ "families": [
+  {
+   "id": "family:shared-ingress",
+   "label": "Shared API-monolith ingress (M7)",
+   "priority": "P0",
+   "description": "merchant, dashboard, internal-application and administrator paths through the shared ingress into the real Payouts service",
+   "entry_points": [
+    "api-ingress :8080 /v1/*"
+   ],
+   "components": [
+    "sub:api-ingress",
+    "route:api-monolith/GET admin/payouts/{balance_id}/free_payout",
+    "route:api-monolith/GET banking_accounts_internal",
+    "route:api-monolith/POST contacts_internal",
+    "route:api-monolith/GET contacts_internal/{id}",
+    "route:api-monolith/GET contacts_internal",
+    "route:api-monolith/POST fund_accounts_internal",
+    "route:api-monolith/GET fund_accounts_internal/{id}",
+    "route:api-monolith/GET fund_accounts_internal",
+    "route:api-monolith/POST payouts/{id}/approve",
+    "route:api-monolith/POST payouts_internal/{id}/approve",
+    "route:api-monolith/POST payouts/bulk",
+    "route:api-monolith/POST payouts/{id}/cancel",
+    "route:api-monolith/POST payouts_internal/{id}/cancel",
+    "route:api-monolith/POST payouts",
+    "route:api-monolith/POST payouts_internal",
+    "route:api-monolith/POST internalContactPayout",
+    "route:api-monolith/POST payouts_with_otp",
+    "route:api-monolith/GET payouts/{id}",
+    "route:api-monolith/GET payouts_internal/{id}",
+    "route:api-monolith/GET payouts",
+    "route:api-monolith/POST payouts/{id}/reject",
+    "route:api-monolith/POST admin/payouts/cancel",
+    "route:api-monolith/POST payouts_internal/{id}/reject",
+    "route:api-monolith/PATCH payouts_internal/{id}/tax-payment-id",
+    "route:api-monolith/POST vendor-payments/verify-otp"
+   ],
+   "variants": [
+    "success",
+    "failure",
+    "idempotency",
+    "async_state",
+    "direct",
+    "approval",
+    "batch",
+    "admin",
+    "tenant_isolation",
+    "restart"
+   ],
+   "fidelity": "high_fidelity_replacement",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/CONTRACT.md"
+   ]
+  },
+  {
+   "id": "family:cross-domain-s2p",
+   "label": "Cross-domain Source-to-Pay TDS remittance (M7)",
+   "priority": "P0",
+   "description": "vendor-payments TDS accrual -> tag-back -> Pay -> shared ingress -> real payouts -> SourceUpdater callback",
+   "entry_points": [
+    "topic:s2p/add-tds-entry",
+    "s2p-vp-source /_replica/pay"
+   ],
+   "components": [
+    "sub:api-ingress",
+    "svc:s2p/vendor-payments",
+    "topic:s2p/add-tds-entry"
+   ],
+   "variants": [
+    "success",
+    "failure",
+    "idempotency",
+    "async_state"
+   ],
+   "fidelity": "real_source_running",
+   "source_refs": [
+    "RED_LOOP/m6/journeys/j_s2p.py"
+   ]
+  },
+  {
+   "id": "family:source-to-pay-tds",
+   "label": "Source-to-Pay TDS domain (namespaced)",
+   "priority": "P1",
+   "description": "the vendor-payments / vendor-experience / accounting-integrations domain as mapped by DOMAIN_REPLICAS/source_to_pay",
+   "entry_points": [
+    "DOMAIN_REPLICAS/source_to_pay/integration/unified-graph-patch.json"
+   ],
+   "components": [
+    "svc:s2p/vendor-payments",
+    "svc:s2p/vendor-experience",
+    "svc:s2p/accounting-integrations"
+   ],
+   "variants": [
+    "success"
+   ],
+   "fidelity": "real_source_running",
+   "source_refs": [
+    "DOMAIN_REPLICAS/source_to_pay/spec/runtime-topology.yaml"
+   ]
+  }
+ ],
+ "open_questions": [
+  "production route selection for payout create (Edge->PS direct vs Edge->API->PS) is not decidable from source alone (M7_PRODUCTION_UNKNOWNS.md)"
+ ]
+}

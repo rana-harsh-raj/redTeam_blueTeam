@@ -1,0 +1,166 @@
+{
+  "accepted": false,
+  "evaluation_scope": "Starting-evidence audit only, not execution of the M7 acceptance suite",
+  "evidence": "M7_STARTING_EVIDENCE.json",
+  "gates": [
+    {
+      "description": "Historical milestone tags unchanged",
+      "id": "M7-01",
+      "passed": true,
+      "reason": "Git tag refs unchanged during evidence audit",
+      "status": "PASS"
+    },
+    {
+      "description": "Canonical branch has documented ancestry",
+      "id": "M7-02",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "New isolated Source-to-Pay acceptance and preserved historical result",
+      "id": "M7-03",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "M6 acceptance after integration",
+      "id": "M7-04",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Source-to-Pay acceptance after integration",
+      "id": "M7-05",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Shared ingress clean boot",
+      "id": "M7-06",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Source-evidenced ingress contract inventory",
+      "id": "M7-07",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Selected boundary overlap resolved",
+      "id": "M7-08",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Identity contexts separated",
+      "id": "M7-09",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Explicit fund-account ownership",
+      "id": "M7-10",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Cross-tenant negative control decisive",
+      "id": "M7-11",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "All required journeys executed",
+      "id": "M7-12",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Connected journey three clean runs",
+      "id": "M7-13",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Duplicate and replay controls",
+      "id": "M7-14",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Connected async restart recovery",
+      "id": "M7-15",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Reset removes mutable state",
+      "id": "M7-16",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Daily incremental refresh",
+      "id": "M7-17",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Weekly clean rebuild",
+      "id": "M7-18",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "All M7 runtime and report artifacts hash-bound",
+      "id": "M7-19",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "No production connection, credential or customer data used",
+      "id": "M7-20",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "No unsupported production-fidelity claim",
+      "id": "M7-21",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    },
+    {
+      "description": "Final tracked tree clean",
+      "id": "M7-22",
+      "passed": false,
+      "reason": "M7 integration and acceptance were not executed; historical results are not M7 results",
+      "status": "NOT_EVALUATED"
+    }
+  ],
+  "milestone": "M7",
+  "safety_boundary": "Integrated autonomous vulnerability-discovery and vulnerability-reproduction workflows were not extended or executed.",
+  "status": "INCOMPLETE",
+  "total_hard_gates": 22,
+  "verified_pass_count": 1
+}

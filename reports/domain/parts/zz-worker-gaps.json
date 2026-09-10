@@ -1,0 +1,323 @@
+{
+ "lane": "zz-worker-gaps",
+ "generated_at": "2026-09-08T02:27:24.950691+00:00",
+ "sources": [
+  {
+   "repo": "twin",
+   "path": "scripts/domain/worker_gaps.py TABLE + ENV2_COMPOSE/fts-worker-gaps.json"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "cron:x-balances/balance_fetch_per_channel",
+   "kind": "cron",
+   "label": "external scheduler \u2192 POST /v1/cron/balance/{channel}/fetch (prod values crons: []; console image exists; cadence UNKNOWN)",
+   "owner_domain": "x-balances",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "cron-driver has no x-balances job and mozart-sim serves account_balance for RBL only; per-channel polling for other banks needs mozart fixtures",
+   "fidelity_evidence": " | blocked_by: cron-driver has no x-balances job and mozart-sim serves account_balance for RBL only; per-channel polling for other banks needs mozart fixtures [ENV2_COMPOSE/scripts/cron-driver; m4-subagent-handoffs/T04.md C4] | blocked_by: cron-driver has no x-balances job and mozart-sim serves account_balance for RBL only; per-channel polling for other banks needs mozart fixtures [ENV2_COMPOSE/scripts/cron-driver; m4-subagent-handoffs/T04.md C4] | blocked_by: cron-driver has no x-balances job and mozart-sim serves account_balance for RBL only; per-channel polling for other banks needs mozart fixtures [ENV2_COMPOSE/scripts/cron-driver; m4-subagent-handoffs/T04.md C4] | blocked_by: cron-driver has no x-balances job and mozart-sim serves account_balance for RBL only; per-channel polling for other banks needs mozart fixtures [ENV2_COMPOSE/scripts/cron-driver; m4-subagent-handoffs/T04.md C4]"
+  },
+  {
+   "id": "worker:fts/hv::fire_transfer_status_webhook",
+   "kind": "worker",
+   "label": "fts worker hv::fire_transfer_status_webhook [shared/any/hv] fire-webhook (status -> PS/monolith/Kafka)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/hv::initiate_transfer",
+   "kind": "worker",
+   "label": "fts worker hv::initiate_transfer [shared/any/hv] initiate (transfer_init via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::direct::check_transfer_status",
+   "kind": "worker",
+   "label": "fts worker rbl::direct::check_transfer_status [rbl/any/direct] check-status (transfer_status poll via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::direct::imps::hv::initiate_transfer",
+   "kind": "worker",
+   "label": "fts worker rbl::direct::imps::hv::initiate_transfer [rbl/imps/direct+hv] initiate (transfer_init via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::direct::initiate_transfer",
+   "kind": "worker",
+   "label": "fts worker rbl::direct::initiate_transfer [rbl/any/direct] initiate (transfer_init via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::direct::slow_lane::initiate_transfer",
+   "kind": "worker",
+   "label": "fts worker rbl::direct::slow_lane::initiate_transfer [rbl/any/direct+slow_lane] initiate (transfer_init via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::direct::upi::check_transfer_status",
+   "kind": "worker",
+   "label": "fts worker rbl::direct::upi::check_transfer_status [rbl/upi/direct] check-status (transfer_status poll via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::direct::upi::initiate_transfer",
+   "kind": "worker",
+   "label": "fts worker rbl::direct::upi::initiate_transfer [rbl/upi/direct] initiate (transfer_init via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::upi::check_transfer_status",
+   "kind": "worker",
+   "label": "fts worker rbl::upi::check_transfer_status [rbl/upi] check-status (transfer_status poll via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::upi::hv::check_transfer_status",
+   "kind": "worker",
+   "label": "fts worker rbl::upi::hv::check_transfer_status [rbl/upi/hv] check-status (transfer_status poll via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::upi::hv::initiate_transfer",
+   "kind": "worker",
+   "label": "fts worker rbl::upi::hv::initiate_transfer [rbl/upi/hv] initiate (transfer_init via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::upi::initiate_transfer",
+   "kind": "worker",
+   "label": "fts worker rbl::upi::initiate_transfer [rbl/upi] initiate (transfer_init via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:fts/rbl::v5::check_transfer_status",
+   "kind": "worker",
+   "label": "fts worker rbl::v5::check_transfer_status [rbl/any/v5] check-status (transfer_status poll via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "[queue.worker_queue_map] key \"rbl::v5::check_transfer_status\" does not exist in the FTS repo config (neither in the cloned fts/config/env.default.toml nor in the twin's byte-identical copy). Per the map's own contract an unmapped -command falls back to DEFAULT_QUEUE=\"default\", so adding this worker would put a second consumer on the shared `default` queue and silently steal tasks from fts-worker-default -- a topology REGRESSION, not a gain. Prod gets the mapping from the out-of-band `fts-app-config` ConfigMap, which is mounted by every fts Deployment but is not defined anywhere in kube-manifests, so there is no real value to copy. Needs: the real rbl_v5_* queue-name pair from the external fts config source.",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: [queue.worker_queue_map] key \"rbl::v5::check_transfer_status\" does not exist in the FTS repo config (neither in the cloned fts/config/env.default.toml nor in the twin's byte-identical copy). Per the map's own contract an unmapped -command falls back to DEFAULT_QUEUE=\"default\", so adding this worker would put a second consumer on the shared `default` queue and silently steal tasks from fts-worker-default -- a topology REGRESSION, not a gain. Prod gets the mapping from the out-of-band `fts-app-config` ConfigMap, which is mounted by every fts Deployment but is not defined anywhere in kube-manifests, so there is no real value to copy. Needs: the real rbl_v5_* queue-name pair from the external fts config source. [ENV2_COMPOSE/config/templates/base/fts/env.default.toml:113 (fallback rule) and :106-289 (no rbl::v5 key); kube-manifests/templates/fts/templates/fts-live-worker-rbl-v5-initiate-transfer-deployment.yaml:100-104 (configMap fts-app-config, undefined in kube-manifests)] | blocked_by: [queue.worker_queue_map] key \"rbl::v5::check_transfer_status\" does not exist in the FTS repo config (neither in the cloned fts/config/env.default.toml nor in the twin's byte-identical copy). Per the map's own contract an unmapped -command falls back to DEFAULT_QUEUE=\"default\", so adding this worker would put a second consumer on the shared `default` queue and silently steal tasks from fts-worker-default -- a topology REGRESSION, not a gain. Prod gets the mapping from the out-of-band `fts-app-config` ConfigMap, which is mounted by every fts Deployment but is not defined anywhere in kube-manifests, so there is no real value to copy. Needs: the real rbl_v5_* queue-name pair from the external fts config source. [ENV2_COMPOSE/config/templates/base/fts/env.default.toml:113 (fallback rule) and :106-289 (no rbl::v5 key); kube-manifests/templates/fts/templates/fts-live-worker-rbl-v5-initiate-transfer-deployment.yaml:100-104 (configMap fts-app-config, undefined in kube-manifests)] | blocked_by: [queue.worker_queue_map] key \"rbl::v5::check_transfer_status\" does not exist in the FTS repo config (neither in the cloned fts/config/env.default.toml nor in the twin's byte-identical copy). Per the map's own contract an unmapped -command falls back to DEFAULT_QUEUE=\"default\", so adding this worker would put a second consumer on the shared `default` queue and silently steal tasks from fts-worker-default -- a topology REGRESSION, not a gain. Prod gets the mapping from the out-of-band `fts-app-config` ConfigMap, which is mounted by every fts Deployment but is not defined anywhere in kube-manifests, so there is no real value to copy. Needs: the real rbl_v5_* queue-name pair from the external fts config source. [ENV2_COMPOSE/config/templates/base/fts/env.default.toml:113 (fallback rule) and :106-289 (no rbl::v5 key); kube-manifests/templates/fts/templates/fts-live-worker-rbl-v5-initiate-transfer-deployment.yaml:100-104 (configMap fts-app-config, undefined in kube-manifests)]"
+  },
+  {
+   "id": "worker:fts/rbl::v5::initiate_transfer",
+   "kind": "worker",
+   "label": "fts worker rbl::v5::initiate_transfer [rbl/any/v5] initiate (transfer_init via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "[queue.worker_queue_map] key \"rbl::v5::initiate_transfer\" does not exist in the FTS repo config (neither in the cloned fts/config/env.default.toml nor in the twin's byte-identical copy). Per the map's own contract an unmapped -command falls back to DEFAULT_QUEUE=\"default\", so adding this worker would put a second consumer on the shared `default` queue and silently steal tasks from fts-worker-default -- a topology REGRESSION, not a gain. Prod gets the mapping from the out-of-band `fts-app-config` ConfigMap, which is mounted by every fts Deployment but is not defined anywhere in kube-manifests, so there is no real value to copy. Needs: the real rbl_v5_* queue-name pair from the external fts config source.",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: [queue.worker_queue_map] key \"rbl::v5::initiate_transfer\" does not exist in the FTS repo config (neither in the cloned fts/config/env.default.toml nor in the twin's byte-identical copy). Per the map's own contract an unmapped -command falls back to DEFAULT_QUEUE=\"default\", so adding this worker would put a second consumer on the shared `default` queue and silently steal tasks from fts-worker-default -- a topology REGRESSION, not a gain. Prod gets the mapping from the out-of-band `fts-app-config` ConfigMap, which is mounted by every fts Deployment but is not defined anywhere in kube-manifests, so there is no real value to copy. Needs: the real rbl_v5_* queue-name pair from the external fts config source. [ENV2_COMPOSE/config/templates/base/fts/env.default.toml:113 (fallback rule) and :106-289 (no rbl::v5 key); kube-manifests/templates/fts/templates/fts-live-worker-rbl-v5-initiate-transfer-deployment.yaml:100-104 (configMap fts-app-config, undefined in kube-manifests)] | blocked_by: [queue.worker_queue_map] key \"rbl::v5::initiate_transfer\" does not exist in the FTS repo config (neither in the cloned fts/config/env.default.toml nor in the twin's byte-identical copy). Per the map's own contract an unmapped -command falls back to DEFAULT_QUEUE=\"default\", so adding this worker would put a second consumer on the shared `default` queue and silently steal tasks from fts-worker-default -- a topology REGRESSION, not a gain. Prod gets the mapping from the out-of-band `fts-app-config` ConfigMap, which is mounted by every fts Deployment but is not defined anywhere in kube-manifests, so there is no real value to copy. Needs: the real rbl_v5_* queue-name pair from the external fts config source. [ENV2_COMPOSE/config/templates/base/fts/env.default.toml:113 (fallback rule) and :106-289 (no rbl::v5 key); kube-manifests/templates/fts/templates/fts-live-worker-rbl-v5-initiate-transfer-deployment.yaml:100-104 (configMap fts-app-config, undefined in kube-manifests)] | blocked_by: [queue.worker_queue_map] key \"rbl::v5::initiate_transfer\" does not exist in the FTS repo config (neither in the cloned fts/config/env.default.toml nor in the twin's byte-identical copy). Per the map's own contract an unmapped -command falls back to DEFAULT_QUEUE=\"default\", so adding this worker would put a second consumer on the shared `default` queue and silently steal tasks from fts-worker-default -- a topology REGRESSION, not a gain. Prod gets the mapping from the out-of-band `fts-app-config` ConfigMap, which is mounted by every fts Deployment but is not defined anywhere in kube-manifests, so there is no real value to copy. Needs: the real rbl_v5_* queue-name pair from the external fts config source. [ENV2_COMPOSE/config/templates/base/fts/env.default.toml:113 (fallback rule) and :106-289 (no rbl::v5 key); kube-manifests/templates/fts/templates/fts-live-worker-rbl-v5-initiate-transfer-deployment.yaml:100-104 (configMap fts-app-config, undefined in kube-manifests)]"
+  },
+  {
+   "id": "worker:fts/slow_lane::initiate_transfer",
+   "kind": "worker",
+   "label": "fts worker slow_lane::initiate_transfer [shared/any/slow_lane] initiate (transfer_init via Mozart)",
+   "owner_domain": "fts",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel",
+   "fidelity_evidence": "prod Deployment exists; not started in twin (no compose service) | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md] | blocked_by: no compose service for this FTS bank/channel worker; needs the [queue.worker_queue_map] key + mozart-sim gateway fixtures for that channel [ENV2_COMPOSE/FTS_WORKER_TOPOLOGY.md]"
+  },
+  {
+   "id": "worker:mozart/mozart",
+   "kind": "worker",
+   "label": "mozart k8s Deployment mozart",
+   "owner_domain": "mozart",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "graph_only",
+   "missing_dependency": "real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in",
+   "fidelity_evidence": "mozart-sim replaces the real gateway in the twin | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note]"
+  },
+  {
+   "id": "worker:mozart/mozart-baseline",
+   "kind": "worker",
+   "label": "mozart k8s Deployment mozart-baseline",
+   "owner_domain": "mozart",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "graph_only",
+   "missing_dependency": "real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in",
+   "fidelity_evidence": "mozart-sim replaces the real gateway in the twin | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note]"
+  },
+  {
+   "id": "worker:mozart/mozart-canary",
+   "kind": "worker",
+   "label": "mozart k8s Deployment mozart-canary",
+   "owner_domain": "mozart",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "graph_only",
+   "missing_dependency": "real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in",
+   "fidelity_evidence": "mozart-sim replaces the real gateway in the twin | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note]"
+  },
+  {
+   "id": "worker:mozart/mozart-worker",
+   "kind": "worker",
+   "label": "mozart k8s Deployment mozart-worker",
+   "owner_domain": "mozart",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "graph_only",
+   "missing_dependency": "real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in",
+   "fidelity_evidence": "mozart-sim replaces the real gateway in the twin | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note] | blocked_by: real Mozart binary is unbuildable for this identity: private Go module github.com/razorpay/integrations-utils (404); mozart-sim (contract-faithful, RBL-only fixtures) stands in [ENV2_COMPOSE/substitutes/mozart-sim/CONTRACT.md; .env.arena MOZART note]"
+  },
+  {
+   "id": "worker:stork/stork-scheduler-worker",
+   "kind": "worker",
+   "label": "Stork stork-scheduler-worker -- re-enqueues FAILED/SCHEDULED channels per the backoff policy",
+   "owner_domain": "stork",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "graph_only",
+   "missing_dependency": "no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM)",
+   "fidelity_evidence": "stork-capture delivers inline in the twin -- no Stork worker, scheduler or queue exists | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)] | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)] | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)] | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)]"
+  },
+  {
+   "id": "worker:stork/stork-webhook-worker",
+   "kind": "worker",
+   "label": "Stork stork-webhook-worker -- merchant webhook delivery (p0 queue)",
+   "owner_domain": "stork",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "graph_only",
+   "missing_dependency": "no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM)",
+   "fidelity_evidence": "stork-capture delivers inline in the twin -- no Stork worker, scheduler or queue exists | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)] | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)] | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)] | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)]"
+  },
+  {
+   "id": "worker:stork/stork-webhook-worker-p1",
+   "kind": "worker",
+   "label": "Stork stork-webhook-worker-p1 -- merchant webhook delivery (p1 queue)",
+   "owner_domain": "stork",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "graph_only",
+   "missing_dependency": "no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM)",
+   "fidelity_evidence": "stork-capture delivers inline in the twin -- no Stork worker, scheduler or queue exists | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)] | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)] | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)] | blocked_by: no Stork runtime in the twin: needs Stork's own MySQL + SQS p0/p1/p2 + scheduler + Trino-backed disable tables; stork-capture delivers inline (single attempt, no retry FSM) [reports/domain/parts/external-config-deploy.md (stork divergence #1)]"
+  },
+  {
+   "id": "worker:workflows/workflows",
+   "kind": "worker",
+   "label": "workflows k8s Deployment workflows",
+   "owner_domain": "workflows",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "graph_only",
+   "missing_dependency": "real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead",
+   "fidelity_evidence": "the real Cadence engine behind workflows has NO manifest in kube-manifests and NO Spinnaker pipeline in spinacode -- its deployment mechanism is not visible in either repo | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md] | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md] | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md] | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md]"
+  },
+  {
+   "id": "worker:workflows/workflows-worker-asl",
+   "kind": "worker",
+   "label": "workflows k8s Deployment workflows-worker-asl",
+   "owner_domain": "workflows",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "graph_only",
+   "missing_dependency": "real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead",
+   "fidelity_evidence": "the real Cadence engine behind workflows has NO manifest in kube-manifests and NO Spinnaker pipeline in spinacode -- its deployment mechanism is not visible in either repo | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md] | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md] | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md] | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md]"
+  },
+  {
+   "id": "worker:workflows/workflows-worker-wd",
+   "kind": "worker",
+   "label": "workflows k8s Deployment workflows-worker-wd",
+   "owner_domain": "workflows",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "graph_only",
+   "missing_dependency": "real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead",
+   "fidelity_evidence": "the real Cadence engine behind workflows has NO manifest in kube-manifests and NO Spinnaker pipeline in spinacode -- its deployment mechanism is not visible in either repo | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md] | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md] | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md] | blocked_by: real Workflow Service needs a Cadence server + Cassandra (no manifest in kube-manifests, no image tag known); the M5 workflow-engine RECONSTRUCTION serves WorkflowAPI/Create + callbacks instead [reports/domain/parts/identity-ingress.md \u00a73.2; ENV2_COMPOSE/substitutes/workflow-engine/FIDELITY.md]"
+  },
+  {
+   "id": "worker:x-balances/account_activation_events_worker",
+   "kind": "worker",
+   "label": "x-balances account_activation_events_worker: inserts balance row {id=event.balance_id, status active, account_type direct, channel=partner_bank, fts_fund_account_id}",
+   "owner_domain": "x-balances",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "banking-accounts is a stub that never publishes account-activation events; activation rows are seeded by SQL (seeds/generated/s4/xbalances.sql)",
+   "fidelity_evidence": " | blocked_by: banking-accounts is a stub that never publishes account-activation events; activation rows are seeded by SQL (seeds/generated/s4/xbalances.sql) [reports/domain/parts/money-statements.md (BAS publisher)] | blocked_by: banking-accounts is a stub that never publishes account-activation events; activation rows are seeded by SQL (seeds/generated/s4/xbalances.sql) [reports/domain/parts/money-statements.md (BAS publisher)] | blocked_by: banking-accounts is a stub that never publishes account-activation events; activation rows are seeded by SQL (seeds/generated/s4/xbalances.sql) [reports/domain/parts/money-statements.md (BAS publisher)] | blocked_by: banking-accounts is a stub that never publishes account-activation events; activation rows are seeded by SQL (seeds/generated/s4/xbalances.sql) [reports/domain/parts/money-statements.md (BAS publisher)]"
+  },
+  {
+   "id": "worker:xas/fetch_statements_for_account",
+   "kind": "worker",
+   "label": "XAS fetch_statements_for_account: RBL statement fetch via Mozart razorpayx/rbl/v2/account_statement; base64 CSV; dedupe 7-tuple; one statement_enrichment job per row",
+   "owner_domain": "xas",
+   "criticality": "P0",
+   "confidence": "confirmed",
+   "fidelity": "real_source_mapped_not_running",
+   "missing_dependency": "no XAS runtime: needs the x-account-statements build + Mozart statement fixtures + its MySQL/SQS/Kafka CDC; xas-sim covers UTR matching + entity-link dual-write only",
+   "fidelity_evidence": "kube worker present; no twin runtime | blocked_by: no XAS runtime: needs the x-account-statements build + Mozart statement fixtures + its MySQL/SQS/Kafka CDC; xas-sim covers UTR matching + entity-link dual-write only [ENV2_COMPOSE/substitutes/xas-sim/CONTRACT.md] | blocked_by: no XAS runtime: needs the x-account-statements build + Mozart statement fixtures + its MySQL/SQS/Kafka CDC; xas-sim covers UTR matching + entity-link dual-write only [ENV2_COMPOSE/substitutes/xas-sim/CONTRACT.md] | blocked_by: no XAS runtime: needs the x-account-statements build + Mozart statement fixtures + its MySQL/SQS/Kafka CDC; xas-sim covers UTR matching + entity-link dual-write only [ENV2_COMPOSE/substitutes/xas-sim/CONTRACT.md] | blocked_by: no XAS runtime: needs the x-account-statements build + Mozart statement fixtures + its MySQL/SQS/Kafka CDC; xas-sim covers UTR matching + entity-link dual-write only [ENV2_COMPOSE/substitutes/xas-sim/CONTRACT.md]"
+  }
+ ],
+ "edges": [],
+ "families": [],
+ "unresolved": []
+}

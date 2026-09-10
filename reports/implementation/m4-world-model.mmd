@@ -1,0 +1,433 @@
+%%{init: {'flowchart': {'htmlLabels': false, 'curve': 'basis'}}}%%
+flowchart LR
+  subgraph g0["Edge & identity"]
+    ep_bulk_create["bulk_create"]
+    ep_dashboard_create["dashboard_create"]
+    ep_free_payout["GET /v1/payouts/free_payout/(balance_id)"]
+    ep_internal_app_create["internal_app_create"]
+    ep_public_api_create["public_api_create"]
+    id_broker["Attacker Broker (fixed-identity injection through kong-..."]
+    id_kong_edge["kong-lite edge (mints passport at hardened edge)"]
+    id_merchant_passport["Merchant passport (consumer.id wins over body/header)"]
+    id_service_creds["Service credentials ((fts.auth)/(payouts_service.auth)/..."]
+    boundary_bank["Bank boundary (Mozart / RBL)"]
+    boundary_internal_mesh["Internal service mesh (payouts + real services)"]
+    boundary_internet_edge["Internet edge (kong-lite hardened)"]
+  end
+  subgraph g1["Real services & workers"]
+    svc_cfa_server["cfa-server"]
+    svc_fts_web["fts-web"]
+    svc_ledger_api["ledger-api"]
+    svc_payouts_api["payouts-api"]
+    svc_xbalances_server["xbalances-server"]
+    svc_cfa_worker_contact["cfa-worker-contact"]
+    svc_cfa_worker_fa["cfa-worker-fa"]
+    svc_fts_worker_check_transfer_status["fts-worker-check-transfer-status"]
+    svc_fts_worker_default["fts-worker-default"]
+    svc_fts_worker_fire_transfer_status_webhook["fts-worker-fire-transfer-status-webhook"]
+    svc_fts_worker_initiate_transfer["fts-worker-initiate-transfer"]
+    svc_fts_worker_rbl_check_transfer_status["fts-worker-rbl-check-transfer-status"]
+    svc_fts_worker_rbl_direct_imps_check_transfer_status["fts-worker-rbl-direct-imps-check-transfer-status"]
+    svc_fts_worker_rbl_direct_imps_initiate_transfer["fts-worker-rbl-direct-imps-initiate-transfer"]
+    svc_fts_worker_rbl_imps_check_transfer_status["fts-worker-rbl-imps-check-transfer-status"]
+    svc_fts_worker_rbl_imps_initiate_transfer["fts-worker-rbl-imps-initiate-transfer"]
+    svc_fts_worker_rbl_initiate_transfer["fts-worker-rbl-initiate-transfer"]
+    svc_fts_worker_retry_transfer["fts-worker-retry-transfer"]
+    svc_fts_worker_retry_transfer_preprocessor["fts-worker-retry-transfer-preprocessor"]
+    svc_fts_worker_retry_transfer_source_update["fts-worker-retry-transfer-source-update"]
+    svc_ledger_scheduler["ledger-scheduler"]
+    svc_ledger_worker["ledger-worker"]
+    svc_ledger_worker_balance_update["ledger-worker-balance-update"]
+    svc_ledger_worker_entry_details_create["ledger-worker-entry-details-create"]
+    svc_ledger_worker_entry_details_create_pg["ledger-worker-entry-details-create-pg"]
+    svc_ledger_worker_journal_create["ledger-worker-journal-create"]
+    svc_payouts_kafka_fts_status_updates_consumer["payouts-kafka-fts-status-updates-consumer"]
+    svc_payouts_kafka_fts_status_updates_retry_consumer["payouts-kafka-fts-status-updates-retry-consumer"]
+    svc_payouts_worker_async_dual_write["payouts-worker-async-dual-write"]
+    svc_payouts_worker_fts_async_hv_processing["payouts-worker-fts-async-hv-processing"]
+    svc_payouts_worker_fts_async_processing["payouts-worker-fts-async-processing"]
+    svc_payouts_worker_generic_processing["payouts-worker-generic-processing"]
+    svc_payouts_worker_on_hold_payout["payouts-worker-on-hold-payout"]
+    svc_payouts_worker_partner_bank_hold_payouts["payouts-worker-partner-bank-hold-payouts"]
+    svc_payouts_worker_payout_create_failure_handling["payouts-worker-payout-create-failure-handling"]
+    svc_payouts_worker_payout_source_updater["payouts-worker-payout-source-updater"]
+    svc_payouts_worker_payout_update_failure_handling["payouts-worker-payout-update-failure-handling"]
+    svc_payouts_worker_queued_payout["payouts-worker-queued-payout"]
+    svc_payouts_worker_rbl_banking_account_statement["payouts-worker-rbl-banking-account-statement"]
+    svc_payouts_worker_schedule_payout["payouts-worker-schedule-payout"]
+    svc_payouts_worker_transaction_create["payouts-worker-transaction-create"]
+    svc_payouts_worker_webhook_event["payouts-worker-webhook-event"]
+    svc_payouts_worker_x_balances_balance_refresh["payouts-worker-x-balances-balance-refresh"]
+    svc_xbalances_worker["xbalances-worker"]
+  end
+  subgraph g2["Substitutes"]
+    arch_api_monolith["api_monolith"]
+    arch_asv["asv"]
+    arch_authz["authz"]
+    arch_banking_accounts["banking_accounts"]
+    arch_batch["batch"]
+    arch_cfa["cfa"]
+    arch_cron_fastcron["cron_fastcron"]
+    arch_dashboard_bff["dashboard_bff"]
+    arch_dcs["dcs"]
+    arch_edge_kong_passport["edge_kong_passport"]
+    arch_fts["fts"]
+    arch_kafka["kafka"]
+    arch_ledger["ledger"]
+    arch_mozart["mozart"]
+    arch_payouts_service["payouts_service"]
+    arch_pricing["pricing"]
+    arch_recon_art["recon_art"]
+    arch_shield["shield"]
+    arch_splitz["splitz"]
+    arch_stork["stork"]
+    arch_ups["ups"]
+    arch_workflow_service["workflow_service"]
+    arch_x_balances["x_balances"]
+    arch_xas_x_account_statements["xas_x_account_statements"]
+    comp_autonomous_hypothesis_lifecycle_harness["Autonomous hypothesis lifecycle harness"]
+    comp_autonomous_soak_bounded_checkpointed["Autonomous soak (bounded/checkpointed)"]
+    comp_balance_refresh_hold_release_trigger_a_balancerefreshevent["Balance-refresh / hold-release trigger A (BalanceRefres..."]
+    comp_bankingaccounts_stub_rbl_credentials_route["bankingaccounts-stub (RBL credentials route)"]
+    comp_basd_rows_banking_account_statement_details["BASD rows (banking_account_statement_details)"]
+    comp_cfa_server_v1_candidate["cfa-server (v1-candidate)"]
+    comp_concurrent_idempotency_payout_create["Concurrent idempotency (payout create)"]
+    comp_cross_provider_replay_machinery_calibration["Cross-provider replay machinery (calibration)"]
+    comp_da_ledger_journal_emitter_processledgerpayoutfordirect["DA ledger journal emitter (processLedgerPayoutForDirect)"]
+    comp_da_ledger_journals_da_payout_processed_recon["DA ledger journals da_payout_processed(+_recon)"]
+    comp_dcs_stub_feature_config["dcs-stub (feature/config)"]
+    comp_direct_pricing_flat_twin_plan["Direct pricing (flat twin plan)"]
+    comp_fts_web_fts_v1_candidate["fts-web (FTS v1-candidate)"]
+    comp_journey_direct_immediate_failure["Journey: Direct immediate failure"]
+    comp_journey_direct_success_create_fts_bank_statement_recon_ledge["Journey: Direct success (create->FTS->bank->statement->..."]
+    comp_journey_pending_failure_held_failed_reversed["Journey: pending->failure (held->failed->reversed)"]
+    comp_journey_pending_success_held_processed_ledger["Journey: pending->success (held->processed->ledger)"]
+    comp_journey_statement_first_ordering["Journey: statement-first ordering"]
+    comp_kong_lite_hardened_edge["kong-lite (hardened edge)"]
+    comp_ledger_api_ledger_v1_candidate["ledger-api (Ledger v1-candidate)"]
+    comp_monolith_stub_create_fta_relay_emitter["monolith-stub (create_fta relay + emitter)"]
+    comp_mozart_sim_rbl_v2_account_statement_bank_boundary["mozart-sim (RBL v2 account_statement bank boundary)"]
+    comp_payouts_api_ps_core_v1_candidate["payouts-api (PS core v1-candidate)"]
+    comp_ps_art_route_v1_banking_account_statement_process_batch_matc["PS ART route /v1/banking_account_statement/process/batc..."]
+    comp_ps_updatepayoutafterbasrecon_repair_route["PS UpdatePayoutAfterBASRecon (repair route)"]
+    comp_ps_worker_rbl_banking_account_statement_statement_ingest["PS worker rbl_banking_account_statement (statement ingest)"]
+    comp_ps_x_account_statement_source_event_queue["PS x_account_statement_source_event queue"]
+    comp_reservation_release_5_min_reconciler_trigger_b["Reservation release (5-min reconciler trigger B)"]
+    comp_slice_direct_channel["SLICE Direct channel"]
+    comp_splitz_stub_experiment_flags["splitz-stub (experiment flags)"]
+    comp_tenant_isolation_boundary_merchant_a_b["Tenant-isolation boundary (merchant A/B)"]
+    comp_xas_sim_xas_enrichment_matcher_b["xas-sim (XAS enrichment/matcher b)"]
+    comp_xbalances_server_x_balances_v1_candidate["xbalances-server (x-balances v1-candidate)"]
+    svc_asv_stub["asv-stub"]
+    svc_bankingaccounts_stub["bankingaccounts-stub"]
+    svc_cron_driver["cron-driver"]
+    svc_dcs_stub["dcs-stub"]
+    svc_kong_lite["kong-lite"]
+    svc_ledger_gate["ledger-gate"]
+    svc_merchant_webhook_sink["merchant-webhook-sink"]
+    svc_monolith_stub["monolith-stub"]
+    svc_mozart_mock["mozart-mock"]
+    svc_mozart_sim["mozart-sim"]
+    svc_pricing_stub["pricing-stub"]
+    svc_shield_stub["shield-stub"]
+    svc_splitz_stub["splitz-stub"]
+    svc_stork_capture["stork-capture"]
+    svc_verifier["verifier"]
+    svc_workflow_sim["workflow-sim"]
+    svc_xas_sim["xas-sim"]
+  end
+  subgraph g3["Datastores / queues / topics"]
+    ds_kafka["Kafka broker"]
+    ds_localstack["LocalStack"]
+    ds_mongo_cfa["MongoDB — CFA"]
+    ds_mysql_apidb_stub["MySQL — monolith apidb stub"]
+    ds_mysql_fts["MySQL — FTS DB"]
+    ds_mysql_payouts["MySQL — payouts DB"]
+    ds_mysql_xbalances["MySQL — x-balances DB"]
+    ds_postgres_ledger["Postgres — ledger DB"]
+    ds_redis["Redis"]
+    q_journal_create["SQS journal_create (= prod-ledger-journal-create-live)"]
+    q_rbl_banking_account_statement["SQS rbl_banking_account_statement"]
+    q_stage_x_balances_balance_refresh_live["SQS x-balances-balance-refresh (reservation release tri..."]
+    q_x_account_statement_source_event["SQS x_account_statement_source_event"]
+    topic_api_ledger_journal_create_live["SNS api-ledger-journal-create-live"]
+    topic_journal_created["SNS journal-created"]
+    topic_payout_updates_test_dev["SNS payout-updates-test-dev"]
+    topic_rx_fts_status_update_events["Kafka rx-fts-status-update-events (FTS status transport)"]
+  end
+  subgraph g4["Routes (status transports + reconciliation)"]
+    route_A["A — POST /v1/transfer"]
+    route_B["B — POST /v1/payouts_service/create_fta/(id) then POST ..."]
+    route_C["C — POST /fts/rbl/v1/transfer_init | /transfer_status"]
+    route_D["D — POST /v1/payouts/transfer_status_webhook"]
+    route_E["E — POST /v1/update_fts_fund_transfer -> POST .../updat..."]
+    route_F["F — rx-fts-status-update-events (retry ...-retry-events)"]
+    route_G["G — POST /v1/attempts/verify, PATCH /v1/attempts/safe_u..."]
+    route_H["H — FTS POST /v1/notify/health/update"]
+    route_I["I — job x_account_statement_source_event"]
+    route_R_remap["R-remap — terminal status remap by account_type/channel"]
+    route_R1["R1 — POST /v1/cron/banking_account_statement/fetch/init..."]
+    route_R10["R10 — GET /v1/account_statements/fetch_multiple_by_refe..."]
+    route_R11["R11 — POST /twirp/rzp.ledger.account.v1.AccountAPI/Crea..."]
+    route_R12["R12 — SNS api-ledger-journal-create-live -> SQS prod-le..."]
+    route_R13["R13 — banking_account_statement_details row (basd_<14>)..."]
+    route_R14["R14 — POST /v1/statement/dual_write (id) -> DualWriteFo..."]
+    route_R15["R15 — monolith RblBankingAccountStatement job + saveAcc..."]
+    route_R2["R2 — GET /merchant/(mid)/banking_account_by_account_num..."]
+    route_R3["R3 — POST /razorpayx/rbl/v2/account_statement (RblReque..."]
+    route_R4["R4 — banking_account_statement rows + BASD (pagination_..."]
+    route_R5["R5 — SQS x_account_statement_source_event (prod-x-accou..."]
+    route_R6["R6 — xas_matching"]
+    route_R7["R7 — POST (monolith)/v1/banking_account_statement/payou..."]
+    route_R8["R8 — POST /v1/payouts/banking_account_statement/payout_..."]
+    route_R9["R9 — POST /v1/banking_account_statement/process/batch (..."]
+    sym_GetFreePayoutAttributes["GetFreePayoutAttributes(ctx, balanceId) — resolves bank..."]
+  end
+  subgraph g5["State machines & DA events"]
+    da_da_ext_credit["da_ext_credit"]
+    da_da_ext_debit["da_ext_debit"]
+    da_da_ext_fee_payout_processed["da_ext_fee_payout_processed"]
+    da_da_ext_fee_payout_reversed["da_ext_fee_payout_reversed"]
+    da_da_ext_payout_["da_ext_payout_"]
+    da_da_ext_payout_processed["da_ext_payout_processed"]
+    da_da_ext_payout_reversed["da_ext_payout_reversed"]
+    da_da_fee_["da_fee_"]
+    da_da_fee_payout_processed["da_fee_payout_processed"]
+    da_da_fee_payout_reversed["da_fee_payout_reversed"]
+    da_da_payout_failed["da_payout_failed"]
+    da_da_payout_initiated["da_payout_initiated"]
+    da_da_payout_processed["da_payout_processed"]
+    da_da_payout_processed_recon["da_payout_processed_recon"]
+    da_da_payout_reversed["da_payout_reversed"]
+    da_da_payout_reversed_recon["da_payout_reversed_recon"]
+    state_payout_created["payout.created"]
+    state_payout_failed["payout.failed (Direct: no reversal row)"]
+    state_payout_processed["payout.processed (Direct, no reversal)"]
+    state_payout_reversed["payout.reversed (credit-after-debit upgrade)"]
+    state_reservation_awaiting_balance_refresh["Reservation awaiting_balance_refresh"]
+    state_reservation_live["Reservation live (counter held)"]
+    state_reservation_released["Reservation released (HDEL+DECRBY)"]
+  end
+  subgraph g6["Invariants / findings / expected-failures"]
+    ef_EF_001["EF-001 — Shared PROCESSED over Kafka cannot enqueue the..."]
+    ef_EF_002["EF-002 — FTS FAILED over Kafka acknowledged and dropped"]
+    ef_EF_003["EF-003 — FTS REVERSED over Kafka acknowledged and dropped"]
+    ef_EF_004["EF-004 — PS-recon merchants receive no DA Ledger journa..."]
+    ef_EF_005["EF-005 — PS source-event field name mismatch vs XAS (ev..."]
+    ef_EF_006["EF-006 — FTS FAILED/REVERSED for a Direct payout over K..."]
+    ef_EF_007["EF-007 — x-balances BalanceRefreshEvent (reservation re..."]
+    ef_EF_008["EF-008 — FTS partner-bank health notification to PS (ro..."]
+    finding_F_M4_001["F-M4-001 — Cross-tenant free-payout attribute disclosur..."]
+    finding_F_T10_1["F-T10-1 — the statement-first VerifyPayoutFailedTransac..."]
+    finding_H_D4["H-D4 — creating a payout as A quoting B's fund_account_..."]
+    inv_G26["I-reconciliation-correct-tuple(G26)"]
+    inv_G28_adj["I-balance-not-decremented-twice(G28-adj)"]
+    inv_G31["I-Direct-failure-no-shared-reversal(G31)"]
+    inv_G51["I-conservation(G51)"]
+    inv_G53["I-reservation-not-released-twice(G53)"]
+    inv_G54["I-Direct-success-no-duplicate-ledger(G54)"]
+    inv_I01["same X-Payout-Idempotency + same body -> same payout id..."]
+    inv_I02["FTS dedupes on (source_type, source_id) and returns the..."]
+    inv_I03["ledger journal (transactor_id, transactor_event) duplic..."]
+    inv_I04["bulk create rows are unique per (merchant_id, idempoten..."]
+    inv_I10["every payout_logs (from, to) pair is a legal transition..."]
+    inv_I11["FTS webhooks for payouts not in (initiated, processed, ..."]
+    inv_I12["PS moves the payout to initiated before calling create_..."]
+    inv_I13["FTS transfer FSM: PROCESSED only from INITIATED; REVERS..."]
+    inv_I20["payout_initiated journal balances to zero, debits Merch..."]
+    inv_I21["payout_processed journal is asynchronous and Shared-onl..."]
+    inv_I22["Shared FTS FAILED -> payout reversed with a reversals r..."]
+    inv_I23["reversal row is committed before the ledger call and su..."]
+    inv_I24["transaction.created webhook fires after every successfu..."]
+    inv_I30["with in_flight_reservation_enabled, a dispatched Direct..."]
+    inv_I31["gate fails closed (queues) when the reconciler heartbea..."]
+    inv_I40["queued low-balance payout dequeues only when API-DB bal..."]
+    inv_I41["scheduled payouts use slots 9/13/17/21 IST within 3 mon..."]
+    inv_I42["on-hold payouts past merchant SLA are failed by the ben..."]
+    inv_I50["workflow-applicable creates enter pending only via non-..."]
+    inv_I51["approve/reject callbacks to PS are Basic-auth only, acc..."]
+    inv_I52["no expiry callback ever fires from WFS; 3-month auto-ca..."]
+    inv_I60["merchant identity comes from passport consumer (private..."]
+    inv_I61["another merchant's passport cannot fetch or cancel a pa..."]
+    inv_I70["exactly one of (Kafka, direct PS, legacy monolith webho..."]
+    inv_I71["PS Kafka consumer drops reversed/failed messages and re..."]
+    inv_I72["the monolith relay sends details before status and neve..."]
+    inv_I80["no production job repairs or monitors initiated payouts..."]
+    inv_I81["FTS retry after FAILED is gated by XAS statement presen..."]
+    inv_I82["a bank return credit matched by XAS turns a failed payo..."]
+    inv_I90["fees/tax come from monolith fetch_pricing_info (or Redi..."]
+    inv_S01["no packet leaves the arena; no real Razorpay hostname i..."]
+    journey_A["Journey A — Success (create->recon->DA ledger->webhook)"]
+    journey_B["Journey B — Immediate failure (failed, no reversal, rel..."]
+    journey_C["Journey C — Pending->success (poll1 PENDING, poll2 SUCC..."]
+    journey_D["Journey D — Pending->failure (failed, released, no shar..."]
+    journey_E["Journey E — Statement-first: FTS-direct guard refuses (..."]
+    journey_F["Journey F — Duplicate statement (no new row / no duplic..."]
+    journey_G["Journey G — Conflict: credit->reversed (transaction_id)..."]
+  end
+  route_R1 -->|accounting path| route_R3
+  route_R12 -->|accounting path| svc_ledger_api
+  route_R3 -->|accounting path| route_R4
+  route_R5 -->|accounting path| svc_xas_sim
+  route_R6 -->|accounting path| route_R7
+  route_R7 -->|accounting path| svc_monolith_stub
+  route_R8 -->|accounting path| route_R12
+  route_R9 -->|accounting path| route_R8
+  svc_monolith_stub -->|accounting path| route_R8
+  svc_xas_sim -->|accounting path| route_R6
+  inv_G26 -->|asserts| route_R6
+  inv_G26 -->|asserts| route_R9
+  inv_G28_adj -->|asserts| route_R4
+  inv_G51 -->|asserts| svc_ledger_api
+  inv_G53 -->|asserts| state_reservation_awaiting_balance_refresh
+  inv_G54 -->|asserts| da_da_payout_processed
+  inv_G54 -->|asserts| da_da_payout_processed_recon
+  ep_bulk_create -->|calls| svc_payouts_api
+  ep_dashboard_create -->|calls| svc_payouts_api
+  ep_free_payout -->|calls| svc_payouts_api
+  ep_internal_app_create -->|calls| svc_payouts_api
+  ep_public_api_create -->|calls| svc_payouts_api
+  id_broker -->|calls| id_kong_edge
+  svc_ledger_worker_journal_create -->|consumes| q_journal_create
+  svc_payouts_kafka_fts_status_updates_consumer -->|consumes| topic_rx_fts_status_update_events
+  svc_payouts_worker_rbl_banking_account_statement -->|consumes| q_rbl_banking_account_statement
+  finding_F_M4_001 -->|crosses| boundary_internet_edge
+  topic_api_ledger_journal_create_live -->|delivers to| q_journal_create
+  id_kong_edge -->|enforces| boundary_internet_edge
+  journey_A -->|exercises| svc_payouts_api
+  journey_B -->|exercises| svc_payouts_api
+  journey_C -->|exercises| svc_payouts_api
+  journey_D -->|exercises| svc_payouts_api
+  journey_E -->|exercises| svc_payouts_api
+  journey_F -->|exercises| svc_payouts_api
+  journey_G -->|exercises| svc_payouts_api
+  ep_free_payout -->|implements| sym_GetFreePayoutAttributes
+  id_kong_edge -->|mints identity for| id_merchant_passport
+  svc_ledger_api -->|posts journal| da_da_payout_processed
+  svc_ledger_api -->|posts journal| da_da_payout_processed_recon
+  ef_EF_002 -->|predicts failure| route_F
+  ef_EF_002 -->|predicts failure| topic_rx_fts_status_update_events
+  ef_EF_003 -->|predicts failure| route_F
+  ef_EF_004 -->|predicts failure| route_R12
+  ef_EF_005 -->|predicts failure| route_R5
+  ef_EF_005 -->|predicts failure| svc_xas_sim
+  ef_EF_006 -->|predicts failure| route_F
+  ef_EF_007 -->|predicts failure| q_stage_x_balances_balance_refresh_live
+  ef_EF_007 -->|predicts failure| state_reservation_awaiting_balance_refresh
+  ef_EF_008 -->|predicts failure| route_H
+  svc_payouts_api -->|publishes| q_x_account_statement_source_event
+  finding_F_M4_001 -->|root cause| sym_GetFreePayoutAttributes
+  boundary_internet_edge -->|routes to| ep_bulk_create
+  boundary_internet_edge -->|routes to| ep_dashboard_create
+  boundary_internet_edge -->|routes to| ep_free_payout
+  boundary_internet_edge -->|routes to| ep_internal_app_create
+  boundary_internet_edge -->|routes to| ep_public_api_create
+  svc_fts_web -->|status transport| svc_payouts_api
+  svc_fts_worker_fire_transfer_status_webhook -->|status transport| svc_payouts_api
+  svc_fts_worker_fire_transfer_status_webhook -->|status transport| topic_rx_fts_status_update_events
+  svc_monolith_stub -->|status transport| svc_fts_web
+  svc_monolith_stub -->|status transport| svc_payouts_api
+  svc_payouts_worker_fts_async_processing -->|status transport| svc_fts_web
+  svc_verifier -->|status transport| svc_fts_web
+  topic_rx_fts_status_update_events -->|status transport| topic_rx_fts_status_update_events
+  finding_F_M4_001 -->|targets route| ep_free_payout
+  finding_F_T10_1 -->|targets route| route_D
+  finding_F_T10_1 -->|targets route| route_E
+  state_reservation_awaiting_balance_refresh -->|transition| state_reservation_released
+  state_reservation_live -->|transition| state_reservation_awaiting_balance_refresh
+  state_reservation_live -->|transition| state_reservation_released
+  ds_kafka -->|uses| boundary_internal_mesh
+  ds_localstack -->|uses| boundary_internal_mesh
+  ds_mongo_cfa -->|uses| boundary_internal_mesh
+  ds_mysql_apidb_stub -->|uses| boundary_internal_mesh
+  ds_mysql_fts -->|uses| boundary_internal_mesh
+  ds_mysql_payouts -->|uses| boundary_internal_mesh
+  ds_mysql_xbalances -->|uses| boundary_internal_mesh
+  ds_postgres_ledger -->|uses| boundary_internal_mesh
+  ds_redis -->|uses| boundary_internal_mesh
+  q_journal_create -->|uses| ds_localstack
+  q_rbl_banking_account_statement -->|uses| ds_localstack
+  q_stage_x_balances_balance_refresh_live -->|uses| ds_localstack
+  q_x_account_statement_source_event -->|uses| ds_localstack
+  svc_asv_stub -->|uses| boundary_internal_mesh
+  svc_bankingaccounts_stub -->|uses| boundary_internal_mesh
+  svc_cfa_server -->|uses| boundary_internal_mesh
+  svc_cfa_worker_contact -->|uses| boundary_internal_mesh
+  svc_cfa_worker_fa -->|uses| boundary_internal_mesh
+  svc_cron_driver -->|uses| boundary_internal_mesh
+  svc_dcs_stub -->|uses| boundary_internal_mesh
+  svc_fts_web -->|uses| boundary_internal_mesh
+  svc_fts_worker_check_transfer_status -->|uses| boundary_internal_mesh
+  svc_fts_worker_default -->|uses| boundary_internal_mesh
+  svc_fts_worker_fire_transfer_status_webhook -->|uses| boundary_internal_mesh
+  svc_fts_worker_initiate_transfer -->|uses| boundary_internal_mesh
+  svc_fts_worker_rbl_check_transfer_status -->|uses| boundary_internal_mesh
+  svc_fts_worker_rbl_direct_imps_check_transfer_status -->|uses| boundary_internal_mesh
+  svc_fts_worker_rbl_direct_imps_initiate_transfer -->|uses| boundary_internal_mesh
+  svc_fts_worker_rbl_imps_check_transfer_status -->|uses| boundary_internal_mesh
+  svc_fts_worker_rbl_imps_initiate_transfer -->|uses| boundary_internal_mesh
+  svc_fts_worker_rbl_initiate_transfer -->|uses| boundary_internal_mesh
+  svc_fts_worker_retry_transfer -->|uses| boundary_internal_mesh
+  svc_fts_worker_retry_transfer_preprocessor -->|uses| boundary_internal_mesh
+  svc_fts_worker_retry_transfer_source_update -->|uses| boundary_internal_mesh
+  svc_kong_lite -->|uses| boundary_internet_edge
+  svc_ledger_api -->|uses| boundary_internal_mesh
+  svc_ledger_gate -->|uses| boundary_internet_edge
+  svc_ledger_scheduler -->|uses| boundary_internal_mesh
+  svc_ledger_worker -->|uses| boundary_internal_mesh
+  svc_ledger_worker_balance_update -->|uses| boundary_internal_mesh
+  svc_ledger_worker_entry_details_create -->|uses| boundary_internal_mesh
+  svc_ledger_worker_entry_details_create_pg -->|uses| boundary_internal_mesh
+  svc_ledger_worker_journal_create -->|uses| boundary_internal_mesh
+  svc_merchant_webhook_sink -->|uses| boundary_internal_mesh
+  svc_monolith_stub -->|uses| boundary_internal_mesh
+  svc_mozart_mock -->|uses| boundary_bank
+  svc_mozart_sim -->|uses| boundary_bank
+  svc_payouts_api -->|uses| boundary_internal_mesh
+  svc_payouts_kafka_fts_status_updates_consumer -->|uses| boundary_internal_mesh
+  svc_payouts_kafka_fts_status_updates_retry_consumer -->|uses| boundary_internal_mesh
+  svc_payouts_worker_async_dual_write -->|uses| boundary_internal_mesh
+  svc_payouts_worker_fts_async_hv_processing -->|uses| boundary_internal_mesh
+  svc_payouts_worker_fts_async_processing -->|uses| boundary_internal_mesh
+  svc_payouts_worker_generic_processing -->|uses| boundary_internal_mesh
+  svc_payouts_worker_on_hold_payout -->|uses| boundary_internal_mesh
+  svc_payouts_worker_partner_bank_hold_payouts -->|uses| boundary_internal_mesh
+  svc_payouts_worker_payout_create_failure_handling -->|uses| boundary_internal_mesh
+  svc_payouts_worker_payout_source_updater -->|uses| boundary_internal_mesh
+  svc_payouts_worker_payout_update_failure_handling -->|uses| boundary_internal_mesh
+  svc_payouts_worker_queued_payout -->|uses| boundary_internal_mesh
+  svc_payouts_worker_rbl_banking_account_statement -->|uses| boundary_internal_mesh
+  svc_payouts_worker_schedule_payout -->|uses| boundary_internal_mesh
+  svc_payouts_worker_transaction_create -->|uses| boundary_internal_mesh
+  svc_payouts_worker_webhook_event -->|uses| boundary_internal_mesh
+  svc_payouts_worker_x_balances_balance_refresh -->|uses| boundary_internal_mesh
+  svc_pricing_stub -->|uses| boundary_internal_mesh
+  svc_shield_stub -->|uses| boundary_internal_mesh
+  svc_splitz_stub -->|uses| boundary_internal_mesh
+  svc_stork_capture -->|uses| boundary_internal_mesh
+  svc_verifier -->|uses| boundary_internal_mesh
+  svc_workflow_sim -->|uses| boundary_internal_mesh
+  svc_xas_sim -->|uses| boundary_internal_mesh
+  svc_xbalances_server -->|uses| boundary_internal_mesh
+  svc_xbalances_worker -->|uses| boundary_internal_mesh
+  svc_cfa_server -->|writes to| ds_mongo_cfa
+  svc_fts_web -->|writes to| ds_mysql_fts
+  svc_ledger_api -->|writes to| ds_postgres_ledger
+  svc_payouts_api -->|writes to| ds_mysql_payouts
+  svc_payouts_api -->|writes to| ds_redis
+  svc_xbalances_server -->|writes to| ds_mysql_xbalances
+
+  classDef real fill:#e6f4ea,stroke:#137333,color:#0b3d1e;
+  classDef substitute fill:#fef7e0,stroke:#b06000,color:#5c3200;
+  classDef fixture fill:#f1f3f4,stroke:#5f6368,color:#202124;
+  classDef expectedfailure fill:#fce8e6,stroke:#c5221f,color:#5c0f0d;
+  classDef missing fill:#f3e8fd,stroke:#7b1fa2,color:#3d0a52,stroke-dasharray:4 3;
+  class ef_EF_001,ef_EF_002,ef_EF_003,ef_EF_004,ef_EF_005,ef_EF_006,ef_EF_007,ef_EF_008,q_stage_x_balances_balance_refresh_live,route_F,topic_rx_fts_status_update_events expectedfailure;
+  class comp_basd_rows_banking_account_statement_details,comp_direct_pricing_flat_twin_plan,comp_slice_direct_channel fixture;
+  class arch_authz,arch_batch,arch_dashboard_bff,arch_recon_art,arch_ups,arch_workflow_service,arch_xas_x_account_statements,da_da_ext_fee_payout_processed,da_da_ext_fee_payout_reversed,da_da_ext_payout_,da_da_ext_payout_processed,da_da_ext_payout_reversed,da_da_fee_,da_da_fee_payout_processed,da_da_fee_payout_reversed,da_da_payout_failed,da_da_payout_initiated,route_H missing;
+  class arch_cfa,arch_fts,arch_kafka,arch_ledger,arch_payouts_service,arch_x_balances,comp_cfa_server_v1_candidate,comp_concurrent_idempotency_payout_create,comp_da_ledger_journals_da_payout_processed_recon,comp_fts_web_fts_v1_candidate,comp_journey_direct_immediate_failure,comp_journey_direct_success_create_fts_bank_statement_recon_ledge,comp_journey_statement_first_ordering,comp_ledger_api_ledger_v1_candidate,comp_payouts_api_ps_core_v1_candidate,comp_ps_art_route_v1_banking_account_statement_process_batch_matc,comp_ps_updatepayoutafterbasrecon_repair_route,comp_ps_worker_rbl_banking_account_statement_statement_ingest,comp_ps_x_account_statement_source_event_queue,comp_reservation_release_5_min_reconciler_trigger_b,comp_tenant_isolation_boundary_merchant_a_b,comp_xbalances_server_x_balances_v1_candidate,ds_kafka,ds_localstack,ds_mongo_cfa,ds_mysql_apidb_stub,ds_mysql_fts,ds_mysql_payouts,ds_mysql_xbalances,ds_postgres_ledger,ds_redis,ep_bulk_create,ep_free_payout,ep_internal_app_create,ep_public_api_create,finding_F_M4_001,finding_F_T10_1,finding_H_D4,id_merchant_passport,id_service_creds real;
+  class inv_G26,inv_G28_adj,inv_G31,inv_G51,inv_G53,inv_G54,inv_I01,inv_I02,inv_I03,inv_I04,inv_I10,inv_I11,inv_I12,inv_I13,inv_I20,inv_I21,inv_I22,inv_I23,inv_I24,inv_I30,inv_I31,inv_I40,inv_I41,inv_I42,inv_I50,inv_I51,inv_I52,inv_I60,inv_I61,inv_I70,inv_I71,inv_I72,inv_I80,inv_I81,inv_I82,inv_I90,inv_S01,journey_A,journey_B,journey_C real;
+  class journey_D,journey_E,journey_F,journey_G,q_journal_create,q_rbl_banking_account_statement,q_x_account_statement_source_event,route_A,route_D,route_G,route_R_remap,route_R1,route_R11,route_R4,route_R8,route_R9,svc_cfa_server,svc_fts_web,svc_ledger_api,svc_payouts_api,svc_xbalances_server,sym_GetFreePayoutAttributes,state_payout_created,state_payout_failed,state_payout_processed,state_payout_reversed,state_reservation_awaiting_balance_refresh,state_reservation_live,state_reservation_released,topic_api_ledger_journal_create_live,topic_journal_created,topic_payout_updates_test_dev,boundary_internal_mesh,svc_cfa_worker_contact,svc_cfa_worker_fa,svc_fts_worker_check_transfer_status,svc_fts_worker_default,svc_fts_worker_fire_transfer_status_webhook,svc_fts_worker_initiate_transfer,svc_fts_worker_rbl_check_transfer_status real;
+  class svc_fts_worker_rbl_direct_imps_check_transfer_status,svc_fts_worker_rbl_direct_imps_initiate_transfer,svc_fts_worker_rbl_imps_check_transfer_status,svc_fts_worker_rbl_imps_initiate_transfer,svc_fts_worker_rbl_initiate_transfer,svc_fts_worker_retry_transfer,svc_fts_worker_retry_transfer_preprocessor,svc_fts_worker_retry_transfer_source_update,svc_ledger_scheduler,svc_ledger_worker,svc_ledger_worker_balance_update,svc_ledger_worker_entry_details_create,svc_ledger_worker_entry_details_create_pg,svc_ledger_worker_journal_create,svc_payouts_kafka_fts_status_updates_consumer,svc_payouts_kafka_fts_status_updates_retry_consumer,svc_payouts_worker_async_dual_write,svc_payouts_worker_fts_async_hv_processing,svc_payouts_worker_fts_async_processing,svc_payouts_worker_generic_processing,svc_payouts_worker_on_hold_payout,svc_payouts_worker_partner_bank_hold_payouts,svc_payouts_worker_payout_create_failure_handling,svc_payouts_worker_payout_source_updater,svc_payouts_worker_payout_update_failure_handling,svc_payouts_worker_queued_payout,svc_payouts_worker_rbl_banking_account_statement,svc_payouts_worker_schedule_payout,svc_payouts_worker_transaction_create,svc_payouts_worker_webhook_event,svc_payouts_worker_x_balances_balance_refresh,svc_xbalances_worker real;
+  class arch_api_monolith,arch_asv,arch_banking_accounts,arch_cron_fastcron,arch_dcs,arch_edge_kong_passport,arch_mozart,arch_pricing,arch_shield,arch_splitz,arch_stork,comp_autonomous_hypothesis_lifecycle_harness,comp_autonomous_soak_bounded_checkpointed,comp_balance_refresh_hold_release_trigger_a_balancerefreshevent,comp_bankingaccounts_stub_rbl_credentials_route,comp_cross_provider_replay_machinery_calibration,comp_da_ledger_journal_emitter_processledgerpayoutfordirect,comp_dcs_stub_feature_config,comp_journey_pending_failure_held_failed_reversed,comp_journey_pending_success_held_processed_ledger,comp_kong_lite_hardened_edge,comp_monolith_stub_create_fta_relay_emitter,comp_mozart_sim_rbl_v2_account_statement_bank_boundary,comp_splitz_stub_experiment_flags,comp_xas_sim_xas_enrichment_matcher_b,da_da_ext_credit,da_da_ext_debit,da_da_payout_processed,da_da_payout_processed_recon,da_da_payout_reversed,da_da_payout_reversed_recon,ep_dashboard_create,id_broker,id_kong_edge,route_B,route_C,route_E,route_I,route_R10,route_R12 substitute;
+  class route_R13,route_R14,route_R15,route_R2,route_R3,route_R5,route_R6,route_R7,svc_asv_stub,svc_bankingaccounts_stub,svc_cron_driver,svc_dcs_stub,svc_kong_lite,svc_ledger_gate,svc_merchant_webhook_sink,svc_monolith_stub,svc_mozart_mock,svc_mozart_sim,svc_pricing_stub,svc_shield_stub,svc_splitz_stub,svc_stork_capture,svc_verifier,svc_workflow_sim,svc_xas_sim,boundary_bank,boundary_internet_edge substitute;

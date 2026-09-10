@@ -1,0 +1,663 @@
+{
+  "architecture_snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+  "counts": {
+    "by_category": {
+      "core-real-binary": 67,
+      "datastore-or-infra": 9,
+      "source-to-pay": 4,
+      "substitute": 18
+    },
+    "jobs": 5,
+    "services": 98
+  },
+  "derivation": {
+    "rules": {
+      "FULL": "every canonical ServiceRecipe of the snapshot (98) + migration jobs + Source-to-Pay overlay"
+    }
+  },
+  "families": [
+    "family:account-statement",
+    "family:accounting",
+    "family:admin-ops",
+    "family:approval-workflow",
+    "family:async-workers",
+    "family:balance-refresh-reservations",
+    "family:bank-health-routing",
+    "family:beneficiary-fund-accounts",
+    "family:bulk-payouts",
+    "family:cross-domain-s2p",
+    "family:data-consistency",
+    "family:direct-payouts",
+    "family:failure-reversal-cancellation",
+    "family:feature-flags-experiments",
+    "family:fetch-list",
+    "family:fts-retry-repair",
+    "family:fts-status-propagation",
+    "family:fund-account-validation",
+    "family:fund-management-payouts",
+    "family:fund-transfer-execution",
+    "family:internal-service-routes",
+    "family:mozart-gateway",
+    "family:observability-sla",
+    "family:on-hold",
+    "family:pricing-free-payouts",
+    "family:public-api-ingress",
+    "family:queued-low-balance",
+    "family:scheduled-payouts",
+    "family:shared-ingress",
+    "family:shared-payouts",
+    "family:source-to-pay-tds",
+    "family:source-updates",
+    "family:statement-reconciliation",
+    "family:usage-events",
+    "family:va-payouts",
+    "family:virtual-account-payouts",
+    "family:webhooks"
+  ],
+  "jobs": [
+    "payouts-migrate",
+    "ledger-migrate",
+    "fts-migrate",
+    "cfa-migrate",
+    "xbalances-migrate"
+  ],
+  "journeys": [
+    "journey:shared-payouts/success",
+    "journey:cross-domain-s2p/success"
+  ],
+  "kind": "runtime_profile",
+  "name": "full",
+  "recipe_set_id": "85f237c46431c2af8b1ad9818a9e3b266080c7db829c198bf8811c8c02ee1bc0",
+  "s2p": true,
+  "schema_version": "m9.1",
+  "services": {
+    "api-ingress": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "asv-stub": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "bankingaccounts-stub": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "batch-sim": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "cfa-server": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "cfa-worker-contact": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "cfa-worker-fa": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "cron-driver": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "dcs-stub": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-web": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-check-transfer-status": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-default": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-fire-transfer-status-webhook": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-hv-fire-transfer-status-webhook": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-hv-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-check-transfer-status": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-direct-check-transfer-status": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-direct-imps-check-transfer-status": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-direct-imps-hv-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-direct-imps-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-direct-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-direct-slow-lane-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-direct-upi-check-transfer-status": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-direct-upi-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-imps-check-transfer-status": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-imps-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-upi-check-transfer-status": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-upi-hv-check-transfer-status": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-upi-hv-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-rbl-upi-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-retry-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-retry-transfer-preprocessor": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-retry-transfer-source-update": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "fts-worker-slow-lane-initiate-transfer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "kafka": {
+      "category": "datastore-or-infra",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "kong-lite": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "ledger-api": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "ledger-gate": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "ledger-scheduler": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "ledger-worker": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "ledger-worker-balance-update": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "ledger-worker-entry-details-create": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "ledger-worker-entry-details-create-pg": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "ledger-worker-journal-create": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "localstack": {
+      "category": "datastore-or-infra",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "merchant-webhook-sink": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "mongo-cfa": {
+      "category": "datastore-or-infra",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "monolith-stub": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "mozart-sim": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "mysql-apidb-stub": {
+      "category": "datastore-or-infra",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "mysql-fts": {
+      "category": "datastore-or-infra",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "mysql-payouts": {
+      "category": "datastore-or-infra",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "mysql-xbalances": {
+      "category": "datastore-or-infra",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-api": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-kafka-fts-status-updates-consumer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-kafka-fts-status-updates-retry-consumer": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-api-queue-for-async-dual-write-direct-push": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-async-dual-write": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-batch-submitted-merchants": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-bulk-payouts": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-data-consistency-checker": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-data-consistency-event": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-fts-async-hv-processing": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-fts-async-processing": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-fund-management-payout-check": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-fund-management-payout-initiate": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-generic-processing": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-on-hold-payout": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-partner-bank-hold-payouts": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-payout-create-failure-handling": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-payout-source-updater": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-payout-update-failure-handling": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-payout-usage-event-processing": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-queued-payout": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-rbl-banking-account-statement": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-schedule-payout": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-transaction-create": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-webhook-event": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-x-account-statement-source-event": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-x-balance-payouts-event": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "payouts-worker-x-balances-balance-refresh": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "postgres-ledger": {
+      "category": "datastore-or-infra",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "pricing-stub": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "redis": {
+      "category": "datastore-or-infra",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "s2p-kafka": {
+      "category": "source-to-pay",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "s2p-mysql": {
+      "category": "source-to-pay",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "s2p-redis": {
+      "category": "source-to-pay",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "s2p-vp-source": {
+      "category": "source-to-pay",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "shield-stub": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "splitz-stub": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "stork-capture": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "workflow-engine": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "workflow-sim": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "xas-sim": {
+      "category": "substitute",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "xbalances-server": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    },
+    "xbalances-worker": {
+      "category": "core-real-binary",
+      "reasons": [
+        "FULL: canonical recipe of snapshot 5b6a5dade17e"
+      ]
+    }
+  }
+}

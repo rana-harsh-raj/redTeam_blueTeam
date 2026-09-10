@@ -1,0 +1,16 @@
+{
+  "schema_version": 1,
+  "status": "specification-only-not-created",
+  "kind": "approved-private-empty-docker-in-docker-snapshot",
+  "base_image_example": "docker:28.3.3-dind",
+  "base_image_digest": null,
+  "snapshot_name": null,
+  "required_tools": ["Docker daemon", "Docker Compose v2", "bash", "python3", "tar", "GNU coreutils timeout", "openssl"],
+  "required_capabilities": ["nested Docker bridge networking", "NET_RAW", "NET_ADMIN", "host-network packet capture inside the sandbox"],
+  "resources": "Derived from measured local resource profile before selecting a matching snapshot",
+  "contents": "Public operating-system tooling only; no private source, private binaries, credentials, or generated synthetic secrets",
+  "setup_network": "Snapshot preparation happens in an independently approved build environment with explicit approved domains; this package performs no snapshot build",
+  "runtime_network": "network_block_all=true at creation and before tests",
+  "persistence": "No shared volumes, no runtime snapshots, no archive calls",
+  "reference": "https://www.daytona.io/docs/snapshots/"
+}

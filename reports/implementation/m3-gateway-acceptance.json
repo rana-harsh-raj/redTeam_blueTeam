@@ -1,0 +1,139 @@
+{
+  "generated_at": "2026-09-06T09:29:35Z",
+  "gateway": "http://127.0.0.1:18080",
+  "enforcement_expected": true,
+  "checks": [
+    {
+      "name": "enforcement_active",
+      "passed": true,
+      "fetch_multiple_status": 404,
+      "canned_markers_present": false
+    },
+    {
+      "name": "internal_routes_unreachable",
+      "passed": true,
+      "probes": [
+        {
+          "method": "GET",
+          "path": "/v1/payouts/fetch_multiple?id=pout_1234&auth_type=proxy",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "POST",
+          "path": "/v1/payouts/manual_action",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "POST",
+          "path": "/v1/payouts/rzp_fees_payout",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "GET",
+          "path": "/v1/payouts/analytics",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "POST",
+          "path": "/v1/payouts/payouts_internal/pout_x/approve",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "GET",
+          "path": "/v1/payouts/payouts_internal/pout_x",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "POST",
+          "path": "/v1/payouts/bulk",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "GET",
+          "path": "/v1/internal/non_terminal_payouts/ARENABAL000002",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "POST",
+          "path": "/v1/admin/merchant-configuration",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "POST",
+          "path": "/v1/workflow/state",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "POST",
+          "path": "/v1/notify/health/update",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "GET",
+          "path": "/v1/contacts",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        },
+        {
+          "method": "POST",
+          "path": "/twirp/ledger/x",
+          "status": 404,
+          "canned_leak": false,
+          "ok": true
+        }
+      ]
+    },
+    {
+      "name": "public_routes_functional",
+      "passed": true,
+      "probes": [
+        {
+          "method": "GET",
+          "path": "/v1/payouts",
+          "status": 200,
+          "ok": true
+        },
+        {
+          "method": "GET",
+          "path": "/v1/payouts/payouts_status_reason_map",
+          "status": 200,
+          "ok": true
+        }
+      ],
+      "create_status": 200,
+      "payout_id": "pout_TYhaUC2Ji7YiQg",
+      "fetch_status": 200,
+      "fetched_merchant": "ARENAM00000001"
+    },
+    {
+      "name": "identity_header_cannot_swap_merchant",
+      "passed": true,
+      "returned_merchant": "ARENAM00000001",
+      "note": "supplied victim x-merchant-id/X-Entity-Id; passport consumer wins"
+    }
+  ],
+  "all_passed": true
+}

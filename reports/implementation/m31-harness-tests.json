@@ -1,0 +1,36 @@
+{
+  "generated_at": "2026-09-06T14:52:52Z",
+  "suites": {
+    "pricing_ids_collision_length": {
+      "module": "RED_LOOP.tests.test_pricing_ids",
+      "tests": 8,
+      "ok": true,
+      "tail": [
+        "Ran 8 tests in 0.009s",
+        "",
+        "OK"
+      ]
+    },
+    "hardened_route_policy": {
+      "module": "RED_LOOP.tests.test_route_policy",
+      "tests": 9,
+      "ok": true,
+      "tail": [
+        "Ran 9 tests in 0.000s",
+        "",
+        "OK"
+      ]
+    },
+    "deterministic_judge_admission": {
+      "module": "RED_LOOP.tests.test_judge_admission",
+      "tests": 7,
+      "ok": true,
+      "tail": [
+        "Ran 7 tests in 0.000s",
+        "",
+        "OK"
+      ]
+    }
+  },
+  "all_passed": true
+}

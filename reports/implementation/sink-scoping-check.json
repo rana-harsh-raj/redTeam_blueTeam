@@ -1,0 +1,10 @@
+{
+  "status": "passed",
+  "kind": "isolated_read_only_synthetic_filter_check",
+  "checks": {
+    "full_capture": true,
+    "scope_preserves_duplicates": true,
+    "mismatched_owner": true,
+    "stored_capture_unchanged": true
+  }
+}

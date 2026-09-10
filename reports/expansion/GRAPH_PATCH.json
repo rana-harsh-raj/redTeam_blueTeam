@@ -1,0 +1,2752 @@
+{
+  "version": "2026-09-07.expansion.v1",
+  "base_graph": "reports/PAYOUTS_SERVICE_GRAPH.json (version 2026-09-04.v2)",
+  "generated_by": "reports/expansion/scripts/build_graph_patch.py",
+  "new_node_types": [
+    "business domain",
+    "business journey"
+  ],
+  "new_edge_types": [
+    "executes"
+  ],
+  "confidence_scale": [
+    "confirmed",
+    "probable",
+    "inferred",
+    "unknown"
+  ],
+  "relabel_nodes": [
+    {
+      "id": "svc:settlements",
+      "type": "service",
+      "label": "Settlements service (PG-side; Twirp rzp.settlements.transfer.v1) — NOT ACCESSIBLE",
+      "accessible": false,
+      "repo": "settlements",
+      "lifecycle": "current",
+      "domain": "settlements",
+      "note": "Was an unexplained stub. Now evidenced by 8 independent hooks: own SNS topic payout-updates-settlements, TransferService.StatusUpdatePayout, FTS product SETTLEMENT + auth user, ledger client settlements_key, monolith source_type=settlements. Owner @razorpay/TechSettlements (PG BU), not RazorpayX.",
+      "evidence": "payouts/config/prod.toml:371; api/app/Services/Settlements/Payout.php:14,35; fts/config/env.prod-live.toml:171-223; proto/settlements/transfer/v1/transfer_api.proto:116; ledger/config/prod-live.toml:174-281"
+    },
+    {
+      "id": "svc:wallet",
+      "type": "service",
+      "label": "RazorpayWallet (api.razorpaywallet.com; Issuing/gift-card BU) — NOT ACCESSIBLE",
+      "accessible": false,
+      "repo": "wallet",
+      "lifecycle": "current",
+      "domain": "wallet",
+      "note": "Was an unexplained stub. FTS products CUSTOMER_PAYOUT/CUSTOMER_WALLET, FTS+CFA auth user wallet, ledger client + fund_account_types amazonpay/rx_wallet, banking-accounts rx_wallet account type, 33 protos under proto/wallet. Owner @razorpay/gc_issuing — NOT a RazorpayX product.",
+      "evidence": "fts/config/env.prod-live.toml:171-223; cfa/config/prod.toml; ledger/internal/common/constant.go:221-322; terraform-kong/.github/CODEOWNERS:76-77"
+    },
+    {
+      "id": "svc:beam",
+      "type": "service",
+      "label": "Beam / chotabeam — bank file relay (py; crons) — NOT ACCESSIBLE",
+      "accessible": false,
+      "repo": "beam",
+      "lifecycle": "current",
+      "domain": "shared-infra",
+      "evidence": "kube-manifests/prod/beam/values.yaml:19-20; kube-manifests/prod/chotabeam/values.yaml:7-55; api/config/applications.php:982-987"
+    }
+  ],
+  "nodes": [
+    {
+      "id": "domain:s2p",
+      "type": "business domain",
+      "label": "Vendor Payments + Tax Payments/TDS (Source-to-Pay apps)",
+      "accessible": null,
+      "evidence": "api/app/Models/PayoutSource/Entity.php:23-39; vendor-payments/internal/"
+    },
+    {
+      "id": "domain:payroll",
+      "type": "business domain",
+      "label": "Payroll (XPayroll / Opfin)",
+      "accessible": null,
+      "evidence": "payouts/internal/auth/headers.go:12; api/app/Services/XPayroll/Service.php"
+    },
+    {
+      "id": "domain:capital",
+      "type": "business domain",
+      "label": "Capital (LOC, collections, early settlement, BNPL, corporate cards)",
+      "accessible": null,
+      "evidence": "proto/capital; api/app/Services/CapitalCollectionsClient.php"
+    },
+    {
+      "id": "domain:settlements",
+      "type": "business domain",
+      "label": "PG Settlements consuming X payouts (on-demand / early settlement)",
+      "accessible": null,
+      "evidence": "api/app/Services/RazorpayXClient.php:131-190"
+    },
+    {
+      "id": "domain:ca-onboarding",
+      "type": "business domain",
+      "label": "Current-Account onboarding + KYC (master-onboarding, BVS, banking-accounts)",
+      "accessible": null,
+      "evidence": "agent-skills/teams/banking/skills/ca-onboarding-oncall-debugger/SKILL.md:41-88"
+    },
+    {
+      "id": "domain:accounting",
+      "type": "business domain",
+      "label": "Accounting integrations + business reporting",
+      "accessible": null,
+      "evidence": "accounting-integrations/config/prod.toml:196,204"
+    },
+    {
+      "id": "domain:cross-border",
+      "type": "business domain",
+      "label": "Cross-border import / ICA transfers",
+      "accessible": null,
+      "evidence": "api/app/Models/Payout/SourceUpdater/Factory.php:80"
+    },
+    {
+      "id": "repo:vendor-experience",
+      "type": "repository",
+      "label": "razorpay/vendor-experience",
+      "accessible": true,
+      "lifecycle": "current",
+      "domain": "s2p",
+      "evidence": "clone root; gh_repos.txt"
+    },
+    {
+      "id": "repo:x-payroll",
+      "type": "repository",
+      "label": "razorpay/x-payroll (deployable `opfin`) — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "spinacode/v3/opfin/prod/mum-rspl/app.json \"repo\": \"x-payroll\""
+    },
+    {
+      "id": "repo:x-payroll-compute",
+      "type": "repository",
+      "label": "razorpay/x-payroll-compute — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "spinacode/x-payroll-compute/default.jsonnet:4,11,18"
+    },
+    {
+      "id": "repo:x-payroll-compliance",
+      "type": "repository",
+      "label": "razorpay/x-payroll-compliance (deployable opfin-compliance) — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "spinacode/v3/opfin-compliance/prod/mum-rspl/*"
+    },
+    {
+      "id": "repo:x-payroll-hris",
+      "type": "repository",
+      "label": "razorpay/x-payroll-hris — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "proto/x-payroll/hris/v1/employee_custom_fields_api.proto:6 go_package"
+    },
+    {
+      "id": "repo:x-payroll-flexible-benefits",
+      "type": "repository",
+      "label": "razorpay/x-payroll-flexible-benefits — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "proto/x-payroll/flexible-benefits/v2/assignment_service.proto:5 go_package"
+    },
+    {
+      "id": "repo:x-salary-structure",
+      "type": "repository",
+      "label": "razorpay/x-salary-structure — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "kube-manifests/prod/x-salary-structure/values.yaml:2-3"
+    },
+    {
+      "id": "repo:x-attendance",
+      "type": "repository",
+      "label": "razorpay/x-attendance (image x-tna) — accessible, EMPTY template",
+      "accessible": true,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "gh api repos/razorpay/x-attendance (internal, 6KB); README.md = 'template'"
+    },
+    {
+      "id": "repo:x-payroll-commons",
+      "type": "repository",
+      "label": "razorpay/x-payroll-commons — accessible, EMPTY template",
+      "accessible": true,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "gh api repos/razorpay/x-payroll-commons (internal, 7KB); README.md = 'template'"
+    },
+    {
+      "id": "repo:tax-compliance",
+      "type": "repository",
+      "label": "razorpay/tax-compliance — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "s2p",
+      "evidence": "proto/tax_compliance/compliance/tds_payments/v1/tds_payments.proto:5 go_package; spinacode/tax-compliance"
+    },
+    {
+      "id": "repo:tax-payments",
+      "type": "repository",
+      "label": "razorpay/tax-payments (GitHub snapshot; likely folded into vendor-payments) — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "s2p",
+      "evidence": "knowledge-base GitHub snapshot; proto/tax-payments/service.proto:10 package vendorpayments.taxpayments"
+    },
+    {
+      "id": "repo:capital-cards",
+      "type": "repository",
+      "label": "razorpay/capital-cards — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "capital",
+      "evidence": "kube-manifests/prod-capital/capital-cards; api/app/Services/CapitalCardsClient.php"
+    },
+    {
+      "id": "repo:capital-collections",
+      "type": "repository",
+      "label": "razorpay/capital-collections — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "capital",
+      "evidence": "kube-manifests/prod-capital/capital-collections; api/config/applications.php:1083"
+    },
+    {
+      "id": "repo:capital-loc",
+      "type": "repository",
+      "label": "razorpay/capital-loc (line-of-credit) — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "capital",
+      "evidence": "api/config/applications.php:1023; proto/capital/loc"
+    },
+    {
+      "id": "repo:capital-es",
+      "type": "repository",
+      "label": "razorpay/capital-es (early/on-demand settlement) — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "settlements",
+      "evidence": "rzpconv/rzpconv/core.yaml; proto/capital/es/cron/v1/cron_api.proto:9"
+    },
+    {
+      "id": "repo:settlements",
+      "type": "repository",
+      "label": "razorpay/settlements — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "settlements",
+      "evidence": "kube-manifests/templates/settlements; proto/settlements"
+    },
+    {
+      "id": "repo:master-onboarding",
+      "type": "repository",
+      "label": "razorpay/master-onboarding — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "ca-onboarding",
+      "evidence": "kube-manifests/prod/master-onboarding/values.yaml:6,12; banking-accounts/config/default.toml:103-106"
+    },
+    {
+      "id": "repo:business-verification-service",
+      "type": "repository",
+      "label": "razorpay/business-verification-service (bvs) — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "ca-onboarding",
+      "evidence": "spinacode/bvs (local repo); kube-manifests/prod/bvs/values.yaml:6"
+    },
+    {
+      "id": "repo:accounts-receivable",
+      "type": "repository",
+      "label": "razorpay/accounts-receivable (X Invoices backend) — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "s2p",
+      "evidence": "kube-manifests/prod/accounts-receivable/values.yaml:9,16,19; api/config/applications.php:1180"
+    },
+    {
+      "id": "repo:business-reporting",
+      "type": "repository",
+      "label": "razorpay/business-reporting — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "accounting",
+      "evidence": "api/config/applications.php:1188; payouts/internal/auth/headers.go:21"
+    },
+    {
+      "id": "repo:budgets",
+      "type": "repository",
+      "label": "razorpay/budgets (Budgets & PettyCash) — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "s2p",
+      "evidence": "proto/budgets/budgets/v1/budgets_api.proto:14; terraform-kong/templates/budgets"
+    },
+    {
+      "id": "repo:x-bill-payments",
+      "type": "repository",
+      "label": "razorpay/x-bill-payments — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "s2p",
+      "evidence": "kube-manifests/templates/x-bill-payments; proto/x_bill_payments"
+    },
+    {
+      "id": "repo:x-customer-payout-links",
+      "type": "repository",
+      "label": "razorpay/x-customer-payout-links (payee frontend) — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payout-links",
+      "evidence": "kube-manifests/prod/x-customer-payout-links/values.yaml:6"
+    },
+    {
+      "id": "repo:abacus",
+      "type": "repository",
+      "label": "razorpay/abacus (ABAC / limits) — 404",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "shared-infra",
+      "evidence": "goutils abac client abacus-grpc-int.razorpay.com; vendor-payments/config/default.toml:569"
+    },
+    {
+      "id": "svc:vendor-experience",
+      "type": "service",
+      "label": "Vendor experience (vendor portal/onboarding; api + 2 Cadence workers)",
+      "accessible": true,
+      "lifecycle": "current",
+      "domain": "s2p",
+      "evidence": "kube-manifests/prod/vendor-experience/values.yaml:8-10,17-20; vendor-payments/config/default.toml:583"
+    },
+    {
+      "id": "svc:opfin",
+      "type": "service",
+      "label": "Opfin / XPayroll core (PHP; payroll.razorpay.com; queues main/low/custom-reports/payouts-creation; crons ActualBankTransfer, BatchBankTransfer, ProcessMerchantPayoutsInNonCreatedState) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "kube-manifests/prod/opfin/values.yaml; terraform-kong prod payroll routes; api/config/applications.php:215-220"
+    },
+    {
+      "id": "svc:opfin-compliance",
+      "type": "service",
+      "label": "Opfin compliance (PF/ESI/PT; Temporal) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "kube-manifests/prod/opfin-compliance/values.yaml:3,65-"
+    },
+    {
+      "id": "svc:x-payroll-compute",
+      "type": "service",
+      "label": "x-payroll-compute (gRPC + Temporal + Kafka SDI consumer) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "kube-manifests/prod/x-payroll-compute/values.yaml; proto/x-payroll/x-payroll-compute"
+    },
+    {
+      "id": "svc:x-payroll-hris",
+      "type": "service",
+      "label": "x-payroll-hris (gRPC) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "kube-manifests/prod/x-payroll-hris/values.yaml:1-2,14-15"
+    },
+    {
+      "id": "svc:x-salary-structure",
+      "type": "service",
+      "label": "x-salary-structure (gRPC) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "kube-manifests/prod/x-salary-structure/values.yaml:2-3,15-16"
+    },
+    {
+      "id": "svc:x-payroll-flexible-benefits",
+      "type": "service",
+      "label": "x-payroll-flexible-benefits (Kafka employee-settings-sync consumer) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "kube-manifests/prod/x-payroll-flexible-benefits/values.yaml"
+    },
+    {
+      "id": "svc:x-tna",
+      "type": "service",
+      "label": "x-tna time & attendance (Temporal Cloud) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "payroll",
+      "evidence": "kube-manifests/prod/x-tna/values.yaml:2-3,18-20,39-46"
+    },
+    {
+      "id": "svc:tax-compliance",
+      "type": "service",
+      "label": "tax-compliance (TDS filing/payments; SQS payout-events consumer; Temporal; own Vault) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "s2p",
+      "evidence": "kube-manifests/prod/tax-compliance/values.yaml (SQS prod-tax-compliance-payout-events); proto/tax_compliance"
+    },
+    {
+      "id": "svc:tax-compliance-vault",
+      "type": "service",
+      "label": "tax-compliance-vault (HashiCorp Vault used by PAYOUTS, ns razorpayx) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "s2p",
+      "evidence": "payouts/config/prod.toml:718-724 [hvault]; kube-manifests/prod/tax-compliance-vault/values.yaml:2,22-24"
+    },
+    {
+      "id": "svc:capital-cards",
+      "type": "service",
+      "label": "capital-cards (corporate cards; prod-capital cluster) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "capital",
+      "evidence": "kube-manifests/prod-capital/capital-cards; api/app/Services/CapitalCardsClient.php:21,76"
+    },
+    {
+      "id": "svc:capital-collections",
+      "type": "service",
+      "label": "capital-collections — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "capital",
+      "evidence": "api/app/Services/CapitalCollectionsClient.php:73-125"
+    },
+    {
+      "id": "svc:capital-loc",
+      "type": "service",
+      "label": "capital-loc / line-of-credit — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "capital",
+      "evidence": "api/app/Http/Route.php:1557-1562 LOCController@razorpayXWebhook"
+    },
+    {
+      "id": "svc:capital-es",
+      "type": "service",
+      "label": "capital-es early/on-demand settlements (creates X payouts via public API; KeepSufficientBalanceInPayoutsMerchant cron) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "settlements",
+      "evidence": "proto/capital/es/cron/v1/cron_api.proto:9; api/app/Services/RazorpayXClient.php:131-190; payouts/internal/auth/headers.go:24"
+    },
+    {
+      "id": "svc:master-onboarding",
+      "type": "service",
+      "label": "master-onboarding (MOB; gRPC rzp.master_onboarding.intent.v1) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "ca-onboarding",
+      "evidence": "kube-manifests/prod/master-onboarding/values.yaml:6,12; alert-rules/rules/prod-rules/master_onboarding_rules.yaml:6,13"
+    },
+    {
+      "id": "svc:bvs",
+      "type": "service",
+      "label": "Business Verification Service (KYC; 12 workers) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "ca-onboarding",
+      "evidence": "kube-manifests/prod/bvs/values.yaml; vendor-payments/config/default.toml:455"
+    },
+    {
+      "id": "svc:onboarding",
+      "type": "service",
+      "label": "onboarding (obs) platform — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "ca-onboarding",
+      "evidence": "kube-manifests/prod/onboarding/values.yaml:6-7,10,30-42"
+    },
+    {
+      "id": "svc:accounts-receivable",
+      "type": "service",
+      "label": "accounts-receivable (X Invoices; hosted invoice + payout webhook) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "s2p",
+      "evidence": "terraform-kong/templates/backend-accounts-receivable/backend-accounts-receivable.tf:15-4x; payouts/internal/auth/headers.go:20"
+    },
+    {
+      "id": "svc:business-reporting",
+      "type": "service",
+      "label": "business-reporting (ledger balance fetch; Kafka worker) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "accounting",
+      "evidence": "api/config/applications.php:1188; payouts/internal/auth/headers.go:21"
+    },
+    {
+      "id": "svc:reporting",
+      "type": "service",
+      "label": "reporting.razorpay.com (5 report ids used by accounting-integrations) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "accounting",
+      "evidence": "accounting-integrations/config/prod.toml"
+    },
+    {
+      "id": "svc:abacus",
+      "type": "service",
+      "label": "abacus (ABAC / limits; gRPC) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "shared-infra",
+      "evidence": "vendor-payments/config/default.toml:569; workflows/config/prod.toml:185-221"
+    },
+    {
+      "id": "svc:metro",
+      "type": "service",
+      "label": "metro (orchestration/bulk queue; metro-web.razorpay.com) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "shared-infra",
+      "evidence": "vendor-payments/config/default.toml:211"
+    },
+    {
+      "id": "svc:ufh",
+      "type": "service",
+      "label": "UFH unified file handler — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "shared-infra",
+      "evidence": "vendor-payments/config/default.toml:117"
+    },
+    {
+      "id": "svc:scrooge",
+      "type": "service",
+      "label": "Scrooge refunds (PG) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "pg",
+      "evidence": "payouts/internal/auth/headers.go:15; api/app/Models/Payout/SourceUpdater/Factory.php:57"
+    },
+    {
+      "id": "svc:cross-border-import",
+      "type": "service",
+      "label": "Cross-border import (XBI; ICA transfers) — NOT ACCESSIBLE",
+      "accessible": false,
+      "lifecycle": "current",
+      "domain": "cross-border",
+      "evidence": "payouts/internal/auth/headers.go:23; api/app/Models/Payout/SourceUpdater/Factory.php:80"
+    },
+    {
+      "id": "worker:vendor-payments-kafka",
+      "type": "worker",
+      "label": "vendor-payments Kafka workers (tds, initiate-tds, ocr, bank-statement-fetch, accounting-payouts, auto-invoice, email-int, zoho-statement-sync, contact-updated…; 11 deployments)",
+      "accessible": false,
+      "evidence": "kube-manifests/prod/vendor-payments/values.yaml; vendor-payments/internal/tasks/*.go RegisterTask"
+    },
+    {
+      "id": "worker:vendor-experience-cadence",
+      "type": "worker",
+      "label": "vendor-experience Cadence workflow + activity workers",
+      "accessible": false,
+      "evidence": "kube-manifests/prod/vendor-experience/values.yaml:17-20"
+    },
+    {
+      "id": "worker:opfin-crons",
+      "type": "worker",
+      "label": "opfin CronJobs ActualBankTransfer / BatchBankTransfer / ProcessMerchantPayoutsInNonCreatedState",
+      "accessible": false,
+      "evidence": "kube-manifests/prod/opfin/values.yaml (run_cron jobs)"
+    },
+    {
+      "id": "worker:tax-compliance-sqs",
+      "type": "worker",
+      "label": "tax-compliance SQS worker on prod-tax-compliance-payout-events",
+      "accessible": false,
+      "evidence": "kube-manifests/prod/tax-compliance/values.yaml SQS_WORKER_Q*"
+    },
+    {
+      "id": "fe:x-vendor-payments",
+      "type": "frontend",
+      "label": "X dashboard views VendorPayouts / TaxPayments / Accounting / Receivables / Budgets",
+      "accessible": null,
+      "evidence": "x/src/js/views/{VendorPayouts,TaxPayments,Accounting,Receivables,Budgets}"
+    },
+    {
+      "id": "fe:x-vendor-portal",
+      "type": "frontend",
+      "label": "x-vendor-portal + x-invoice-approval (frontend-x lerna packages)",
+      "accessible": null,
+      "evidence": "frontend-x packages; spinacode/x-vendor-portal, x-invoice-approval"
+    },
+    {
+      "id": "fe:x-accounts-receivable",
+      "type": "frontend",
+      "label": "x-accounts-receivable hosted-invoice frontend (invoices-x.razorpay.com)",
+      "accessible": null,
+      "evidence": "terraform-kong/templates/frontend-accounts-receivable/frontend-accounts-receivable.tf:16-51"
+    },
+    {
+      "id": "fe:payroll-web",
+      "type": "frontend",
+      "label": "payroll.razorpay.com (Opfin web; X reaches it only by SSO redirect /sso?integraterx=1)",
+      "accessible": null,
+      "evidence": "x/config.js:302; x/src/js/Routes.js:1407; dashboard/environment/.env.production:71 OPFIN_REDIRECT_URL"
+    },
+    {
+      "id": "fe:x-capital",
+      "type": "frontend",
+      "label": "X Capital views (CorporateCards, LineOfCredit, BNPL, Loans, CashAdvance) via federated bundles cdn.razorpay.com/capital/*",
+      "accessible": null,
+      "evidence": "x/src/js/views/Capital/*; x/src/js/bootstrap.ts:45-53"
+    },
+    {
+      "id": "db:vendor-payments-mysql",
+      "type": "datastore",
+      "label": "vendor-payments MySQL (88 migrations: invoices, purchase_orders, grns, tax_payments, tds_categories, vendor_advances…) + reads api_live",
+      "accessible": true,
+      "evidence": "vendor-payments/internal/migrations; findings/07 §2.4"
+    },
+    {
+      "id": "db:vendor-payments-es",
+      "type": "datastore",
+      "label": "vendor-payments Elasticsearch (elasticservice; prod-elastic-data-ingestion)",
+      "accessible": true,
+      "evidence": "vendor-payments/internal/elasticservice; config/default.toml:716"
+    },
+    {
+      "id": "db:vendor-experience-db",
+      "type": "datastore",
+      "label": "vendor-experience DB (Cadence-backed; schema in repo)",
+      "accessible": true,
+      "evidence": "vendor-experience/"
+    },
+    {
+      "id": "db:accounting-integrations-db",
+      "type": "datastore",
+      "label": "accounting-integrations DB (sync_status etc.)",
+      "accessible": true,
+      "evidence": "accounting-integrations/"
+    },
+    {
+      "id": "db:opfin-pg",
+      "type": "datastore",
+      "label": "prod-aurora-postgres-opfin-1a/1b, prod-aurora-postgres-xpayroll-1b",
+      "accessible": false,
+      "evidence": "alert-rules/rules/prod-rules/rds_generated_alerts_prod-aurora-postgres-opfin-*.yaml"
+    },
+    {
+      "id": "db:tax-compliance-pg",
+      "type": "datastore",
+      "label": "prod-aurora-postgres-tax-compliance-1a/1b",
+      "accessible": false,
+      "evidence": "alert-rules/rules/prod-rules/rds_generated_alerts_prod-aurora-postgres-tax-compliance-1*.yaml"
+    },
+    {
+      "id": "db:xperience-pg",
+      "type": "datastore",
+      "label": "prod-aurora-postgres-xperience-1a/1b (budgets, petty cash, cost centers, groups)",
+      "accessible": true,
+      "evidence": "alert-rules rds files; kube-manifests/prod/xperience/values.yaml"
+    },
+    {
+      "id": "db:capital-es-mysql",
+      "type": "datastore",
+      "label": "prod-aurora-mysql-capital-es-1a",
+      "accessible": false,
+      "evidence": "alert-rules rds file"
+    },
+    {
+      "id": "db:bvs-pg",
+      "type": "datastore",
+      "label": "prod-auroa-postgres-bvs-live-1b",
+      "accessible": false,
+      "evidence": "alert-rules rds file"
+    },
+    {
+      "id": "db:monolith-x-tables",
+      "type": "datastore",
+      "label": "monolith api_live X-adjacent tables: payout_sources, payouts_details(tax_payment_id, tds_category_id), corporate_cards, capital_transaction, credit_transfers, settlement_ondemand_*, banking_accounts, banking_account_statement, transactions",
+      "accessible": true,
+      "evidence": "api/app/Constants/Table.php; api/app/Models/PayoutSource/Entity.php:17-21; PayoutsDetails/Entity.php:16-17"
+    },
+    {
+      "id": "q:sns-payout-updates-vendor-payments",
+      "type": "queue/topic",
+      "label": "SNS payout-updates-vendor-payments (source_types vendor_payments, tax_payments, vendor_settlements, vendor_advance)",
+      "accessible": null,
+      "evidence": "payouts/config/prod.toml:375-378"
+    },
+    {
+      "id": "q:sns-payout-updates-xpayroll",
+      "type": "queue/topic",
+      "label": "SNS payout-updates-xpayroll",
+      "accessible": null,
+      "evidence": "payouts/config/prod.toml:369"
+    },
+    {
+      "id": "q:sns-payout-updates-settlements",
+      "type": "queue/topic",
+      "label": "SNS payout-updates-settlements",
+      "accessible": null,
+      "evidence": "payouts/config/prod.toml:371"
+    },
+    {
+      "id": "q:sns-payout-updates-payout-links",
+      "type": "queue/topic",
+      "label": "SNS payout-updates-payout-links",
+      "accessible": null,
+      "evidence": "payouts/config/prod.toml:370"
+    },
+    {
+      "id": "q:sns-payout-updates-capital",
+      "type": "queue/topic",
+      "label": "SNS topics for capital_cards / capital_line_of_credit / capital_collections",
+      "accessible": null,
+      "evidence": "payouts/config/prod.toml:368-388"
+    },
+    {
+      "id": "q:sns-payout-updates-cross-border",
+      "type": "queue/topic",
+      "label": "SNS topic for cross_border / ica_transfer",
+      "accessible": null,
+      "evidence": "payouts/config/prod.toml:368-388"
+    },
+    {
+      "id": "q:sns-payout-updates-generic-accounting",
+      "type": "queue/topic",
+      "label": "SNS payout-updates generic_accounting / refund / charge_collections / petty_cash",
+      "accessible": null,
+      "evidence": "payouts/config/prod.toml:368-388"
+    },
+    {
+      "id": "q:kafka-add-tds-entry",
+      "type": "queue/topic",
+      "label": "Kafka add-tds-entry (consumer: vendor-payments initiate-tds; producer NOT FOUND in clone root)",
+      "accessible": null,
+      "evidence": "vendor-payments/config/prod.toml:336; internal/tasks/initiatetds.go:21,44; api/app/Models/Payout/TdsProcessor/Processor.php:31-86 (monolith side)"
+    },
+    {
+      "id": "q:kafka-vp-accounting-payouts-status",
+      "type": "queue/topic",
+      "label": "Kafka prod.x.vendor-payments.accounting-payouts.status-update (producer vendor-payments; consumer accounting-integrations)",
+      "accessible": null,
+      "evidence": "vendor-payments/config/prod.toml:272-273; accounting-integrations/config/prod.toml:196,204"
+    },
+    {
+      "id": "q:kafka-vp-internal",
+      "type": "queue/topic",
+      "label": "vendor-payments internal Kafka families: prod-tds, prod-email-int, prod-auto-invoice-processing, prod-po-status-update, prod-grn-status-update, prod-vp-status-update, prod-fetch-gstr-2a/2b, prod-vp-gstr-2b-recon, prod-ocr, prod-fund-account-verification, prod-elastic-data-ingestion, prod-vendor-advance-event, prod-items-update-event, prod-vendor-entity-updates-event",
+      "accessible": null,
+      "evidence": "vendor-payments/config/prod.toml; internal/tasks/*.go"
+    },
+    {
+      "id": "q:sqs-tax-compliance-payout-events",
+      "type": "queue/topic",
+      "label": "SQS prod-tax-compliance-payout-events (consumer tax-compliance; producer UNKNOWN — likely payouts/monolith)",
+      "accessible": null,
+      "evidence": "kube-manifests/prod/tax-compliance/values.yaml"
+    },
+    {
+      "id": "q:kafka-employee-settings-sync",
+      "type": "queue/topic",
+      "label": "Kafka employee-settings-sync (x-payroll-flexible-benefits consumer)",
+      "accessible": null,
+      "evidence": "kube-manifests/prod/x-payroll-flexible-benefits/values.yaml"
+    },
+    {
+      "id": "q:sqs-x-balances-payout-event",
+      "type": "queue/topic",
+      "label": "SQS x-balances-payout-event / x-balances-account-activation-event",
+      "accessible": null,
+      "evidence": "kube-manifests cell x-balances values"
+    },
+    {
+      "id": "ep:monolith-internalContactPayout",
+      "type": "API endpoint",
+      "label": "POST /v1/internalContactPayout (monolith; internal apps vendor_payments/xpayroll/charge_collections/capital_collections)",
+      "accessible": null,
+      "evidence": "api/app/Http/Route.php (payout_create_on_internal_contact); vendor-payments/internal/payout/core.go:84,138"
+    },
+    {
+      "id": "ep:monolith-payouts-internal-tax-payment-id",
+      "type": "API endpoint",
+      "label": "PATCH /v1/payouts_internal/{id}/tax-payment-id",
+      "accessible": null,
+      "evidence": "api/app/Http/Route.php:2339; vendor-payments/internal/taxpayments/apicaller.go:21"
+    },
+    {
+      "id": "ep:monolith-tax-payments",
+      "type": "API endpoint",
+      "label": "monolith /v1/tax-payments/* (40 routes; Twirp proxy to vendor-payments razorpay.vendorpayments.taxpayments)",
+      "accessible": null,
+      "evidence": "api/app/Http/Route.php:2646-2684; api/app/Services/TaxPayments/Service.php:14-45"
+    },
+    {
+      "id": "ep:monolith-vendor-payments-proxy",
+      "type": "API endpoint",
+      "label": "monolith /v1/vendor-payments/* (~150 routes proxied to vendor-payments; Kong also routes api.razorpay.com/v1/vendor-payments/** direct)",
+      "accessible": null,
+      "evidence": "api/app/Http/Route.php; terraform-kong prod vendor-payments"
+    },
+    {
+      "id": "ep:vp-twirp",
+      "type": "API endpoint",
+      "label": "vendor-payments Twirp `vendorpayments` (131 rpcs) + gRPC rzp.vendor_payments.*",
+      "accessible": null,
+      "evidence": "proto/vendor-payments/service.proto:15; rpc/buf.gen.twirp.yaml"
+    },
+    {
+      "id": "ep:vp-taxpayments-twirp",
+      "type": "API endpoint",
+      "label": "vendor-payments Twirp razorpay.vendorpayments.taxpayments (34 rpcs: PayTaxPayment, InitiateMonthlyPayouts, CancelQueuedPayoutCron, AddPenaltyCron, InternalIciciAction…)",
+      "accessible": null,
+      "evidence": "proto/tax-payments/service.proto:12; vendor-payments/internal/apiservice/TaxPaymentServer.go:123-185"
+    },
+    {
+      "id": "ep:vp-workflow-callback",
+      "type": "API endpoint",
+      "label": "vendor-payments CallbackApi.WorkflowStateCallback (from workflows)",
+      "accessible": null,
+      "evidence": "proto/vendor-payments/callback/v1/service.proto:9; workflows/config/prod.toml:173-175"
+    },
+    {
+      "id": "ep:opfin-merchant-payout-status",
+      "type": "API endpoint",
+      "label": "POST payroll.razorpay.com/v2/api/merchant-payout-status (payout status push to Opfin)",
+      "accessible": null,
+      "evidence": "api/app/Services/XPayroll/Service.php:26,54-90; terraform-kong razorpayx_rx_integrated_webhoook_routes-xpayroll"
+    },
+    {
+      "id": "ep:opfin-validate-source-account",
+      "type": "API endpoint",
+      "label": "POST /v2/api/validate-source-account (payroll TPV of X source account)",
+      "accessible": null,
+      "evidence": "api/app/Services/XPayroll/Service.php:28,216-264"
+    },
+    {
+      "id": "ep:monolith-xpayroll-allowlist",
+      "type": "API endpoint",
+      "label": "monolith routes allowed to app.xpayroll: payout_create_internal, payout_create_on_internal_contact, payout_create_2FA_internal, contact_create_internal, fund_account_create_internal, banking_accounts_list_internal, tax_payments_internal_icici_action, user_details_for_payroll, bulk_payout_purpose_post, user_details, user_all_roles",
+      "accessible": null,
+      "evidence": "api/app/Http/Route.php:18626-18638; api/config/applications_v2.php:741-761"
+    },
+    {
+      "id": "ep:settlements-StatusUpdatePayout",
+      "type": "API endpoint",
+      "label": "Twirp rzp.settlements.transfer.v1.TransferService/StatusUpdatePayout",
+      "accessible": null,
+      "evidence": "api/app/Services/Settlements/Payout.php:14,35; proto/settlements/transfer/v1/transfer_api.proto:116"
+    },
+    {
+      "id": "ep:capital-es-KeepSufficientBalance",
+      "type": "API endpoint",
+      "label": "capital-es CronAPI.KeepSufficientBalanceInPayoutsMerchant / DetectStuckOndemandSettlements",
+      "accessible": null,
+      "evidence": "proto/capital/es/cron/v1/cron_api.proto:9"
+    },
+    {
+      "id": "ep:monolith-loc-withdrawal-update",
+      "type": "API endpoint",
+      "label": "POST /v1/loc/withdrawal/update (LOCController@razorpayXWebhook forwards X payout callback)",
+      "accessible": null,
+      "evidence": "api/app/Http/Route.php:1557-1562"
+    },
+    {
+      "id": "ep:monolith-onboardCCCForBanking",
+      "type": "API endpoint",
+      "label": "POST /v1/merchant/onboardCCCForBanking → balance account_type=corp_card channel=m2p",
+      "accessible": null,
+      "evidence": "api/app/Http/Route.php:5248; api/app/Models/CorpCard/Core.php:50-62"
+    },
+    {
+      "id": "ep:capital-cards-account-details",
+      "type": "API endpoint",
+      "label": "capital-cards GET v1/vendorpayment/account_details",
+      "accessible": null,
+      "evidence": "api/app/Services/CapitalCardsClient.php:21,76"
+    },
+    {
+      "id": "ep:accounts-receivable-payout-webhook",
+      "type": "API endpoint",
+      "label": "accounts-receivable POST /v1/invoices/payout/handleWebhook",
+      "accessible": null,
+      "evidence": "terraform-kong/templates/backend-accounts-receivable/backend-accounts-receivable.tf"
+    },
+    {
+      "id": "ep:xperience-corporate-cards",
+      "type": "API endpoint",
+      "label": "xperience /v1/xperience-edge/corporate-cards/{page-view,spends-summary} (CorporateCardsAPI)",
+      "accessible": null,
+      "evidence": "proto/xperience/corporatecards/v1/corporatecards_api.proto:18; terraform-kong xperience routes"
+    },
+    {
+      "id": "ep:kong-partner-lms",
+      "type": "API endpoint",
+      "label": "Kong /v1/partner_lms/** → banking-account.razorpay.com (CA onboarding)",
+      "accessible": null,
+      "evidence": "terraform-kong/templates/banking-accounts/*.tf"
+    },
+    {
+      "id": "ep:mob-intent-api",
+      "type": "API endpoint",
+      "label": "master-onboarding gRPC rzp.master_onboarding.intent.v1.IntentAPI",
+      "accessible": null,
+      "evidence": "alert-rules/rules/prod-rules/master_onboarding_rules.yaml:72-94"
+    },
+    {
+      "id": "ep:icici-direct-tax",
+      "type": "API endpoint",
+      "label": "ICICI apibankingone.icicibank.com /api/v1/directTaxTin2/{paymentProcess,verification,debitAdvice} (bypasses FTS)",
+      "accessible": null,
+      "evidence": "vendor-payments/config/default.toml:325-343 [IciciConfig]"
+    },
+    {
+      "id": "event:transaction.created",
+      "type": "event",
+      "label": "stork transaction.created / transaction.updated (producer api monolith)",
+      "accessible": null,
+      "evidence": "stork/internal/webhook/event_constants.go:132-133; api/app/Models/Transaction/Core.php"
+    },
+    {
+      "id": "event:settlement.processed",
+      "type": "event",
+      "label": "stork settlement.processed (producer api monolith)",
+      "accessible": null,
+      "evidence": "stork/internal/webhook/event_constants.go:42"
+    },
+    {
+      "id": "event:banking_accounts.issued",
+      "type": "event",
+      "label": "stork banking_accounts.issued",
+      "accessible": null,
+      "evidence": "stork/internal/webhook/event_constants.go"
+    },
+    {
+      "id": "event:payout_link.*",
+      "type": "event",
+      "label": "stork payout_link.* (8 events; producer payout-links)",
+      "accessible": null,
+      "evidence": "stork/internal/webhook/event_constants.go"
+    },
+    {
+      "id": "event:bill_payment.*",
+      "type": "event",
+      "label": "stork bill_payment.* (4 events; feature enable_bbps; producer UNKNOWN)",
+      "accessible": null,
+      "evidence": "stork/internal/webhook/event_constants.go:127-130"
+    },
+    {
+      "id": "flag:skip_wf_for_payroll",
+      "type": "feature flag",
+      "label": "skip_wf_for_payroll (DCS skip_workflow_for_payroll): maker-checker bypass when caller app == xpayroll",
+      "accessible": null,
+      "evidence": "payouts/internal/app/payouts/processor/baseHelper.go:185-191; pkg/dcs/features/features.go:47; api/app/Models/Payout/Processor/Base.php:2614-2619"
+    },
+    {
+      "id": "flag:hide_rx_payroll_payouts",
+      "type": "feature flag",
+      "label": "hide_rx_payroll_payouts: dashboard excludes source_type=xpayroll",
+      "accessible": null,
+      "evidence": "payouts/internal/app/payouts/core.go:9594-9596; config-proto/rzp/x/merchant/payouts/payroll_payouts.proto:9-15"
+    },
+    {
+      "id": "flag:enable_payouts_to_cards",
+      "type": "feature flag",
+      "label": "enable_payouts_to_cards (config-proto owned by payouts)",
+      "accessible": null,
+      "evidence": "config-proto/rzp/x/merchant/payouts/cards.proto:6-20"
+    },
+    {
+      "id": "flag:pricing_tiers",
+      "type": "feature flag",
+      "label": "banking_plus_core/pro, source_to_pay_core/pro (X pricing tiers; paywall)",
+      "accessible": null,
+      "evidence": "config-proto/rzp/x/merchant/onboarding/pricing_tiers.proto:12-27"
+    },
+    {
+      "id": "flag:uiconfig-xproducts",
+      "type": "feature flag",
+      "label": "X product catalogue (20 products: insights, vendor_payments, tax_payments, cash_advance, receivables, petty_cash, accounting, line_of_credit, payout_links, cost_centers, payroll, finance_x, …)",
+      "accessible": null,
+      "evidence": "config-proto/rzp/x/country/dashboard/uiconfig.proto:17-55"
+    },
+    {
+      "id": "flag:capital_cards",
+      "type": "feature flag",
+      "label": "capital_cards / capital_cards_eligible / capital_cards_collections / cash_on_card",
+      "accessible": null,
+      "evidence": "api/app/Models/Feature/Constants.php:344,709-759"
+    },
+    {
+      "id": "id:app-vendor_payments",
+      "type": "identity",
+      "label": "internal app vendor_payments (basic auth; monolith + Payouts allow-list; contact type rzp_tax_pay)",
+      "accessible": null,
+      "evidence": "payouts/internal/auth/headers.go:13; payouts/internal/app/contact/type.go:17; authz internal.csv:8"
+    },
+    {
+      "id": "id:app-xpayroll",
+      "type": "identity",
+      "label": "internal app xpayroll (basic auth; contact type rzp_xpayroll; skip-wf feature)",
+      "accessible": null,
+      "evidence": "payouts/internal/auth/headers.go:12; payouts/internal/app/contact/type.go:20; api/config/applications_v2.php:741-761"
+    },
+    {
+      "id": "id:app-settlements_service",
+      "type": "identity",
+      "label": "internal app settlements_service (posts /v1/payouts_internal)",
+      "accessible": null,
+      "evidence": "payouts/internal/auth/headers.go:16; authz internal.csv:8; payouts/config/prod.toml:104-106"
+    },
+    {
+      "id": "id:app-capital",
+      "type": "identity",
+      "label": "internal apps capital_collections_client / capital_cards_client / loc / capital_bnpl / capital_early_settlements",
+      "accessible": null,
+      "evidence": "payouts/internal/auth/headers.go:17,24; authz internal.csv"
+    },
+    {
+      "id": "id:app-accounts_receivable",
+      "type": "identity",
+      "label": "internal app accounts_receivable",
+      "accessible": null,
+      "evidence": "payouts/internal/auth/headers.go:20"
+    },
+    {
+      "id": "id:app-business_reporting",
+      "type": "identity",
+      "label": "internal app business_reporting",
+      "accessible": null,
+      "evidence": "payouts/internal/auth/headers.go:21"
+    },
+    {
+      "id": "id:app-cross_border_import",
+      "type": "identity",
+      "label": "internal app cross_border_import",
+      "accessible": null,
+      "evidence": "payouts/internal/auth/headers.go:23"
+    },
+    {
+      "id": "id:ledger-clients",
+      "type": "identity",
+      "label": "ledger 36 client keys (X tenant: payouts, x_balances, + PG: settlements, scrooge, capital_collections, capital_es, bill_payments, offers_engine…)",
+      "accessible": null,
+      "evidence": "ledger/config/prod-live.toml:174-281"
+    },
+    {
+      "id": "id:workflow-callers",
+      "type": "identity",
+      "label": "workflows 12 callers (api, payouts, relay, growth, payout_links, splitz, xperience, abacus, vendor_experience, offers_engine, payments_bank_transfer, vendor_payments)",
+      "accessible": null,
+      "evidence": "workflows/config/prod.toml:185-221"
+    },
+    {
+      "id": "id:vendor",
+      "type": "identity",
+      "label": "Vendor (vendor-experience vendor user / portal OTP; BVS-verified)",
+      "accessible": null,
+      "evidence": "vendor-experience/; authz roles vendor"
+    },
+    {
+      "id": "id:employee",
+      "type": "identity",
+      "label": "Employee (payroll employee_id; petty_cash_employee role in X)",
+      "accessible": null,
+      "evidence": "api/app/Models/User/BankingRole.php:10-35; proto/x-payroll"
+    },
+    {
+      "id": "id:business_id",
+      "type": "identity",
+      "label": "business_id (banking-accounts CA onboarding: businesses/people/signatories/partner_bank_applications)",
+      "accessible": null,
+      "evidence": "banking-accounts migrations; findings/07 §2.2"
+    },
+    {
+      "id": "id:cardholder",
+      "type": "identity",
+      "label": "cardholder_id / card_id / program_id (capital-cards protos)",
+      "accessible": null,
+      "evidence": "proto/capital/cards/*"
+    },
+    {
+      "id": "role:vendor-payments-roles",
+      "type": "role",
+      "label": "~43 vendor-payments/PO/GRN/ITC permission-roles; tax/TDS roles PAY_TAX_PAYMENTS, VIEW/UPDATE_TAX_PAYMENT_SETTINGS(_AUTO), TAX_PAYMENT_ADMIN_AUTH_EXECUTE",
+      "accessible": null,
+      "evidence": "authz/scripts/policies/**/xplatform*.csv; api/app/Http/Route.php:11615,12401-12405"
+    },
+    {
+      "id": "role:cards-rbac",
+      "type": "role",
+      "label": "cards RBAC card:*/repayment:*/program:limit (capital resource group) for owner/admin/finance/finance_l1-l3/operations/view_only",
+      "accessible": null,
+      "evidence": "authz/scripts/policies/**/20221212154546_cards_RBAC.csv; capital.csv:4-99"
+    },
+    {
+      "id": "role:banking-roles",
+      "type": "role",
+      "label": "BankingRole set incl. maker/checker_l1-3, cc_admin, chartered_accountant, vendor, petty_cash_employee, banking_readonly",
+      "accessible": null,
+      "evidence": "api/app/Models/User/BankingRole.php:10-35"
+    },
+    {
+      "id": "ext:icici-direct-tax",
+      "type": "external bank/provider",
+      "label": "ICICI direct-tax challan APIs (apibankingone.icicibank.com)",
+      "accessible": null,
+      "evidence": "vendor-payments/config/default.toml:325-343"
+    },
+    {
+      "id": "ext:mastersindia",
+      "type": "external bank/provider",
+      "label": "MastersIndia GST API",
+      "accessible": null,
+      "evidence": "vendor-payments/config/default.toml:745"
+    },
+    {
+      "id": "ext:veryfi",
+      "type": "external bank/provider",
+      "label": "Veryfi OCR",
+      "accessible": null,
+      "evidence": "vendor-payments/config/default.toml:598"
+    },
+    {
+      "id": "ext:zoho-tally",
+      "type": "external bank/provider",
+      "label": "Zoho Books / Tally / QuickBooks (accounting tools)",
+      "accessible": null,
+      "evidence": "accounting-integrations/internal/service/accountingtool/{tally,zoho}"
+    },
+    {
+      "id": "ext:temporal-cloud",
+      "type": "external bank/provider",
+      "label": "Temporal Cloud (x-payroll-compliance, x-tna, x-payroll-compute)",
+      "accessible": null,
+      "evidence": "kube-manifests/prod/opfin-compliance/values.yaml; prod/x-tna/values.yaml:39-46"
+    },
+    {
+      "id": "ext:m2p",
+      "type": "external bank/provider",
+      "label": "M2P card issuer rail (fts channel m2p; mozart capital_m2p)",
+      "accessible": null,
+      "evidence": "mozart/app/config/capital/capital_m2p/v1/base.json; api/app/Models/CorpCard/Core.php:50-62"
+    },
+    {
+      "id": "journey:vp-invoice-to-payout",
+      "type": "business journey",
+      "label": "Vendor invoice → approval workflow → payout via payouts_internal → status back via SNS → accounting sync",
+      "accessible": null,
+      "evidence": "vendor-payments/internal/payout/core.go:83,109; workflows/internal/constants/constants.go:36-40; payouts/config/prod.toml:375"
+    },
+    {
+      "id": "journey:tds-monthly-remittance",
+      "type": "business journey",
+      "label": "Monthly TDS remittance: add-tds-entry → InitiateMonthlyPayouts → internalContactPayout (rzp_tax_pay) → tag-back tax-payment-id",
+      "accessible": null,
+      "evidence": "vendor-payments/internal/taxpayments/core.go:1027,1929,2780; apicaller.go:21"
+    },
+    {
+      "id": "journey:po-grn-approval",
+      "type": "business journey",
+      "label": "Purchase order / GRN approval (workflow types purchase-order-approval, goods-received-note-approval)",
+      "accessible": null,
+      "evidence": "workflows/internal/constants/constants.go:36-40"
+    },
+    {
+      "id": "journey:vendor-onboarding",
+      "type": "business journey",
+      "label": "Vendor invite → portal (vendor-experience) → BVS verification → fund account",
+      "accessible": null,
+      "evidence": "vendor-experience/; vendor-payments/config/default.toml:455,583"
+    },
+    {
+      "id": "journey:payroll-salary-disbursement",
+      "type": "business journey",
+      "label": "Opfin cron ActualBankTransfer/BatchBankTransfer → payout_create_internal (app xpayroll, skip_wf_for_payroll) → SNS xpayroll → merchant-payout-status",
+      "accessible": null,
+      "evidence": "kube-manifests/prod/opfin/values.yaml; payouts/internal/app/payouts/processor/baseHelper.go:185-191; api/app/Services/XPayroll/Service.php:26"
+    },
+    {
+      "id": "journey:ondemand-settlement-to-x",
+      "type": "business journey",
+      "label": "PG on-demand settlement → capital-es → X public API payout (internal X merchant) → status via SNS settlements / StatusUpdatePayout",
+      "accessible": null,
+      "evidence": "api/app/Services/RazorpayXClient.php:131-190; proto/capital/es/cron/v1/cron_api.proto:9"
+    },
+    {
+      "id": "journey:loc-withdrawal",
+      "type": "business journey",
+      "label": "Capital LOC withdrawal → X payout → callback /loc/withdrawal/update",
+      "accessible": null,
+      "evidence": "api/app/Http/Route.php:1557-1562"
+    },
+    {
+      "id": "journey:corp-card-balance",
+      "type": "business journey",
+      "label": "Onboard Capital corporate card as X balance (account_type corp_card, channel m2p) → spends via xperience corporate-cards",
+      "accessible": null,
+      "evidence": "api/app/Http/Route.php:5248; api/app/Models/CorpCard/Core.php:50-62"
+    },
+    {
+      "id": "journey:ca-onboarding",
+      "type": "business journey",
+      "label": "CA application → master-onboarding intent → BVS KYC → banking-accounts activation → balance + ledger account",
+      "accessible": null,
+      "evidence": "agent-skills/teams/banking/skills/ca-onboarding-oncall-debugger/SKILL.md:41-88; api/app/Models/Merchant/Balance/Ledger/Core.php:133-160"
+    }
+  ],
+  "edges": [
+    {
+      "source": "svc:vendor-payments",
+      "target": "ep:monolith-payouts-internal",
+      "type": "calls",
+      "mechanism": "HTTP basic-auth internal app vendor_payments; POST v1/payouts_internal/ (host api-graphql.razorpay.com)",
+      "repository": "vendor-payments",
+      "file_path": "internal/payout/core.go:83,109; config/prod.toml:123",
+      "symbol": "CreatePayoutPath / rxclient.MakeCall",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "ep:monolith-internalContactPayout",
+      "type": "calls",
+      "mechanism": "HTTP POST v1/internalContactPayout/ for TDS remittance (contact type rzp_tax_pay)",
+      "repository": "vendor-payments",
+      "file_path": "internal/payout/core.go:84,138; internal/taxpayments/core.go:2780",
+      "symbol": "CreatePayoutOnInternalContact",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "ep:monolith-payouts-internal-tax-payment-id",
+      "type": "writes",
+      "mechanism": "PATCH v1/payouts_internal/{id}/tax-payment-id",
+      "repository": "vendor-payments",
+      "file_path": "internal/taxpayments/apicaller.go:21",
+      "symbol": "UpdateTaxPaymentIdOnPayout",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "ep:monolith-internalContactPayout",
+      "target": "svc:payouts",
+      "type": "routes_to",
+      "mechanism": "monolith forwards internal-contact payouts to Payouts Service; PS gate ValidateInternalAppAllowedToCreatePayoutsOnType",
+      "repository": "payouts",
+      "file_path": "internal/app/contact/type.go:17,35-48",
+      "symbol": "internalAppToAllowedInternalContact[vendor_payments]=rzp_tax_pay",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "id:app-vendor_payments",
+      "type": "authorizes",
+      "mechanism": "allowedInternalApps",
+      "repository": "payouts",
+      "file_path": "internal/auth/headers.go:13",
+      "symbol": "appConstants.VENDOR_PAYMENTS",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "q:sns-payout-updates-vendor-payments",
+      "type": "publishes",
+      "mechanism": "SNS source updater; 4 source types share one topic",
+      "repository": "payouts",
+      "file_path": "config/prod.toml:375-378; pkg/sourceupdater/event.go:89; pkg/sns/sns.go:83-87",
+      "symbol": "[source_update_topics]",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "q:sns-payout-updates-vendor-payments",
+      "target": "svc:api-monolith",
+      "type": "delivers_to",
+      "mechanism": "SourceUpdater Factory → VendorPaymentUpdater",
+      "repository": "api",
+      "file_path": "app/Models/Payout/SourceUpdater/Factory.php:29-36; VendorPaymentUpdater.php:14-16",
+      "symbol": "VendorPaymentUpdater",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:api-monolith",
+      "target": "svc:vendor-payments",
+      "type": "calls",
+      "mechanism": "PayoutStatusChange callback to vendor-payments",
+      "repository": "api",
+      "file_path": "app/Services/VendorPayments/Service.php:32,480-503",
+      "symbol": "PayoutStatusChange",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:api-monolith",
+      "target": "ep:vp-taxpayments-twirp",
+      "type": "calls",
+      "mechanism": "Twirp proxy razorpay.vendorpayments.taxpayments; 40 tax-payments/* routes",
+      "repository": "api",
+      "file_path": "app/Services/TaxPayments/Service.php:14-45,577-620; app/Http/Route.php:2646-2684",
+      "symbol": "TaxPayments\\Service",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "svc:workflow",
+      "type": "calls",
+      "mechanism": "workflow create for vendor-payment-v2-approval, purchase-order-approval, goods-received-note-approval, vendor-onboarding-approval",
+      "repository": "vendor-payments",
+      "file_path": "config/default.toml:536; workflows/internal/constants/constants.go:36-40",
+      "symbol": "workflows client",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:workflow",
+      "target": "ep:vp-workflow-callback",
+      "type": "calls",
+      "mechanism": "WorkflowStateCallback to vendor-payments.razorpay.com",
+      "repository": "workflows",
+      "file_path": "config/prod.toml:173-175; proto/vendor-payments/callback/v1/service.proto:9",
+      "symbol": "CallbackApi.WorkflowStateCallback",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "q:kafka-vp-accounting-payouts-status",
+      "type": "publishes",
+      "mechanism": "Kafka accounting-payouts status update",
+      "repository": "vendor-payments",
+      "file_path": "config/prod.toml:272-273",
+      "symbol": "VendorPaymentSourceUpdaterConfig.AIQueueName",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "q:kafka-vp-accounting-payouts-status",
+      "target": "svc:accounting-integrations",
+      "type": "delivers_to",
+      "mechanism": "Kafka consumer",
+      "repository": "accounting-integrations",
+      "file_path": "config/prod.toml:196,204",
+      "symbol": "consumer config",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "q:kafka-add-tds-entry",
+      "target": "svc:vendor-payments",
+      "type": "delivers_to",
+      "mechanism": "Kafka consumer initiate-tds; producer unknown (monolith TdsProcessor is the likely producer)",
+      "repository": "vendor-payments",
+      "file_path": "internal/tasks/initiatetds.go:21,44; api/app/Models/Payout/TdsProcessor/Processor.php:31-86",
+      "symbol": "HandleInitiateTdsJob",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "ext:icici-direct-tax",
+      "type": "calls",
+      "mechanism": "direct ICICI challan rail (bypasses FTS)",
+      "repository": "vendor-payments",
+      "file_path": "config/default.toml:325-343",
+      "symbol": "[IciciConfig]",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "svc:vendor-experience",
+      "type": "calls",
+      "mechanism": "vendor portal / onboarding",
+      "repository": "vendor-payments",
+      "file_path": "config/default.toml:583",
+      "symbol": "vendor-experience host",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "svc:bvs",
+      "type": "calls",
+      "mechanism": "vendor verification via BVS SDK",
+      "repository": "vendor-payments",
+      "file_path": "config/default.toml:455; go.mod business-verification-service-sdk-go",
+      "symbol": "bvs client",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "svc:abacus",
+      "type": "calls",
+      "mechanism": "limits/ABAC",
+      "repository": "vendor-payments",
+      "file_path": "config/default.toml:569",
+      "symbol": "abacus host",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "svc:metro",
+      "type": "calls",
+      "mechanism": "orchestration/bulk",
+      "repository": "vendor-payments",
+      "file_path": "config/default.toml:211",
+      "symbol": "metro host",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "svc:ufh",
+      "type": "calls",
+      "mechanism": "file handling (challans)",
+      "repository": "vendor-payments",
+      "file_path": "config/default.toml:117",
+      "symbol": "ufh host",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "svc:stork",
+      "type": "calls",
+      "mechanism": "TDS alert mails",
+      "repository": "vendor-payments",
+      "file_path": "config/default.toml:514; internal/taxpayments/core.go:1313-1354",
+      "symbol": "stork client",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "ext:mastersindia",
+      "type": "calls",
+      "mechanism": "GST data",
+      "repository": "vendor-payments",
+      "file_path": "config/default.toml:745",
+      "symbol": "MastersIndia",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "ext:veryfi",
+      "type": "calls",
+      "mechanism": "invoice OCR",
+      "repository": "vendor-payments",
+      "file_path": "config/default.toml:598",
+      "symbol": "Veryfi",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:capital-cards",
+      "target": "svc:vendor-payments",
+      "type": "calls",
+      "mechanism": "internal basic-auth caller capitalCards (pay vendor via corporate card)",
+      "repository": "vendor-payments",
+      "file_path": "internal/boot/helpers.go:244-249",
+      "symbol": "setupInternalAuthBasicCredentials",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:business-reporting",
+      "target": "svc:vendor-payments",
+      "type": "calls",
+      "mechanism": "internal basic-auth caller businessReporting",
+      "repository": "vendor-payments",
+      "file_path": "internal/boot/helpers.go:187-269",
+      "symbol": "setupInternalAuthBasicCredentials",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "svc:tax-compliance-vault",
+      "type": "reads",
+      "mechanism": "HashiCorp Vault tax-compliance-vault.razorpay.com ns razorpayx (secrets)",
+      "repository": "payouts",
+      "file_path": "config/prod.toml:718-724",
+      "symbol": "[hvault]",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "q:sqs-tax-compliance-payout-events",
+      "target": "svc:tax-compliance",
+      "type": "delivers_to",
+      "mechanism": "SQS worker; producer unknown",
+      "repository": "kube-manifests",
+      "file_path": "prod/tax-compliance/values.yaml",
+      "symbol": "SQS_WORKER_Q*",
+      "confidence": "unknown",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "db:vendor-payments-mysql",
+      "type": "writes",
+      "mechanism": "gorm",
+      "repository": "vendor-payments",
+      "file_path": "internal/migrations",
+      "symbol": "migrations",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:vendor-payments",
+      "target": "db:api-mysql",
+      "type": "reads",
+      "mechanism": "reads monolith api_live directly",
+      "repository": "vendor-payments",
+      "file_path": "config/prod.toml",
+      "symbol": "[api_live] db config",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:accounts-receivable",
+      "target": "svc:payouts",
+      "type": "calls",
+      "mechanism": "internal app accounts_receivable in Payouts allow-list; MetroAPI.InitiatePayout",
+      "repository": "payouts",
+      "file_path": "internal/auth/headers.go:20; proto/accounts_receivable/metro_api.proto:12",
+      "symbol": "ACCOUNTS_RECEIVABLE",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "ep:accounts-receivable-payout-webhook",
+      "type": "calls",
+      "mechanism": "payout status webhook to accounts-receivable",
+      "repository": "terraform-kong",
+      "file_path": "templates/backend-accounts-receivable/backend-accounts-receivable.tf",
+      "symbol": "/v1/invoices/payout/handleWebhook",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "fe:x-vendor-payments",
+      "target": "ep:monolith-vendor-payments-proxy",
+      "type": "calls",
+      "mechanism": "browser → api-dashboard-merchant / api.razorpay.com /v1/vendor-payments/** (Kong → vendor-payments)",
+      "repository": "x",
+      "file_path": "src/js/views/VendorPayouts; terraform-kong prod vendor-payments",
+      "symbol": "VendorPayouts views",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "fe:x-vendor-payments",
+      "target": "ep:monolith-tax-payments",
+      "type": "calls",
+      "mechanism": "browser → /v1/tax-payments/*",
+      "repository": "x",
+      "file_path": "src/js/views/TaxPayments",
+      "symbol": "TaxPayments views",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:accounting-integrations",
+      "target": "svc:reporting",
+      "type": "calls",
+      "mechanism": "reporting.razorpay.com (5 report ids)",
+      "repository": "accounting-integrations",
+      "file_path": "config/prod.toml",
+      "symbol": "reporting client",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:accounting-integrations",
+      "target": "ext:zoho-tally",
+      "type": "calls",
+      "mechanism": "Zoho / Tally sync",
+      "repository": "accounting-integrations",
+      "file_path": "internal/service/accountingtool/{tally,zoho}",
+      "symbol": "accountingtool",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "id:app-business_reporting",
+      "type": "authorizes",
+      "mechanism": "allowedInternalApps",
+      "repository": "payouts",
+      "file_path": "internal/auth/headers.go:21",
+      "symbol": "BUSINESS_REPORTING",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:opfin",
+      "target": "ep:monolith-xpayroll-allowlist",
+      "type": "calls",
+      "mechanism": "basic-auth internal app xpayroll (secret OPFIN_SERVICE_SECRET); 11 allowed routes incl. payout_create_internal",
+      "repository": "api",
+      "file_path": "app/Http/Route.php:18626-18638; config/applications_v2.php:741-761",
+      "symbol": "app.xpayroll",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "id:app-xpayroll",
+      "type": "authorizes",
+      "mechanism": "allowedInternalApps + contact type rzp_xpayroll",
+      "repository": "payouts",
+      "file_path": "internal/auth/headers.go:12; internal/app/contact/type.go:20",
+      "symbol": "X_PAYROLL",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "flag:skip_wf_for_payroll",
+      "target": "svc:payouts",
+      "type": "controlled_by",
+      "mechanism": "maker-checker bypass when app==xpayroll and feature enabled",
+      "repository": "payouts",
+      "file_path": "internal/app/payouts/processor/baseHelper.go:185-191",
+      "symbol": "SKIP_WF_FOR_PAYROLL",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "q:sns-payout-updates-xpayroll",
+      "type": "publishes",
+      "mechanism": "SNS",
+      "repository": "payouts",
+      "file_path": "config/prod.toml:369",
+      "symbol": "xpayroll topic",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "q:sns-payout-updates-xpayroll",
+      "target": "svc:api-monolith",
+      "type": "delivers_to",
+      "mechanism": "XPayrollUpdater",
+      "repository": "api",
+      "file_path": "app/Models/Payout/SourceUpdater/XPayrollUpdater.php:15-17",
+      "symbol": "XPayrollUpdater",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:api-monolith",
+      "target": "ep:opfin-merchant-payout-status",
+      "type": "calls",
+      "mechanism": "POST {OPFIN_SERVICE_URL}/v2/api/merchant-payout-status",
+      "repository": "api",
+      "file_path": "app/Services/XPayroll/Service.php:26,54-90",
+      "symbol": "pushPayoutStatusUpdate",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:api-monolith",
+      "target": "ep:opfin-validate-source-account",
+      "type": "calls",
+      "mechanism": "payroll TPV of X source account",
+      "repository": "api",
+      "file_path": "app/Services/XPayroll/Service.php:28,216-264",
+      "symbol": "validateSourceAccount",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:fts",
+      "target": "svc:opfin",
+      "type": "configures",
+      "mechanism": "[payroll_mid_details] MERCHANT_LIST dedicated payroll MID handling",
+      "repository": "fts",
+      "file_path": "config/env.default.toml:6924-6925",
+      "symbol": "payroll_mid_details",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "fe:x",
+      "target": "fe:payroll-web",
+      "type": "routes_to",
+      "mechanism": "SSO redirect /sso?integraterx=1 (no embedded module)",
+      "repository": "x",
+      "file_path": "config.js:302; src/js/Routes.js:1407",
+      "symbol": "payroll redirect",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:opfin",
+      "target": "worker:opfin-crons",
+      "type": "implements",
+      "mechanism": "",
+      "repository": "kube-manifests",
+      "file_path": "prod/opfin/values.yaml",
+      "symbol": "run_cron ActualBankTransfer/BatchBankTransfer/ProcessMerchantPayoutsInNonCreatedState",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:opfin",
+      "target": "db:opfin-pg",
+      "type": "writes",
+      "mechanism": "Aurora Postgres",
+      "repository": "alert-rules",
+      "file_path": "rules/prod-rules/rds_generated_alerts_prod-aurora-postgres-opfin-1a.yaml",
+      "symbol": "rds alerts",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:opfin",
+      "target": "svc:x-payroll-compute",
+      "type": "calls",
+      "mechanism": "gRPC x-payroll-compute-grpc-concierge (payroll compute)",
+      "repository": "kube-manifests",
+      "file_path": "prod/x-payroll-compute/values.yaml",
+      "symbol": "grpc host",
+      "confidence": "inferred",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:opfin",
+      "target": "svc:tax-compliance",
+      "type": "calls",
+      "mechanism": "TDS filing/payments (tax_compliance protos owned by payroll team)",
+      "repository": "proto",
+      "file_path": "tax_compliance/compliance/tds_payments/v1/tds_payments.proto:5,11",
+      "symbol": "TDSPaymentsService",
+      "confidence": "inferred",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:opfin",
+      "target": "ext:temporal-cloud",
+      "type": "uses",
+      "mechanism": "opfin-compliance / x-tna Temporal Cloud",
+      "repository": "kube-manifests",
+      "file_path": "prod/opfin-compliance/values.yaml; prod/x-tna/values.yaml:39-46",
+      "symbol": "TEMPORAL_*",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:capital-es",
+      "target": "ep:POST /v1/payouts",
+      "type": "calls",
+      "mechanism": "on-demand settlement creates X payout via public API using internal X merchant (RazorpayXClient)",
+      "repository": "api",
+      "file_path": "app/Services/RazorpayXClient.php:131-190",
+      "symbol": "RazorpayXClient",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "id:app-settlements_service",
+      "target": "ep:monolith-payouts-internal",
+      "type": "calls",
+      "mechanism": "settlements_service posts /v1/payouts_internal",
+      "repository": "authz",
+      "file_path": "scripts/policies/**/internal.csv:8",
+      "symbol": "app.settlements_service",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "id:app-settlements_service",
+      "type": "authorizes",
+      "mechanism": "allowedInternalApps; [auth.settlements] creds; raised limits for settlements merchants",
+      "repository": "payouts",
+      "file_path": "internal/auth/headers.go:16; config/prod.toml:104-106,826",
+      "symbol": "SETTLEMENTS_SERVICE",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "q:sns-payout-updates-settlements",
+      "type": "publishes",
+      "mechanism": "SNS",
+      "repository": "payouts",
+      "file_path": "config/prod.toml:371",
+      "symbol": "settlements topic",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "q:sns-payout-updates-settlements",
+      "target": "svc:api-monolith",
+      "type": "delivers_to",
+      "mechanism": "SettlementsUpdater",
+      "repository": "api",
+      "file_path": "app/Models/Payout/SourceUpdater/Factory.php:45",
+      "symbol": "SettlementsUpdater",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:api-monolith",
+      "target": "ep:settlements-StatusUpdatePayout",
+      "type": "calls",
+      "mechanism": "Twirp StatusUpdatePayout",
+      "repository": "api",
+      "file_path": "app/Services/Settlements/Payout.php:14,35",
+      "symbol": "TransferService/StatusUpdatePayout",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "ep:settlements-StatusUpdatePayout",
+      "target": "svc:settlements",
+      "type": "implements",
+      "mechanism": "",
+      "repository": "proto",
+      "file_path": "settlements/transfer/v1/transfer_api.proto:116",
+      "symbol": "StatusUpdatePayout",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:settlements",
+      "target": "ep:POST /v1/transfer",
+      "type": "calls",
+      "mechanism": "FTS product SETTLEMENT; status webhook to settlements-live.razorpay.com/twirp/.../TransferService/StatusUpdate",
+      "repository": "fts",
+      "file_path": "config/env.prod-live.toml:171-223; internal/product/product.go:15-25",
+      "symbol": "SETTLEMENT product",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:capital-es",
+      "target": "ep:capital-es-KeepSufficientBalance",
+      "type": "exposes",
+      "mechanism": "cron keeps payouts merchant balance topped up",
+      "repository": "proto",
+      "file_path": "capital/es/cron/v1/cron_api.proto:9",
+      "symbol": "KeepSufficientBalanceInPayoutsMerchant",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "id:app-capital",
+      "type": "authorizes",
+      "mechanism": "capital_collections_client + capital_early_settlements in allow-list",
+      "repository": "payouts",
+      "file_path": "internal/auth/headers.go:17,24",
+      "symbol": "CAPITAL_*",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:settlements",
+      "target": "svc:ledger",
+      "type": "calls",
+      "mechanism": "ledger client settlements_key; outbox_jobs_settlements (PG tenant)",
+      "repository": "ledger",
+      "file_path": "config/prod-live.toml:174-281",
+      "symbol": "settlements_key",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "q:sns-payout-updates-capital",
+      "type": "publishes",
+      "mechanism": "SNS capital_cards / capital_line_of_credit / capital_collections",
+      "repository": "payouts",
+      "file_path": "config/prod.toml:368-388",
+      "symbol": "capital topics",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "q:sns-payout-updates-capital",
+      "target": "svc:api-monolith",
+      "type": "delivers_to",
+      "mechanism": "CapitalCollectionsUpdater",
+      "repository": "api",
+      "file_path": "app/Models/Payout/SourceUpdater/Factory.php:69",
+      "symbol": "CapitalCollectionsUpdater",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:api-monolith",
+      "target": "svc:capital-collections",
+      "type": "calls",
+      "mechanism": "pushPayoutStatusUpdate; settlement-ondemand ledger updates",
+      "repository": "api",
+      "file_path": "app/Services/CapitalCollectionsClient.php:73-125",
+      "symbol": "CapitalCollectionsClient",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:api-monolith",
+      "target": "ep:capital-cards-account-details",
+      "type": "calls",
+      "mechanism": "corp card account details for X balance",
+      "repository": "api",
+      "file_path": "app/Services/CapitalCardsClient.php:21,76",
+      "symbol": "CapitalCardsClient",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "ep:monolith-onboardCCCForBanking",
+      "target": "db:api-mysql",
+      "type": "writes",
+      "mechanism": "balance row account_type=corp_card channel=m2p type=banking",
+      "repository": "api",
+      "file_path": "app/Models/CorpCard/Core.php:50-62; Balance/Core.php:273,314-321",
+      "symbol": "onboardCapitalCorpCardForRzpX",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:capital-loc",
+      "target": "ep:monolith-loc-withdrawal-update",
+      "type": "calls",
+      "mechanism": "LOC withdrawal disbursed as X payout; callback forwarded",
+      "repository": "api",
+      "file_path": "app/Http/Route.php:1557-1562",
+      "symbol": "LOCController@razorpayXWebhook",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:x-balances",
+      "target": "svc:capital-cards",
+      "type": "calls",
+      "mechanism": "creating X sub-balance mutates capital-cards eligibility",
+      "repository": "x-balances",
+      "file_path": "pkg/log/trace.go:44-45",
+      "symbol": "capital cards eligibility",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:cfa",
+      "target": "svc:vault",
+      "type": "calls",
+      "mechanism": "bin-service + tokens-live-int for card fund accounts",
+      "repository": "cfa",
+      "file_path": "config/prod.toml:67-86",
+      "symbol": "bin-service / token service",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "flag:enable_payouts_to_cards",
+      "target": "svc:payouts",
+      "type": "controlled_by",
+      "mechanism": "payouts-owned config-proto",
+      "repository": "config-proto",
+      "file_path": "rzp/x/merchant/payouts/cards.proto:6-20",
+      "symbol": "enable_payouts_to_cards",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:xperience",
+      "target": "ep:xperience-corporate-cards",
+      "type": "exposes",
+      "mechanism": "CorporateCardsAPI page-view/spends-summary/UpsertCardEntitlement/IngestFeedFile",
+      "repository": "proto",
+      "file_path": "xperience/corporatecards/v1/corporatecards_api.proto:18",
+      "symbol": "CorporateCardsAPI",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:fts",
+      "target": "ext:m2p",
+      "type": "calls",
+      "mechanism": "FTS channel m2p via mozart capital_m2p",
+      "repository": "mozart",
+      "file_path": "app/config/capital/capital_m2p/v1/base.json",
+      "symbol": "capital_m2p",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "fe:x-capital",
+      "target": "svc:capital-loc",
+      "type": "calls",
+      "mechanism": "rzp.capital.loc.account.v1.AccountAPI via x/src/js/api/capital.js",
+      "repository": "x",
+      "file_path": "src/js/api/capital.js:33",
+      "symbol": "AccountAPI",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:banking-accounts",
+      "target": "svc:master-onboarding",
+      "type": "calls",
+      "mechanism": "mob host",
+      "repository": "banking-accounts",
+      "file_path": "config/default.toml:103-106",
+      "symbol": "master-onboarding client",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:banking-accounts",
+      "target": "svc:bvs",
+      "type": "calls",
+      "mechanism": "pkg/bvs",
+      "repository": "banking-accounts",
+      "file_path": "pkg/bvs",
+      "symbol": "bvs client",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "ep:kong-partner-lms",
+      "target": "svc:banking-accounts",
+      "type": "routes_to",
+      "mechanism": "Kong /v1/partner_lms/** → banking-account.razorpay.com",
+      "repository": "terraform-kong",
+      "file_path": "templates/banking-accounts/banking-accounts.tf",
+      "symbol": "partner_lms routes",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:master-onboarding",
+      "target": "ep:mob-intent-api",
+      "type": "exposes",
+      "mechanism": "gRPC IntentAPI",
+      "repository": "alert-rules",
+      "file_path": "rules/prod-rules/master_onboarding_rules.yaml:72-94",
+      "symbol": "rzp.master_onboarding.intent.v1.IntentAPI",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:api-monolith",
+      "target": "svc:master-onboarding",
+      "type": "calls",
+      "mechanism": "APP_MASTER_ONBOARDING_SERVICE_URL",
+      "repository": "api",
+      "file_path": "config/applications.php:1974",
+      "symbol": "master_onboarding client",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "id:app-cross_border_import",
+      "type": "authorizes",
+      "mechanism": "allowedInternalApps; raised payout limit",
+      "repository": "payouts",
+      "file_path": "internal/auth/headers.go:23; internal/app/payouts/validation.go:239-247",
+      "symbol": "CROSS_BORDER_IMPORT",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "q:sns-payout-updates-cross-border",
+      "type": "publishes",
+      "mechanism": "cross_border / ica_transfer source types",
+      "repository": "payouts",
+      "file_path": "config/prod.toml:368-388",
+      "symbol": "cross_border topics",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "q:sns-payout-updates-cross-border",
+      "target": "svc:cross-border-import",
+      "type": "delivers_to",
+      "mechanism": "CrossBorderICATransferUpdater",
+      "repository": "api",
+      "file_path": "app/Models/Payout/SourceUpdater/Factory.php:80",
+      "symbol": "CrossBorderICATransferUpdater",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:scrooge",
+      "target": "svc:payouts",
+      "type": "calls",
+      "mechanism": "refund source type; internal app scrooge",
+      "repository": "payouts",
+      "file_path": "internal/auth/headers.go:15; api/app/Models/Payout/SourceUpdater/Factory.php:57",
+      "symbol": "SCROOGE",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "id:ledger-clients",
+      "target": "svc:ledger",
+      "type": "calls",
+      "mechanism": "36 client keys across X and PG tenants",
+      "repository": "ledger",
+      "file_path": "config/prod-live.toml:174-281",
+      "symbol": "auth clients",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "id:workflow-callers",
+      "target": "svc:workflow",
+      "type": "calls",
+      "mechanism": "12 configured callers",
+      "repository": "workflows",
+      "file_path": "config/prod.toml:185-221",
+      "symbol": "clients",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:stork",
+      "target": "event:transaction.created",
+      "type": "publishes",
+      "mechanism": "producer api monolith",
+      "repository": "stork",
+      "file_path": "internal/webhook/event_constants.go:132-133",
+      "symbol": "transaction.created",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:stork",
+      "target": "event:settlement.processed",
+      "type": "publishes",
+      "mechanism": "producer api monolith",
+      "repository": "stork",
+      "file_path": "internal/webhook/event_constants.go:42",
+      "symbol": "settlement.processed",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:stork",
+      "target": "event:payout_link.*",
+      "type": "publishes",
+      "mechanism": "producer payout-links",
+      "repository": "stork",
+      "file_path": "internal/webhook/event_constants.go",
+      "symbol": "payout_link.*",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:stork",
+      "target": "event:bill_payment.*",
+      "type": "publishes",
+      "mechanism": "producer unknown",
+      "repository": "stork",
+      "file_path": "internal/webhook/event_constants.go:127-130",
+      "symbol": "bill_payment.*",
+      "confidence": "unknown",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "flag:uiconfig-xproducts",
+      "target": "fe:x",
+      "type": "configures",
+      "mechanism": "X product catalogue drives dashboard nav",
+      "repository": "config-proto",
+      "file_path": "rzp/x/country/dashboard/uiconfig.proto:17-55",
+      "symbol": "XProducts",
+      "confidence": "confirmed",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "journey:vp-invoice-to-payout",
+      "target": "svc:vendor-payments",
+      "type": "executes",
+      "mechanism": "journey owner",
+      "repository": "findings",
+      "file_path": "reports/expansion/findings/02_payouts_outbound_edges.md §11-12",
+      "symbol": "journey",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "journey:tds-monthly-remittance",
+      "target": "svc:vendor-payments",
+      "type": "executes",
+      "mechanism": "journey owner",
+      "repository": "findings",
+      "file_path": "reports/expansion/findings/02_payouts_outbound_edges.md §11-12",
+      "symbol": "journey",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "journey:po-grn-approval",
+      "target": "svc:vendor-payments",
+      "type": "executes",
+      "mechanism": "journey owner",
+      "repository": "findings",
+      "file_path": "reports/expansion/findings/02_payouts_outbound_edges.md §11-12",
+      "symbol": "journey",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "journey:vendor-onboarding",
+      "target": "svc:vendor-experience",
+      "type": "executes",
+      "mechanism": "journey owner",
+      "repository": "findings",
+      "file_path": "reports/expansion/findings/02_payouts_outbound_edges.md §11-12",
+      "symbol": "journey",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "journey:payroll-salary-disbursement",
+      "target": "svc:opfin",
+      "type": "executes",
+      "mechanism": "journey owner",
+      "repository": "findings",
+      "file_path": "reports/expansion/findings/02_payouts_outbound_edges.md §11-12",
+      "symbol": "journey",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "journey:ondemand-settlement-to-x",
+      "target": "svc:capital-es",
+      "type": "executes",
+      "mechanism": "journey owner",
+      "repository": "findings",
+      "file_path": "reports/expansion/findings/02_payouts_outbound_edges.md §11-12",
+      "symbol": "journey",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "journey:loc-withdrawal",
+      "target": "svc:capital-loc",
+      "type": "executes",
+      "mechanism": "journey owner",
+      "repository": "findings",
+      "file_path": "reports/expansion/findings/02_payouts_outbound_edges.md §11-12",
+      "symbol": "journey",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "journey:corp-card-balance",
+      "target": "svc:capital-cards",
+      "type": "executes",
+      "mechanism": "journey owner",
+      "repository": "findings",
+      "file_path": "reports/expansion/findings/02_payouts_outbound_edges.md §11-12",
+      "symbol": "journey",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "journey:ca-onboarding",
+      "target": "svc:master-onboarding",
+      "type": "executes",
+      "mechanism": "journey owner",
+      "repository": "findings",
+      "file_path": "reports/expansion/findings/02_payouts_outbound_edges.md §11-12",
+      "symbol": "journey",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:s2p",
+      "target": "svc:vendor-payments",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:s2p",
+      "target": "svc:vendor-experience",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:s2p",
+      "target": "svc:tax-compliance",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:s2p",
+      "target": "svc:accounts-receivable",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:s2p",
+      "target": "svc:accounting-integrations",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:payroll",
+      "target": "svc:opfin",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:payroll",
+      "target": "svc:opfin-compliance",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:payroll",
+      "target": "svc:x-payroll-compute",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:payroll",
+      "target": "svc:x-payroll-hris",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:payroll",
+      "target": "svc:x-salary-structure",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:payroll",
+      "target": "svc:x-payroll-flexible-benefits",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:payroll",
+      "target": "svc:x-tna",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:capital",
+      "target": "svc:capital-cards",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:capital",
+      "target": "svc:capital-collections",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:capital",
+      "target": "svc:capital-loc",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:settlements",
+      "target": "svc:settlements",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:settlements",
+      "target": "svc:capital-es",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:ca-onboarding",
+      "target": "svc:master-onboarding",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:ca-onboarding",
+      "target": "svc:bvs",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:ca-onboarding",
+      "target": "svc:onboarding",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:ca-onboarding",
+      "target": "svc:banking-accounts",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:accounting",
+      "target": "svc:accounting-integrations",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:accounting",
+      "target": "svc:business-reporting",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:accounting",
+      "target": "svc:reporting",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "domain:cross-border",
+      "target": "svc:cross-border-import",
+      "type": "uses",
+      "mechanism": "domain membership",
+      "repository": "findings",
+      "file_path": "reports/expansion/EXPANSION_REPORT.md",
+      "symbol": "domain card",
+      "confidence": "probable",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:api-monolith",
+      "target": "q:kafka-add-tds-entry",
+      "type": "publishes",
+      "mechanism": "monolith TdsProcessor is the only producer-shaped code found; not confirmed",
+      "repository": "api",
+      "file_path": "app/Models/Payout/TdsProcessor/Processor.php:31-86",
+      "symbol": "TdsProcessor",
+      "confidence": "unknown",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:payouts",
+      "target": "q:sqs-tax-compliance-payout-events",
+      "type": "publishes",
+      "mechanism": "no producer found in clone root",
+      "repository": "kube-manifests",
+      "file_path": "prod/tax-compliance/values.yaml",
+      "symbol": "prod-tax-compliance-payout-events",
+      "confidence": "unknown",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:opfin",
+      "target": "svc:payouts",
+      "type": "calls",
+      "mechanism": "whether Opfin also calls Payouts Service directly (not only monolith payouts_internal) — no source",
+      "repository": "payouts",
+      "file_path": "internal/auth/headers.go:12",
+      "symbol": "X_PAYROLL",
+      "confidence": "unknown",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:capital-es",
+      "target": "ep:monolith-payouts-internal",
+      "type": "calls",
+      "mechanism": "capital_early_settlements in PS allow-list; whether it uses payouts_internal or public API is not confirmed",
+      "repository": "payouts",
+      "file_path": "internal/auth/headers.go:24",
+      "symbol": "CAPITAL_EARLY_SETTLEMENTS",
+      "confidence": "unknown",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "svc:capital-cards",
+      "target": "svc:ledger",
+      "type": "calls",
+      "mechanism": "no ledger client evidence for capital-cards despite m2p fund_account_type",
+      "repository": "ledger",
+      "file_path": "internal/common/constant.go:221-322",
+      "symbol": "m2p",
+      "confidence": "unknown",
+      "evidence_type": "code",
+      "environment": "prod"
+    },
+    {
+      "source": "q:sns-journal-created",
+      "target": "svc:business-reporting",
+      "type": "delivers_to",
+      "mechanism": "no consumer found for prod-ledger-x-journal-created-live",
+      "repository": "ledger",
+      "file_path": "config/prod-live.toml",
+      "symbol": "journal-created SNS",
+      "confidence": "unknown",
+      "evidence_type": "code",
+      "environment": "prod"
+    }
+  ]
+}

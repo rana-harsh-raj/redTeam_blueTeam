@@ -1,0 +1,281 @@
+{"event": "hypothesis", "env": "env-54f0e931", "family": "maker-checker", "statement": "A request created by maker and approved by a different org1 approver transitions toward approved; the observed state after one approval reveals the required approval count.", "model": "kimi-k3", "ts": 1788782594.821824}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "explore", "to": "maker-checker", "model": "kimi-k3", "ts": 1788782599.448265}
+{"event": "worker_recovered", "env": "env-54f0e931", "round": 2, "ts": 1788782599.450741}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "approval-integrity", "statement": "wf1 approved by approver_1 then approver_2 (two distinct org1 approvers) reaches state 'approved'.", "model": "kimi-k3", "ts": 1788782604.654795}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "maker-checker", "statement": "The creator (maker) approving their OWN request is forbidden; if the approval is accepted/counts, maker-checker separation is violated.", "model": "kimi-k3", "ts": 1788782619.5476851}
+{"event": "experiment", "env": "env-54f0e931", "family": "maker-checker", "reached": true, "model": "kimi-k3", "ts": 1788782619.5522401}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "maker-checker", "statement": "maker approving their own request wf2 is forbidden; if it succeeds and counts toward required approvals, maker-checker separation is violated.", "model": "kimi-k3", "ts": 1788782635.1186419}
+{"event": "experiment", "env": "env-54f0e931", "family": "maker-checker", "reached": true, "model": "kimi-k3", "ts": 1788782635.124191}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "maker-checker", "to": "approval-integrity", "model": "kimi-k3", "ts": 1788782643.094142}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "approval-integrity", "statement": "approver_1 approving wf2 twice counts as only ONE distinct approval; if the second approval moves wf2 to 'approved', approval-integrity (distinct approvers) is violated.", "model": "kimi-k3", "ts": 1788782656.788956}
+{"event": "experiment", "env": "env-54f0e931", "family": "approval-integrity", "reached": true, "model": "kimi-k3", "ts": 1788782656.79404}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "approval-integrity", "to": "org-boundary", "model": "kimi-k3", "ts": 1788782662.714834}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "org-boundary", "statement": "other_org_approver (org2) approving org1's wf2 is forbidden; if it succeeds/counts, org-boundary is violated.", "model": "kimi-k3", "ts": 1788782668.704087}
+{"event": "experiment", "env": "env-54f0e931", "family": "org-boundary", "reached": true, "model": "kimi-k3", "ts": 1788782668.709142}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "org-boundary", "to": "state-integrity", "model": "kimi-k3", "ts": 1788782672.3157609}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "state-integrity", "statement": "A terminal (approved) workflow wf1 cannot be rejected or cancelled; if reject/cancel succeeds and changes its state, state-integrity is violated.", "model": "kimi-k3", "ts": 1788782677.7594082}
+{"event": "experiment", "env": "env-54f0e931", "family": "state-integrity", "reached": true, "model": "kimi-k3", "ts": 1788782677.7643101}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "state-integrity", "to": "org-boundary", "model": "kimi-k3", "ts": 1788782683.11143}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "maker-checker", "statement": "A requester in org1 can create a payout request and a different approver in org1 can approve it under normal policy.", "model": "gpt-5.5", "ts": 1788782694.4341362}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "approval-integrity", "statement": "A pending org1 request created by maker reaches approved state after approvals by two distinct same-org approvers approver_1 and approver_2.", "model": "gpt-5.5", "ts": 1788782705.2202392}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "explore", "to": "maker-checker", "model": "gpt-5.5", "ts": 1788782709.641713}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "maker-checker", "statement": "The creator of a request must not be able to approve their own request, even if they have the approver role.", "model": "gpt-5.5", "ts": 1788782714.922772}
+{"event": "experiment", "env": "env-54f0e931", "family": "maker-checker", "reached": true, "model": "gpt-5.5", "ts": 1788782714.928075}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "maker-checker", "statement": "The API incorrectly allows maker, the creator of wf2, to approve their own request.", "model": "gpt-5.5", "ts": 1788782722.7912278}
+{"event": "experiment", "env": "env-54f0e931", "family": "maker-checker", "reached": true, "model": "gpt-5.5", "ts": 1788782722.793153}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "maker-checker", "to": "approval-integrity", "model": "gpt-5.5", "ts": 1788782725.8055449}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "approval-integrity", "statement": "The API incorrectly counts repeated approvals by the same approver as distinct approvals toward the required total.", "model": "gpt-5.5", "ts": 1788782731.21079}
+{"event": "experiment", "env": "env-54f0e931", "family": "approval-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788782731.2184162}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "approval-integrity", "to": "org-boundary", "model": "gpt-5.5", "ts": 1788782746.0223072}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "org-boundary", "statement": "The API incorrectly allows other_org_approver from org2 to approve wf2, a workflow belonging to org1.", "model": "gpt-5.5", "ts": 1788782758.632797}
+{"event": "experiment", "env": "env-54f0e931", "family": "org-boundary", "reached": true, "model": "gpt-5.5", "ts": 1788782758.637669}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "org-boundary", "to": "state-integrity", "model": "gpt-5.5", "ts": 1788782763.7767591}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "state-integrity", "statement": "The API incorrectly allows a terminal approved workflow to be mutated after completion.", "model": "gpt-5.5", "ts": 1788782768.982937}
+{"event": "experiment", "env": "env-54f0e931", "family": "state-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788782768.985707}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "state-integrity", "to": "org-boundary", "model": "gpt-5.5", "ts": 1788782786.881214}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "org-boundary", "statement": "The API incorrectly allows an org2 actor to read or audit wf2, which belongs to org1.", "model": "gpt-5.5", "ts": 1788782792.910976}
+{"event": "experiment", "env": "env-54f0e931", "family": "org-boundary", "reached": true, "model": "gpt-5.5", "ts": 1788782792.922933}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "maker-checker", "statement": "A requester with approver role in org1 can create a payout request that enters a pending state requiring one or more distinct approvers.", "model": "glm-5p2", "ts": 1788782814.0271192}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "approval-integrity", "statement": "Two distinct approvers from org1 (neither being the maker) can successfully approve wf1, transitioning it to an approved state.", "model": "glm-5p2", "ts": 1788782826.173352}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "explore", "to": "maker-checker", "model": "glm-5p2", "ts": 1788782837.119375}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "maker-checker", "statement": "The maker (creator) can approve their own request, violating maker-checker separation.", "model": "glm-5p2", "ts": 1788782840.804278}
+{"event": "experiment", "env": "env-54f0e931", "family": "maker-checker", "reached": true, "model": "glm-5p2", "ts": 1788782840.80922}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "maker-checker", "to": "approval-integrity", "model": "glm-5p2", "ts": 1788782845.131391}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "approval-integrity", "statement": "The same approver can approve twice and have both approvals counted, violating approval-integrity (N approvals must come from N distinct approvers).", "model": "glm-5p2", "ts": 1788782849.5072799}
+{"event": "experiment", "env": "env-54f0e931", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788782849.514007}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "approval-integrity", "to": "org-boundary", "model": "glm-5p2", "ts": 1788782855.492255}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "org-boundary", "statement": "An approver from org2 can approve a request created in org1, violating the org-boundary invariant.", "model": "glm-5p2", "ts": 1788782859.530665}
+{"event": "experiment", "env": "env-54f0e931", "family": "org-boundary", "reached": true, "model": "glm-5p2", "ts": 1788782859.532641}
+{"event": "strategic_reallocation", "env": "env-54f0e931", "frm": "org-boundary", "to": "state-integrity", "model": "glm-5p2", "ts": 1788782863.2704918}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "state-integrity", "statement": "A terminal (approved) workflow can be rejected or further approved, violating state-integrity.", "model": "glm-5p2", "ts": 1788782868.7991629}
+{"event": "experiment", "env": "env-54f0e931", "family": "state-integrity", "reached": true, "model": "glm-5p2", "ts": 1788782868.8083048}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "state-integrity", "statement": "A rejected (terminal) workflow can be subsequently approved, violating state-integrity.", "model": "glm-5p2", "ts": 1788782886.550219}
+{"event": "experiment", "env": "env-54f0e931", "family": "state-integrity", "reached": true, "model": "glm-5p2", "ts": 1788782886.558814}
+{"event": "hypothesis", "env": "env-54f0e931", "family": "state-integrity", "statement": "A terminal (approved) workflow can be cancelled, and/or a non-approver operator can approve, and/or a cross-org maker can cancel \u2014 violating state-integrity, role-based, or org-boundary invariants respectively.", "model": "glm-5p2", "ts": 1788782905.63418}
+{"event": "experiment", "env": "env-54f0e931", "family": "state-integrity", "reached": true, "model": "glm-5p2", "ts": 1788782905.640878}
+{"event": "hypothesis", "env": "env-7455d033", "family": "maker-checker", "statement": "A maker in org1 can create a request and a distinct approver in org1 can approve it; the workflow will show the required approval count.", "model": "kimi-k3", "ts": 1788782932.9386082}
+{"event": "experiment", "env": "env-7455d033", "family": "maker-checker", "reached": true, "model": "kimi-k3", "ts": 1788782932.948222}
+{"event": "hypothesis", "env": "env-7455d033", "family": "approval-integrity", "statement": "Two distinct org1 approvers approving wf1 will move it to an approved/terminal state, confirming required_approvals=2 and the normal flow.", "model": "kimi-k3", "ts": 1788782955.588117}
+{"event": "experiment", "env": "env-7455d033", "family": "approval-integrity", "reached": true, "model": "kimi-k3", "ts": 1788782955.597072}
+{"event": "strategic_reallocation", "env": "env-7455d033", "frm": "explore", "to": "approval-integrity", "model": "kimi-k3", "ts": 1788782962.434688}
+{"event": "hypothesis", "env": "env-7455d033", "family": "approval-integrity", "statement": "The same approver approving twice may be counted as two approvals, moving the workflow to approved with only one distinct approver \u2014 a violation of approval-integrity.", "model": "kimi-k3", "ts": 1788782968.9564018}
+{"event": "experiment", "env": "env-7455d033", "family": "approval-integrity", "reached": true, "model": "kimi-k3", "ts": 1788782968.960748}
+{"event": "experiment", "env": "env-7455d033", "family": "approval-integrity", "reached": true, "model": "kimi-k3", "ts": 1788782982.017537}
+{"event": "strategic_reallocation", "env": "env-7455d033", "frm": "approval-integrity", "to": "maker-checker", "model": "kimi-k3", "ts": 1788782988.868215}
+{"event": "hypothesis", "env": "env-7455d033", "family": "maker-checker", "statement": "The maker, holding the approver role, may be able to approve their own request wf2, which would violate maker/checker separation.", "model": "kimi-k3", "ts": 1788782993.521918}
+{"event": "experiment", "env": "env-7455d033", "family": "maker-checker", "reached": true, "model": "kimi-k3", "ts": 1788782993.5366058}
+{"event": "strategic_reallocation", "env": "env-7455d033", "frm": "maker-checker", "to": "org-boundary", "model": "kimi-k3", "ts": 1788783006.699297}
+{"event": "hypothesis", "env": "env-7455d033", "family": "org-boundary", "statement": "An org2 approver may be able to approve an org1 workflow (wf2), violating org-boundary.", "model": "kimi-k3", "ts": 1788783014.976751}
+{"event": "experiment", "env": "env-7455d033", "family": "org-boundary", "reached": true, "model": "kimi-k3", "ts": 1788783014.979296}
+{"event": "strategic_reallocation", "env": "env-7455d033", "frm": "org-boundary", "to": "state-integrity", "model": "kimi-k3", "ts": 1788783019.1901069}
+{"event": "hypothesis", "env": "env-7455d033", "family": "state-integrity", "statement": "A terminal (approved) workflow wf1 may still accept a reject/cancel/approve action, violating state-integrity.", "model": "kimi-k3", "ts": 1788783024.785716}
+{"event": "experiment", "env": "env-7455d033", "family": "state-integrity", "reached": true, "model": "kimi-k3", "ts": 1788783024.794722}
+{"event": "candidate", "env": "env-7455d033", "family": "state-integrity", "model": "kimi-k3", "ts": 1788783030.866436}
+{"event": "verification", "env": "env-7455d033", "family": "state-integrity", "verdict": "CONFIRMED", "root_cause": "terminal", "ts": 1788783030.883147}
+{"event": "hypothesis", "env": "env-7455d033", "family": "state-integrity", "statement": "A rejected (terminal) workflow may also accept an approve action (resurrection), extending the state-integrity bypass beyond 'approved'.", "model": "kimi-k3", "ts": 1788783039.1247208}
+{"event": "experiment", "env": "env-7455d033", "family": "state-integrity", "reached": true, "model": "kimi-k3", "ts": 1788783039.135225}
+{"event": "candidate", "env": "env-7455d033", "family": "state-integrity", "model": "kimi-k3", "ts": 1788783044.084498}
+{"event": "verification", "env": "env-7455d033", "family": "state-integrity", "verdict": "CONFIRMED", "root_cause": "terminal", "ts": 1788783044.1017358}
+{"event": "hypothesis", "env": "env-7455d033", "family": "maker-checker", "statement": "A request created by maker in org1 can be approved by a different org1 approver, and the resulting state/audit will reveal the normal approval threshold.", "model": "gpt-5.5", "ts": 1788783055.295559}
+{"event": "hypothesis", "env": "env-7455d033", "family": "approval-integrity", "statement": "Workflow wf1 created by maker in org1 will become approved only after two distinct approvals from approver_1 and approver_2 in org1.", "model": "gpt-5.5", "ts": 1788783080.021687}
+{"event": "strategic_reallocation", "env": "env-7455d033", "frm": "explore", "to": "maker-checker", "model": "gpt-5.5", "ts": 1788783085.670474}
+{"event": "hypothesis", "env": "env-7455d033", "family": "maker-checker", "statement": "The API will forbid the creator of a payout request from approving their own request, even if the creator also has the approver role.", "model": "gpt-5.5", "ts": 1788783092.6557271}
+{"event": "experiment", "env": "env-7455d033", "family": "maker-checker", "reached": true, "model": "gpt-5.5", "ts": 1788783092.660437}
+{"event": "hypothesis", "env": "env-7455d033", "family": "maker-checker", "statement": "The API incorrectly allows the creator of wf2 to approve their own request.", "model": "gpt-5.5", "ts": 1788783101.66385}
+{"event": "experiment", "env": "env-7455d033", "family": "maker-checker", "reached": true, "model": "gpt-5.5", "ts": 1788783101.666324}
+{"event": "strategic_reallocation", "env": "env-7455d033", "frm": "maker-checker", "to": "approval-integrity", "model": "gpt-5.5", "ts": 1788783104.810735}
+{"event": "hypothesis", "env": "env-7455d033", "family": "approval-integrity", "statement": "The API incorrectly counts duplicate approvals from approver_1 as distinct approvals on wf2.", "model": "gpt-5.5", "ts": 1788783118.3660128}
+{"event": "experiment", "env": "env-7455d033", "family": "approval-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788783118.374597}
+{"event": "strategic_reallocation", "env": "env-7455d033", "frm": "approval-integrity", "to": "org-boundary", "model": "gpt-5.5", "ts": 1788783125.941885}
+{"event": "hypothesis", "env": "env-7455d033", "family": "org-boundary", "statement": "The API incorrectly allows an org2 approver to approve an org1 workflow wf2.", "model": "gpt-5.5", "ts": 1788783137.0176158}
+{"event": "experiment", "env": "env-7455d033", "family": "org-boundary", "reached": true, "model": "gpt-5.5", "ts": 1788783137.0259259}
+{"event": "hypothesis", "env": "env-7455d033", "family": "org-boundary", "statement": "The API incorrectly allows an org2 actor to access or mutate org1 workflow wf2 through get, audit, or reject.", "model": "gpt-5.5", "ts": 1788783154.948698}
+{"event": "experiment", "env": "env-7455d033", "family": "org-boundary", "reached": true, "model": "gpt-5.5", "ts": 1788783154.953269}
+{"event": "strategic_reallocation", "env": "env-7455d033", "frm": "org-boundary", "to": "state-integrity", "model": "gpt-5.5", "ts": 1788783158.2712262}
+{"event": "hypothesis", "env": "env-7455d033", "family": "state-integrity", "statement": "The API incorrectly permits mutation of terminal approved workflow wf1 through reject, cancel, or additional approve actions.", "model": "gpt-5.5", "ts": 1788783165.716476}
+{"event": "experiment", "env": "env-7455d033", "family": "state-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788783165.7193642}
+{"event": "candidate", "env": "env-7455d033", "family": "state-integrity", "model": "gpt-5.5", "ts": 1788783181.502172}
+{"event": "verification", "env": "env-7455d033", "family": "state-integrity", "verdict": "CONFIRMED", "root_cause": "terminal", "ts": 1788783181.5266109}
+{"event": "hypothesis", "env": "env-7455d033", "family": "approval-integrity", "statement": "A request created by maker can be approved by a different approver in the same org according to the policy's required approval count.", "model": "glm-5p2", "ts": 1788783198.189697}
+{"event": "hypothesis", "env": "env-7455d033", "family": "approval-integrity", "statement": "Approver_1 can approve wf1 since they are a distinct approver in the same org as the maker.", "model": "glm-5p2", "ts": 1788783204.913374}
+{"event": "hypothesis", "env": "env-7455d033", "family": "approval-integrity", "statement": "Approver_2 can provide the second distinct approval on wf1, transitioning it to approved state.", "model": "glm-5p2", "ts": 1788783213.24404}
+{"event": "hypothesis", "env": "env-7455d033", "family": "maker-checker", "statement": "The maker of a request can approve their own request, violating maker-checker separation.", "model": "glm-5p2", "ts": 1788783241.197603}
+{"event": "experiment", "env": "env-7455d033", "family": "maker-checker", "reached": true, "model": "glm-5p2", "ts": 1788783241.200927}
+{"event": "experiment", "env": "env-7455d033", "family": "maker-checker", "reached": true, "model": "glm-5p2", "ts": 1788783254.144597}
+{"event": "hypothesis", "env": "env-7455d033", "family": "org-boundary", "statement": "An approver from org2 can approve a request created in org1, violating org-boundary.", "model": "glm-5p2", "ts": 1788783262.040403}
+{"event": "experiment", "env": "env-7455d033", "family": "org-boundary", "reached": true, "model": "glm-5p2", "ts": 1788783262.04145}
+{"event": "hypothesis", "env": "env-7455d033", "family": "approval-integrity", "statement": "Approver_1 can provide the first approval on wf2; then a duplicate approval by approver_1 will be tested to see if it incorrectly counts toward the required 2.", "model": "glm-5p2", "ts": 1788783277.375094}
+{"event": "experiment", "env": "env-7455d033", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788783277.393989}
+{"event": "hypothesis", "env": "env-7455d033", "family": "approval-integrity", "statement": "Approver_1 can approve wf2 a second time and have it count toward the required 2 approvals, violating approval-integrity.", "model": "glm-5p2", "ts": 1788783285.980669}
+{"event": "experiment", "env": "env-7455d033", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788783285.985039}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "maker-checker", "statement": "A request created by maker can be approved by a different approver in the same org; inspecting the result will reveal the required approval count and normal state transitions.", "model": "kimi-k3", "ts": 1788783305.5381498}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "approval-integrity", "statement": "wf1 requires 2 distinct approvals; after approver_1 approves it stays pending, and after approver_2 approves it becomes approved.", "model": "kimi-k3", "ts": 1788783329.2352588}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "explore", "to": "maker-checker", "model": "kimi-k3", "ts": 1788783340.3795998}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "maker-checker", "statement": "The creator of a request (maker) can approve their own request because they also hold the approver role, violating maker/checker separation.", "model": "kimi-k3", "ts": 1788783346.401814}
+{"event": "experiment", "env": "env-ee79a471", "family": "maker-checker", "reached": true, "model": "kimi-k3", "ts": 1788783346.407511}
+{"event": "candidate", "env": "env-ee79a471", "family": "maker-checker", "model": "kimi-k3", "ts": 1788783362.013404}
+{"event": "verification", "env": "env-ee79a471", "family": "maker-checker", "verdict": "CONFIRMED", "root_cause": "separation", "ts": 1788783362.0434299}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "maker-checker", "to": "approval-integrity", "model": "kimi-k3", "ts": 1788783362.043467}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "approval-integrity", "statement": "The same identity (maker) approving wf2 a second time will be counted as a second distinct approval, pushing approvals to 2/2 and approving the request \u2014 violating approval-integrity (distinct approvers).", "model": "kimi-k3", "ts": 1788783369.0362082}
+{"event": "experiment", "env": "env-ee79a471", "family": "approval-integrity", "reached": true, "model": "kimi-k3", "ts": 1788783369.041287}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "approval-integrity", "to": "org-boundary", "model": "kimi-k3", "ts": 1788783374.69909}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "org-boundary", "statement": "An approver from org2 (other_org_approver) can approve a request belonging to org1 (wf2), violating the org-boundary invariant.", "model": "kimi-k3", "ts": 1788783384.090692}
+{"event": "experiment", "env": "env-ee79a471", "family": "org-boundary", "reached": true, "model": "kimi-k3", "ts": 1788783384.096409}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "org-boundary", "to": "state-integrity", "model": "kimi-k3", "ts": 1788783388.752565}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "state-integrity", "statement": "A terminal (approved) workflow wf1 can still be transitioned (rejected/cancelled/approved again), violating state-integrity (terminal states must be frozen).", "model": "kimi-k3", "ts": 1788783398.252414}
+{"event": "experiment", "env": "env-ee79a471", "family": "state-integrity", "reached": true, "model": "kimi-k3", "ts": 1788783398.256657}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "state-integrity", "to": "maker-checker", "model": "kimi-k3", "ts": 1788783404.289942}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "maker-checker", "statement": "Because maker's self-approval counted as 1 of 2 required approvals on wf2, a single legitimate approval from approver_1 will push wf2 to 'approved' \u2014 meaning the payout was approved using the creator's own approval, demonstrating the maker-checker violation has real effect.", "model": "kimi-k3", "ts": 1788783413.163579}
+{"event": "experiment", "env": "env-ee79a471", "family": "maker-checker", "reached": true, "model": "kimi-k3", "ts": 1788783413.170479}
+{"event": "candidate", "env": "env-ee79a471", "family": "maker-checker", "model": "kimi-k3", "ts": 1788783420.532833}
+{"event": "verification", "env": "env-ee79a471", "family": "maker-checker", "verdict": "CONFIRMED", "root_cause": "separation", "ts": 1788783420.567362}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "maker-checker", "to": "explore", "model": "kimi-k3", "ts": 1788783420.567381}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "state-integrity", "statement": "(a) The operator identity (no approver role) may be able to approve a request, bypassing role checks; (b) a rejected workflow may be resurrected by a subsequent approve, violating state-integrity for the rejected terminal state.", "model": "kimi-k3", "ts": 1788783431.082597}
+{"event": "experiment", "env": "env-ee79a471", "family": "state-integrity", "reached": true, "model": "kimi-k3", "ts": 1788783431.092619}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "maker-checker", "statement": "A request created by org1 maker can be approved by a different org1 approver under normal policy.", "model": "gpt-5.5", "ts": 1788783448.855654}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "approval-integrity", "statement": "A pending org1 request requiring 2 approvals reaches approved only after approvals by two distinct non-maker org1 approvers.", "model": "gpt-5.5", "ts": 1788783461.888768}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "explore", "to": "maker-checker", "model": "gpt-5.5", "ts": 1788783465.305645}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "maker-checker", "statement": "A maker who created a request must be forbidden from approving that same request, even if they also have the approver role.", "model": "gpt-5.5", "ts": 1788783471.79288}
+{"event": "experiment", "env": "env-ee79a471", "family": "maker-checker", "reached": true, "model": "gpt-5.5", "ts": 1788783471.795958}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "maker-checker", "statement": "The creator of wf2 cannot approve wf2, even though the creator has the approver role.", "model": "gpt-5.5", "ts": 1788783483.275618}
+{"event": "experiment", "env": "env-ee79a471", "family": "maker-checker", "reached": true, "model": "gpt-5.5", "ts": 1788783483.2829728}
+{"event": "candidate", "env": "env-ee79a471", "family": "maker-checker", "model": "gpt-5.5", "ts": 1788783492.5253692}
+{"event": "verification", "env": "env-ee79a471", "family": "maker-checker", "verdict": "CONFIRMED", "root_cause": "separation", "ts": 1788783492.552278}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "maker-checker", "to": "approval-integrity", "model": "gpt-5.5", "ts": 1788783492.552338}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "approval-integrity", "statement": "When 2 approvals are required, a single approver must not be able to satisfy the requirement by approving the same request twice.", "model": "gpt-5.5", "ts": 1788783511.2983522}
+{"event": "experiment", "env": "env-ee79a471", "family": "approval-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788783511.3092759}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "approval-integrity", "statement": "The same approver_1 cannot be counted twice toward the 2 required approvals on wf3.", "model": "gpt-5.5", "ts": 1788783520.72249}
+{"event": "experiment", "env": "env-ee79a471", "family": "approval-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788783520.7330172}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "approval-integrity", "to": "org-boundary", "model": "gpt-5.5", "ts": 1788783524.993103}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "org-boundary", "statement": "An org2 approver cannot approve an org1-created workflow such as wf3.", "model": "gpt-5.5", "ts": 1788783535.5908248}
+{"event": "experiment", "env": "env-ee79a471", "family": "org-boundary", "reached": true, "model": "gpt-5.5", "ts": 1788783535.600436}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "org-boundary", "to": "state-integrity", "model": "gpt-5.5", "ts": 1788783549.517418}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "state-integrity", "statement": "An approved workflow cannot be cancelled after reaching the terminal approved state.", "model": "gpt-5.5", "ts": 1788783557.049721}
+{"event": "experiment", "env": "env-ee79a471", "family": "state-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788783557.058914}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "approval-integrity", "statement": "A request created by maker can be approved by a different approver in the same org, and the response will reveal the required approval count.", "model": "glm-5p2", "ts": 1788783575.134742}
+{"event": "experiment", "env": "env-ee79a471", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788783575.1373498}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "approval-integrity", "statement": "approver_1 can approve wf1 (same org, different person from maker), and the state will show 1 of 2 required approvals.", "model": "glm-5p2", "ts": 1788783584.340296}
+{"event": "experiment", "env": "env-ee79a471", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788783584.344152}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "approval-integrity", "statement": "A second distinct approver (approver_2) can complete the approval, transitioning wf1 to approved state.", "model": "glm-5p2", "ts": 1788783594.001302}
+{"event": "experiment", "env": "env-ee79a471", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788783594.010237}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "explore", "to": "state-integrity", "model": "glm-5p2", "ts": 1788783628.553795}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "maker-checker", "statement": "The system forbids self-approval, actions on terminal states, and cross-org approvals.", "model": "glm-5p2", "ts": 1788783633.177577}
+{"event": "experiment", "env": "env-ee79a471", "family": "maker-checker", "reached": true, "model": "glm-5p2", "ts": 1788783633.1833322}
+{"event": "candidate", "env": "env-ee79a471", "family": "maker-checker", "model": "glm-5p2", "ts": 1788783638.274842}
+{"event": "verification", "env": "env-ee79a471", "family": "maker-checker", "verdict": "CONFIRMED", "root_cause": "separation", "ts": 1788783638.3029718}
+{"event": "strategic_reallocation", "env": "env-ee79a471", "frm": "state-integrity", "to": "approval-integrity", "model": "glm-5p2", "ts": 1788783638.303017}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "approval-integrity", "statement": "The system incorrectly allows the same approver to approve twice, counting each approval separately toward the required total.", "model": "glm-5p2", "ts": 1788783644.726811}
+{"event": "experiment", "env": "env-ee79a471", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788783644.730043}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "approval-integrity", "statement": "A non-creator approver's duplicate approval will be suppressed and not increment the approval count, preserving approval-integrity.", "model": "glm-5p2", "ts": 1788783661.876837}
+{"event": "experiment", "env": "env-ee79a471", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788783661.890263}
+{"event": "hypothesis", "env": "env-ee79a471", "family": "state-integrity", "statement": "Terminal states are frozen: a rejected request cannot be approved, and an approved request cannot be cancelled.", "model": "glm-5p2", "ts": 1788783686.1749408}
+{"event": "experiment", "env": "env-ee79a471", "family": "state-integrity", "reached": true, "model": "glm-5p2", "ts": 1788783686.182783}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "maker-checker", "statement": "A maker can create a request in org1 and a different org1 approver can approve it; the resulting state will reveal the required number of approvals.", "model": "kimi-k3", "ts": 1788783741.6969159}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "approval-integrity", "statement": "wf1 requires 2 distinct approvals; after approver_1 and approver_2 approve, state becomes approved.", "model": "kimi-k3", "ts": 1788783756.195095}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "explore", "to": "maker-checker", "model": "kimi-k3", "ts": 1788783777.5800571}
+{"event": "experiment", "env": "env-2193ea16", "family": "maker-checker", "reached": true, "model": "kimi-k3", "ts": 1788783786.932545}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "maker-checker", "to": "approval-integrity", "model": "kimi-k3", "ts": 1788783791.705983}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "approval-integrity", "statement": "The same approver approving twice will count as 2 approvals and move wf2 to approved, violating the distinct-approver requirement.", "model": "kimi-k3", "ts": 1788783812.724737}
+{"event": "experiment", "env": "env-2193ea16", "family": "approval-integrity", "reached": true, "model": "kimi-k3", "ts": 1788783812.733779}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "approval-integrity", "to": "org-boundary", "model": "kimi-k3", "ts": 1788783817.5027819}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "org-boundary", "statement": "An org2 approver can approve an org1 workflow (wf2), crossing the org boundary.", "model": "kimi-k3", "ts": 1788783823.317409}
+{"event": "experiment", "env": "env-2193ea16", "family": "org-boundary", "reached": true, "model": "kimi-k3", "ts": 1788783823.323659}
+{"event": "candidate", "env": "env-2193ea16", "family": "org-boundary", "model": "kimi-k3", "ts": 1788783832.971688}
+{"event": "verification", "env": "env-2193ea16", "family": "org-boundary", "verdict": "CONFIRMED", "root_cause": "cross_org", "ts": 1788783833.00409}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "state-integrity", "statement": "A terminal (approved) workflow can be resurrected or modified (rejected/cancelled/re-approved), violating state-integrity.", "model": "kimi-k3", "ts": 1788783840.954793}
+{"event": "experiment", "env": "env-2193ea16", "family": "state-integrity", "reached": true, "model": "kimi-k3", "ts": 1788783840.9624891}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "org-boundary", "statement": "An org1 approver can approve an org2 workflow (wf3), confirming the org-boundary violation is bidirectional; also test whether a non-approver role (operator) can approve.", "model": "kimi-k3", "ts": 1788783867.7096388}
+{"event": "experiment", "env": "env-2193ea16", "family": "org-boundary", "reached": true, "model": "kimi-k3", "ts": 1788783867.715606}
+{"event": "candidate", "env": "env-2193ea16", "family": "org-boundary", "model": "kimi-k3", "ts": 1788783873.9070039}
+{"event": "verification", "env": "env-2193ea16", "family": "org-boundary", "verdict": "CONFIRMED", "root_cause": "cross_org", "ts": 1788783873.934926}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "org-boundary", "to": "explore", "model": "kimi-k3", "ts": 1788783873.934975}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "approval-integrity", "statement": "A pending org1 request created by maker reaches approved after two distinct org1 approvers approve it.", "model": "gpt-5.5", "ts": 1788783888.217267}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "explore", "to": "maker-checker", "model": "gpt-5.5", "ts": 1788783893.5189052}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "maker-checker", "statement": "A maker-created pending request can be used to test maker/checker separation by attempting creator self-approval.", "model": "gpt-5.5", "ts": 1788783900.53908}
+{"event": "experiment", "env": "env-2193ea16", "family": "maker-checker", "reached": true, "model": "gpt-5.5", "ts": 1788783900.543645}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "maker-checker", "statement": "The creator of wf2 cannot approve their own request despite having the approver role.", "model": "gpt-5.5", "ts": 1788783915.755414}
+{"event": "experiment", "env": "env-2193ea16", "family": "maker-checker", "reached": true, "model": "gpt-5.5", "ts": 1788783915.764884}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "maker-checker", "to": "approval-integrity", "model": "gpt-5.5", "ts": 1788783932.554493}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "approval-integrity", "statement": "A second approval attempt by the same approver on wf2 will not count as a distinct approval and will not move the workflow to approved.", "model": "gpt-5.5", "ts": 1788783940.486364}
+{"event": "experiment", "env": "env-2193ea16", "family": "approval-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788783940.500126}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "approval-integrity", "to": "org-boundary", "model": "gpt-5.5", "ts": 1788783948.9434361}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "org-boundary", "statement": "other_org_approver cannot approve org1 workflow wf2 and wf2 will remain pending with only the existing single distinct org1 approval.", "model": "gpt-5.5", "ts": 1788783961.709452}
+{"event": "experiment", "env": "env-2193ea16", "family": "org-boundary", "reached": true, "model": "gpt-5.5", "ts": 1788783961.726065}
+{"event": "candidate", "env": "env-2193ea16", "family": "org-boundary", "model": "gpt-5.5", "ts": 1788783966.39209}
+{"event": "verification", "env": "env-2193ea16", "family": "org-boundary", "verdict": "CONFIRMED", "root_cause": "cross_org", "ts": 1788783966.42572}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "org-boundary", "to": "state-integrity", "model": "gpt-5.5", "ts": 1788783966.425815}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "state-integrity", "statement": "Approved workflow wf1 is frozen: reject/cancel attempts after approval will fail and wf1 will remain approved.", "model": "gpt-5.5", "ts": 1788783989.774845}
+{"event": "experiment", "env": "env-2193ea16", "family": "state-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788783989.7825751}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "state-integrity", "statement": "A fresh pending request can be created for rejected-terminal state-integrity testing.", "model": "gpt-5.5", "ts": 1788784014.590843}
+{"event": "experiment", "env": "env-2193ea16", "family": "state-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788784014.6006021}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "maker-checker", "statement": "A maker in org1 can create a payout request and a different approver in org1 can validly approve it, revealing the required approval policy.", "model": "glm-5p2", "ts": 1788784028.475858}
+{"event": "experiment", "env": "env-2193ea16", "family": "maker-checker", "reached": true, "model": "glm-5p2", "ts": 1788784063.067806}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "maker-checker", "to": "org-boundary", "model": "glm-5p2", "ts": 1788784067.2632241}
+{"event": "experiment", "env": "env-2193ea16", "family": "org-boundary", "reached": true, "model": "glm-5p2", "ts": 1788784070.6588008}
+{"event": "candidate", "env": "env-2193ea16", "family": "org-boundary", "model": "glm-5p2", "ts": 1788784082.957044}
+{"event": "verification", "env": "env-2193ea16", "family": "org-boundary", "verdict": "CONFIRMED", "root_cause": "cross_org", "ts": 1788784082.981146}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "org-boundary", "to": "state-integrity", "model": "glm-5p2", "ts": 1788784082.981196}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "state-integrity", "statement": "An already-approved (terminal) workflow can be approved again, violating state-integrity.", "model": "glm-5p2", "ts": 1788784086.062672}
+{"event": "experiment", "env": "env-2193ea16", "family": "state-integrity", "reached": true, "model": "glm-5p2", "ts": 1788784086.0647008}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "state-integrity", "to": "approval-integrity", "model": "glm-5p2", "ts": 1788784098.78366}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "approval-integrity", "statement": "The same approver can approve wf2 twice and have both count toward the required 2 approvals, violating approval-integrity.", "model": "glm-5p2", "ts": 1788784102.5873978}
+{"event": "experiment", "env": "env-2193ea16", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788784102.5922}
+{"event": "experiment", "env": "env-2193ea16", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788784114.589617}
+{"event": "strategic_reallocation", "env": "env-2193ea16", "frm": "approval-integrity", "to": "state-integrity", "model": "glm-5p2", "ts": 1788784132.320975}
+{"event": "hypothesis", "env": "env-2193ea16", "family": "state-integrity", "statement": "A rejected (terminal) workflow can be approved afterward, violating state-integrity.", "model": "glm-5p2", "ts": 1788784136.769345}
+{"event": "experiment", "env": "env-2193ea16", "family": "state-integrity", "reached": true, "model": "glm-5p2", "ts": 1788784136.7766862}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "maker-checker", "statement": "A maker can create a payout request, and a different approver from the same org can approve it", "model": "kimi-k3", "ts": 1788784146.571054}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "maker-checker", "statement": "Two distinct approvers from the same org can approve a pending request, transitioning it to approved state", "model": "kimi-k3", "ts": 1788784160.27424}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "maker-checker", "statement": "The maker (who has both requester and approver roles) can approve their own request, violating maker-checker separation", "model": "kimi-k3", "ts": 1788784178.740763}
+{"event": "experiment", "env": "env-cc1504e2", "family": "maker-checker", "reached": true, "model": "kimi-k3", "ts": 1788784178.756407}
+{"event": "experiment", "env": "env-cc1504e2", "family": "maker-checker", "reached": true, "model": "kimi-k3", "ts": 1788784192.9719281}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "maker-checker", "to": "approval-integrity", "model": "kimi-k3", "ts": 1788784198.083568}
+{"event": "experiment", "env": "env-cc1504e2", "family": "approval-integrity", "reached": true, "model": "kimi-k3", "ts": 1788784208.260293}
+{"event": "candidate", "env": "env-cc1504e2", "family": "approval-integrity", "model": "kimi-k3", "ts": 1788784213.175251}
+{"event": "verification", "env": "env-cc1504e2", "family": "approval-integrity", "verdict": "CONFIRMED", "root_cause": "counting", "ts": 1788784213.200235}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "approval-integrity", "to": "org-boundary", "model": "kimi-k3", "ts": 1788784213.2002912}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "org-boundary", "statement": "An approver from org2 can approve a request created in org1, violating org-boundary isolation", "model": "kimi-k3", "ts": 1788784220.476637}
+{"event": "experiment", "env": "env-cc1504e2", "family": "org-boundary", "reached": true, "model": "kimi-k3", "ts": 1788784220.47823}
+{"event": "experiment", "env": "env-cc1504e2", "family": "org-boundary", "reached": true, "model": "kimi-k3", "ts": 1788784233.723229}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "org-boundary", "to": "state-integrity", "model": "kimi-k3", "ts": 1788784240.417442}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "state-integrity", "statement": "An approved workflow (wf1) can be rejected, violating state-integrity of terminal states", "model": "kimi-k3", "ts": 1788784246.473876}
+{"event": "experiment", "env": "env-cc1504e2", "family": "state-integrity", "reached": true, "model": "kimi-k3", "ts": 1788784246.4771142}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "maker-checker", "statement": "A requester in org1 can create a payout request and a different approver in the same org can approve it; the resulting state will reveal normal approval behavior.", "model": "gpt-5.5", "ts": 1788784257.2098718}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "approval-integrity", "statement": "A pending org1 request created by maker requires approvals from two distinct non-creator org1 approvers before becoming approved.", "model": "gpt-5.5", "ts": 1788784267.4867682}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "explore", "to": "maker-checker", "model": "gpt-5.5", "ts": 1788784285.133994}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "maker-checker", "statement": "A workflow creator cannot approve their own pending payout request even if they hold the approver role.", "model": "gpt-5.5", "ts": 1788784289.8028579}
+{"event": "experiment", "env": "env-cc1504e2", "family": "maker-checker", "reached": true, "model": "gpt-5.5", "ts": 1788784289.8102021}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "maker-checker", "statement": "The creator maker is forbidden from approving their own pending workflow wf2, even though maker has an approver role.", "model": "gpt-5.5", "ts": 1788784298.086221}
+{"event": "experiment", "env": "env-cc1504e2", "family": "maker-checker", "reached": true, "model": "gpt-5.5", "ts": 1788784298.094948}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "maker-checker", "to": "approval-integrity", "model": "gpt-5.5", "ts": 1788784307.349461}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "approval-integrity", "statement": "A single approver cannot satisfy the two required approvals by approving wf2 twice; duplicate approval must be rejected or suppressed without increasing distinct approval count.", "model": "gpt-5.5", "ts": 1788784316.954935}
+{"event": "experiment", "env": "env-cc1504e2", "family": "approval-integrity", "reached": true, "model": "gpt-5.5", "ts": 1788784316.961727}
+{"event": "candidate", "env": "env-cc1504e2", "family": "approval-integrity", "model": "gpt-5.5", "ts": 1788784324.328322}
+{"event": "verification", "env": "env-cc1504e2", "family": "approval-integrity", "verdict": "CONFIRMED", "root_cause": "counting", "ts": 1788784324.34408}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "approval-integrity", "to": "org-boundary", "model": "gpt-5.5", "ts": 1788784324.3443258}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "org-boundary", "statement": "Org2 actors are forbidden from reading or auditing org1 workflow wf1.", "model": "gpt-5.5", "ts": 1788784336.631101}
+{"event": "experiment", "env": "env-cc1504e2", "family": "org-boundary", "reached": true, "model": "gpt-5.5", "ts": 1788784336.635329}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "org-boundary", "statement": "An org1 requester can create a new pending workflow that can then be used to test whether org2 actors are blocked from write actions.", "model": "gpt-5.5", "ts": 1788784358.73913}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "org-boundary", "statement": "Org2 actors are forbidden from performing write actions such as approve, reject, or cancel on org1 workflow wf3.", "model": "gpt-5.5", "ts": 1788784371.797197}
+{"event": "experiment", "env": "env-cc1504e2", "family": "org-boundary", "reached": true, "model": "gpt-5.5", "ts": 1788784371.801331}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "org-boundary", "to": "state-integrity", "model": "gpt-5.5", "ts": 1788784377.549616}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "approval-integrity", "statement": "A request created by maker can be approved by a different approver in the same org, and the system will indicate how many approvals are required.", "model": "glm-5p2", "ts": 1788784386.405986}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "approval-integrity", "statement": "A request created by maker can be approved by a different approver in the same org, and after 1 of 2 required approvals it should remain pending.", "model": "glm-5p2", "ts": 1788784397.466861}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "approval-integrity", "statement": "A second distinct approver (approver_2) approving wf1 will complete the required 2 approvals and transition the workflow to approved state.", "model": "glm-5p2", "ts": 1788784403.331177}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "state-integrity", "statement": "Rejecting an already-approved (terminal) workflow wf1 should be forbidden by state-integrity, but I suspect it may succeed here.", "model": "glm-5p2", "ts": 1788784431.722233}
+{"event": "experiment", "env": "env-cc1504e2", "family": "state-integrity", "reached": true, "model": "glm-5p2", "ts": 1788784431.747103}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "explore", "to": "maker-checker", "model": "glm-5p2", "ts": 1788784437.423386}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "maker-checker", "statement": "Maker approving their own request wf2 should be forbidden by maker-checker separation, but I suspect it may succeed here.", "model": "glm-5p2", "ts": 1788784441.2116811}
+{"event": "experiment", "env": "env-cc1504e2", "family": "maker-checker", "reached": true, "model": "glm-5p2", "ts": 1788784441.212864}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "maker-checker", "to": "org-boundary", "model": "glm-5p2", "ts": 1788784444.64608}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "org-boundary", "statement": "other_org_approver (org2) approving wf2 (org1 request) should be forbidden by org-boundary, but I suspect it may succeed here.", "model": "glm-5p2", "ts": 1788784449.094768}
+{"event": "experiment", "env": "env-cc1504e2", "family": "org-boundary", "reached": true, "model": "glm-5p2", "ts": 1788784449.1026208}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "org-boundary", "to": "approval-integrity", "model": "glm-5p2", "ts": 1788784456.0396109}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "approval-integrity", "statement": "approver_1 approving wf2 a second time should be rejected or not counted, but I suspect it may succeed and increment the approval count.", "model": "glm-5p2", "ts": 1788784460.314592}
+{"event": "experiment", "env": "env-cc1504e2", "family": "approval-integrity", "reached": true, "model": "glm-5p2", "ts": 1788784460.322561}
+{"event": "candidate", "env": "env-cc1504e2", "family": "approval-integrity", "model": "glm-5p2", "ts": 1788784465.526195}
+{"event": "verification", "env": "env-cc1504e2", "family": "approval-integrity", "verdict": "CONFIRMED", "root_cause": "counting", "ts": 1788784465.5576692}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "approval-integrity", "to": "explore", "model": "glm-5p2", "ts": 1788784465.557728}
+{"event": "hypothesis", "env": "env-cc1504e2", "family": "state-integrity", "statement": "Approving an already-approved workflow should be blocked by state-integrity. Also, maker rejecting their own request may violate maker-checker separation.", "model": "glm-5p2", "ts": 1788784473.828864}
+{"event": "experiment", "env": "env-cc1504e2", "family": "state-integrity", "reached": true, "model": "glm-5p2", "ts": 1788784473.836519}
+{"event": "strategic_reallocation", "env": "env-cc1504e2", "frm": "explore", "to": "org-boundary", "model": "glm-5p2", "ts": 1788784482.560468}

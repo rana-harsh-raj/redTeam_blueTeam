@@ -1,0 +1,79 @@
+# FastCron-driver schedule table for the Env2 arena.
+# Source: INITIAL_PAYOUTS_ENVIRONMENT_BOM.md Sec 1 "Cron driver" row -- these cadences are explicitly
+# flagged there as ASSUMED / UNVERIFIED ("PS cadence unknown; assume ... -- flag as unverified"), not
+# read out of a real crontab/FastCron config in any repo. Do not treat these intervals as ground truth;
+# they exist only so the arena's cron-driver script has *a* schedule to run against, and every entry
+# below is marked unverified accordingly.
+#
+# Driver shape: an external scheduler hits PS `/v1/cron/*` endpoints with FastCron credentials; FTS's
+# own crons are in-process (set INSTANCE_TYPE=canary on one FTS worker) rather than externally driven.
+
+_status: UNVERIFIED
+_source: INITIAL_PAYOUTS_ENVIRONMENT_BOM.md Sec 1
+
+payouts_service:
+  driver: external (cron-driver container hits PS HTTP endpoints on a fixed interval, FastCron-style Basic Auth creds)
+  jobs:
+    - name: queued_low_balance_dequeue
+      endpoint: POST /v1/cron/process_queued_low_balance_payouts
+      interval_minutes: 5
+      status: UNVERIFIED
+      purpose: re-attempt payouts parked in 'queued' (queue_if_low_balance) once balance is sufficient
+    - name: scheduled_payouts_dispatch
+      endpoint: POST /v1/cron/process_scheduled_payouts
+      interval_minutes: 5
+      status: UNVERIFIED
+      purpose: dispatch payouts whose scheduled_at has arrived
+    - name: on_hold_release
+      endpoint: POST /v1/cron/process_beneficiary_bank_on_hold_payouts
+      interval_minutes: 5
+      status: UNVERIFIED
+      purpose: release payouts past their on_hold window
+    - name: in_flight_reservation_reconcile
+      endpoint: POST /v1/cron/process_inflight_reservation_reconciliation
+      interval_minutes: 5
+      status: UNVERIFIED
+      purpose: reconcile in-flight balance reservations (code-constant cadence per BOM, not independently confirmed here)
+    - name: dual_write_failure_processing
+      endpoint: POST /v1/cron/payouts_dual_write_failure_processing
+      interval_minutes: 15
+      status: UNVERIFIED
+      purpose: retry failed PayoutsDualWriteFailureProcessing rows (findings/13 Q1 -- implementation body not traced, only the entrypoint exists)
+    - name: batch_submitted_dispatch
+      endpoint: POST /v1/cron/process_batch_submitted_payouts
+      body: {}
+      interval_minutes: 5
+      status: ASSUMED_CADENCE_SOURCE_CONFIRMED_ROUTE
+      purpose: dispatch due batch-submitted payouts (controller has no request DTO)
+    - name: fund_management_checks
+      endpoint: POST /v1/cron/fund_management_payouts/check
+      body: {merchant_ids: [ARENAM00000001]}
+      interval_minutes: 5
+      status: ASSUMED_CADENCE_SOURCE_CONFIRMED_ROUTE
+      purpose: dispatch FMP checks for explicit synthetic targets; merchant_ids required min=1 (fmpConfig.go:126)
+    - name: stuck_payouts_sla_monitor
+      endpoint: internal (SLAMonitor.CheckSLABreaches, in-process not HTTP-cron per findings/13 finding #17)
+      interval_minutes: UNKNOWN
+      status: UNVERIFIED
+      purpose: alert-only (Slack + Prometheus gauge), covers only batch_submitted/create_request_submitted/scheduled -- NOT 'initiated' (confirmed gap, findings/13 finding #17)
+
+fts:
+  driver: in-process (INSTANCE_TYPE=canary on one FTS worker instance runs the cron set; no external HTTP trigger)
+  jobs:
+    - name: fts_internal_crons
+      status: UNVERIFIED
+      purpose: exact job list/cadence not enumerated in findings docs read for this spec -- TODO(confirm) against fts/internal/cron/** if higher fidelity is required later
+
+ledger:
+  driver: UNKNOWN
+  jobs: []
+  note: no ledger cron cadence claim found in the source findings docs used for this spec; leave empty rather than fabricate.
+
+x-balances:
+  driver: worker (cmd/worker, SQS-driven per-bank balance-refresh jobs, not a fixed-interval cron per se)
+  jobs:
+    - name: balance_fetch_rbl
+      endpoint: POST /v1/cron/balance/RBL/fetch
+      interval_minutes: 5
+      status: UNVERIFIED
+      purpose: poll RBL bank balance via Mozart for Direct/current-account merchants (M2)

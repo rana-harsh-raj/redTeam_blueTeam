@@ -1,0 +1,75 @@
+{
+  "milestone": "M3.1-E fresh-funded-merchant parity + lifecycle",
+  "generated_at": "2026-09-06T14:44:36Z",
+  "gateway_profile": "hardened (KONG_ENFORCE_ROUTE_POLICY=1)",
+  "tests": [
+    {
+      "name": "provision_no_step_failures",
+      "passed": true,
+      "failed_steps": [],
+      "steps": 18,
+      "merchant_id": "ARENAM90546278"
+    },
+    {
+      "name": "ledger_account_details_parity",
+      "passed": true,
+      "rows": "4",
+      "roles": "[\"merchant_va\"],[\"merchant_va_vendor\"],[\"merchant_va\"],[\"va_gst\"]"
+    },
+    {
+      "name": "create_returns_200_with_pricing",
+      "passed": true,
+      "status": 200,
+      "payout_id": "pout_TYmxm31P2ny22w",
+      "fees": 200,
+      "tax": 36,
+      "note": "create-500 root cause (monolith merchant-config 404) is FIXED"
+    },
+    {
+      "name": "successful_payout_reaches_processed",
+      "passed": true,
+      "db_terminal_status": "processed",
+      "detail": "resolved: pricing_rule_id char(14) overflow fixed in provisioner"
+    },
+    {
+      "name": "bank_failure_reverses_cleanly",
+      "passed": true,
+      "db_terminal_status": "reversed",
+      "blocked_by_ceiling": false
+    },
+    {
+      "name": "insufficient_balance_rejected",
+      "passed": true,
+      "status": 400,
+      "body": "{\"error\":{\"code\":\"BAD_REQUEST_ERROR\",\"description\":\"Your account does not have enough balance to carry out the payout operation.\",\"step\":\"\",\"reason\":\"\",\"field\":",
+      "note": "Shared-account balance is enforced in the ledger debit (balance+amt>=0)"
+    },
+    {
+      "name": "idempotency_same_key_same_id",
+      "passed": true,
+      "id1": "pout_TYmzQ09d1z2giK",
+      "id2": "pout_TYmzQ09d1z2giK"
+    },
+    {
+      "name": "idempotency_diff_body_rejected",
+      "passed": true,
+      "status": 400,
+      "body": "{\"error\":{\"code\":\"bad_request_error\",\"description\":\"Different request body sent for the same Idempotency Header\",\"step\":"
+    }
+  ],
+  "parity_matrix": {
+    "monolith_merchant_config": "registered (was absent -> 404 -> create-500)",
+    "pricing_plan": "registered per-merchant (+ free_payout_counter)",
+    "ledger_account_details_rows": "4",
+    "ledger_roles": "[\"merchant_va\"],[\"merchant_va_vendor\"],[\"merchant_va\"],[\"va_gst\"]",
+    "banking_accounts": "structural match to M1 (verified)",
+    "static_state_reused": false
+  },
+  "summary": {
+    "total": 8,
+    "passed": 8,
+    "create_500_fixed": true,
+    "terminal_processing_ceiling": false,
+    "full_success_payout_demonstrated": true
+  }
+}

@@ -1,0 +1,14 @@
+# Add under `services:` in ENV2_COMPOSE/config/arena.yaml, alongside the other
+# substitute entries (kong_lite, monolith_stub, dcs_stub, ... at arena.yaml:60-70).
+# This lane does NOT edit arena.yaml; paste the one line below.
+#
+# Host/port MUST match the compose service name and STUB_PORT in
+# substitutes/batch-sim/compose-block.yml (preflight/preflight.py enforces that
+# every rendered endpoint is an arena service name, never a real razorpay host).
+#
+# NOTE: no {{SVC.batch_sim}} token is referenced by any of the 5 real services'
+# config templates — batch-sim is a CALLER of payouts-api, never a callee of it.
+# The entry exists so RED_LOOP journeys and the verifier can resolve the address
+# from arena.yaml instead of hard-coding it.
+
+  batch_sim: {host: batch-sim, port: 8094}

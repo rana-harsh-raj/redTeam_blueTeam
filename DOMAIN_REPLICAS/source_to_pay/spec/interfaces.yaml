@@ -1,0 +1,68 @@
+schema_version: 2
+interfaces:
+  - id: s2p.kafka.add-tds-entry
+    transport: kafka
+    topic: add-tds-entry
+    caller: synthetic-fixture-producer
+    adapter: s2p.source-driver
+    callee: vendor-payments.tasks.ProcessMessage
+    status: ACTUAL_SOURCE_RUNNING
+    request_shape: '{request_id, data:{merchant_id,entity_id,entity_type,entity_status,tds_amount,tds_category_id}}'
+    warning: Accrual/tagback trigger only; it is not a remittance trigger.
+  - id: s2p.api.search-internal-tax-contact
+    method: GET
+    path: v1/contacts_internal/
+    request: SearchReq in GET body; type rzp_tax_pay, active 1, expand fund_accounts
+    response: collection containing zero or one internal tax contact with expanded fund_accounts
+    gates: [authenticated synthetic internal app, merchant header required, contact-enabled branch]
+    status: CONTRACT_FAITHFUL_REPLACEMENT
+  - id: s2p.api.get-internal-fund-account
+    method: GET
+    path: v1/fund_accounts_internal/{fund_account_id}
+    response: source fundaccount.FundAccount shape with contact
+    gates: [known synthetic fund-account id, active bank account, beneficiary name/account/IFSC match]
+    status: CONTRACT_FAITHFUL_REPLACEMENT
+  - id: s2p.api.get-banking-accounts
+    method: GET
+    path: v1/banking_accounts_internal[/]
+    response: BankingAccountAPIResponse collection
+    gates: [merchant header required, requested account present in returned items]
+    status: CONTRACT_FAITHFUL_REPLACEMENT
+  - id: s2p.api.verify-otp
+    method: POST
+    path: v1/vendor-payments/verify-otp
+    request: source otp.VerifyOtpRequest
+    response: '{Success: boolean}'
+    gates: [synthetic OTP equals 754081]
+    status: CONTRACT_FAITHFUL_REPLACEMENT
+  - id: s2p.api.create-internal-contact-payout
+    method: POST
+    path: v1/internalContactPayout/
+    request: source payout.Request; contact_type and tax_payment_id are not request fields
+    response: source payout.Payout shape with created status
+    authentication: Basic rzp_live synthetic secret maps to vendor_payments; second valid synthetic secret maps to xpayroll for denial branch
+    gates: [merchant header required, vendor_payments allowed for resolved rzp_tax_pay contact, fixed active internal tax fund account required, X-Payout-Idempotency required, idempotency scoped by merchant plus key, same key with different payload rejected]
+    status: CONTRACT_FAITHFUL_REPLACEMENT
+  - id: s2p.api.tag-tax-payment
+    method: PATCH
+    path: v1/payouts_internal/{payout_id}/tax-payment-id
+    request: '{tax_payment_id: txpy_<14 chars>}'
+    response: '{status: SUCCESS}'
+    gates: [known payout owned by merchant, tax-payment ID string size 19, txpy_ public prefix]
+    status: CONTRACT_FAITHFUL_REPLACEMENT
+local_adapter_interfaces:
+  - {id: s2p.adapter.pay, method: POST, path: /_replica/pay, invokes: actual taxpayments.Core.Pay}
+  - {id: s2p.adapter.status, method: POST, path: /_replica/status, invokes: actual VPServer.PayoutStatusChange}
+  - {id: s2p.adapter.tax-payment, method: GET, path: /_replica/tax-payment, invokes: actual taxpayments.Core.Get}
+  - {id: s2p.adapter.clock, method: POST, path: /_replica/clock, invokes: existing common.TimeNow injection point}
+  - {id: s2p.adapter.boundary-evidence, method: GET, path: /_evidence, status: REPLICA_ONLY}
+  - {id: s2p.adapter.boundary-contact-control, method: POST, path: /_control/contact, status: REPLICA_ONLY}
+  - {id: s2p.adapter.boundary-source-payout-seed, method: POST, path: /_control/seed-source-payout, status: REPLICA_ONLY}
+callback_transport_deviation:
+  statement: /_replica/status bypasses the production SourceUpdater delivery hop and Twirp authentication/interceptors, then invokes the actual source callback.
+  production_contract_evidence: [api/app/Models/Payout/SourceUpdater, vendor-payments/internal/apiservice/VpServer.go]
+non_running_interfaces:
+  - id: s2p.kafka.accounting-payout-status
+    topic: prod.x.vendor-payments.accounting-payouts.status-update
+    status: SOURCE_MAPPED_NOT_RUNNING
+    note: Shared producer/consumer configuration is source-observed; the executed TDS callback does not emit this event.

@@ -1,0 +1,26 @@
+{
+  "schema_version": 1,
+  "run_at": "20260905T131605Z",
+  "scope": "Offline unit and contract checks; fake I/O and temporary loopback servers only. No runtime Compose or core services changed.",
+  "historical_results": "reports/implementation/offline-final/historical/20260905T131605Z",
+  "test_count": 126,
+  "passed": 126,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "status": "passed",
+  "log_sha256": {
+    "ENV2_COMPOSE-preflight-tests.log": "ddd7bc9e1e0533aab2bb0a95fb61e69116575a33492a3aefd2831915a4dc0c8a",
+    "ENV2_COMPOSE-build-tests.log": "e121a61cf9239b3d17f18276b085a965bc891de4cacf1d9691dbae9b15039bf3",
+    "ENV2_COMPOSE-scripts.log": "2d3495a047ced9fd79cf01ce4278423447f7bb1fd53fd5ade01bd9bb8dcf99f0",
+    "ENV2_COMPOSE-seeds-generator.log": "c1c963234474a3f411fd6be36918eea5040201cb5e66dc853dcb6d62b21cf915",
+    "ENV2_COMPOSE-substitutes-mozart-sim.log": "8f3722f09d055475a267edb36f9685c06f234a6ef346f5b93d57c91404dd4078",
+    "ENV2_COMPOSE-substitutes-monolith-stub.log": "890c571eebf38ee5b7130bb18db6dd12dc257f515e64c8b982c81cb1228139f0",
+    "ENV2_COMPOSE-substitutes-splitz-stub.log": "ffac55fe530654f2bbafdd65abaae91d7d655a7e038e6d7de7634afe8656f110",
+    "ARCHITECTURE_EXPLORER.log": "cee56462fcccde7f446dfb93e866a9ea34eca24f4204c3c3fef892765edbadb3",
+    "ENV2_COMPOSE-verifier-offline_tests.log": "aae58581bd30a92f27960963285d5b2396a65fae54b557f531e113cfba249ff4",
+    "DAYTONA-tests.log": "916591a3a5e8ca45e4b5d544e058820afcb2e59c7bb37aa3089c766bd0712bec"
+  },
+  "updated_at": "20260905T132431Z",
+  "focused_recheck_history": "reports/implementation/offline-final/historical/20260905T132431Z"
+}

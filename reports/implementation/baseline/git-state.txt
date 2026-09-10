@@ -1,0 +1,6 @@
+Input directory was not a Git repository. Initialized twin-v1 before implementation. No original HEAD or worktree exists.
+## No commits yet on twin-v1
+?? .DS_Store
+?? ENV2_COMPOSE/
+?? TWIN_SPEC/
+?? reports/

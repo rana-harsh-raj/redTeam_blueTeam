@@ -1,0 +1,15 @@
+{
+  "capture_time_note": "Exact initial recovery completion time was not captured. The earlier 03:00 value was a manually rounded report time and is not used as verification evidence. Each clean run records actual UTC source verification timestamps.",
+  "destination": "/Users/rana.singh/.rzp-architecture-replica/repos",
+  "immutability": "Snapshots are detached or pinned to a dedicated architecture-snapshot ref and are never used as generation/build working directories.",
+  "method": {
+    "accounting-integrations": "reinitialized repository from intact depth-1 pack, created explicit shallow boundary, checked out pinned commit",
+    "payouts": "reinitialized repository from intact depth-1 pack, created explicit shallow boundary, checked out pinned commit",
+    "supporting_repositories": "independent no-hardlink clones from intact local shallow repositories, detached at pinned commits",
+    "vendor-experience": "reinitialized repository from intact depth-1 pack, created explicit shallow boundary, checked out pinned commit",
+    "vendor-payments": "reinitialized repository from intact depth-1 pack, created explicit shallow boundary, checked out pinned commit"
+  },
+  "recovered_at": null,
+  "tracked_count_correction": "Direct git ls-tree at the locked objects yields 2469/1307/1860 entries. These authoritative object counts correct the readiness report's 2207/1201/1712 figures; the recovered tree SHAs are also locked so the denominator cannot drift.",
+  "verification": "artifacts/source-verification.json records HEAD, tree count, clean status, shallow state, and git fsck for every repository"
+}

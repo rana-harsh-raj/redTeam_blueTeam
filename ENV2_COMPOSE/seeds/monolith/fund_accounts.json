@@ -1,0 +1,50 @@
+{
+  "_source": "findings/20_api_monolith.md (fund_accounts_internal[/{id}] route confirmed) + payouts/pkg/api/fetch_fund_account.go (FundAccountResponse DTO). GetFundAccountRequest builds URI = '/fund_accounts_internal/' + 'fa_' + fundAccountId -- i.e. the caller passes the id WITHOUT the fa_ prefix, the client adds it. Keyed here by that same suffix, aligned with the fixtures workstream's seeds/payouts.sql fund_accounts.account_id values (ARENAFAX00000N) so a real end-to-end lookup (payouts DB fund_account_id -> this stub) resolves consistently.",
+  "fund_accounts": {
+    "ARENAFAX000001": {
+      "id": "fa_ARENAFAX000001", "entity": "fund_account", "contact_id": "cont_ARENA000001",
+      "account_type": "bank_account", "active": true, "batch_id": "", "created_at": 1735689600,
+      "bank_account": {
+        "id": "ba_ARENABK000001", "name": "Arena Beneficiary One", "ifsc": "RATN0000001",
+        "bank_identifier": "RATN", "account_number": "1112220001", "bank_name": "RBL Bank",
+        "ifsc_code": "RATN0000001", "account_type": null
+      },
+      "vpa": {}, "card": {}, "wallet": {},
+      "contact": { "id": "cont_ARENA000001", "entity": "contact", "name": "Arena Beneficiary One",
+                   "contact": "9000000001", "email": "beneficiary1@arena.test", "type": "employee", "active": true }
+    },
+    "ARENAFAX000002": {
+      "id": "fa_ARENAFAX000002", "entity": "fund_account", "contact_id": "cont_ARENA000002",
+      "account_type": "bank_account", "active": true, "batch_id": "", "created_at": 1735689600,
+      "bank_account": {
+        "id": "ba_ARENABK000002", "name": "Arena Beneficiary Two", "ifsc": "RATN0000001",
+        "bank_identifier": "RATN", "account_number": "1112220002", "bank_name": "RBL Bank",
+        "ifsc_code": "RATN0000001", "account_type": "current"
+      },
+      "vpa": {}, "card": {}, "wallet": {},
+      "contact": { "id": "cont_ARENA000002", "entity": "contact", "name": "Arena Beneficiary Two",
+                   "contact": "9000000002", "email": "beneficiary2@arena.test", "type": "vendor", "active": true }
+    },
+    "ARENAFAX000003": {
+      "id": "fa_ARENAFAX000003", "entity": "fund_account", "contact_id": "cont_ARENA000003",
+      "account_type": "vpa", "active": true, "batch_id": "", "created_at": 1735689600,
+      "bank_account": {}, "card": {}, "wallet": {},
+      "vpa": { "id": "vpa_ARENAVPA00001", "username": "arenabeneficiary3", "handle": "upi", "address": "arenabeneficiary3@upi" },
+      "contact": { "id": "cont_ARENA000003", "entity": "contact", "name": "Arena Beneficiary Three",
+                   "contact": "9000000003", "email": "beneficiary3@arena.test", "type": "employee", "active": true }
+    },
+    "ARENAFAX000004": {
+      "id": "fa_ARENAFAX000004", "entity": "fund_account", "contact_id": "cont_ARENA000001",
+      "_note": "M1's INACTIVE bank fund account, account number ends 9999 -- doubles as the shield-stub scripted-block scenario (seeds/shield/rules.json).",
+      "account_type": "bank_account", "active": false, "batch_id": "", "created_at": 1735689600,
+      "bank_account": {
+        "id": "ba_ARENABK000004", "name": "Arena Blocked Beneficiary", "ifsc": "RATN0000001",
+        "bank_identifier": "RATN", "account_number": "1112229999", "bank_name": "RBL Bank",
+        "ifsc_code": "RATN0000001", "account_type": null
+      },
+      "vpa": {}, "card": {}, "wallet": {},
+      "contact": { "id": "cont_ARENA000001", "entity": "contact", "name": "Arena Beneficiary One",
+                   "contact": "9000000001", "email": "beneficiary1@arena.test", "type": "employee", "active": true }
+    }
+  }
+}

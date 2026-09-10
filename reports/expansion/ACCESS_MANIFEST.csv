@@ -1,0 +1,40 @@
+tier,repository_or_artifact,probe_result_2026_09_07,likely_owner,why_needed,journey_unlocked,replacement_possible,evidence_for_name
+1,razorpay/tax-compliance,404,Payroll/Opfin team (INF; #opfin-app-test-bugs),Consumer of SQS prod-tax-compliance-payout-events; TDS filing protos; payouts reads its Vault,TDS remittance to filing close-loop,YES (SQS sink + Vault dev + proto stubs),proto/tax_compliance/compliance/tds_payments/v1/tds_payments.proto:5 go_package; spinacode/tax-compliance
+1,razorpay/tax-compliance-vault (chart values),404,Payroll/Opfin team,payouts [hvault] secret source,payouts clean boot with real secret path,YES (HashiCorp Vault dev mode),payouts/config/prod.toml:718-724; kube-manifests/prod/tax-compliance-vault/values.yaml
+1,producer of Kafka add-tds-entry,not found in clone root,Payouts core / RX Apps,Start of TDS journey,Monthly TDS remittance,YES (fixture publisher; need schema sample),vendor-payments/config/prod.toml:336; api/app/Models/Payout/TdsProcessor/Processor.php:31-86
+1,razorpay/accounts-receivable (+x-accounts-receivable; x-invoice-approval; x-vendor-portal),404,RX Apps (INF; #x-alerts),accounts_receivable in Payouts allow-list; MetroAPI.InitiatePayout; hosted-invoice payout webhook,Receivables payout webhook,PARTIAL (Kong route + proto),payouts/internal/auth/headers.go:20; kube-manifests/prod/accounts-receivable/values.yaml:9
+1,scheduler config for InitiateMonthlyPayouts/CancelQueuedPayoutCron/AddPenaltyCron/EmailCron,n/a,RX Apps,Cron cadence not in repo,TDS run timing,YES (local cron),vendor-payments/internal/apiservice/TaxPaymentServer.go:123-185
+1,redacted prod samples: SNS payout-updates-vendor-payments; WorkflowStateCallback; PayoutStatusChange; ICICI directTaxTin2,n/a,RX Apps / Payouts core,Byte-level contract tests,All S2P journeys,YES except ICICI,payouts/config/prod.toml:375-378; vendor-payments/config/default.toml:325-343
+1,razorpay/budgets,404,@razorpay/x-cbu-devs,petty_cash source type; BudgetsAPI/PettyCashAPI,Petty cash payouts,YES (xperience implements budgets),proto/budgets/budgets/v1/budgets_api.proto:14; terraform-kong/.github/CODEOWNERS:358-360
+1,razorpay/x-bill-payments,404,RX Apps,BillAPI.PayoutStatusChange; bill_payment.* webhooks,Bill payments,PARTIAL,proto/x_bill_payments/bills/v1/bills_api.proto:11; kube-manifests/templates/x-bill-payments
+1,vendor-payments/vendor-experience/accounting-integrations prod values (secrets-free),n/a,RX Apps,Effective config,Clean boot fidelity,YES (repo defaults),kube-manifests/prod/vendor-payments/values.yaml
+2,razorpay/x-payroll (deployable opfin),404,X Payroll (#xpayroll-alerts; #opfin-app-bugs),Only caller of payout_create_internal as app xpayroll; crons ActualBankTransfer/BatchBankTransfer,Salary disbursement with maker-checker bypass,YES (opfin-sim external caller),spinacode/v3/opfin/prod/mum-rspl/app.json "repo": "x-payroll"
+2,razorpay/x-payroll-compute,404,X Payroll,Payroll compute gRPC; Temporal; Kafka SDI,Payroll run to net-pay batch,PARTIAL (proto stubs),spinacode/x-payroll-compute/default.jsonnet:4
+2,razorpay/x-salary-structure,404,X Payroll,gRPC service,Salary structure,PARTIAL,kube-manifests/prod/x-salary-structure/values.yaml:2-3
+2,razorpay/x-payroll-hris,404,X Payroll,gRPC service,HRIS,PARTIAL,proto/x-payroll/hris/v1/employee_custom_fields_api.proto:6 go_package
+2,razorpay/x-payroll-flexible-benefits,404,X Payroll,Kafka employee-settings-sync consumer,Flexible benefits,PARTIAL,proto/x-payroll/flexible-benefits/v2/assignment_service.proto:5 go_package
+2,razorpay/x-payroll-compliance (deployable opfin-compliance),404,X Payroll,Temporal compliance flows,PF/ESI/PT filings,NO,spinacode/v3/opfin-compliance
+2,razorpay/x-attendance (image x-tna),accessible but README-only template,X Payroll,Time and attendance,Attendance to payroll,n/a,gh api repos/razorpay/x-attendance; shallow clone ff68372
+2,razorpay/x-payroll-commons,accessible but README-only template,X Payroll,Shared lib,—,n/a,gh api repos/razorpay/x-payroll-commons; shallow clone 188bbaa
+2,Opfin DB schema / CDC tables realtime_prod_opfin,n/a,X Payroll / Data,Synthetic data shape,Payroll journeys,NO,self-serve-analytics CDC refs
+2,razorpay/frontend-graphql,404,X Payroll,Payroll BFF per RKG,Payroll UI,NO,knowledge-base payroll bundle
+3,razorpay/capital-cards,404,@razorpay/Capital_BE (#capital_cards_alerts),capital_cards_client app; corp-card balance details; card-pay vendor,Corporate card journeys,PARTIAL (monolith proxy + protos),api/app/Services/CapitalCardsClient.php:21; kube-manifests/prod-capital/capital-cards
+3,razorpay/capital-collections,404,@razorpay/Capital_BE,capital_collections source type + updater,Repayment collection payouts,PARTIAL,api/app/Services/CapitalCollectionsClient.php:73-125
+3,razorpay/capital-loc,404,@razorpay/Capital_BE; capital-loc-reviewers,LOC withdrawal → X payout callback,LOC withdrawal,PARTIAL,api/app/Http/Route.php:1557-1562
+3,razorpay/capital-es,404,Platforms/Payments Platform (org map),On-demand settlement → X payouts; KeepSufficientBalanceInPayoutsMerchant,On-demand settlement,YES (public-API caller sim),proto/capital/es/cron/v1/cron_api.proto:9; api/app/Services/RazorpayXClient.php:131-190
+3,razorpay/settlements (+settlement-service),404,@razorpay/TechSettlements (#settlements),StatusUpdatePayout; MigrateToPayout; FTS SETTLEMENT product,Settlement transfer status,YES (Twirp receiver),proto/settlements/transfer/v1/transfer_api.proto:116; fts/config/env.prod-live.toml:171-223
+3,razorpay/master-onboarding,404,X acquisition (#x-acquisition-alerts; #x-onboarding-oncall),CA activation orchestrator,CA onboarding,PARTIAL,banking-accounts/config/default.toml:103-106; kube-manifests/prod/master-onboarding/values.yaml:6
+3,razorpay/onboarding,404,Onboarding platform,obs platform,CA onboarding,PARTIAL,kube-manifests/prod/onboarding/values.yaml:6-7
+3,razorpay/business-verification-service,404,@razorpay/identity-core,KYC for vendors and CA,Vendor onboarding; CA KYC,YES (BVS SDK contract stub),spinacode/bvs local repo; kube-manifests/prod/bvs/values.yaml:6
+3,razorpay/business-reporting,404,Reporting team,business_reporting internal app; ledger balance fetch,Reports,YES (HTTP stub),api/config/applications.php:1188; payouts/internal/auth/headers.go:21
+3,razorpay/abacus,404,Platform,ABAC/limits for vendor-payments and workflows,Limits,YES (stub),vendor-payments/config/default.toml:569
+3,razorpay/metro,404,Platform,bulk orchestration for vendor-payments,Bulk imports,YES (stub),vendor-payments/config/default.toml:211
+3,razorpay/ufh,404,@razorpay/tech-infra-common-platforms,file handler (challans),Challan files,YES (stub),vendor-payments/config/default.toml:117
+3,razorpay/scrooge,404,PG refunds,refund source type,Refund payouts,YES (replay),payouts/internal/auth/headers.go:15
+3,razorpay/cross-border-import,404,XBI,cross_border/ica_transfer source types,ICA payouts,YES (replay),api/app/Models/Payout/SourceUpdater/Factory.php:80
+3,razorpay/rpc (regenerate),clone failed (SSL) earlier,Platform,Twirp/gRPC stubs for tax-payments/vendor-payments/vendor-portal/accounting-payouts,Contract tests,YES (buf generate from proto/),rpc/buf.gen.twirp.yaml
+artifact,Kafka MSK topic ACL list (vendor-payments; x-payroll-*),n/a,Platform/Kafka,Producer/consumer confirmation,add-tds-entry; employee-settings-sync,n/a,vendor-payments/config/prod.toml
+artifact,SNS subscription list for 10 payout-updates-* topics,n/a,Payouts core,Which service subscribes per source type,All status-back paths,n/a,payouts/config/prod.toml:367-388
+artifact,AuthZ DB role_policy_mapping export (x_platform; capital),n/a,AuthZ team,Role→permission mapping is data,Role fidelity,n/a,authz/scripts/policies
+artifact,DCS effective values rzp/x/merchant/payouts/* (skip_workflow_for_payroll; enable_payouts_to_cards; pricing tiers),n/a,Payouts core / DCS,Feature-state fidelity,Payroll bypass; cards,n/a,config-proto/rzp/x/merchant/payouts
+artifact,Grafana/alert metric names (opfin-infra; xpayroll_rules.yaml),n/a,Payroll,Payroll→payouts SLOs,Payroll assurance,n/a,alert-rules/rules/prod-rules/xpayroll_rules.yaml

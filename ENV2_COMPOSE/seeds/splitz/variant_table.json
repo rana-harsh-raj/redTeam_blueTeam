@@ -1,0 +1,7 @@
+{
+  "_comment": "Mirrors config/arena.yaml's splitz_variants block -- kept here as the explicit 'Splitz fixtures' deliverable and as the value scripts/up.sh can export as SPLITZ_VARIANT_TABLE_JSON when starting splitz-stub (docker-compose.yml doesn't hard-wire this env var today; arena.yaml is the actual source of truth splitz-stub's DEFAULT_TABLE constant already matches -- see substitutes/splitz-stub/server.py). Keep these two files in sync by hand for now; TODO have config/generate.py render this file from arena.yaml instead of duplicating it, same as it does for dcs_flags.json.",
+  "fts_request_from_payouts_service": "on",
+  "CreateTransferMetaRollout": "on",
+  "FireStatusUpdateKafka": "off",
+  "charge_collections": "off"
+}

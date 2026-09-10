@@ -1,0 +1,995 @@
+{
+  "campaign_id": "camp-986dc89e81b7",
+  "manifest_content_id": "986dc89e81b704beab741bc4a7dbcb57a6d95571842aa25046b74eed5241192d",
+  "generated_at": "2026-09-09T09:00:48Z",
+  "phases": [
+    {
+      "seq": 4,
+      "ts": "2026-09-09T09:00:47Z",
+      "phase": "campaign_started"
+    },
+    {
+      "seq": 220,
+      "ts": "2026-09-09T09:00:47Z",
+      "phase": "campaign_completed"
+    },
+    {
+      "seq": 222,
+      "ts": "2026-09-09T09:00:47Z",
+      "phase": "campaign_paused"
+    },
+    {
+      "seq": 224,
+      "ts": "2026-09-09T09:00:47Z",
+      "phase": "campaign_resumed"
+    },
+    {
+      "seq": 225,
+      "ts": "2026-09-09T09:00:47Z",
+      "phase": "campaign_resumed"
+    },
+    {
+      "seq": 570,
+      "ts": "2026-09-09T09:00:48Z",
+      "phase": "campaign_completed"
+    }
+  ],
+  "events": [
+    {
+      "seq": 4,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "campaign_started",
+      "twins": [
+        "alpha",
+        "beta"
+      ]
+    },
+    {
+      "seq": 5,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "twin_unhealthy",
+      "instance_id": "beta",
+      "detail": {
+        "healthy": false,
+        "checks_passed": 0,
+        "checks_total": 12
+      }
+    },
+    {
+      "seq": 9,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "twin_recovered",
+      "frm": "beta",
+      "to": "beta-r",
+      "moved_cells": 0
+    },
+    {
+      "seq": 11,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-001",
+      "subject": "svc:payouts-api",
+      "priority": 4
+    },
+    {
+      "seq": 13,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-002",
+      "subject": "identity:trust-boundary:payouts-service",
+      "priority": 6
+    },
+    {
+      "seq": 15,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-003",
+      "subject": "svc:fts",
+      "priority": 3
+    },
+    {
+      "seq": 17,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-004",
+      "subject": "family:shared-payouts",
+      "priority": 4
+    },
+    {
+      "seq": 19,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "planning_cycle",
+      "cycle": 1,
+      "new_theses": 4
+    },
+    {
+      "seq": 21,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_created",
+      "cell_id": "CELL-001",
+      "twin": "alpha",
+      "focus": "alpha:identity",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 23,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_created",
+      "task_id": "TASK-001",
+      "thesis_id": "TH-002",
+      "twin": "alpha",
+      "task_kind": "probe",
+      "cell_id": "CELL-001",
+      "replica_index": 0
+    },
+    {
+      "seq": 25,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_created",
+      "cell_id": "CELL-002",
+      "twin": "beta",
+      "focus": "beta:identity",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 27,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_created",
+      "task_id": "TASK-002",
+      "thesis_id": "TH-002",
+      "twin": "beta",
+      "task_kind": "probe",
+      "cell_id": "CELL-002",
+      "replica_index": 1
+    },
+    {
+      "seq": 30,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_created",
+      "cell_id": "CELL-003",
+      "twin": "alpha",
+      "focus": "alpha:node",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 32,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_created",
+      "task_id": "TASK-003",
+      "thesis_id": "TH-001",
+      "twin": "alpha",
+      "task_kind": "probe",
+      "cell_id": "CELL-003",
+      "replica_index": 0
+    },
+    {
+      "seq": 34,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_created",
+      "cell_id": "CELL-004",
+      "twin": "beta",
+      "focus": "beta:node",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 36,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_created",
+      "task_id": "TASK-004",
+      "thesis_id": "TH-001",
+      "twin": "beta",
+      "task_kind": "probe",
+      "cell_id": "CELL-004",
+      "replica_index": 1
+    },
+    {
+      "seq": 39,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_created",
+      "cell_id": "CELL-005",
+      "twin": "alpha",
+      "focus": "alpha:family",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 41,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_created",
+      "task_id": "TASK-005",
+      "thesis_id": "TH-004",
+      "twin": "alpha",
+      "task_kind": "probe",
+      "cell_id": "CELL-005",
+      "replica_index": 0
+    },
+    {
+      "seq": 43,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_created",
+      "cell_id": "CELL-006",
+      "twin": "beta",
+      "focus": "beta:family",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 45,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_created",
+      "task_id": "TASK-006",
+      "thesis_id": "TH-004",
+      "twin": "beta",
+      "task_kind": "probe",
+      "cell_id": "CELL-006",
+      "replica_index": 1
+    },
+    {
+      "seq": 49,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_created",
+      "task_id": "TASK-007",
+      "thesis_id": "TH-003",
+      "twin": "alpha",
+      "task_kind": "probe",
+      "cell_id": "CELL-003",
+      "replica_index": 0
+    },
+    {
+      "seq": 52,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_created",
+      "task_id": "TASK-008",
+      "thesis_id": "TH-003",
+      "twin": "beta",
+      "task_kind": "probe",
+      "cell_id": "CELL-004",
+      "replica_index": 1
+    },
+    {
+      "seq": 68,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "model_fallback",
+      "task_id": "TASK-002",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 78,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "candidate_claimed",
+      "candidate_id": "CAND-001",
+      "task_id": "TASK-002",
+      "worker_id": "W-002",
+      "thesis_id": "TH-002",
+      "twin": "beta"
+    },
+    {
+      "seq": 90,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "lease_expired",
+      "lease_id": "L-c253f2c2c1",
+      "hypothesis_id": "TASK-001",
+      "owner": "W-001"
+    },
+    {
+      "seq": 93,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_recovered",
+      "task_id": "TASK-001",
+      "reason": "lease_expired",
+      "owner": "W-001"
+    },
+    {
+      "seq": 95,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "thesis_created",
+      "thesis_id": "TH-005",
+      "subject": "svc:ledger",
+      "priority": 3
+    },
+    {
+      "seq": 97,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "planning_cycle",
+      "cycle": 2,
+      "new_theses": 1
+    },
+    {
+      "seq": 100,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_created",
+      "task_id": "TASK-009",
+      "thesis_id": "TH-005",
+      "twin": "alpha",
+      "task_kind": "probe",
+      "cell_id": "CELL-003",
+      "replica_index": 0
+    },
+    {
+      "seq": 103,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "task_created",
+      "task_id": "TASK-010",
+      "thesis_id": "TH-005",
+      "twin": "beta",
+      "task_kind": "probe",
+      "cell_id": "CELL-004",
+      "replica_index": 1
+    },
+    {
+      "seq": 107,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verify_task_created",
+      "task_id": "TASK-011",
+      "candidate_id": "CAND-001",
+      "twin": "beta",
+      "claimant_worker": "W-002"
+    },
+    {
+      "seq": 115,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "model_fallback",
+      "task_id": "TASK-001",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 125,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "candidate_claimed",
+      "candidate_id": "CAND-002",
+      "task_id": "TASK-001",
+      "worker_id": "W-003",
+      "thesis_id": "TH-002",
+      "twin": "alpha"
+    },
+    {
+      "seq": 141,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "model_fallback",
+      "task_id": "TASK-003",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 151,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "candidate_claimed",
+      "candidate_id": "CAND-003",
+      "task_id": "TASK-003",
+      "worker_id": "W-004",
+      "thesis_id": "TH-001",
+      "twin": "alpha"
+    },
+    {
+      "seq": 162,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verify_task_created",
+      "task_id": "TASK-012",
+      "candidate_id": "CAND-002",
+      "twin": "alpha",
+      "claimant_worker": "W-003"
+    },
+    {
+      "seq": 165,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verify_task_created",
+      "task_id": "TASK-013",
+      "candidate_id": "CAND-003",
+      "twin": "alpha",
+      "claimant_worker": "W-004"
+    },
+    {
+      "seq": 173,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "model_fallback",
+      "task_id": "TASK-004",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 183,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "candidate_claimed",
+      "candidate_id": "CAND-004",
+      "task_id": "TASK-004",
+      "worker_id": "W-005",
+      "thesis_id": "TH-001",
+      "twin": "beta"
+    },
+    {
+      "seq": 199,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "model_fallback",
+      "task_id": "TASK-005",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 209,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "candidate_claimed",
+      "candidate_id": "CAND-005",
+      "task_id": "TASK-005",
+      "worker_id": "W-006",
+      "thesis_id": "TH-004",
+      "twin": "alpha"
+    },
+    {
+      "seq": 220,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "campaign_completed",
+      "stop_reason": "completed",
+      "consumption": {
+        "actions": 25,
+        "model_calls": 25,
+        "prompt_tokens": 3000,
+        "completion_tokens": 1500,
+        "wall_seconds": 30.0,
+        "estimated_usd": 0.0375,
+        "by_model": {
+          "gpt-5.5": {
+            "calls": 25,
+            "prompt_tokens": 3000,
+            "completion_tokens": 1500
+          }
+        }
+      }
+    },
+    {
+      "seq": 222,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "campaign_paused",
+      "state_hash": "e25ed1546c0db7a5066d38dbad2a6fa1b1ce49324a320123afe51e566eea8c2a"
+    },
+    {
+      "seq": 224,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "campaign_resumed",
+      "freed_leases": 0,
+      "state_hash": "e25ed1546c0db7a5066d38dbad2a6fa1b1ce49324a320123afe51e566eea8c2a"
+    },
+    {
+      "seq": 225,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "campaign_resumed",
+      "resume_from": "running",
+      "state_hash": "e25ed1546c0db7a5066d38dbad2a6fa1b1ce49324a320123afe51e566eea8c2a"
+    },
+    {
+      "seq": 226,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "twin_unhealthy",
+      "instance_id": "beta",
+      "detail": {
+        "healthy": false,
+        "checks_passed": 0,
+        "checks_total": 12
+      }
+    },
+    {
+      "seq": 231,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_reallocated",
+      "cell_id": "CELL-002",
+      "frm": "beta",
+      "to": "beta-r",
+      "reason": "twin_reproduced"
+    },
+    {
+      "seq": 233,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_reallocated",
+      "cell_id": "CELL-004",
+      "frm": "beta",
+      "to": "beta-r",
+      "reason": "twin_reproduced"
+    },
+    {
+      "seq": 235,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_reallocated",
+      "cell_id": "CELL-006",
+      "frm": "beta",
+      "to": "beta-r",
+      "reason": "twin_reproduced"
+    },
+    {
+      "seq": 240,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "twin_recovered",
+      "frm": "beta",
+      "to": "beta-r",
+      "moved_cells": 3
+    },
+    {
+      "seq": 242,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_created",
+      "cell_id": "CELL-007",
+      "twin": "beta",
+      "focus": "beta:node",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 245,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verify_task_created",
+      "task_id": "TASK-014",
+      "candidate_id": "CAND-004",
+      "twin": "beta",
+      "claimant_worker": "W-005"
+    },
+    {
+      "seq": 248,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verify_task_created",
+      "task_id": "TASK-015",
+      "candidate_id": "CAND-005",
+      "twin": "alpha",
+      "claimant_worker": "W-006"
+    },
+    {
+      "seq": 256,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "model_fallback",
+      "task_id": "TASK-006",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 266,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "candidate_claimed",
+      "candidate_id": "CAND-006",
+      "task_id": "TASK-006",
+      "worker_id": "W-007",
+      "thesis_id": "TH-004",
+      "twin": "beta-r"
+    },
+    {
+      "seq": 283,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verification_decided",
+      "verification_id": "VER-001",
+      "candidate_id": "CAND-001",
+      "status": "verified",
+      "decorrelated": true
+    },
+    {
+      "seq": 291,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_created",
+      "cell_id": "CELL-008",
+      "twin": "beta-r",
+      "focus": "beta-r:family",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 294,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verify_task_created",
+      "task_id": "TASK-016",
+      "candidate_id": "CAND-006",
+      "twin": "beta-r",
+      "claimant_worker": "W-007"
+    },
+    {
+      "seq": 303,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verification_decided",
+      "verification_id": "VER-002",
+      "candidate_id": "CAND-002",
+      "status": "verified",
+      "decorrelated": true
+    },
+    {
+      "seq": 316,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verification_decided",
+      "verification_id": "VER-003",
+      "candidate_id": "CAND-003",
+      "status": "verified",
+      "decorrelated": true
+    },
+    {
+      "seq": 322,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-002"
+    },
+    {
+      "seq": 331,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verification_decided",
+      "verification_id": "VER-004",
+      "candidate_id": "CAND-004",
+      "status": "verified",
+      "decorrelated": true
+    },
+    {
+      "seq": 344,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verification_decided",
+      "verification_id": "VER-005",
+      "candidate_id": "CAND-005",
+      "status": "verified",
+      "decorrelated": true
+    },
+    {
+      "seq": 350,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-001",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 352,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-002",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 354,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-001"
+    },
+    {
+      "seq": 363,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "verification_decided",
+      "verification_id": "VER-006",
+      "candidate_id": "CAND-006",
+      "status": "verified",
+      "decorrelated": true
+    },
+    {
+      "seq": 375,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "model_fallback",
+      "task_id": "TASK-007",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 385,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "candidate_claimed",
+      "candidate_id": "CAND-007",
+      "task_id": "TASK-007",
+      "worker_id": "W-014",
+      "thesis_id": "TH-003",
+      "twin": "alpha"
+    },
+    {
+      "seq": 395,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-007",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 397,
+      "ts": "2026-09-09T09:00:47Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-004"
+    },
+    {
+      "seq": 400,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "verify_task_created",
+      "task_id": "TASK-017",
+      "candidate_id": "CAND-007",
+      "twin": "alpha",
+      "claimant_worker": "W-014"
+    },
+    {
+      "seq": 409,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "verification_decided",
+      "verification_id": "VER-007",
+      "candidate_id": "CAND-007",
+      "status": "verified",
+      "decorrelated": true
+    },
+    {
+      "seq": 421,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "model_fallback",
+      "task_id": "TASK-008",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 431,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "candidate_claimed",
+      "candidate_id": "CAND-008",
+      "task_id": "TASK-008",
+      "worker_id": "W-016",
+      "thesis_id": "TH-003",
+      "twin": "beta-r"
+    },
+    {
+      "seq": 441,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-005",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 443,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-006",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 445,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-008",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 447,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-003"
+    },
+    {
+      "seq": 449,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "cell_created",
+      "cell_id": "CELL-009",
+      "twin": "beta-r",
+      "focus": "beta-r:node",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 452,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "verify_task_created",
+      "task_id": "TASK-018",
+      "candidate_id": "CAND-008",
+      "twin": "beta-r",
+      "claimant_worker": "W-016"
+    },
+    {
+      "seq": 461,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "verification_decided",
+      "verification_id": "VER-008",
+      "candidate_id": "CAND-008",
+      "status": "verified",
+      "decorrelated": true
+    },
+    {
+      "seq": 473,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "model_fallback",
+      "task_id": "TASK-009",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 483,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "candidate_claimed",
+      "candidate_id": "CAND-009",
+      "task_id": "TASK-009",
+      "worker_id": "W-018",
+      "thesis_id": "TH-005",
+      "twin": "alpha"
+    },
+    {
+      "seq": 493,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-009",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 498,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "verify_task_created",
+      "task_id": "TASK-019",
+      "candidate_id": "CAND-009",
+      "twin": "alpha",
+      "claimant_worker": "W-018"
+    },
+    {
+      "seq": 507,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "verification_decided",
+      "verification_id": "VER-009",
+      "candidate_id": "CAND-009",
+      "status": "verified",
+      "decorrelated": true
+    },
+    {
+      "seq": 519,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "model_fallback",
+      "task_id": "TASK-010",
+      "frm": "claude-opus-4-8",
+      "to": "gpt-5.5"
+    },
+    {
+      "seq": 529,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "candidate_claimed",
+      "candidate_id": "CAND-010",
+      "task_id": "TASK-010",
+      "worker_id": "W-020",
+      "thesis_id": "TH-005",
+      "twin": "beta-r"
+    },
+    {
+      "seq": 539,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "thesis_exhausted",
+      "thesis_id": "TH-005"
+    },
+    {
+      "seq": 541,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "planning_cycle",
+      "cycle": 3,
+      "new_theses": 0
+    },
+    {
+      "seq": 543,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "cell_created",
+      "cell_id": "CELL-010",
+      "twin": "beta-r",
+      "focus": "beta-r:node",
+      "reason": "new_cluster"
+    },
+    {
+      "seq": 546,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "verify_task_created",
+      "task_id": "TASK-020",
+      "candidate_id": "CAND-010",
+      "twin": "beta-r",
+      "claimant_worker": "W-020"
+    },
+    {
+      "seq": 555,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "verification_decided",
+      "verification_id": "VER-010",
+      "candidate_id": "CAND-010",
+      "status": "verified",
+      "decorrelated": true
+    },
+    {
+      "seq": 561,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-003",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 563,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-004",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 565,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "cell_retired",
+      "cell_id": "CELL-010",
+      "reason": "theses_exhausted"
+    },
+    {
+      "seq": 567,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "planning_cycle",
+      "cycle": 4,
+      "new_theses": 0
+    },
+    {
+      "seq": 570,
+      "ts": "2026-09-09T09:00:48Z",
+      "event": "campaign_completed",
+      "stop_reason": "no_open_work",
+      "consumption": {
+        "actions": 50,
+        "model_calls": 50,
+        "prompt_tokens": 6000,
+        "completion_tokens": 3000,
+        "wall_seconds": 120.0,
+        "estimated_usd": 0.075,
+        "by_model": {
+          "gpt-5.5": {
+            "calls": 50,
+            "prompt_tokens": 6000,
+            "completion_tokens": 3000
+          }
+        }
+      }
+    }
+  ],
+  "checkpoints": [
+    {
+      "campaign_id": "camp-986dc89e81b7",
+      "control_state": {
+        "finished_at": "2026-09-09T09:00:47Z",
+        "phase": "running",
+        "planning_cycles": 2,
+        "started_at": "2026-09-09T09:00:47Z",
+        "started_epoch": 1000.0,
+        "stop_reason": "completed",
+        "twin_cursor": 10
+      },
+      "counts": {
+        "budget": 2,
+        "candidates": 12,
+        "cells": 14,
+        "events": 110,
+        "handoffs": 0,
+        "hypotheses_v2": 3,
+        "leases": 16,
+        "model_calls": 30,
+        "narrative": 0,
+        "planning": 2,
+        "recoveries": 2,
+        "tasks": 35,
+        "theses": 10,
+        "tool_calls": 30,
+        "twins": 4,
+        "verifications": 1,
+        "workers": 16
+      },
+      "extra": {
+        "tick": 0
+      },
+      "phase": "tick",
+      "state_hash": "28cdaca3c4fd1b9c887e81e0258acbe65c7645d98562e6f224c19558fe6bb976",
+      "ts": "2026-09-09T09:00:47Z"
+    },
+    {
+      "campaign_id": "camp-986dc89e81b7",
+      "control_state": {
+        "finished_at": "2026-09-09T09:00:48Z",
+        "phase": "completed",
+        "planning_cycles": 4,
+        "started_at": "2026-09-09T09:00:47Z",
+        "started_epoch": 1000.0,
+        "stop_reason": "no_open_work",
+        "twin_cursor": 10
+      },
+      "counts": {
+        "budget": 5,
+        "candidates": 30,
+        "cells": 27,
+        "events": 216,
+        "handoffs": 0,
+        "hypotheses_v2": 5,
+        "leases": 42,
+        "model_calls": 50,
+        "narrative": 0,
+        "planning": 4,
+        "recoveries": 2,
+        "tasks": 66,
+        "theses": 15,
+        "tool_calls": 50,
+        "twins": 4,
+        "verifications": 10,
+        "workers": 42
+      },
+      "extra": {
+        "stop_reason": "no_open_work"
+      },
+      "phase": "final",
+      "state_hash": "5dc4fb8df6ff77d73c314eca7d951af66e4681bf3dc63c1930ca067207386bf2",
+      "ts": "2026-09-09T09:00:48Z"
+    }
+  ]
+}

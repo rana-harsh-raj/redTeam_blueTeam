@@ -1,0 +1,810 @@
+{
+  "schema_version": 1,
+  "task": "T17",
+  "started_at": "2026-09-06T20:24:56Z",
+  "finished_at": "2026-09-06T20:33:38Z",
+  "git_head": "8965ec25a2c4577c66372a85bb1b53c4415abc9c",
+  "arena": {
+    "boot_id": "06330f7e-3099-4299-ab0c-9b9d50c43899",
+    "compose_project": "env2_compose",
+    "route_profile": "monolith",
+    "config_digest": "839a4da8c312d11fb6753b99318f7c22d2cc349b46a01b838eeb5e4b1aacf092",
+    "git_head": "39fe41e54d7ee7063ebdbac546334023b1aea5d5"
+  },
+  "run_dir": "RED_LOOP/runs/m4-journeys-20260906T202456Z",
+  "merchants": {
+    "A": {
+      "campaign_id": "m4-t17-a-578e",
+      "role": "direct",
+      "archetype": "direct",
+      "channel": "rbl",
+      "merchant_id": "ARENAD83881351",
+      "key_id": "rzp_live_ARENAD83881351",
+      "balance_id": "ARENADB3881351",
+      "banking_account_id": "ARENADA3881351",
+      "account_number": "2323000083881351",
+      "fund_account_id": "fa_ARENADX3881351",
+      "contact_id": "ARENADO3881351",
+      "fts_fund_account_id": "911351",
+      "fts_source_account_id": "911351",
+      "pricing_plan_id": "ARENAPLANA9EB5",
+      "opening_balance": 10000000,
+      "compose_project": "env2_compose",
+      "arena_network": "rzp-arena",
+      "ids": {
+        "num": 83881351,
+        "merchant_id": "ARENAD83881351",
+        "balance_id": "ARENADB3881351",
+        "banking_account": "ARENADA3881351",
+        "counter": "ARENADC3881351",
+        "fund_account_row": "ARENADF3881351",
+        "fa_account_id": "ARENADX3881351",
+        "bank_account": "ARENADK3881351",
+        "contact": "ARENADO3881351",
+        "feature_id": "ARENADT3881351",
+        "basd_id": "ARENADS3881351",
+        "hash_lookup": "ARENADH3881351",
+        "apidb_banking_account": "ARENADM3881351",
+        "ledger_prefix": "ARD3881351",
+        "fts_id": 911351,
+        "account_number": "2323000083881351"
+      },
+      "steps": [
+        {
+          "step": "apidb.merchants",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.balance",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.features.in_flight_reservation_enabled",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.banking_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "xbalances.balance",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.banking_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.counters",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.fund_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.bank_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.payout_purpose",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.banking_account_statement_details",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.bank_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.fund_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_account_mappings.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.account_type_mappings.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.preferred_routing_weights.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.direct_account_routing_rules.IMPS",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_account_mappings.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.account_type_mappings.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.preferred_routing_weights.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.direct_account_routing_rules.NEFT",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "ledger.accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "ledger.account_details",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "cfa",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "monolith.merchant_config",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "pricing.plan",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "monolith.fund_accounts",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "monolith.on_hold_slas",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "dcs.seed(copy_of_M2)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "splitz.seed(copy_of_M2)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "stork.seed",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "restart.monolith-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.bankingaccounts-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.dcs-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.splitz-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "stork.live_create",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "kong.register",
+          "ok": true,
+          "existed": null,
+          "err": null
+        }
+      ],
+      "restarts": [
+        "monolith-stub",
+        "bankingaccounts-stub",
+        "dcs-stub",
+        "splitz-stub",
+        "kong-lite"
+      ],
+      "created_at": 1788726296,
+      "failed_steps": [],
+      "existed_steps": [],
+      "_setup": {
+        "role": "A",
+        "campaign": "m4-t17-a-578e",
+        "merchant_id": "ARENAD83881351",
+        "self_check": {
+          "ready": true,
+          "passed": 29,
+          "total": 29,
+          "failed": []
+        },
+        "da_parents": {
+          "ok": true
+        },
+        "da_onboard": {
+          "status": 200,
+          "sub_accounts": 6,
+          "existed": false
+        },
+        "features": {
+          "merchant_id": "ARENAD83881351",
+          "features": {
+            "payout_service_enabled": true,
+            "banking": true,
+            "in_flight_reservation_enabled": true,
+            "da_ledger_journal_writes": true,
+            "payout_service_txn_recon": false
+          },
+          "overrides": {
+            "da_ledger_journal_writes": true,
+            "payout_service_txn_recon": false
+          }
+        },
+        "xas_account": 200,
+        "basd": {
+          "basd_id": "ARENADS3881351",
+          "existed": true,
+          "additive": false
+        }
+      }
+    },
+    "B": {
+      "campaign_id": "m4-t17-b-578e",
+      "role": "direct",
+      "archetype": "direct",
+      "channel": "rbl",
+      "merchant_id": "ARENAD86313421",
+      "key_id": "rzp_live_ARENAD86313421",
+      "balance_id": "ARENADB6313421",
+      "banking_account_id": "ARENADA6313421",
+      "account_number": "2323000086313421",
+      "fund_account_id": "fa_ARENADX6313421",
+      "contact_id": "ARENADO6313421",
+      "fts_fund_account_id": "913421",
+      "fts_source_account_id": "913421",
+      "pricing_plan_id": "ARENAPLAN3AD16",
+      "opening_balance": 10000000,
+      "compose_project": "env2_compose",
+      "arena_network": "rzp-arena",
+      "ids": {
+        "num": 86313421,
+        "merchant_id": "ARENAD86313421",
+        "balance_id": "ARENADB6313421",
+        "banking_account": "ARENADA6313421",
+        "counter": "ARENADC6313421",
+        "fund_account_row": "ARENADF6313421",
+        "fa_account_id": "ARENADX6313421",
+        "bank_account": "ARENADK6313421",
+        "contact": "ARENADO6313421",
+        "feature_id": "ARENADT6313421",
+        "basd_id": "ARENADS6313421",
+        "hash_lookup": "ARENADH6313421",
+        "apidb_banking_account": "ARENADM6313421",
+        "ledger_prefix": "ARD6313421",
+        "fts_id": 913421,
+        "account_number": "2323000086313421"
+      },
+      "steps": [
+        {
+          "step": "apidb.merchants",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.balance",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.features.in_flight_reservation_enabled",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "apidb.banking_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "xbalances.balance",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.banking_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.counters",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.fund_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.bank_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.payout_purpose",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "payouts.banking_account_statement_details",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.bank_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.fund_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_account_mappings.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.account_type_mappings.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.preferred_routing_weights.IMPS(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.direct_account_routing_rules.IMPS",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.source_account_mappings.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.account_type_mappings.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.preferred_routing_weights.NEFT(parity_only)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "fts.direct_account_routing_rules.NEFT",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "ledger.accounts",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "ledger.account_details",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "cfa",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "monolith.merchant_config",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "pricing.plan",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "monolith.fund_accounts",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "monolith.on_hold_slas",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "dcs.seed(copy_of_M2)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "splitz.seed(copy_of_M2)",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "stork.seed",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "restart.monolith-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.bankingaccounts-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.dcs-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "restart.splitz-stub",
+          "ok": true,
+          "existed": null,
+          "err": null
+        },
+        {
+          "step": "stork.live_create",
+          "ok": true,
+          "existed": false,
+          "err": null
+        },
+        {
+          "step": "kong.register",
+          "ok": true,
+          "existed": null,
+          "err": null
+        }
+      ],
+      "restarts": [
+        "monolith-stub",
+        "bankingaccounts-stub",
+        "dcs-stub",
+        "splitz-stub",
+        "kong-lite"
+      ],
+      "created_at": 1788726360,
+      "failed_steps": [],
+      "existed_steps": [],
+      "_setup": {
+        "role": "B",
+        "campaign": "m4-t17-b-578e",
+        "merchant_id": "ARENAD86313421",
+        "self_check": {
+          "ready": true,
+          "passed": 29,
+          "total": 29,
+          "failed": []
+        },
+        "da_parents": {
+          "ok": true
+        },
+        "da_onboard": {
+          "status": 200,
+          "sub_accounts": 6,
+          "existed": false
+        },
+        "features": {
+          "merchant_id": "ARENAD86313421",
+          "features": {
+            "payout_service_enabled": true,
+            "banking": true,
+            "in_flight_reservation_enabled": true,
+            "da_ledger_journal_writes": true,
+            "payout_service_txn_recon": false
+          },
+          "overrides": {
+            "da_ledger_journal_writes": true,
+            "payout_service_txn_recon": false
+          }
+        },
+        "xas_account": 200,
+        "basd": {
+          "basd_id": "ARENADS6313421",
+          "existed": true,
+          "additive": false
+        }
+      }
+    },
+    "setupA": {
+      "role": "A",
+      "campaign": "m4-t17-a-578e",
+      "merchant_id": "ARENAD83881351",
+      "self_check": {
+        "ready": true,
+        "passed": 29,
+        "total": 29,
+        "failed": []
+      },
+      "da_parents": {
+        "ok": true
+      },
+      "da_onboard": {
+        "status": 200,
+        "sub_accounts": 6,
+        "existed": false
+      },
+      "features": {
+        "merchant_id": "ARENAD83881351",
+        "features": {
+          "payout_service_enabled": true,
+          "banking": true,
+          "in_flight_reservation_enabled": true,
+          "da_ledger_journal_writes": true,
+          "payout_service_txn_recon": false
+        },
+        "overrides": {
+          "da_ledger_journal_writes": true,
+          "payout_service_txn_recon": false
+        }
+      },
+      "xas_account": 200,
+      "basd": {
+        "basd_id": "ARENADS3881351",
+        "existed": true,
+        "additive": false
+      }
+    },
+    "setupB": {
+      "role": "B",
+      "campaign": "m4-t17-b-578e",
+      "merchant_id": "ARENAD86313421",
+      "self_check": {
+        "ready": true,
+        "passed": 29,
+        "total": 29,
+        "failed": []
+      },
+      "da_parents": {
+        "ok": true
+      },
+      "da_onboard": {
+        "status": 200,
+        "sub_accounts": 6,
+        "existed": false
+      },
+      "features": {
+        "merchant_id": "ARENAD86313421",
+        "features": {
+          "payout_service_enabled": true,
+          "banking": true,
+          "in_flight_reservation_enabled": true,
+          "da_ledger_journal_writes": true,
+          "payout_service_txn_recon": false
+        },
+        "overrides": {
+          "da_ledger_journal_writes": true,
+          "payout_service_txn_recon": false
+        }
+      },
+      "xas_account": 200,
+      "basd": {
+        "basd_id": "ARENADS6313421",
+        "existed": true,
+        "additive": false
+      }
+    }
+  },
+  "journeys": [
+    {
+      "journey": "A",
+      "title": "Success (create->recon->DA ledger->webhook)",
+      "result": "PASS",
+      "merchant_id": "ARENAD83881351",
+      "fidelity": "real payout/PS/FTS/ledger; real-worker statement; substitute xas matching"
+    },
+    {
+      "journey": "B",
+      "title": "Immediate failure (failed, no reversal, released, idempotent)",
+      "result": "PASS",
+      "merchant_id": "ARENAD86313421",
+      "fidelity": "real"
+    },
+    {
+      "journey": "C",
+      "title": "Pending->success (poll1 PENDING, poll2 SUCCESS; recon once; idempotent)",
+      "result": "PASS",
+      "merchant_id": "ARENAD83881351",
+      "fidelity": "real payout/PS/FTS/ledger; real-worker statement; substitute xas"
+    },
+    {
+      "journey": "D",
+      "title": "Pending->failure (failed, released, no shared reversal)",
+      "result": "PASS",
+      "merchant_id": "ARENAD86313421",
+      "fidelity": "real"
+    },
+    {
+      "journey": "E",
+      "title": "Statement-first: FTS-direct guard refuses (R1) vs monolith-relay moves to failed (R2/F-T10-1)",
+      "result": "PASS",
+      "merchant_id": "ARENAD83881351",
+      "fidelity": "real (VerifyPayoutFailedTransaction) + real-worker statement; substitute relay control"
+    },
+    {
+      "journey": "F",
+      "title": "Duplicate statement (no new row / no duplicate journal / no double release)",
+      "result": "PASS",
+      "merchant_id": "ARENAD83881351",
+      "fidelity": "real-worker dedupe + real ledger dedup; substitute xas"
+    },
+    {
+      "journey": "G",
+      "title": "Conflict: credit->reversed (transaction_id) + wrong-amount->external (negative control)",
+      "result": "PASS",
+      "merchant_id": "ARENAD86313421",
+      "fidelity": "real PS reversal + real ledger; credit stmt substitute_injected; substitute xas"
+    }
+  ],
+  "routes": {
+    "R2": "native (substitute monolith-stub; route_profile=monolith)",
+    "R1": "native",
+    "R3": "expected-failure",
+    "R-remap": "native"
+  },
+  "invariants": [
+    {
+      "invariant": "I-Direct-failure-no-shared-reversal(G31)",
+      "result": "PASS"
+    },
+    {
+      "invariant": "I-Direct-success-no-duplicate-ledger(G54)",
+      "result": "PASS"
+    },
+    {
+      "invariant": "I-reservation-not-released-twice(G53)",
+      "result": "PASS"
+    },
+    {
+      "invariant": "I-balance-not-decremented-twice(G28-adj)",
+      "result": "PASS"
+    },
+    {
+      "invariant": "I-conservation(G51)",
+      "result": "PASS"
+    },
+    {
+      "invariant": "I-reconciliation-correct-tuple(G26)",
+      "result": "PASS"
+    }
+  ]
+}

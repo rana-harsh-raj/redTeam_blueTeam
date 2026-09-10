@@ -1,0 +1,452 @@
+# M11 trust-path overlay: the REAL edge gateway, Shield, banking-accounts and Workflow service (plus their own
+# datastores and one-shot migration/provisioning jobs) as compose services, applied by twinfactory on top of
+# docker-compose.yml when an instance is created with --trust-path real (the default from M11 on). docker-compose.yml
+# itself stays byte-identical (it is an M8 snapshot input); this file is a new committed snapshot input.
+# Every service here runs a pinned real binary/image (see ENV2_COMPOSE/build/m11/*), its own migrations and the
+# repository's own configuration files (config volumes rendered by config/generate.py). Profile: trustpath.
+x-runtime-security: &runtime-security
+  read_only: true
+  tmpfs:
+    - /tmp
+  security_opt:
+    - no-new-privileges:true
+x-healthcheck-defaults: &healthcheck-defaults
+  interval: 5s
+  timeout: 3s
+  retries: 30
+  start_period: 15s
+
+volumes:
+  config-shield:
+    name: "rzp-arena-config-shield${ARENA_SUFFIX:-}"
+  config-bankingaccounts:
+    name: "rzp-arena-config-bankingaccounts${ARENA_SUFFIX:-}"
+  config-workflows:
+    name: "rzp-arena-config-workflows${ARENA_SUFFIX:-}"
+  secrets-edge:
+    name: "rzp-arena-secrets-edge${ARENA_SUFFIX:-}"
+  secrets-dcs-tls:
+    name: "rzp-arena-secrets-dcs-tls${ARENA_SUFFIX:-}"
+  postgres-kong-data:
+  mysql-shield-data:
+  mysql-bas-data:
+  mysql-workflows-data:
+
+secrets:
+  kong_pg_password:
+    file: ./secrets/kong_pg_password.txt
+  mysql_shield_root_password:
+    file: ./secrets/mysql_shield_root_password.txt
+  mysql_bas_root_password:
+    file: ./secrets/mysql_bas_root_password.txt
+  mysql_workflows_root_password:
+    file: ./secrets/mysql_workflows_root_password.txt
+
+services:
+  # ---------------------------------------------------------------- existing services: variant-specific overrides
+  dcs-stub:
+    # M11: the REAL banking-accounts service dials https://dcs-{live,test}.dev.razorpay.in (pkg/dcs/dcs.go WithMock(false),
+    # goutils/dcs config/uri.go env map; no host override exists in the source). The twin answers those production
+    # hostnames with dcs-stub: network aliases + TLS with the twin CA certificate (secrets/gen-tls.sh). Same routes as
+    # the plain listener (POST /v1/auth/login, feature/config lookups); the stub is otherwise unchanged.
+    networks:
+      rzp-arena:
+        aliases: ["dcs-live.dev.razorpay.in", "dcs-test.dev.razorpay.in"]
+    volumes:
+      - secrets-dcs-tls:/tls:ro
+    environment:
+      STUB_TLS_CERT: /tls/server.crt
+      STUB_TLS_KEY: /tls/server.key
+      STUB_TLS_PORT: "443"
+    sysctls:
+      net.ipv4.ip_unprivileged_port_start: "0"   # uid 10001 binds :443 (no capabilities added)
+
+  api-ingress:
+    environment:
+      # real variant: the monolith replacement signs its passport in the monolith's kid slot (payouts [passport.api])
+      PASSPORT_IDENTIFIER: "${ARENA_PASSPORT_API_KID:-apiv1}"
+      EDGE_PASSPORT_KID: "edgev2"
+      INGRESS_EDGE_PASSPORT_REQUIRED: "${ARENA_EDGE_PASSPORT_REQUIRED:-0}"
+  batch-sim:
+    environment:
+      PASSPORT_IDENTIFIER: "${ARENA_PASSPORT_API_KID:-apiv1}"
+
+  # ---------------------------------------------------------------- 1. REAL edge gateway (razorpay/edge: Kong 3.4.2 + plugins)
+  postgres-kong:
+    image: postgres:15-alpine
+    profiles: ["trustpath"]
+    networks: [rzp-arena]
+    environment:
+      POSTGRES_USER: kong
+      POSTGRES_DB: kong
+      POSTGRES_PASSWORD_FILE: /run/secrets/kong_pg_password
+    secrets: [kong_pg_password]
+    volumes:
+      - postgres-kong-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U kong -d kong"]
+      <<: *healthcheck-defaults
+
+  edge-kong-migrate:
+    # `kong migrations bootstrap` = core + every enabled custom plugin migration (basic-auth-x, impersonation-grant,
+    # key-identifier, jwt-x ...), exactly the edge repo's docker-compose.yml kong-migrations-bootstrap job
+    image: rzp-arena/edge-kong:${ARENA_TAG:-local}
+    profiles: ["trustpath-migrations"]
+    networks: [rzp-arena]
+    user: "10001:10001"
+    environment: &kong-env
+      KONG_DATABASE: postgres
+      KONG_PG_HOST: postgres-kong
+      KONG_PG_USER: kong
+      KONG_PG_DATABASE: kong
+      # KONG_PG_PASSWORD is exported from the compose secret by each command below (the image entrypoint's file_env
+      # refuses KONG_PG_PASSWORD and KONG_PG_PASSWORD_FILE together)
+      KONG_PREFIX: /tmp/kong-prefix
+      KONG_LOG_LEVEL: info
+      KONG_PROXY_ACCESS_LOG: /dev/stdout
+      KONG_ADMIN_ACCESS_LOG: /dev/stdout
+      KONG_PROXY_ERROR_LOG: /dev/stderr
+      KONG_ADMIN_ERROR_LOG: /dev/stderr
+      KONG_NGINX_WORKER_PROCESSES: "2"
+      KONG_SESSION_SECRET_FILE: /ssl/KONG_SESSION_SECRET
+      KONG_API_INTERNAL_AUTH_PASSWORD: ""
+      KONG_AUTHZ_ADMIN_PASSWORD: ""
+      REDIS_CONTACT_POINTS: "redis:6379"
+      KONG_DB_CACHE_WARMUP_ENTITIES: "services,plugins"
+    secrets: [kong_pg_password]
+    volumes:
+      - secrets-edge:/ssl:ro
+    tmpfs:
+      - /tmp
+    command: ["sh", "-c", "export KONG_PG_PASSWORD=$$(cat /run/secrets/kong_pg_password) && kong migrations bootstrap && kong migrations up && kong migrations finish"]
+
+  edge-kong:
+    image: rzp-arena/edge-kong:${ARENA_TAG:-local}
+    profiles: ["trustpath"]
+    # the ONLY container on both networks in the real variant (kong-lite's position in the substitute variant)
+    networks: [rzp-arena, rzp-ingress]
+    user: "10001:10001"
+    environment:
+      <<: *kong-env
+      KONG_PROXY_LISTEN: "0.0.0.0:8000"
+      KONG_ADMIN_LISTEN: "0.0.0.0:8001"
+    secrets: [kong_pg_password]
+    volumes:
+      - secrets-edge:/ssl:ro
+    tmpfs:
+      - /tmp
+    command: ["sh", "-c", "export KONG_PG_PASSWORD=$$(cat /run/secrets/kong_pg_password) && exec /docker-entrypoint.sh kong docker-start"]
+    healthcheck:
+      test: ["CMD-SHELL", "kong health && curl -sf http://127.0.0.1:8001/status >/dev/null"]
+      <<: *healthcheck-defaults
+
+  edge-kong-config:
+    # one-shot: services/routes/plugins derived from terraform-kong (trustpath/edge/kong-config.json) + merchant consumers
+    image: python:3.12-alpine
+    profiles: ["trustpath-migrations"]
+    networks: [rzp-arena]
+    user: "10001:10001"
+    volumes:
+      - ./trustpath/edge/provision_kong.py:/app/provision_kong.py:ro
+      - ./trustpath/edge/kong-config.json:/app/kong-config.json:ro
+      - ./seeds/generated/merchants.json:/app/seed/merchants.json:ro
+      - secrets-kong:/run/secrets/kong:ro
+    environment:
+      KONG_ADMIN_URL: http://edge-kong:8001
+      KONG_CONFIG_FILE: /app/kong-config.json
+      KONG_MERCHANTS_FILE: /app/seed/merchants.json
+      KONG_MERCHANT_SECRETS_DIR: /run/secrets/kong/merchants
+      PYTHONDONTWRITEBYTECODE: "1"
+    <<: *runtime-security
+    command: ["python3", "/app/provision_kong.py", "apply"]
+
+  edge-bridge:
+    # host-bridge exec target (scripts/ingress.py): the loopback bridge crosses `docker exec` into this container,
+    # which forwards to the gateway's proxy listener. Ingress network only; no volumes, no secrets.
+    image: python:3.12-alpine
+    profiles: ["trustpath"]
+    networks: [rzp-ingress]
+    user: "10001:10001"
+    <<: *runtime-security
+    command: ["sleep", "infinity"]
+    healthcheck:
+      test: ["CMD", "python3", "-c", "import socket; socket.create_connection(('edge-kong', 8000), 3).close()"]
+      <<: *healthcheck-defaults
+
+  # ---------------------------------------------------------------- 2. REAL Shield (razorpay/shield, APP_MODE=rzpxprod)
+  mysql-shield:
+    image: mysql:8.0
+    profiles: ["trustpath"]
+    networks: [rzp-arena]
+    environment:
+      MYSQL_DATABASE: shield
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_shield_root_password
+    secrets: [mysql_shield_root_password]
+    volumes:
+      - mysql-shield-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$(cat /run/secrets/mysql_shield_root_password) --silent"]
+      <<: *healthcheck-defaults
+
+  redis-shield:
+    # shield/app/providers/redis.go uses a go-redis ClusterClient: a single-node cluster, exactly the shield repo's
+    # docker-compose.local.yml `redis-cluster` service (redis 7, cluster-enabled, all 16384 slots on one node)
+    image: redis:7-alpine
+    profiles: ["trustpath"]
+    networks: [rzp-arena]
+    command:
+      - /bin/sh
+      - -c
+      - |
+        set -e
+        rm -f /data/nodes.conf
+        redis-server --port 7000 --cluster-enabled yes --cluster-config-file nodes.conf --cluster-node-timeout 5000 --appendonly no --save "" --protected-mode no --bind 0.0.0.0 --cluster-announce-hostname redis-shield --cluster-preferred-endpoint-type hostname --cluster-announce-port 7000 --cluster-announce-bus-port 17000 &
+        pid=$$!
+        until redis-cli -p 7000 ping >/dev/null 2>&1; do sleep 0.2; done
+        if ! redis-cli -p 7000 cluster info | grep -q 'cluster_state:ok'; then redis-cli -p 7000 cluster addslots $$(seq 0 16383); fi
+        wait "$$pid"
+    healthcheck:
+      test: ["CMD-SHELL", "redis-cli -p 7000 cluster info | grep -q cluster_state:ok"]
+      <<: *healthcheck-defaults
+
+  shield-migrate:
+    # razorpay/shield migrations/ (goose, 67 Go migrations) -- the repo's own `migrate` binary
+    image: rzp-arena/shield:${ARENA_TAG:-local}
+    profiles: ["trustpath-migrations"]
+    networks: [rzp-arena]
+    working_dir: /app
+    volumes:
+      - config-shield:/app/conf:ro
+    env_file:
+      - ./generated/shield/shield.env
+    environment:
+      # razorpay/shield migrations/migrations.go: APP_MODE rzpxprod (and every FRM env) SKIPS goose entirely -- the
+      # production RzpX schema is provisioned out of band (production unknown PU-M11-6). The twin runs the repository's
+      # own migrations once under APP_MODE=default (conf/default.toml + the same env overrides) to materialize the schema.
+      APP_MODE: default
+      WORKDIR: /app
+    <<: *runtime-security
+    entrypoint: ["/app/shield-migrate", "-base_path=/app", "-dir=/app/migrations", "up"]
+
+  shield-web:
+    image: rzp-arena/shield:${ARENA_TAG:-local}
+    profiles: ["trustpath"]
+    networks: [rzp-arena]
+    working_dir: /app
+    volumes:
+      - config-shield:/app/conf:ro
+    env_file:
+      - ./generated/shield/shield.env
+    environment:
+      APP_MODE: rzpxprod           # app/app.go: the payouts Shield deployment profile (setupProvidersForRzpx)
+      WORKDIR: /app
+      HTTP_PROXY: "http://127.0.0.1:9"
+      HTTPS_PROXY: "http://127.0.0.1:9"
+      NO_PROXY: "localhost,127.0.0.1,mysql-shield,redis-shield,localstack,redis"
+    <<: *runtime-security
+    entrypoint: ["/app/shield", "-base_path=/app"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8090/v1/status"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-shield: {condition: service_healthy}
+      redis-shield: {condition: service_healthy}
+
+  shield-seed:
+    # one-shot: the arena's payout rules through Shield's own rule API (trustpath/shield/seed_rules.py)
+    image: python:3.12-alpine
+    profiles: ["trustpath-migrations"]
+    networks: [rzp-arena]
+    user: "10001:10001"
+    volumes:
+      - ./trustpath/shield/seed_rules.py:/app/seed_rules.py:ro
+      - ./seeds/generated/merchants.json:/app/seed/merchants.json:ro
+    env_file:
+      - ./generated/shield/shield.env
+    environment:
+      SHIELD_URL: http://shield-web:8090
+      SHIELD_MERCHANTS_FILE: /app/seed/merchants.json
+      PYTHONDONTWRITEBYTECODE: "1"
+    <<: *runtime-security
+    command: ["python3", "/app/seed_rules.py", "apply"]
+
+  # ---------------------------------------------------------------- 3. REAL banking-accounts (razorpay/banking-accounts)
+  mysql-bas:
+    image: mysql:8.0
+    profiles: ["trustpath"]
+    networks: [rzp-arena]
+    environment:
+      MYSQL_DATABASE: banking_account
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_bas_root_password
+    secrets: [mysql_bas_root_password]
+    volumes:
+      - mysql-bas-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$(cat /run/secrets/mysql_bas_root_password) --silent"]
+      <<: *healthcheck-defaults
+
+  bas-migrate:
+    # build/entrypoint_migrations.sh: goose mysql "<user>:<pw>@(<host>:<port>)/<db>" up over internal/database/migrations/*.sql
+    image: rzp-arena/banking-accounts:${ARENA_TAG:-local}
+    profiles: ["trustpath-migrations"]
+    networks: [rzp-arena]
+    working_dir: /app
+    secrets: [mysql_bas_root_password]
+    <<: *runtime-security
+    entrypoint: ["sh", "-c", "/app/goose -dir /app/migrations mysql \"root:$$(cat /run/secrets/mysql_bas_root_password)@(mysql-bas:3306)/banking_account?parseTime=true\" up"]
+
+  bas-seed:
+    # one-shot: businesses + banking_accounts rows for the arena's Direct merchants (SQL rendered host-side by
+    # trustpath/bankingaccounts/render_seed.py into seeds/generated/trustpath/bas.sql)
+    image: mysql:8.0
+    profiles: ["trustpath-migrations"]
+    networks: [rzp-arena]
+    secrets: [mysql_bas_root_password]
+    volumes:
+      - ./seeds/generated/trustpath/bas.sql:/seed/bas.sql:ro
+    entrypoint: ["sh", "-c", "mysql -h mysql-bas -uroot -p$$(cat /run/secrets/mysql_bas_root_password) banking_account < /seed/bas.sql"]
+
+  banking-accounts-api:
+    image: rzp-arena/banking-accounts:${ARENA_TAG:-local}
+    profiles: ["trustpath"]
+    networks: [rzp-arena]
+    working_dir: /app
+    volumes:
+      - config-bankingaccounts:/app/config:ro
+      - secrets-dcs-tls:/tls:ro
+    environment:
+      APP_ENV: arena          # internal/bootstrap/config.go GetEnvName: APP_ENV selects config/<env>.toml over default.toml
+      WORKDIR: /app           # internal/bootstrap/config.go getConfigPath: $WORKDIR/config
+      SSL_CERT_FILE: /tls/ca.crt   # Go x509: trust the twin CA that signs dcs-stub's certificate for the DCS hostnames
+      HTTP_PROXY: "http://127.0.0.1:9"
+      HTTPS_PROXY: "http://127.0.0.1:9"
+      NO_PROXY: "localhost,127.0.0.1,mysql-bas,redis,api-ingress,payouts-api,fts-web,xbalances-server,dcs-live.dev.razorpay.in,dcs-test.dev.razorpay.in"
+    <<: *runtime-security
+    entrypoint: ["/app/banking-accounts-api"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "http://127.0.0.1:8000/status"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-bas: {condition: service_healthy}
+
+  # ---------------------------------------------------------------- 4. REAL Workflow service (razorpay/workflows + Cadence)
+  mysql-workflows:
+    image: mysql:8.0
+    profiles: ["trustpath"]
+    networks: [rzp-arena]
+    environment:
+      MYSQL_DATABASE: workflows
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/mysql_workflows_root_password
+    secrets: [mysql_workflows_root_password]
+    volumes:
+      - mysql-workflows-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD-SHELL", "mysqladmin ping -h 127.0.0.1 -uroot -p$$(cat /run/secrets/mysql_workflows_root_password) --silent"]
+      <<: *healthcheck-defaults
+
+  cadence:
+    # Uber Cadence server (the workflow engine razorpay/workflows drives: go.uber.org/cadence v0.13.4 client, TChannel
+    # frontend :7933), MySQL persistence, auto-setup schema + default domain
+    image: ubercadence/server:v1.4.1-auto-setup
+    profiles: ["trustpath"]
+    networks: [rzp-arena]
+    environment:
+      DB: mysql
+      MYSQL_SEEDS: mysql-workflows
+      MYSQL_USER: root
+      MYSQL_PWD: "${ARENA_MYSQL_WORKFLOWS_ROOT_PASSWORD:-}"
+      DBNAME: cadence
+      VISIBILITY_DBNAME: cadence_visibility
+      SKIP_SCHEMA_SETUP: "false"
+      BIND_ON_IP: "0.0.0.0"
+      LOG_LEVEL: info
+      NUM_HISTORY_SHARDS: "4"
+    healthcheck:
+      test: ["CMD-SHELL", "cadence --address 127.0.0.1:7933 --domain payouts domain describe >/dev/null 2>&1 || cadence --address 127.0.0.1:7933 --domain payouts domain register --global_domain false >/dev/null 2>&1"]
+      interval: 10s
+      timeout: 15s
+      retries: 60
+      start_period: 40s
+    depends_on:
+      mysql-workflows: {condition: service_healthy}
+
+  workflows-migrate:
+    # cmd/migration (goose Go migrations, internal/database/migrations) -- `./migration up -env arena`
+    image: rzp-arena/workflows:${ARENA_TAG:-local}
+    profiles: ["trustpath-migrations"]
+    networks: [rzp-arena]
+    working_dir: /app
+    volumes:
+      - config-workflows:/app/config:ro
+    environment:
+      APP_ENV: dev           # the twin overlay is rendered as config/dev.toml (see config/generate.py workflows)
+      WORKDIR: /app          # pkg/config: $WORKDIR/config
+    <<: *runtime-security
+    entrypoint: ["/app/workflows-migration", "up", "-env", "dev"]
+
+  workflows-api:
+    image: rzp-arena/workflows:${ARENA_TAG:-local}
+    profiles: ["trustpath"]
+    networks: [rzp-arena]
+    working_dir: /app
+    volumes:
+      - config-workflows:/app/config:ro
+      - secrets-dcs-tls:/tls:ro
+    environment:
+      APP_ENV: dev            # config/dev.toml (the twin overlay) + goutils/dcs env "dev" (see config/generate.py workflows)
+      WORKDIR: /app
+      SSL_CERT_FILE: /tls/ca.crt
+      HTTP_PROXY: "http://127.0.0.1:9"
+      HTTPS_PROXY: "http://127.0.0.1:9"
+      NO_PROXY: "localhost,127.0.0.1,mysql-workflows,cadence,payouts-api,api-ingress,dcs-live.dev.razorpay.in,dcs-test.dev.razorpay.in"
+    <<: *runtime-security
+    entrypoint: ["/app/workflows-api"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "--post-data={\"service\":\"\"}", "--header=Content-Type: application/json", "http://127.0.0.1:9400/twirp/rzp.common.health.v1.HealthCheckAPI/Check"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-workflows: {condition: service_healthy}
+
+  workflows-seed:
+    # one-shot: one payout-approval Config per arena merchant through the ConfigAPI (trustpath/workflows/seed_configs.py)
+    image: python:3.12-alpine
+    profiles: ["trustpath-migrations"]
+    networks: [rzp-arena]
+    user: "10001:10001"
+    volumes:
+      - ./trustpath/workflows/seed_configs.py:/app/seed_configs.py:ro
+      - ./seeds/generated/monolith/merchants.json:/app/seed/monolith_merchants.json:ro
+      - config-workflows:/app/config:ro
+    environment:
+      WORKFLOWS_URL: http://workflows-api:9400
+      WORKFLOWS_CONFIG_TOML: /app/config/dev.toml
+      WORKFLOWS_MERCHANTS_FILE: /app/seed/monolith_merchants.json
+      PYTHONDONTWRITEBYTECODE: "1"
+    <<: *runtime-security
+    command: ["python3", "/app/seed_configs.py", "apply"]
+
+  workflows-worker:
+    # cmd/workers: the Cadence worker that runs the approval state machine (internal/client/types/approval)
+    image: rzp-arena/workflows:${ARENA_TAG:-local}
+    profiles: ["trustpath"]
+    networks: [rzp-arena]
+    working_dir: /app
+    volumes:
+      - config-workflows:/app/config:ro
+      - secrets-dcs-tls:/tls:ro
+    environment:
+      APP_ENV: dev
+      WORKDIR: /app
+      SSL_CERT_FILE: /tls/ca.crt
+      HTTP_PROXY: "http://127.0.0.1:9"
+      HTTPS_PROXY: "http://127.0.0.1:9"
+      NO_PROXY: "localhost,127.0.0.1,mysql-workflows,cadence,payouts-api,api-ingress,dcs-live.dev.razorpay.in,dcs-test.dev.razorpay.in"
+    <<: *runtime-security
+    # cmd/workers/main.go: flags WORKFLOW_TYPE / WORKFLOW_DOMAINS (also read from the environment via lookupEnvOrString)
+    entrypoint: ["/app/workflows-worker"]
+    healthcheck:
+      test: ["CMD", "wget", "-q", "-O", "/dev/null", "--post-data={\"service\":\"\"}", "--header=Content-Type: application/json", "http://127.0.0.1:9400/twirp/rzp.common.health.v1.HealthCheckAPI/Check"]
+      <<: *healthcheck-defaults
+    depends_on:
+      mysql-workflows: {condition: service_healthy}
+      cadence: {condition: service_healthy}

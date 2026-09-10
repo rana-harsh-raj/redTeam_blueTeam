@@ -1,0 +1,75 @@
+gate_id,group,title,status,passed,validation_mode,independent_machine_check,fidelity_level,expected_failure,evidence_pointer
+G01,BASELINE,Accepted Milestone 3.1 checkpoint resolves correctly,pass,True,direct_git,True,independently_reproduced,False,reports/implementation/m3-1-acceptance.json
+G02,BASELINE,Historical tag and evidence remain unchanged,pass,True,direct_git,True,independently_reproduced,False,RED_LOOP/archive/evidence-manifest.json
+G03,BASELINE,Existing 21 baseline gates still pass,pass,True,direct_artifact,False,independently_reproduced,False,reports/implementation/m3-1-acceptance.json
+G04,BASELINE,Two clean baseline boots remain consistent,pass,True,direct_artifact,False,independently_reproduced,False,reports/implementation/m4-finalize-boots.json
+G05,BASELINE,All baseline evidence hashes recompute,pass,True,direct_hash,True,independently_reproduced,False,RED_LOOP/archive/evidence-manifest.json
+G06,SOURCE_AND_SPEC,Complete source-backed Direct journey map exists,pass,True,source_inspection,False,source_inferred,False,reports/implementation/m4-source-map.md
+G07,SOURCE_AND_SPEC,"BAS/XAS worker, queue, event, and matching path are identified",pass,True,direct_artifact,False,source_inferred,False,"reports/implementation/m4-source-map.md:#1.5,#6"
+G08,SOURCE_AND_SPEC,Direct Ledger-success accounting path is identified,pass,True,direct_artifact,False,source_inferred,False,reports/implementation/m4-source-map.md:#4
+G09,SOURCE_AND_SPEC,Money-source and status-transport axes remain separate,pass,True,direct_artifact,False,source_inferred,False,"reports/implementation/m4-source-map.md:#1.2,#2"
+G10,SOURCE_AND_SPEC,"Specs, implementation, and fidelity declarations agree",pass,True,direct_artifact,False,source_inferred,False,reports/implementation/m4-decisions.md
+G11,SOURCE_AND_SPEC,Every unresolved production/configuration assumption is explicit,pass,True,direct_artifact,False,production_reachability_unknown,False,reports/implementation/m4-source-map.md:#7
+G12,PROVISIONING,Fresh Direct merchant provisioner succeeds,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:summary.all_green
+G13,PROVISIONING,A second independently generated Direct merchant succeeds,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:merchants[1]
+G14,PROVISIONING,Provisioned records pass schema and relationship checks,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:summary.self_check_counts
+G15,PROVISIONING,Direct routing-rule requirements are resolved or explicitly limited,pass,True,direct_artifact,False,source_inferred,False,reports/implementation/m4-direct-provision.json
+G16,PROVISIONING,"FTS, x-balances, Ledger, pricing, and webhook configuration self-verify",pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:merchants[].self_check
+G17,PROVISIONING,Provisioning passes on two empty-volume boots,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-finalize-boots.json:boots[].provision
+G18,DIRECT_SUCCESS,Public gateway creates a Direct payout,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:summary.all_green
+G19,DIRECT_SUCCESS,Correct authenticated merchant identity is used,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:summary.all_green
+G20,DIRECT_SUCCESS,Correct Direct/current source account is selected,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:summary.all_green
+G21,DIRECT_SUCCESS,Correct FTS source mapping is observed,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:summary.all_green
+G22,DIRECT_SUCCESS,Reservation is created in the correct state,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:summary.all_green
+G23,DIRECT_SUCCESS,Synthetic bank transfer reaches the correct state,pass,True,direct_artifact,False,substitute,False,reports/implementation/m4-bas-ingest.json:all_pass
+G24,DIRECT_SUCCESS,Statement detail is generated and ingested,pass,True,direct_artifact,False,substitute,False,reports/implementation/m4-bas-ingest.json:all_pass
+G25,DIRECT_SUCCESS,BAS/XAS processing executes,pass,True,direct_artifact,False,substitute,False,reports/implementation/m4-xas-ledger.json:all_green
+G26,DIRECT_SUCCESS,Reconciliation matches the correct payout,pass,True,direct_artifact,False,substitute,False,reports/implementation/m4-xas-ledger.json:all_green
+G27,DIRECT_SUCCESS,Ledger-confirmed Direct success accounting is observed,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-xas-ledger.json:checks
+G28,DIRECT_SUCCESS,Reservation and x-balances reach the correct final state,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-xas-ledger.json:all_green
+G29,DIRECT_SUCCESS,Correct merchant webhook is observed,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:merchants[].payout_proof
+G30,FAILURE_PENDING_ORDERING,Immediate failure reaches the correct payout state,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-provision.json:summary.all_green
+G31,FAILURE_PENDING_ORDERING,Direct failure creates no inappropriate Shared reversal journal,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-xas-ledger.json:checks
+G32,FAILURE_PENDING_ORDERING,Pending-to-success works,pass,True,direct_artifact,False,substitute,False,reports/implementation/m4-xas-ledger.json:checks
+G33,FAILURE_PENDING_ORDERING,Pending-to-failure works,pass,True,direct_artifact,False,substitute,False,reports/implementation/m4-xas-ledger.json:checks
+G34,FAILURE_PENDING_ORDERING,Duplicate status delivery is idempotent,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-boundary-results.json:gates.G34
+G35,FAILURE_PENDING_ORDERING,Duplicate statement delivery is idempotent,pass,True,direct_artifact,False,substitute,False,reports/implementation/m4-xas-ledger.json:checks
+G36,FAILURE_PENDING_ORDERING,Statement-first ordering has deterministic behaviour,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-xas-ledger.json:checks
+G37,FAILURE_PENDING_ORDERING,Conflicting status/statement behaviour is documented and tested,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-xas-ledger.json:checks
+G38,FAILURE_PENDING_ORDERING,Balance-refresh and hold-release trigger is executed or honestly unresolved,pass,True,declared_expected_failure,False,deliberately_simplified,True,reports/implementation/m4-known-limits.md:L-009
+G39,FAILURE_PENDING_ORDERING,XAS reconciliation-repair update is executed or explicitly classified,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-xas-ledger.json:checks
+G40,ROUTES_WEBHOOKS,Direct status-return route is exercised,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-xas-ledger.json:checks
+G41,ROUTES_WEBHOOKS,Monolith-mediated route is exercised where applicable,pass,True,direct_artifact,False,substitute,False,reports/implementation/m4-route-coverage.json
+G42,ROUTES_WEBHOOKS,Event-driven route is exercised or preserved as a source-backed expected failure,pass,True,declared_expected_failure,False,independently_reproduced,True,"TWIN_SPEC/expected-failures.yaml:EF-002,EF-003"
+G43,ROUTES_WEBHOOKS,Status remapping is validated by account type and channel,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-route-coverage.json
+G44,ROUTES_WEBHOOKS,"Webhook state, payload, tenant, and delivery evidence are correct",pass,True,direct_artifact,False,executed,False,reports/implementation/m4-route-coverage.json
+G45,ROUTES_WEBHOOKS,Webhook retry or duplicate behaviour is understood,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-boundary-results.json:gates.G45
+G46,BOUNDARIES_INVARIANTS,Merchant A cannot read or change Merchant B's Direct resources,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-boundary-results.json:gates.G46
+G47,BOUNDARIES_INVARIANTS,Request-body merchant ID cannot override authenticated identity,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-boundary-results.json:gates.G47
+G48,BOUNDARIES_INVARIANTS,Client headers cannot create service privilege,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-boundary-results.json:gates.G48
+G49,BOUNDARIES_INVARIANTS,Merchant access cannot reach internal-only operations,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-boundary-results.json:gates.G49
+G50,BOUNDARIES_INVARIANTS,Broker denial and gateway/service denial are distinguished,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-boundary-results.json:gates.G50
+G51,BOUNDARIES_INVARIANTS,Direct accounting conservation invariant passes,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-xas-ledger.json:checks
+G52,BOUNDARIES_INVARIANTS,Concurrent idempotent payout creation converges to one logical payout,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-boundary-results.json:gates.G52
+G53,BOUNDARIES_INVARIANTS,Reservation cannot be released twice,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-invariant-results.json
+G54,BOUNDARIES_INVARIANTS,Ledger success cannot be posted twice,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-xas-ledger.json:checks
+G55,BOUNDARIES_INVARIANTS,Cross-namespace webhook and event isolation passes,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-invariant-results.json
+G56,AUTONOMOUS_RUNTIME,Every high-priority hypothesis reaches a terminal status,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-hypothesis-lifecycle.json:gate
+G57,AUTONOMOUS_RUNTIME,At least one bounded experiment exists for each exercised hypothesis,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-lifecycle-validation.json:arms_executed
+G58,AUTONOMOUS_RUNTIME,Blocked and falsified states are not conflated,pass,True,direct_artifact,False,executed,False,"reports/implementation/m4-hypothesis-lifecycle.json:rollup,blockers"
+G59,AUTONOMOUS_RUNTIME,Duplicate-hypothesis suppression works,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-harness-selftest.json:G59_duplicate_suppression
+G60,AUTONOMOUS_RUNTIME,Task lease expiry and reassignment work,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-harness-selftest.json:G60_lease_expiry_reassign
+G61,AUTONOMOUS_RUNTIME,Checkpoint/resume works after worker interruption,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-recovery-matrix.json:explorer_process_kill
+G62,AUTONOMOUS_RUNTIME,Stagnation produces a reasoned replan before stopping,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-hypothesis-lifecycle.json:replans
+G63,AUTONOMOUS_RUNTIME,Four isolated assurance contexts run successfully,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-assurance-run.json:contexts_summary.policies
+G64,AUTONOMOUS_RUNTIME,An unattended soak completes with useful work and durable state,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-e2e-soak.json
+G65,REPLAY_EVIDENCE,Credible candidates are independently replayed from clean state,pass,True,direct_artifact,False,independently_reproduced,False,reports/implementation/m4-direct-e2e-replay.json:candidates
+G66,REPLAY_EVIDENCE,Replay uses fresh merchant and resource IDs,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-direct-e2e-replay.json:safety.fresh_ids_per_run
+G67,REPLAY_EVIDENCE,Negative controls remove or prevent the observed effect,pass,True,direct_artifact,False,independently_reproduced,False,reports/implementation/m4-lifecycle-validation.json:independent_replay.certificate
+G68,REPLAY_EVIDENCE,All acceptance evidence hashes recompute,pass,True,direct_hash,True,independently_reproduced,False,reports/implementation/m4-direct-e2e-evidence-manifest.json
+G69,REPLAY_EVIDENCE,No expected evidence file is missing,pass,True,direct_artifact,True,independently_reproduced,False,reports/implementation/m4-direct-e2e-evidence-manifest.json
+G70,REPLAY_EVIDENCE,Outside-network traffic is zero,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-finalize-boots.json:boots[].egress
+G71,REPLAY_EVIDENCE,Final working tree is clean,pending,,direct_git,True,independently_reproduced,False,(git status --porcelain)
+G72,REPLAY_EVIDENCE,Independent auditor approves the final acceptance artifact,pass,True,direct_artifact,False,executed,False,reports/implementation/m4-audit-report.md:## VERDICT
+G73,REPLAY_EVIDENCE,Annotated final tag resolves to the evidence commit,pass,True,direct_git,True,independently_reproduced,False,(git cat-file -t red-loop-m4)
+G74,REPLAY_EVIDENCE,"Final review clearly lists substitutions, approximations, unknowns, and non-claims",pass,True,direct_artifact,False,source_inferred,False,reports/implementation/m4-known-limits.md

@@ -1,0 +1,29 @@
+[unknown-stub] 2026-09-05T18:46:06 no seed file at /app/seed/merchants.json, using default
+[unknown-stub] 2026-09-05T18:46:06 no seed file at /app/seed/fund_accounts.json, using default
+[unknown-stub] 2026-09-05T18:46:06 no seed file at /app/seed/misc.json, using default
+[unknown-stub] 2026-09-05T18:46:06 no seed file at /app/seed/pricing.json, using default
+[unknown-stub] 2026-09-05T18:46:06 loaded 0 merchant(s), 0 fund_account(s), 0 pricing plan(s)
+test_balance_read_uses_mirror_without_fetching_new_ledger_truth (test_contract.Contracts.test_balance_read_uses_mirror_without_fetching_new_ledger_truth) ... ok
+test_balance_sync_commits_ledger_truth_before_event (test_contract.Contracts.test_balance_sync_commits_ledger_truth_before_event) ... ok
+test_balance_sync_rejects_direct_account_without_inventing_balance (test_contract.Contracts.test_balance_sync_rejects_direct_account_without_inventing_balance) ... ok
+test_credit_deduction_and_reversal_are_idempotent (test_contract.Contracts.test_credit_deduction_and_reversal_are_idempotent) ... ok
+test_details_relay_omits_fts_narration_from_strict_payouts_dto (test_contract.Contracts.test_details_relay_omits_fts_narration_from_strict_payouts_dto) ... ok
+test_direct_create_uses_merchant_specific_source_mapping (test_contract.Contracts.test_direct_create_uses_merchant_specific_source_mapping) ... ok
+test_drop_is_scoped_to_one_payout (test_contract.Contracts.test_drop_is_scoped_to_one_payout) ... ok
+test_dual_write_returns_success (test_contract.Contracts.test_dual_write_returns_success) ... ok
+test_failed_relay_normalizes_fts_status_before_shared_reversal (test_contract.Contracts.test_failed_relay_normalizes_fts_status_before_shared_reversal) ... ok
+test_free_payout_counter_decreases_per_balance (test_contract.Contracts.test_free_payout_counter_decreases_per_balance) ... ok
+test_fts_create_timeout_is_one_second_and_queues_retry (test_contract.Contracts.test_fts_create_timeout_is_one_second_and_queues_retry) ... ok
+test_identity_uses_single_parameterized_primary_key_lookup (test_contract.Contracts.test_identity_uses_single_parameterized_primary_key_lookup) ... ok
+test_merchant_response_does_not_expose_adapter_routing (test_contract.Contracts.test_merchant_response_does_not_expose_adapter_routing) ... ok
+test_pricing_matches_all_seeded_dimensions_and_fails_unknown (test_contract.Contracts.test_pricing_matches_all_seeded_dimensions_and_fails_unknown) ... ok
+test_relay_failure_is_not_acknowledged_as_success (test_contract.Contracts.test_relay_failure_is_not_acknowledged_as_success) ... [unknown-stub] 2026-09-05T18:46:06 update_fts_fund_transfer relay failed: TimeoutError()
+ok
+test_relay_maps_source_account_not_beneficiary (test_contract.Contracts.test_relay_maps_source_account_not_beneficiary) ... ok
+test_reorder_requires_exact_message_permutation (test_contract.Contracts.test_reorder_requires_exact_message_permutation) ... ok
+test_status_details_returns_types_not_source_ids (test_contract.Contracts.test_status_details_returns_types_not_source_ids) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 0.004s
+
+OK

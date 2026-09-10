@@ -1,0 +1,404 @@
+{
+  "generated_at": "2026-09-08T06:04:35.578050+00:00",
+  "git": {
+    "branch": "milestone-6-complete-payouts-domain",
+    "head": "76024aed5ae8474d29bd2b0b2e48c97c429eda52",
+    "historical_tags_unchanged": true,
+    "m6_implementation_commits_are_ancestors": true,
+    "m6_peeled_tag": "76024aed5ae8474d29bd2b0b2e48c97c429eda52",
+    "merge_base": "2613f383297c7c3b5c0831c26c5c7472494b6e7b",
+    "s2p_head": "b6e4976f9baebfe770dfa30794f6f61ea08ccb1b",
+    "s2p_reported_base_is_ancestor": true,
+    "tags_after": "ee17aabd7bce7d47ce27dd6b13b2c2a06154cfa9 refs/tags/assurance-m4.1-reproducible\ne83cd023c422ebb44c92ea30530dbbb9fd7309a5 refs/tags/assurance-m5-autonomous-discovery\n2f11824f1605deef15febc8294def7d322b41132 refs/tags/red-loop-m3.1\n05557e1b70737e16fc6008eaf2693c6acab1f650 refs/tags/red-loop-m4\n6d94881961899abe715c0f913b76c1317288a73f refs/tags/twin-m6-complete-domain\nd3f9a16e26aee401c377fa299b1b0a49fa9a012b refs/tags/twin-v1.0",
+    "tags_before": "ee17aabd7bce7d47ce27dd6b13b2c2a06154cfa9 refs/tags/assurance-m4.1-reproducible\ne83cd023c422ebb44c92ea30530dbbb9fd7309a5 refs/tags/assurance-m5-autonomous-discovery\n2f11824f1605deef15febc8294def7d322b41132 refs/tags/red-loop-m3.1\n05557e1b70737e16fc6008eaf2693c6acab1f650 refs/tags/red-loop-m4\n6d94881961899abe715c0f913b76c1317288a73f refs/tags/twin-m6-complete-domain\nd3f9a16e26aee401c377fa299b1b0a49fa9a012b refs/tags/twin-v1.0",
+    "worktrees": [
+      {
+        "head": "76024aed5ae8474d29bd2b0b2e48c97c429eda52",
+        "idle": "NOT_ESTABLISHED",
+        "path": "/Users/rana.singh/rzp-payouts-architecture",
+        "status_before_audit_outputs": ""
+      },
+      {
+        "head": "d54161c2e29873eb5f53804db58af45d48a7b4f6",
+        "idle": "NOT_ESTABLISHED",
+        "path": "/Users/rana.singh/rzp-payouts-architecture-expansion",
+        "status_before_audit_outputs": ""
+      },
+      {
+        "head": "5300617d5e572d2defebca9ee4b633c6347e4f6b",
+        "idle": "NOT_ESTABLISHED",
+        "path": "/Users/rana.singh/rzp-payouts-architecture/.claude/worktrees/agent-a00e097ab93ddcb76",
+        "status_before_audit_outputs": ""
+      },
+      {
+        "head": "3f8bddc4284103862bf9c90bc6ebb4ddd8d43d2f",
+        "idle": "NOT_ESTABLISHED",
+        "path": "/Users/rana.singh/rzp-s2p-final-verification",
+        "status_before_audit_outputs": ""
+      },
+      {
+        "head": "f913b5cf5d18e904b47585f7584908f13178d52a",
+        "idle": "NOT_ESTABLISHED",
+        "path": "/Users/rana.singh/rzp-s2p-final-verification-2",
+        "status_before_audit_outputs": ""
+      },
+      {
+        "head": "b6e4976f9baebfe770dfa30794f6f61ea08ccb1b",
+        "idle": "NOT_ESTABLISHED",
+        "path": "/Users/rana.singh/rzp-s2p-final-verification-3",
+        "status_before_audit_outputs": ""
+      },
+      {
+        "head": "b6e4976f9baebfe770dfa30794f6f61ea08ccb1b",
+        "idle": "NOT_ESTABLISHED",
+        "path": "/Users/rana.singh/rzp-source-to-pay-replica",
+        "status_before_audit_outputs": ""
+      }
+    ]
+  },
+  "input_sha256": {
+    "/Users/rana.singh/rzp-payouts-architecture/reports/domain/GRAPH_STATS.json": "cec0e60dacea61448d763e7b51e7f303f5c29c769de9e07b6d01a498f1cf941f",
+    "/Users/rana.singh/rzp-payouts-architecture/reports/domain/PAYOUTS_FUNCTIONAL_GRAPH.json": "a13555b6d8a678c34721b5cdc68e60a48a3830035646e695bf5c57d01fab4d77",
+    "/Users/rana.singh/rzp-payouts-architecture/reports/implementation/m6-acceptance.json": "af21f0497ea6fe3085c069a5733822921e683dafdc3861d17948ac178aae086c",
+    "/Users/rana.singh/rzp-source-to-pay-replica/DOMAIN_REPLICAS/source_to_pay/artifacts/acceptance.json": "6deede3e9da9a4eb09ca0390cdb3914f1cacc278eeca2017af53d821e89b480e",
+    "/Users/rana.singh/rzp-source-to-pay-replica/DOMAIN_REPLICAS/source_to_pay/artifacts/artifact-hashes.json": "1c7fb464d68069d89331df6e282d209ac483d337c67fc11e0725df3052e310d9"
+  },
+  "m6": {
+    "graph_counts_recomputed": {
+      "edges": 4077,
+      "nodes": 2093
+    },
+    "graph_sha256_matches_stats": true,
+    "p0_components_recomputed": 330,
+    "p0_fidelity_counts_recomputed": {
+      "behavioural_placeholder": 9,
+      "graph_only": 74,
+      "high_fidelity_replacement": 57,
+      "real_source_mapped_not_running": 29,
+      "real_source_running": 161
+    },
+    "recomputed_static_acceptance": {
+      "accepted": true,
+      "gates": [
+        {
+          "desc": "every reachable repository inventoried (repos-root \u2229 inventory)",
+          "detail": "inventory=107 reachable=60 missing=[]",
+          "id": "M6-01",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "deployment artifacts (kube-manifests) inventoried",
+          "detail": "",
+          "id": "M6-01b",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": ">=90% of identified critical components represented",
+          "detail": "100.0% of 330",
+          "id": "M6-02",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "no known major Payouts business family unmapped",
+          "detail": "families=42 missing=[]",
+          "id": "M6-03",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "every P0 family has >=1 PASSing end-to-end journey",
+          "detail": "p0=24 without_pass=[]",
+          "id": "M6-04",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "every P0 path covers success + failure + idempotency + async-state",
+          "detail": "{}",
+          "id": "M6-05",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "P0 workers/crons executable or explicitly blocked with missing dependency",
+          "detail": "p0_workers=70 executable=42 explicitly_blocked=28 unresolved=[]",
+          "id": "M6-06",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "clean boot from empty state provisioned fresh merchants and ran the P0 suite",
+          "detail": "empty=True merchants=13 passed=True",
+          "id": "M6-07",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "clean boot result does not depend on developer-local state",
+          "detail": "attach mode: all project volumes created 2026-09-08T06:21:51+05:30..2026-09-08T06:22:24+05:30 (down -v removed the previous ones), all secrets regenerated 2026-09-08T00:51:50.541200+00:00..2026-09-08T00:51:51.292969+00:00, boot_id f520e5d1-24bf-4d59-bcee-f19e4ee493e0",
+          "id": "M6-07b",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "domain snapshot manifest (SHAs, config hashes, schema versions, digests, graph version)",
+          "detail": "keys=['compose', 'config_digest', 'config_hashes', 'contracts', 'fidelity_counts', 'flags', 'generated_at', 'graph_counts']",
+          "id": "M6-08a",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "a repository/contract change produced a diff and reran only affected paths",
+          "detail": "changed=['ENV2_COMPOSE/substitutes/batch-sim/CONTRACT.md'] affected=['batch-sim']",
+          "id": "M6-08b",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "every graph node carries a fidelity class",
+          "detail": "rows=2093 unlabelled=0",
+          "id": "M6-09",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "remaining-access manifest lists every blocked item",
+          "detail": "blocked=2",
+          "id": "M6-10",
+          "passed": true,
+          "validation_mode": "direct_artifact"
+        },
+        {
+          "desc": "on milestone-6 branch or at the twin-m6 tag",
+          "detail": "milestone-6-complete-payouts-domain",
+          "id": "M6-11",
+          "passed": true,
+          "validation_mode": "direct_git"
+        },
+        {
+          "desc": "graph + evidence tracked in git",
+          "detail": "",
+          "id": "M6-12",
+          "passed": true,
+          "validation_mode": "direct_git"
+        }
+      ],
+      "milestone": "M6 \u2014 complete Payouts functional domain",
+      "passed": 15,
+      "total": 15
+    },
+    "runtime_reexecuted": false,
+    "stored_metrics": {
+      "critical_components_executable": 218,
+      "critical_components_represented": 330,
+      "critical_components_runtime": 227,
+      "critical_components_total": 330,
+      "critical_executable_pct": 66.1,
+      "critical_representation_pct": 100.0,
+      "critical_runtime_pct": 68.8,
+      "p0_families": 24,
+      "p0_families_with_journey": 24
+    }
+  },
+  "s2p": {
+    "historical_acceptance": {
+      "accepted": false,
+      "base_commit": "d54161c2e29873eb5f53804db58af45d48a7b4f6",
+      "clean_runs": {
+        "attempts": 3,
+        "fresh_final_checkout_verified": true,
+        "successes": 3
+      },
+      "final_commit": "b6e4976f9baebfe770dfa30794f6f61ea08ccb1b",
+      "gates": [
+        {
+          "evidence": [
+            "/Users/rana.singh/rzp-source-to-pay-replica",
+            "d54161c2e29873eb5f53804db58af45d48a7b4f6",
+            "b6e4976f9baebfe770dfa30794f6f61ea08ccb1b"
+          ],
+          "id": "01_isolated_worktree",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "artifacts/isolation-after.json"
+          ],
+          "id": "02_protected_worktrees_unchanged",
+          "passed": false
+        },
+        {
+          "evidence": [
+            "artifacts/isolation-after.json"
+          ],
+          "id": "03_preexisting_containers_unchanged",
+          "passed": false
+        },
+        {
+          "evidence": [
+            "/Users/rana.singh/.rzp-architecture-replica/repos"
+          ],
+          "id": "04_durable_source",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "artifacts/acceptance-source-verification.json"
+          ],
+          "id": "05_source_verified",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "artifacts/clean-runs/*/build-command-packages.json",
+            "artifacts/clean-runs/*/build-manifest.json"
+          ],
+          "id": "06_all_three_repositories_build",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "scripts/generate-inventory.py",
+            "inventory/architecture-inventory.raw.json",
+            "inventory/exclusions.json"
+          ],
+          "id": "07_mechanical_denominator",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "inventory/architecture-inventory.json",
+            "inventory/evidence-index.json",
+            "integration/unified-graph-patch.json"
+          ],
+          "id": "08_architecture_representation_99_percent",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "inventory/runtime-fidelity-overlay.json"
+          ],
+          "id": "09_mandatory_items_represented",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "spec/runtime-fidelity.json",
+            "spec/declared-deviations.yaml"
+          ],
+          "id": "10_mandatory_runtime_fidelity",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "spec/declared-deviations.yaml",
+            "tests/contracts/test_monolith_boundary.py",
+            "artifacts/clean-runs/*/contracts.log"
+          ],
+          "id": "11_declared_tested_replacements",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "artifacts/clean-runs/*/run.json"
+          ],
+          "id": "12_three_clean_runs_including_final_checkout",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "artifacts/clean-runs/*/journey.json"
+          ],
+          "id": "13_duplicate_and_repeated_command",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "artifacts/clean-runs/*/journey.json"
+          ],
+          "id": "14_negative_internal_contact",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "artifacts/clean-runs/*/run.json"
+          ],
+          "id": "15_reset_replay",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "artifacts/artifact-hashes.json"
+          ],
+          "id": "16_artifacts_hash_bound",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "docker-compose.yml",
+            "runtime/source-driver/boot.go",
+            "artifacts/secret-scan-summary.json",
+            "artifacts/clean-runs/*/run.json"
+          ],
+          "id": "17_synthetic_isolated_runtime",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "reports/source-to-pay-replica/PRODUCTION_UNKNOWNS.md",
+            "inventory/architecture-inventory-summary.md"
+          ],
+          "id": "18_production_claims_scoped",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "b6e4976f9baebfe770dfa30794f6f61ea08ccb1b",
+            "git status --porcelain empty"
+          ],
+          "id": "19_clean_final_tree",
+          "passed": true
+        },
+        {
+          "evidence": [
+            "FINAL_REPORT.md",
+            "TEST_GAP_MATRIX.md",
+            "PRODUCTION_UNKNOWNS.md",
+            "CLEAN_RUN_RESULTS.md",
+            "ASSUMPTIONS_AND_DECISIONS.md",
+            "DOMAIN_REPLICAS/source_to_pay/README.md"
+          ],
+          "id": "20_reports_runbook_present",
+          "passed": true
+        }
+      ],
+      "generated_at": "2026-09-07T22:19:40.442262+00:00",
+      "inventory": {
+        "critical_items": 18,
+        "critical_items_executable": 18,
+        "represented_items": 22116,
+        "total_material_items": 22116
+      },
+      "production_unknowns": [
+        "deployed topology and flag values",
+        "real API/Payouts balance/workflow/Passport",
+        "bank settlement and tax filing"
+      ]
+    },
+    "integrity_verification": {
+      "changed_or_missing": [],
+      "command": "python3 DOMAIN_REPLICAS/source_to_pay/scripts/artifact_integrity.py --verify",
+      "exit_code": 0,
+      "manifest_entries": 312,
+      "manifest_hash_matches_acceptance": true,
+      "manifest_sha256": "1c7fb464d68069d89331df6e282d209ac483d337c67fc11e0725df3052e310d9",
+      "passed": true,
+      "unbound": []
+    },
+    "isolated_closure_run_executed": false
+  },
+  "scope": "Read-only starting-evidence audit; no integration or runtime journeys executed"
+}

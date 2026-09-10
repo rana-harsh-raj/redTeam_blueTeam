@@ -1,0 +1,36 @@
+{
+  "base_nodes": 197,
+  "base_edges": 229,
+  "patch_nodes": 150,
+  "patch_edges": 129,
+  "relabels": 3,
+  "duplicate_new_ids": [],
+  "new_ids_clashing_with_base": [],
+  "relabel_ids_missing_in_base": [],
+  "dangling_edges": [],
+  "nodes_or_edges_without_evidence": [],
+  "unknown_edges": 8,
+  "node_type_counts": {
+    "business domain": 7,
+    "repository": 24,
+    "service": 25,
+    "worker": 4,
+    "frontend": 5,
+    "datastore": 10,
+    "queue/topic": 13,
+    "API endpoint": 20,
+    "event": 5,
+    "feature flag": 6,
+    "identity": 13,
+    "role": 3,
+    "external bank/provider": 6,
+    "business journey": 9
+  },
+  "edge_confidence_counts": {
+    "confirmed": 73,
+    "probable": 46,
+    "unknown": 8,
+    "inferred": 2
+  },
+  "ok": true
+}

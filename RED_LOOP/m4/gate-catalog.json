@@ -1,0 +1,375 @@
+{
+ "milestone": "M4 \u2014 Direct Current-Account, Reconciliation, and Autonomous Architecture Assurance Expansion",
+ "mandatory_gates": [
+  {
+   "gate_id": "G01",
+   "group": "BASELINE",
+   "title": "Accepted Milestone 3.1 checkpoint resolves correctly"
+  },
+  {
+   "gate_id": "G02",
+   "group": "BASELINE",
+   "title": "Historical tag and evidence remain unchanged"
+  },
+  {
+   "gate_id": "G03",
+   "group": "BASELINE",
+   "title": "Existing 21 baseline gates still pass"
+  },
+  {
+   "gate_id": "G04",
+   "group": "BASELINE",
+   "title": "Two clean baseline boots remain consistent"
+  },
+  {
+   "gate_id": "G05",
+   "group": "BASELINE",
+   "title": "All baseline evidence hashes recompute"
+  },
+  {
+   "gate_id": "G06",
+   "group": "SOURCE_AND_SPEC",
+   "title": "Complete source-backed Direct journey map exists"
+  },
+  {
+   "gate_id": "G07",
+   "group": "SOURCE_AND_SPEC",
+   "title": "BAS/XAS worker, queue, event, and matching path are identified"
+  },
+  {
+   "gate_id": "G08",
+   "group": "SOURCE_AND_SPEC",
+   "title": "Direct Ledger-success accounting path is identified"
+  },
+  {
+   "gate_id": "G09",
+   "group": "SOURCE_AND_SPEC",
+   "title": "Money-source and status-transport axes remain separate"
+  },
+  {
+   "gate_id": "G10",
+   "group": "SOURCE_AND_SPEC",
+   "title": "Specs, implementation, and fidelity declarations agree"
+  },
+  {
+   "gate_id": "G11",
+   "group": "SOURCE_AND_SPEC",
+   "title": "Every unresolved production/configuration assumption is explicit"
+  },
+  {
+   "gate_id": "G12",
+   "group": "PROVISIONING",
+   "title": "Fresh Direct merchant provisioner succeeds"
+  },
+  {
+   "gate_id": "G13",
+   "group": "PROVISIONING",
+   "title": "A second independently generated Direct merchant succeeds"
+  },
+  {
+   "gate_id": "G14",
+   "group": "PROVISIONING",
+   "title": "Provisioned records pass schema and relationship checks"
+  },
+  {
+   "gate_id": "G15",
+   "group": "PROVISIONING",
+   "title": "Direct routing-rule requirements are resolved or explicitly limited"
+  },
+  {
+   "gate_id": "G16",
+   "group": "PROVISIONING",
+   "title": "FTS, x-balances, Ledger, pricing, and webhook configuration self-verify"
+  },
+  {
+   "gate_id": "G17",
+   "group": "PROVISIONING",
+   "title": "Provisioning passes on two empty-volume boots"
+  },
+  {
+   "gate_id": "G18",
+   "group": "DIRECT_SUCCESS",
+   "title": "Public gateway creates a Direct payout"
+  },
+  {
+   "gate_id": "G19",
+   "group": "DIRECT_SUCCESS",
+   "title": "Correct authenticated merchant identity is used"
+  },
+  {
+   "gate_id": "G20",
+   "group": "DIRECT_SUCCESS",
+   "title": "Correct Direct/current source account is selected"
+  },
+  {
+   "gate_id": "G21",
+   "group": "DIRECT_SUCCESS",
+   "title": "Correct FTS source mapping is observed"
+  },
+  {
+   "gate_id": "G22",
+   "group": "DIRECT_SUCCESS",
+   "title": "Reservation is created in the correct state"
+  },
+  {
+   "gate_id": "G23",
+   "group": "DIRECT_SUCCESS",
+   "title": "Synthetic bank transfer reaches the correct state"
+  },
+  {
+   "gate_id": "G24",
+   "group": "DIRECT_SUCCESS",
+   "title": "Statement detail is generated and ingested"
+  },
+  {
+   "gate_id": "G25",
+   "group": "DIRECT_SUCCESS",
+   "title": "BAS/XAS processing executes"
+  },
+  {
+   "gate_id": "G26",
+   "group": "DIRECT_SUCCESS",
+   "title": "Reconciliation matches the correct payout"
+  },
+  {
+   "gate_id": "G27",
+   "group": "DIRECT_SUCCESS",
+   "title": "Ledger-confirmed Direct success accounting is observed"
+  },
+  {
+   "gate_id": "G28",
+   "group": "DIRECT_SUCCESS",
+   "title": "Reservation and x-balances reach the correct final state"
+  },
+  {
+   "gate_id": "G29",
+   "group": "DIRECT_SUCCESS",
+   "title": "Correct merchant webhook is observed"
+  },
+  {
+   "gate_id": "G30",
+   "group": "FAILURE_PENDING_ORDERING",
+   "title": "Immediate failure reaches the correct payout state"
+  },
+  {
+   "gate_id": "G31",
+   "group": "FAILURE_PENDING_ORDERING",
+   "title": "Direct failure creates no inappropriate Shared reversal journal"
+  },
+  {
+   "gate_id": "G32",
+   "group": "FAILURE_PENDING_ORDERING",
+   "title": "Pending-to-success works"
+  },
+  {
+   "gate_id": "G33",
+   "group": "FAILURE_PENDING_ORDERING",
+   "title": "Pending-to-failure works"
+  },
+  {
+   "gate_id": "G34",
+   "group": "FAILURE_PENDING_ORDERING",
+   "title": "Duplicate status delivery is idempotent"
+  },
+  {
+   "gate_id": "G35",
+   "group": "FAILURE_PENDING_ORDERING",
+   "title": "Duplicate statement delivery is idempotent"
+  },
+  {
+   "gate_id": "G36",
+   "group": "FAILURE_PENDING_ORDERING",
+   "title": "Statement-first ordering has deterministic behaviour"
+  },
+  {
+   "gate_id": "G37",
+   "group": "FAILURE_PENDING_ORDERING",
+   "title": "Conflicting status/statement behaviour is documented and tested"
+  },
+  {
+   "gate_id": "G38",
+   "group": "FAILURE_PENDING_ORDERING",
+   "title": "Balance-refresh and hold-release trigger is executed or honestly unresolved"
+  },
+  {
+   "gate_id": "G39",
+   "group": "FAILURE_PENDING_ORDERING",
+   "title": "XAS reconciliation-repair update is executed or explicitly classified"
+  },
+  {
+   "gate_id": "G40",
+   "group": "ROUTES_WEBHOOKS",
+   "title": "Direct status-return route is exercised"
+  },
+  {
+   "gate_id": "G41",
+   "group": "ROUTES_WEBHOOKS",
+   "title": "Monolith-mediated route is exercised where applicable"
+  },
+  {
+   "gate_id": "G42",
+   "group": "ROUTES_WEBHOOKS",
+   "title": "Event-driven route is exercised or preserved as a source-backed expected failure"
+  },
+  {
+   "gate_id": "G43",
+   "group": "ROUTES_WEBHOOKS",
+   "title": "Status remapping is validated by account type and channel"
+  },
+  {
+   "gate_id": "G44",
+   "group": "ROUTES_WEBHOOKS",
+   "title": "Webhook state, payload, tenant, and delivery evidence are correct"
+  },
+  {
+   "gate_id": "G45",
+   "group": "ROUTES_WEBHOOKS",
+   "title": "Webhook retry or duplicate behaviour is understood"
+  },
+  {
+   "gate_id": "G46",
+   "group": "BOUNDARIES_INVARIANTS",
+   "title": "Merchant A cannot read or change Merchant B's Direct resources"
+  },
+  {
+   "gate_id": "G47",
+   "group": "BOUNDARIES_INVARIANTS",
+   "title": "Request-body merchant ID cannot override authenticated identity"
+  },
+  {
+   "gate_id": "G48",
+   "group": "BOUNDARIES_INVARIANTS",
+   "title": "Client headers cannot create service privilege"
+  },
+  {
+   "gate_id": "G49",
+   "group": "BOUNDARIES_INVARIANTS",
+   "title": "Merchant access cannot reach internal-only operations"
+  },
+  {
+   "gate_id": "G50",
+   "group": "BOUNDARIES_INVARIANTS",
+   "title": "Broker denial and gateway/service denial are distinguished"
+  },
+  {
+   "gate_id": "G51",
+   "group": "BOUNDARIES_INVARIANTS",
+   "title": "Direct accounting conservation invariant passes"
+  },
+  {
+   "gate_id": "G52",
+   "group": "BOUNDARIES_INVARIANTS",
+   "title": "Concurrent idempotent payout creation converges to one logical payout"
+  },
+  {
+   "gate_id": "G53",
+   "group": "BOUNDARIES_INVARIANTS",
+   "title": "Reservation cannot be released twice"
+  },
+  {
+   "gate_id": "G54",
+   "group": "BOUNDARIES_INVARIANTS",
+   "title": "Ledger success cannot be posted twice"
+  },
+  {
+   "gate_id": "G55",
+   "group": "BOUNDARIES_INVARIANTS",
+   "title": "Cross-namespace webhook and event isolation passes"
+  },
+  {
+   "gate_id": "G56",
+   "group": "AUTONOMOUS_RUNTIME",
+   "title": "Every high-priority hypothesis reaches a terminal status"
+  },
+  {
+   "gate_id": "G57",
+   "group": "AUTONOMOUS_RUNTIME",
+   "title": "At least one bounded experiment exists for each exercised hypothesis"
+  },
+  {
+   "gate_id": "G58",
+   "group": "AUTONOMOUS_RUNTIME",
+   "title": "Blocked and falsified states are not conflated"
+  },
+  {
+   "gate_id": "G59",
+   "group": "AUTONOMOUS_RUNTIME",
+   "title": "Duplicate-hypothesis suppression works"
+  },
+  {
+   "gate_id": "G60",
+   "group": "AUTONOMOUS_RUNTIME",
+   "title": "Task lease expiry and reassignment work"
+  },
+  {
+   "gate_id": "G61",
+   "group": "AUTONOMOUS_RUNTIME",
+   "title": "Checkpoint/resume works after worker interruption"
+  },
+  {
+   "gate_id": "G62",
+   "group": "AUTONOMOUS_RUNTIME",
+   "title": "Stagnation produces a reasoned replan before stopping"
+  },
+  {
+   "gate_id": "G63",
+   "group": "AUTONOMOUS_RUNTIME",
+   "title": "Four isolated assurance contexts run successfully"
+  },
+  {
+   "gate_id": "G64",
+   "group": "AUTONOMOUS_RUNTIME",
+   "title": "An unattended soak completes with useful work and durable state"
+  },
+  {
+   "gate_id": "G65",
+   "group": "REPLAY_EVIDENCE",
+   "title": "Credible candidates are independently replayed from clean state"
+  },
+  {
+   "gate_id": "G66",
+   "group": "REPLAY_EVIDENCE",
+   "title": "Replay uses fresh merchant and resource IDs"
+  },
+  {
+   "gate_id": "G67",
+   "group": "REPLAY_EVIDENCE",
+   "title": "Negative controls remove or prevent the observed effect"
+  },
+  {
+   "gate_id": "G68",
+   "group": "REPLAY_EVIDENCE",
+   "title": "All acceptance evidence hashes recompute"
+  },
+  {
+   "gate_id": "G69",
+   "group": "REPLAY_EVIDENCE",
+   "title": "No expected evidence file is missing"
+  },
+  {
+   "gate_id": "G70",
+   "group": "REPLAY_EVIDENCE",
+   "title": "Outside-network traffic is zero"
+  },
+  {
+   "gate_id": "G71",
+   "group": "REPLAY_EVIDENCE",
+   "title": "Final working tree is clean"
+  },
+  {
+   "gate_id": "G72",
+   "group": "REPLAY_EVIDENCE",
+   "title": "Independent auditor approves the final acceptance artifact"
+  },
+  {
+   "gate_id": "G73",
+   "group": "REPLAY_EVIDENCE",
+   "title": "Annotated final tag resolves to the evidence commit"
+  },
+  {
+   "gate_id": "G74",
+   "group": "REPLAY_EVIDENCE",
+   "title": "Final review clearly lists substitutions, approximations, unknowns, and non-claims"
+  }
+ ]
+}

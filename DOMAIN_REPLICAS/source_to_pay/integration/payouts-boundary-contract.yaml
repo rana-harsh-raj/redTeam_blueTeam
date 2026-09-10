@@ -1,0 +1,56 @@
+schema_version: 1
+id: s2p.selected-payouts-boundary
+representation: CONTRACT_FAITHFUL_REPLACEMENT
+implementation: runtime/boundary/server.py
+tests: tests/contracts/test_monolith_boundary.py
+authentication:
+  transport: HTTP Basic from vendor-payments rxclient
+  username: rzp_live
+  secret_values: synthetic_only
+  identity_mapping: {local-vendor-payments-secret: vendor_payments, local-xpayroll-secret: xpayroll}
+  required_headers: [X-Razorpay-Account]
+  propagated_evidence_headers: [X-Request-ID, X-Razorpay-TaskId, X-Payout-Idempotency, X-Dashboard-User-Id]
+contracts:
+  - route: GET v1/contacts_internal/
+    request_shape: contact.SearchReq in GET body
+    response_shape: contact.SearchResp
+    state_gate: contact_enabled controls zero or one rzp_tax_pay contact
+  - route: GET v1/fund_accounts_internal/{id}
+    response_shape: fundaccount.FundAccount
+    state_gate: fixed active bank account belonging to synthetic rzp_tax_pay contact
+  - route: GET v1/banking_accounts_internal[/]
+    response_shape: taxpayments.BankingAccountAPIResponse
+  - route: POST v1/vendor-payments/verify-otp
+    request_shape: otp.VerifyOtpRequest
+    response_shape: '{Success:boolean}'
+  - route: POST v1/internalContactPayout/
+    request_shape: payout.Request
+    response_shape: payout.Payout
+    gates: [merchant-required, app-contact-type-allow-list, known-tax-fund-account, required-idempotency-key, merchant-scoped-idempotency, payload-conflict]
+    invariant: contact_type and tax_payment_id are resolved context/source details, not invented request fields
+  - route: PATCH v1/payouts_internal/{id}/tax-payment-id
+    request_shape: '{tax_payment_id:string}'
+    response_shape: '{status:SUCCESS}'
+    gates: [known-merchant-owned-payout, string-size-19, txpy-public-prefix]
+state:
+  store: project-scoped SQLite volume
+  tables: [payouts, audit, control]
+  tenancy: payout identity and idempotency are merchant scoped
+  evidence: GET /_evidence returns raw payouts and audit rows
+errors:
+  shape: '{error:{code,description}}'
+  covered: [authentication or internal-app/contact-type denial, missing merchant, missing required payout field, unknown tax fund account, missing or conflicting idempotency key, unknown or cross-merchant payout tagback, malformed tax-payment public ID]
+source_evidence:
+  - vendor-payments/internal/rxclient/core.go
+  - vendor-payments/internal/contact/apicaller.go
+  - vendor-payments/internal/fundaccount/core.go
+  - vendor-payments/internal/otp/apicaller.go
+  - vendor-payments/internal/payout/core.go
+  - vendor-payments/internal/payout/model.go
+  - vendor-payments/internal/taxpayments/apicaller.go
+  - vendor-payments/internal/taxpayments/internal_tax_contact.go
+  - payouts/internal/app/contact/type.go
+  - api/app/Models/Payout/Validator.php
+  - api/app/Models/Payout/Service.php
+  - api/app/Models/Payout/Repository.php
+explicit_exclusions: [full API-monolith routing/authentication stack, full Payouts state machine FTS ledger and settlement, SourceUpdater callback transport, production credentials and internal-app resolution, routes outside the selected TDS journey]

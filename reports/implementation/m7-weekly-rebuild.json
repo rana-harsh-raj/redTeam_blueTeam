@@ -1,0 +1,66 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-09-08T09:33:30.234273+00:00",
+  "run_dir": "/Users/rana.singh/rzp-payouts-architecture/RED_LOOP/runs/m6-clean-boot-20260908T093324Z",
+  "from_empty_state": true,
+  "up_rc": 0,
+  "container_count": 98,
+  "healthy": 97,
+  "unhealthy": [],
+  "s2p_stack_healthy": true,
+  "shared_ingress_booted_from_clean_state": true,
+  "suite": {
+    "total": 111,
+    "results": {
+      "PASS": 110,
+      "FAIL": 0,
+      "EXPECTED_FAILURE": 1,
+      "BLOCKED": 0
+    },
+    "p0_failures": [],
+    "blocked_without_dependency": [],
+    "families": 18,
+    "m7_families": {
+      "family:shared-ingress": {
+        "PASS": 10,
+        "FAIL": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0
+      },
+      "family:cross-domain-s2p": {
+        "PASS": 4,
+        "FAIL": 0,
+        "EXPECTED_FAILURE": 0,
+        "BLOCKED": 0
+      }
+    }
+  },
+  "journeys_fingerprint_bound": true,
+  "graph_regenerated": true,
+  "graph": {
+    "nodes": 3065,
+    "edges": 5266,
+    "families": 45,
+    "lanes": [
+      "external-config-deploy",
+      "fts-mozart",
+      "identity-ingress",
+      "m6-journeys",
+      "m7-ingress",
+      "money-and-statements",
+      "payouts-core",
+      "twin-inventory",
+      "zz-runtime-overlay",
+      "zz-s2p-namespace",
+      "zz-worker-gaps"
+    ],
+    "critical_components_total": 364,
+    "critical_representation_pct": 100.0,
+    "critical_executable_pct": 72.8,
+    "critical_runtime_pct": 75.0
+  },
+  "weekly_plan_rc": 0,
+  "weekly_plan_tail": "weekly refresh (planned) -- plan only\n  [planned] prepare-repos    python3 ENV2_COMPOSE/build/prepare-repos.py --source-root /Users/rana.singh/rzp-payouts-clones --destination .local/twin-repos/refresh-20260908T093330Z\n        note: fresh admitted copies from the pinned clone HEADs; writes a sibling build-evidence-<UTC>/provenance.json. Refuses to overwrite an existing destination.\n  [planned] check-inputs     python3 ENV2_COMPOSE/build/check-inputs.py <new-build-evidence>/provenance.json --verify-modules\n        note: verifies the new copies against their provenance manifest (resolved from .local/twin-repos/build-evidence-* after step 1)\n  [planned] build-host       bash ENV2_COMPOSE/build/build-host.sh all\n        note: REPOS_ROOT=.local/twin-repos/refresh-20260908T093330Z ARENA_TAG=v1-candidate; builds all 5 core images on the host\n  [planned] clean-boot       python3 RED_LOOP/m6/clean_boot.py\n        note: down.sh (volumes+secrets) -> assert empty state -> up.sh -> health; touches the live arena\n  [planned] journeys         python3 RED_LOOP/m6/journeys/run.py\n        note: full journey suite\n  [planned] m6-acceptance    python3 RED_LOOP/surface/m6_acceptance.py\n        note: evaluate the M6 gates\nwrote reports/domain/refresh/20260908T093330Z-weekly.json\n",
+  "note": "core images (payouts/ledger/fts/cfa/x-balances) reused from the M6 build-host.sh run; substitutes rebuilt by compose; S2P runtime image rebuilt from the pinned source by s2p_stack.py build",
+  "passed": true
+}

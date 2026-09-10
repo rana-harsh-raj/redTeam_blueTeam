@@ -1,0 +1,16 @@
+{
+  "out": "/private/tmp/claude-502/-Users-rana-singh-rzp-payouts-architecture/97164fe3-dcad-4e09-b144-7971ad3bfa97/scratchpad/inv/m4-acceptance-dryrun.json",
+  "tested_commit": "2613f383297c7c3b5c0831c26c5c7472494b6e7b",
+  "evidence_commit": null,
+  "counts": {
+    "total": 74,
+    "pass": 73,
+    "pending": 1,
+    "fail": 0
+  },
+  "accepted": false,
+  "pending_gates": [
+    "G71"
+  ],
+  "unmet_gates": []
+}

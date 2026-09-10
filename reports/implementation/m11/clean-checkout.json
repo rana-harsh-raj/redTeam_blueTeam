@@ -1,0 +1,77 @@
+{
+ "kind": "m11_clean_checkout",
+ "started_at": "2026-09-09T19:12:24.046012+00:00",
+ "head": "9c9622c7c28ec53ccefda187fa4c5957e0553ea6",
+ "checkout": "/var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/m11-clean-c5uiuljh",
+ "profile": "critical-payouts",
+ "instance_id": "m11-clean",
+ "steps": [
+  {
+   "cmd": "git clone --quiet --no-local /Users/rana.singh/rzp-payouts-architecture /var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/m11-clean-c5uiuljh/repo",
+   "rc": 0,
+   "secs": 2.3,
+   "tail": ""
+  },
+  {
+   "cmd": "git checkout --quiet 9c9622c7c28ec53ccefda187fa4c5957e0553ea6",
+   "rc": 0,
+   "secs": 0.3,
+   "tail": ""
+  },
+  {
+   "cmd": "/opt/homebrew/opt/python@3.14/bin/python3.14 -m twinfactory create m11-clean --profile critical-payouts --seed m11clean --trust-path real --force",
+   "rc": 0,
+   "secs": 0.5,
+   "tail": ",\n  \"backend\": {\n    \"isolation_boundary\": true,\n    \"kind\": \"colima\",\n    \"options\": {},\n    \"profile\": \"twin-m11-clean\"\n  },\n  \"compose_project\": \"twin_m11_clean\",\n  \"exec_dir\": \"/Users/rana.singh/.twin-factory/instances/m11-clean\",\n  \"inputs_hash\": \"c90e22dfab464738906f5ee8ca7cb2da27f46da25ddc1cb3e4be8a1671af1228\",\n  \"instance_id\": \"m11-clean\",\n  \"kong_host_port\": 18720,\n  \"profile\": \"focused:shared-payouts\",\n  \"recipe_set_id\": \"e662e95a0a7caeb0b3bfa6ef5e179d7c59c998abc3aeacdfbccf79f36afa896d\",\n  \"seed\": \"m11clean\",\n  \"seed_epoch\": 1765051963,\n  \"state\": \"created\",\n  \"trust_path\": \"real\"\n}\n"
+  },
+  {
+   "cmd": "/opt/homebrew/opt/python@3.14/bin/python3.14 -m twinfactory build m11-clean",
+   "rc": 0,
+   "secs": 66.2,
+   "tail": "ver:v1.4.1-auto-setup\": {\n      \"image_id\": \"sha256:cbe9ea2edd91e8fd543bf9957b2ad4483b2728a63e1a4cfd02653f64fe52bdc7\",\n      \"repo_digests\": [\n        \"ubercadence/server@sha256:cbe9ea2edd91e8fd543bf9957b2ad4483b2728a63e1a4cfd02653f64fe52bdc7\"\n      ],\n      \"services\": [\n        \"cadence\"\n      ]\n    }\n  },\n  \"instance_id\": \"m11-clean\",\n  \"runtime_instance_id\": \"639c45899bae1d619810eb2b490f01a1741f87ffa8834369f8aa93d9cd416b9d\",\n  \"state\": \"built\",\n  \"timings\": {\n    \"build_secs\": 66.1,\n    \"create_secs\": 0.2,\n    \"generate_secs\": 1.9,\n    \"images_secs\": 41.4,\n    \"provision_secs\": 22.2\n  }\n}\n"
+  },
+  {
+   "cmd": "/opt/homebrew/opt/python@3.14/bin/python3.14 -m twinfactory start m11-clean",
+   "rc": 0,
+   "secs": 103.6,
+   "tail": "{\n  \"boot_id\": \"ccd3bfca-f8ed-4c96-ba12-2ac10356b9e1\",\n  \"instance_id\": \"m11-clean\",\n  \"runtime_instance_id\": \"398fc18500daf44a65140f883e8aa8824ed6381e1aad2eaffcb5a9ea5915c3a1\",\n  \"state\": \"running\",\n  \"timings\": {\n    \"boot_secs\": 102.9,\n    \"build_secs\": 66.1,\n    \"create_secs\": 0.2,\n    \"generate_secs\": 1.9,\n    \"images_secs\": 41.4,\n    \"provision_secs\": 22.2\n  }\n}\n"
+  },
+  {
+   "cmd": "/opt/homebrew/opt/python@3.14/bin/python3.14 -m twinfactory health m11-clean",
+   "rc": 0,
+   "secs": 1.0,
+   "tail": "  \"body\": {\n      \"bridge\": \"payouts-twin\",\n      \"pid\": 12465\n    },\n    \"ok\": true,\n    \"port\": 18720\n  },\n  \"compose_project\": \"twin_m11_clean\",\n  \"containers\": {\n    \"healthy\": 99,\n    \"not_running\": [\n      \"ledger-scheduler\"\n    ],\n    \"running\": 99,\n    \"total\": 100,\n    \"unhealthy\": []\n  },\n  \"exec_dir\": \"/Users/rana.singh/.twin-factory/instances/m11-clean\",\n  \"healthy\": true,\n  \"instance_id\": \"m11-clean\",\n  \"kong_host_port\": 18720,\n  \"profile\": \"focused:shared-payouts\",\n  \"runtime_instance_id\": \"398fc18500daf44a65140f883e8aa8824ed6381e1aad2eaffcb5a9ea5915c3a1\",\n  \"state\": \"running\"\n}\n"
+  },
+  {
+   "cmd": "/opt/homebrew/opt/python@3.14/bin/python3.14 -m twinfactory journeys m11-clean --only journey:shared-payouts/success,journey:trust-path/api_key_auth",
+   "rc": 0,
+   "secs": 67.9,
+   "tail": "dence_path\": \"/Users/rana.singh/.twin-factory/instances/m11-clean/journeys/run-20260909T191517Z/evidence/journey-trust-path-api-key-auth.json\",\n      \"expected_failure_ref\": null,\n      \"failed_checks\": null,\n      \"id\": \"journey:trust-path/api_key_auth\",\n      \"merchant_id\": \"ARENAM93679025\",\n      \"missing_dependency\": null,\n      \"result\": \"PASS\"\n    }\n  ],\n  \"rc\": 0,\n  \"run_dir\": \"/Users/rana.singh/.twin-factory/instances/m11-clean/journeys/run-20260909T191517Z\",\n  \"secs\": 67.82,\n  \"summary\": {\n    \"blocked\": 0,\n    \"expected_failure\": 0,\n    \"fail\": 0,\n    \"pass\": 2,\n    \"total\": 2\n  }\n}\n"
+  },
+  {
+   "cmd": "/opt/homebrew/opt/python@3.14/bin/python3.14 -m twinfactory destroy m11-clean --purge",
+   "rc": 0,
+   "secs": 25.3,
+   "tail": "troyed\": true,\n    \"rc\": 0,\n    \"secs\": 1.2\n  },\n  \"containers_left\": [],\n  \"instance_id\": \"m11-clean\",\n  \"purged\": [\n    \"ENV2_COMPOSE\",\n    \"inputs\",\n    \"DOMAIN_REPLICAS\",\n    \"state\"\n  ],\n  \"secs\": 25.2,\n  \"started_at\": \"2026-09-09T19:16:25Z\",\n  \"steps\": [\n    {\n      \"at\": \"2026-09-09T19:16:26Z\",\n      \"log\": \"01-host-bridge-stop.log\",\n      \"n\": 1,\n      \"rc\": 0,\n      \"secs\": 0.2,\n      \"step\": \"host-bridge-stop\"\n    },\n    {\n      \"at\": \"2026-09-09T19:16:49Z\",\n      \"log\": \"02-destroy-down.log\",\n      \"n\": 2,\n      \"rc\": 0,\n      \"secs\": 23.35,\n      \"step\": \"destroy-down\"\n    }\n  ]\n}\n",
+   "_stdout": "{\n  \"boundary\": {\n    \"data_dirs_left\": [],\n    \"destroyed\": true,\n    \"rc\": 0,\n    \"secs\": 1.2\n  },\n  \"containers_left\": [],\n  \"instance_id\": \"m11-clean\",\n  \"purged\": [\n    \"ENV2_COMPOSE\",\n    \"inputs\",\n    \"DOMAIN_REPLICAS\",\n    \"state\"\n  ],\n  \"secs\": 25.2,\n  \"started_at\": \"2026-09-09T19:16:25Z\",\n  \"steps\": [\n    {\n      \"at\": \"2026-09-09T19:16:26Z\",\n      \"log\": \"01-host-bridge-stop.log\",\n      \"n\": 1,\n      \"rc\": 0,\n      \"secs\": 0.2,\n      \"step\": \"host-bridge-stop\"\n    },\n    {\n      \"at\": \"2026-09-09T19:16:49Z\",\n      \"log\": \"02-destroy-down.log\",\n      \"n\": 2,\n      \"rc\": 0,\n      \"secs\": 23.35,\n      \"step\": \"destroy-down\"\n    }\n  ]\n}\n"
+  }
+ ],
+ "ok": true,
+ "tracked_secret_values": [],
+ "healthy": true,
+ "state": "running",
+ "trust_path": "real",
+ "smoke_rc": 0,
+ "timings": {
+  "/var/folders/4j/3__3lvhx6mn9gyc9pgr91fgc0000gp/T/m11-clean-c5uiuljh/repo": 2.3,
+  "9c9622c7c28ec53ccefda187fa4c5957e0553ea6": 0.3,
+  "create": 0.5,
+  "build": 66.2,
+  "start": 103.6,
+  "health": 1.0,
+  "journeys": 67.9
+ },
+ "secs": 241.8,
+ "note": "factory image cache shared (content-addressed); config/secrets/seeds/Kong provisioning/migrations produced from the fresh checkout",
+ "finished_at": "2026-09-09T19:16:51.123396+00:00"
+}

@@ -1,0 +1,7 @@
+# Campaign runtime outputs: model/tool logs, evidence dumps, replay bundles.
+# These are hash-referenced from the completion report, not committed (mirrors ENV2_COMPOSE runs/ policy).
+runs/
+*.pyc
+__pycache__/
+.env
+llm.env

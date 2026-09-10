@@ -1,0 +1,120 @@
+{
+  "coverage": {
+    "snapshot_id": "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141",
+    "planning_cycles": 1,
+    "theses_total": 2,
+    "theses_by_status": {
+      "exhausted": 1,
+      "scheduled": 1
+    },
+    "distinct_subjects": 2,
+    "subjects": [
+      "family:accounting",
+      "identity:trust-boundary:payouts-service"
+    ],
+    "tasks_total": 2,
+    "tasks_by_status": {
+      "done": 1,
+      "ready": 1
+    },
+    "tasks_by_kind": {
+      "probe": 2
+    },
+    "hypotheses_total": 1,
+    "hypotheses_by_state": {
+      "experiment_defined": 1
+    },
+    "candidates_total": 0,
+    "candidates_by_status": {},
+    "duplicate_suppressed": 0
+  },
+  "allocation": {
+    "twins": [
+      {
+        "instance_id": "alpha-m10",
+        "current_instance_id": "alpha-m10",
+        "status": "assigned",
+        "starting_access_profile": "merchant_ordinary",
+        "allocation": {
+          "tasks": 2,
+          "cells": 2,
+          "candidates": 0
+        }
+      }
+    ],
+    "cells_total": 2,
+    "cells_by_status": {
+      "active": 2
+    },
+    "replication_groups": 2,
+    "independent_replicas": 0
+  },
+  "cost": {
+    "actions": 32,
+    "model_calls": 12,
+    "prompt_tokens": 211466,
+    "completion_tokens": 2102,
+    "wall_seconds": 178.5,
+    "estimated_usd": 1.0889,
+    "by_model": {
+      "gpt-5.5": {
+        "calls": 12,
+        "prompt_tokens": 211466,
+        "completion_tokens": 2102
+      }
+    },
+    "budget_status": "action_budget_exhausted",
+    "budgets": {
+      "max_actions": 10,
+      "max_model_calls": 6000,
+      "max_wall_seconds": 1800,
+      "max_usd": null,
+      "planning_cycles_min": 1
+    }
+  },
+  "results": {
+    "candidates_total": 0,
+    "verified": 0,
+    "rejected": 0,
+    "invalid": 0,
+    "unverified_or_pending": 0,
+    "verifications": 0,
+    "decorrelated_verifications": 0,
+    "self_verifications": 0,
+    "duplicate_hypotheses_suppressed": 0
+  },
+  "recovery_events": {
+    "worker_failures_recovered": 0,
+    "lease_expiries": 0,
+    "director_restarts": 0,
+    "model_fallbacks": 1,
+    "twin_recoveries": 0,
+    "twins_reproduced": 0
+  },
+  "tool_usage": {
+    "whoami": 1,
+    "code_list": 3,
+    "code_search": 12,
+    "code_read": 8,
+    "code_find_symbol": 2,
+    "record_hypothesis": 1,
+    "define_experiment": 1,
+    "merchant_request": 4
+  },
+  "model_usage": {
+    "gpt-5.5": {
+      "calls": 12,
+      "prompt_tokens": 211466,
+      "completion_tokens": 2102
+    }
+  },
+  "control_state": {
+    "finished_at": "2026-09-09T09:38:55Z",
+    "phase": "completed",
+    "planning_cycles": 1,
+    "started_at": "2026-09-09T09:35:56Z",
+    "started_epoch": 1788946556.940541,
+    "stop_reason": "action_budget_exhausted",
+    "twin_cursor": 2
+  }
+}

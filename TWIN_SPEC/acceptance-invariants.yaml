@@ -1,0 +1,185 @@
+# TWIN_SPEC/acceptance-invariants.yaml
+# Invariants the twin must satisfy, each traceable to production source. "prod_enforced" says whether production
+# itself enforces the invariant (so the twin must reproduce it) or the twin is asserting a stronger property.
+# Verifier IDs refer to ENV2_COMPOSE/verifier (V01..V24) where one exists; NEW = to be written by Codex.
+version: 1
+generated: 2026-09-05
+
+invariants:
+
+  # ---- idempotency ---------------------------------------------------------
+  - id: I01
+    name: same X-Payout-Idempotency + same body -> same payout id; different body -> 400 SameIdempotencyKeyDifferentRequest
+    prod_enforced: yes (PS idempotency_keys UNIQUE(idempotency_key, merchant_id), SHA-256 canonical body hash, Redis mutex 20 min)
+    source: payouts/internal/routing/middleware/idempotency_key.go:34-93; migrations/20221004002554:23; api MerchantIdempotencyHandler.php:84-210
+    verifier: V01, V02
+  - id: I02
+    name: FTS dedupes on (source_type, source_id) and returns the existing transfer with 200 (not 201)
+    prod_enforced: yes
+    source: fts/internal/migrations/00005_transfers_table_create.go:62; fts/internal/transfer/service.go:322-436; controllers/transfer.go:139-146
+    verifier: V03
+  - id: I03
+    name: ledger journal (transactor_id, transactor_event) duplicates are prevented only by app-level check under a Redis mutex; the twin MUST NOT add a unique index
+    prod_enforced: partial (race window exists)
+    source: ledger/internal/journal/validation.go:353-369; pg_migrations/20201001011143_create_journal.go:39
+    verifier: "V04 (rewrite: assert absence of unique index + single row under sequential duplicate; concurrency race is a separate NEW probe; M1: V04 now guards the index catalogue non-empty -- asserts pg_indexes returns rows and the public.journal primary key is present -- before trusting the negative absent-unique-index result, so a wrong table/schema/search_path cannot pass vacuously)"
+  - id: I04
+    name: bulk create rows are unique per (merchant_id, idempotency_key) in bulk_idempotency_keys; max 15 rows per request
+    prod_enforced: yes
+    source: payouts/internal/app/bulkPayoutsProcessor/repo.go:28-35; constants.go:6
+    verifier: NEW
+
+  # ---- state machine -------------------------------------------------------
+  - id: I10
+    name: every payout_logs (from, to) pair is a legal transition of state_machine.go; processed is reachable only from initiated
+    prod_enforced: yes
+    source: payouts/internal/app/payouts/state_machine.go (see state-machines.yaml)
+    verifier: V14
+  - id: I11
+    name: FTS webhooks for payouts not in {initiated, processed, reversed, failed} are acknowledged 200 and ignored; terminal repeats are no-ops
+    prod_enforced: yes
+    source: payouts/internal/app/common/appConstants/states.go:37-54
+    verifier: V15 (needs pending-hold bank scenario)
+  - id: I12
+    name: PS moves the payout to initiated before calling create_fta; create_fta errors do not roll it back
+    prod_enforced: yes
+    source: payouts/internal/app/payouts/processor/payoutFTS.go:18-83
+    verifier: NEW
+  - id: I13
+    name: "FTS transfer FSM: PROCESSED only from INITIATED; REVERSED only from PROCESSED; no webhook while RETRY"
+    prod_enforced: yes
+    source: fts/internal/transfer/state_machine.go:80-114; service.go:1104-1111
+    verifier: NEW
+
+  # ---- accounting ----------------------------------------------------------
+  - id: I20
+    name: payout_initiated journal balances to zero, debits MerchantBalance amount+commission synchronously, and is the balance authorization (insufficient -> queued or 400)
+    prod_enforced: yes
+    source: ledger shared_account_x.go XPayoutInitiatedV2; payouts payoutViaLedgerService.go:198-271; ledger account/repo.go:417-449
+    verifier: V05, V09, V10 (V10 expectation must be 400 "not enough balance", not a failed payout), V11
+  - id: I21
+    name: payout_processed journal is asynchronous and Shared-only; identifiers fts_fund_account_id / fts_account_type come verbatim (lower-cased) from the FTS webhook; ledger account_details for the FTS account must carry fund_account_type = lower(bank_account_type) under the matching Current/Nodal parent
+    prod_enforced: yes
+    source: payouts core.go:2532-2598,2575; pkg/ledger/ledger_journal_create.go:210-218; ledger account_discovery/core.go:51-181; fts source_account.go:99-101; ledger account/seed_data/shared_account_x.go:199-231
+    verifier: "V06 (asserts fts_fund_account_id/fts_account_type via payout_meta_temporary fts_info and the credited account_details.fund_account_type under the matching parent)"
+  - id: I22
+    name: Shared FTS FAILED -> payout reversed with a reversals row created before the payout_reversed journal; Direct (RBL/ICICI/AXIS/YESBANK/IDFC/SLICE) FTS FAILED -> payout failed, no reversal, no ledger call
+    prod_enforced: yes
+    source: payouts states.go:64-128; reversals/core.go:281-330; api Status.php:243-309
+    verifier: V07, V08, V18 (stimulus must go through the FTS/monolith relay, not a synthetic PS webhook)
+  - id: I23
+    name: reversal row is committed before the ledger call and survives a ledger outage via payout_update_failure_handling
+    prod_enforced: yes
+    source: payouts/internal/app/reversals/core.go:281-330; asyncFailureHandlingHelper.go:582-666
+    verifier: "V17 (needs ledger fault injection: docker pause ledger-api)"
+  - id: I24
+    name: transaction.created webhook fires after every successful failed/reversed journal; payout.processed/reversed/failed fire on state entry; cancelled fires none
+    prod_enforced: yes
+    source: payouts reversalViaLedgerService.go:215-312; appConstants/webhooks.go:4-24; state_machine.go:83-85
+    verifier: V21 (fix capture path /_captured/events)
+
+  # ---- direct rails / reservations ------------------------------------------
+  - id: I30
+    name: with in_flight_reservation_enabled, a dispatched Direct payout has a live Redis reservation; it moves to awaiting_balance_refresh on processed and is released on failed/reversed/cancelled/rejected; sum(live) == sum(amounts of dispatched payouts)
+    prod_enforced: yes
+    source: payouts reservation/store.go:150,160,227-241,395-400; reservation_hook.go:34-90
+    verifier: V12, V13 (requires reconciler cron path fixed so the heartbeat exists; gate fails closed otherwise)
+  - id: I31
+    name: gate fails closed (queues) when the reconciler heartbeat (TTL 12.5 min) is missing
+    prod_enforced: yes
+    source: payouts inflight_reservation_reconciler.go:51-56
+    verifier: NEW (stop cron, expect queued)
+
+  # ---- queued / scheduled / on-hold -------------------------------------------
+  - id: I40
+    name: queued low-balance payout dequeues only when API-DB balance.updated_at is within 6 h and the live balance covers amount+fee; dequeue is first-fit by list order
+    prod_enforced: yes
+    source: payouts/internal/app/balance/repo.go:26-51; helperQueuedPayouts.go:18-47
+    verifier: V24a (twin must refresh balance.updated_at and expose balance_update_event)
+  - id: I41
+    name: scheduled payouts use slots 9/13/17/21 IST within 3 months and are dispatched only by the cron; still-pending at slot -> rejected
+    prod_enforced: yes
+    source: payouts schedule.go:23,55; core.go:2772-2867; repo.go:164-183
+    verifier: V24b
+  - id: I42
+    name: on-hold payouts past merchant SLA are failed by the bene-bank cron; partner-bank downtime from FTS notify puts Direct payouts on hold
+    prod_enforced: yes
+    source: payouts onHoldHelper.go:117-153,309-341; internal_routes.go:11-22
+    verifier: NEW
+
+  # ---- approval ----------------------------------------------------------------
+  - id: I50
+    name: workflow-applicable creates enter pending only via non-Private auth when skip_approval_workflow_for_api is set; WFS Create failure fails the create (400)
+    prod_enforced: yes
+    source: payouts processor/baseHelper.go:107-193, base.go:285-289
+    verifier: NEW
+  - id: I51
+    name: approve/reject callbacks to PS are Basic-auth only, accept 200/201/409 as success on the WFS side, and rejection moves pending -> rejected with payout.rejected webhook
+    prod_enforced: yes
+    source: payouts/pkg/workflow/workflow_create.go:264-338; payout_internal_routes.go:71-79
+    verifier: NEW
+  - id: I52
+    name: no expiry callback ever fires from WFS; 3-month auto-cancel is monolith-side (PENDING -> rejected, QUEUED -> failed)
+    prod_enforced: yes (as an absence)
+    source: workflows approval/workflow.go (no timer); api Core.php:4482-4525
+    verifier: NEW (document, negative test)
+
+  # ---- tenant / auth -------------------------------------------------------------
+  - id: I60
+    name: merchant identity comes from passport consumer (private) or impersonation.Consumer (proxy/privilege); header x-merchant-id only as fallback; a valid passport with a conflicting header wins silently
+    prod_enforced: yes
+    source: payouts/internal/auth/authHelper.go:12-25,173-208; request_context.go:47-75
+    verifier: V20 (fetch half) + NEW
+  - id: I61
+    name: another merchant's passport cannot fetch or cancel a payout; but PS approve/reject internal routes have no tenant check beyond Basic auth (RejectPendingPayout uses unscoped FindByID)
+    prod_enforced: partial
+    source: payouts payout_internal_routes.go:12-18,71-79; lane 04 §7
+    verifier: V20, NEW (document the unscoped internal route as a production characteristic)
+
+  # ---- status propagation ---------------------------------------------------------
+  - id: I70
+    name: exactly one of {Kafka, direct PS, legacy monolith webhook} fires per transfer status change; legacy webhook retries 3 x 200 s then abandons without DLQ
+    prod_enforced: yes
+    source: fts/internal/transfer/service.go:1071-1275
+    verifier: "V16 (redefine: lost callback via PS_RELAY_MODE=drop -> payout stays initiated with no repair, matching production), NEW for Kafka leg; M1 adds kafka_scenarios.py shared_source_failure/direct_after_shared (EF-001)"
+  - id: I71
+    name: PS Kafka consumer drops reversed/failed messages and republishes other failures to the retry topic keyed by source_id
+    prod_enforced: yes
+    source: payouts/internal/taskHandlers/fts_status_updates.go:56-113
+    verifier: "kafka_scenarios.py failed_dropped_direct/failed_dropped_shared/reversed_dropped_direct (real FTS-published FAILED/REVERSED over Kafka; expected failure EF-002/EF-003)"
+  - id: I72
+    name: the monolith relay sends details before status and never retries; unknown FTA status produces no PS call
+    prod_enforced: yes
+    source: api Attempt/Core.php:487-560,835-875; Payout/Core.php:1054-1057
+    verifier: NEW
+
+  # ---- repair / observability ---------------------------------------------------------
+  - id: I80
+    name: no production job repairs or monitors initiated payouts; ManualAction has exactly 3 cases; stuck-initiated alerts are dead (label mismatch)
+    prod_enforced: yes (absence)
+    source: payouts adminClientController.go:267-356; core.go:9891-10467; alert-rules payouts_rules.yaml:2222-2269; metric.go:1014-1021
+    verifier: "V16 (stronger than production: drives all 8 cron routes and asserts no repair), V23/V22 fault hooks NEW"
+  - id: I81
+    name: FTS retry after FAILED is gated by XAS statement presence (debit-only -> refuse)
+    prod_enforced: yes
+    source: fts/internal/transfer/retry_preprocessor_service.go:226-308
+    verifier: NEW (needs XAS substitute)
+  - id: I82
+    name: a bank return credit matched by XAS turns a failed payout into reversed via banking_account_statement/payout_update
+    prod_enforced: yes
+    source: api Core.php:10286-10379; payouts core.go:7203-7395
+    verifier: NEW (needs XAS substitute + monolith-stub route)
+
+  # ---- fees --------------------------------------------------------------------------------
+  - id: I90
+    name: fees/tax come from monolith fetch_pricing_info (or Redis-cached rule) keyed by merchant, balance, channel, method, mode, amount slab, fee_type; free_payout -> 0; pricing failure fails the create
+    prod_enforced: yes
+    source: payouts processor/payout_pricing.go:138-355; api Validator.php:666-679
+    verifier: NEW (per-mode fee assertions)
+
+  # ---- safety (twin-only) ------------------------------------------------------------------
+  - id: S01
+    name: no packet leaves the arena; no real Razorpay hostname in generated config; no credentials in images
+    prod_enforced: n/a
+    source: ENV2_COMPOSE/preflight/preflight.py; network/egress-audit.sh
+    verifier: SAFETY_PREFLIGHT.md, EGRESS_AUDIT.md

@@ -1,0 +1,2857 @@
+{
+  "blockers": [],
+  "check_details": {
+    "declared_deviations_present": {
+      "artifacts": [
+        "ENV2_COMPOSE/config/declared-deviations.yaml"
+      ],
+      "observed": {
+        "count": 76
+      },
+      "passed": true,
+      "reason": null
+    },
+    "egress_same_window": {
+      "artifacts": [
+        "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/egress.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/egress.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/egress.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/egress.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/egress.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/egress.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/egress.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/egress.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/egress.json"
+      ],
+      "observed": {
+        "final_bank": {
+          "command_exit_code": 0,
+          "dropped": {
+            "control": 0,
+            "outside": 0
+          },
+          "outside_packets": 0,
+          "scenario_events": 32,
+          "status": "passed",
+          "window": {
+            "command": [
+              "2026-09-05T16:56:23.171680+00:00",
+              "2026-09-05T16:57:26.468355+00:00"
+            ],
+            "earliest_event": "bank-effects.json.started_at",
+            "latest_event": "bank-effects.json.finished_at"
+          }
+        },
+        "final_golden": {
+          "command_exit_code": 0,
+          "dropped": {
+            "control": 0,
+            "outside": 0
+          },
+          "outside_packets": 0,
+          "scenario_events": 8,
+          "status": "passed",
+          "window": {
+            "command": [
+              "2026-09-05T16:57:34.780283+00:00",
+              "2026-09-05T16:57:38.006933+00:00"
+            ],
+            "earliest_event": "live-result.json.started_at",
+            "latest_event": "live-golden-shared.jsonl.last"
+          }
+        },
+        "final_route": {
+          "command_exit_code": 0,
+          "dropped": {
+            "control": 0,
+            "outside": 0
+          },
+          "outside_packets": 0,
+          "scenario_events": 12,
+          "status": "passed",
+          "window": {
+            "command": [
+              "2026-09-05T16:56:09.916540+00:00",
+              "2026-09-05T16:56:21.552534+00:00"
+            ],
+            "earliest_event": "route-direct_success.jsonl.first",
+            "latest_event": "route-failed_shared.jsonl.last"
+          }
+        },
+        "profile_direct_golden": {
+          "command_exit_code": 0,
+          "dropped": {
+            "control": 0,
+            "outside": 0
+          },
+          "outside_packets": 0,
+          "scenario_events": 8,
+          "status": "passed",
+          "window": {
+            "command": [
+              "2026-09-05T17:01:25.256223+00:00",
+              "2026-09-05T17:01:28.578398+00:00"
+            ],
+            "earliest_event": "live-result.json.started_at",
+            "latest_event": "live-golden-shared.jsonl.last"
+          }
+        },
+        "profile_kafka/golden-shared": {
+          "command_exit_code": 1,
+          "dropped": {
+            "control": 0,
+            "outside": 0
+          },
+          "expected_failure_exit": true,
+          "outside_packets": 0,
+          "scenario_events": 8,
+          "status": "passed",
+          "window": {
+            "command": [
+              "2026-09-05T17:06:16.989034+00:00",
+              "2026-09-05T17:07:03.478361+00:00"
+            ],
+            "earliest_event": "live-result.json.started_at",
+            "latest_event": "live-golden-shared.jsonl.last"
+          }
+        },
+        "profile_kafka/kafka": {
+          "command_exit_code": 0,
+          "dropped": {
+            "control": 0,
+            "outside": 0
+          },
+          "outside_packets": 0,
+          "scenario_events": 10,
+          "status": "passed",
+          "window": {
+            "command": [
+              "2026-09-05T17:07:08.099935+00:00",
+              "2026-09-05T17:09:00.227804+00:00"
+            ],
+            "earliest_event": "kafka-shared_source_failure.jsonl.first",
+            "latest_event": "kafka-reversed_dropped_direct.jsonl.last"
+          }
+        },
+        "profile_mixed_golden": {
+          "command_exit_code": 0,
+          "dropped": {
+            "control": 0,
+            "outside": 0
+          },
+          "outside_packets": 0,
+          "scenario_events": 8,
+          "status": "passed",
+          "window": {
+            "command": [
+              "2026-09-05T17:02:46.601509+00:00",
+              "2026-09-05T17:02:49.909235+00:00"
+            ],
+            "earliest_event": "live-result.json.started_at",
+            "latest_event": "live-golden-shared.jsonl.last"
+          }
+        },
+        "replay_a/full": {
+          "command_exit_code": 0,
+          "dropped": {
+            "control": 0,
+            "outside": 0
+          },
+          "outside_packets": 0,
+          "scenario_events": 54,
+          "status": "passed",
+          "window": {
+            "command": [
+              "2026-09-05T16:55:14.605798+00:00",
+              "2026-09-05T16:56:05.619606+00:00"
+            ],
+            "earliest_event": "junit.start",
+            "latest_event": "junit.end"
+          }
+        },
+        "replay_b/full": {
+          "command_exit_code": 0,
+          "dropped": {
+            "control": 0,
+            "outside": 0
+          },
+          "outside_packets": 0,
+          "scenario_events": 54,
+          "status": "passed",
+          "window": {
+            "command": [
+              "2026-09-05T16:59:18.688923+00:00",
+              "2026-09-05T17:00:09.662703+00:00"
+            ],
+            "earliest_event": "junit.start",
+            "latest_event": "junit.end"
+          }
+        }
+      },
+      "passed": true,
+      "reason": null
+    },
+    "empty_volume_boot": {
+      "artifacts": [
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/down.exit",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/down.log",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/up.exit",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/up.log",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-b/down.exit",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-b/down.log",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-b/up.exit",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-b/up.log"
+      ],
+      "observed": {
+        "replay_a": {
+          "config_generated": true,
+          "down_exit": "0",
+          "fixture_files_generated": 18,
+          "up_exit": "0"
+        },
+        "replay_b": {
+          "config_generated": true,
+          "down_exit": "0",
+          "fixture_files_generated": 18,
+          "up_exit": "0"
+        }
+      },
+      "passed": true,
+      "reason": null
+    },
+    "explorer_saved_and_live": {
+      "artifacts": [
+        "reports/implementation/explorer-final-saved-verification.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/live-result.json"
+      ],
+      "observed": {
+        "live_result": {
+          "passed": true,
+          "route_profile": "monolith",
+          "status": "passed"
+        },
+        "saved": {
+          "live_server": {
+            "activation": "DOM click on the existing saved-trace button; earlier native browser click commands reported success without activating it",
+            "payout_visible": true,
+            "services_ready": true,
+            "url": "http://127.0.0.1:18765",
+            "verified_steps": 5
+          },
+          "saved_status": "passed",
+          "static": {
+            "activation": "browser button click",
+            "live_action_disabled": true,
+            "payout_visible": true,
+            "url": "http://127.0.0.1:18766",
+            "verified_steps": 5
+          }
+        }
+      },
+      "passed": true,
+      "reason": null
+    },
+    "fixed_twin_defects_recorded": {
+      "artifacts": [
+        "reports/implementation/fixed-twin-defects.json"
+      ],
+      "observed": {
+        "count": 3,
+        "ids": [
+          "FD-001",
+          "FD-002",
+          "FD-003"
+        ]
+      },
+      "passed": true,
+      "reason": null
+    },
+    "fresh_build": {
+      "artifacts": [
+        ".local/twin-repos/build-evidence-20260905T160213Z/build-results.json",
+        ".local/twin-repos/build-evidence-20260905T160213Z/cfa-asset-readability.json",
+        ".local/twin-repos/build-evidence-20260905T160213Z/payouts-asset-readability.json",
+        ".local/twin-repos/build-evidence-20260905T160213Z/post-build-verification.json",
+        ".local/twin-repos/build-evidence-20260905T160213Z/provenance.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/arena-fingerprint.json"
+      ],
+      "observed": {
+        "build_tag": "v1-candidate",
+        "built_services": [
+          "cfa",
+          "fts",
+          "ledger",
+          "payouts",
+          "xbalances"
+        ],
+        "image_mismatches": {},
+        "provenance_commits": {
+          "cfa": "d488558e162c08e9fa04dff005f27d846ce88ad2",
+          "fts": "2a09e763116db47a2f28553c677ad73ef8133ebf",
+          "ledger": "471ff4d5321b6b99a7965882d18f572a1adf5194",
+          "payouts": "4bf3dbf9239feadea6d65ca90c893a988e116173",
+          "x-balances": "1a21c0f9111da14125d839dc0dfe8d980740f207"
+        },
+        "provenance_status": "prepared",
+        "source_clones_unchanged": 5
+      },
+      "passed": true,
+      "reason": null
+    },
+    "logical_replay": {
+      "artifacts": [
+        "reports/implementation/logical-replay-m1.json"
+      ],
+      "observed": {
+        "differences": 0,
+        "independent_directories": true,
+        "input_directories": {
+          "first": "/Users/rana.singh/rzp-payouts-architecture/reports/implementation/runs/m1-20260905T165255Z/replay-a/full",
+          "second": "/Users/rana.singh/rzp-payouts-architecture/reports/implementation/runs/m1-20260905T165255Z/replay-b/full"
+        },
+        "status": "passed"
+      },
+      "passed": true,
+      "reason": null
+    },
+    "no_unexplained_results": {
+      "artifacts": [],
+      "observed": {
+        "count": 0
+      },
+      "passed": true,
+      "reason": null
+    },
+    "resource_profile": {
+      "artifacts": [
+        "reports/implementation/resource-profile-m1.json"
+      ],
+      "observed": {
+        "full_verifier": {
+          "disk_gib": 4.421502026729286,
+          "observed": true,
+          "peak_cpu_cores": 1.2074,
+          "peak_memory_gib": 4.1313720703125,
+          "sample_count": 16
+        },
+        "idle": {
+          "disk_gib": 4.356257230974734,
+          "observed": true,
+          "peak_cpu_cores": 1.0215,
+          "peak_memory_gib": 4.1059052734375,
+          "sample_count": 20
+        },
+        "successful_payout": {
+          "disk_gib": 4.372242645360529,
+          "observed": true,
+          "peak_cpu_cores": 1.0815,
+          "peak_memory_gib": 4.0271435546875,
+          "sample_count": 2
+        }
+      },
+      "passed": true,
+      "reason": null
+    },
+    "route_fidelity": {
+      "artifacts": [
+        "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/live-result.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/route-evidence.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/live-result.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/route-evidence.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-direct_after_shared.jsonl",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-failed_dropped_direct.jsonl",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-failed_dropped_shared.jsonl",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-reversed_dropped_direct.jsonl",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-direct_after_shared.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_direct.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_shared.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-reversed_dropped_direct.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/live-result.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/route-evidence.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-ambiguous_with_utr.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-ambiguous_without_utr.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-delayed_success.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-duplicate.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-hold.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-timeout.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/live-result.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/route-evidence.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-direct_success.jsonl",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-direct_success.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-failed_direct.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-failed_shared.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-queued.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-returned.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-scheduled.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-failed_direct.jsonl",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-failed_shared.jsonl",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-queued.jsonl",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-returned.jsonl",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-scheduled.jsonl"
+      ],
+      "observed": {
+        "profiles": [
+          "direct",
+          "direct-create-monolith-status",
+          "kafka",
+          "monolith"
+        ],
+        "scenarios_evaluated": 20
+      },
+      "passed": true,
+      "reason": null
+    },
+    "runtime_endpoint_audit": {
+      "artifacts": [
+        "reports/implementation/audits/m1-current-boot-20260905T165742Z/audit-summary.json",
+        "reports/implementation/audits/m1-current-boot-20260905T165742Z/logical-store-secret-scan.json",
+        "reports/implementation/audits/m1-current-boot-20260905T165742Z/remaining-volume-secret-scan.json",
+        "reports/implementation/audits/m1-current-boot-20260905T165742Z/secret-and-endpoint-audit.json"
+      ],
+      "observed": {
+        "audit_status": "passed_with_caveats",
+        "boot_identity": "matches replay_a boot 2d075c68-f680-4556-9b5d-d2b17315e4cb on 65 services",
+        "current_boot.py": {
+          "status": "passed_with_caveats",
+          "unresolved_findings": 0
+        }
+      },
+      "passed": true,
+      "reason": null
+    },
+    "secret_scan": {
+      "artifacts": [
+        "reports/implementation/audits/m1-current-boot-20260905T165742Z/audit-summary.json",
+        "reports/implementation/audits/m1-current-boot-20260905T165742Z/logical-store-secret-scan.json",
+        "reports/implementation/audits/m1-current-boot-20260905T165742Z/remaining-volume-secret-scan.json",
+        "reports/implementation/audits/m1-current-boot-20260905T165742Z/secret-and-endpoint-audit.json"
+      ],
+      "observed": {
+        "audit_status": "passed_with_caveats",
+        "boot_identity": "matches replay_a boot 2d075c68-f680-4556-9b5d-d2b17315e4cb on 65 services",
+        "logical_stores.py": {
+          "status": "passed_with_caveats",
+          "unresolved_findings": 0
+        },
+        "remaining_volumes.py": {
+          "status": "passed_with_caveats",
+          "unresolved_findings": 0
+        }
+      },
+      "passed": true,
+      "reason": null
+    },
+    "staleness": {
+      "artifacts": [
+        "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/arena-fingerprint.json",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/arena-fingerprint.json"
+      ],
+      "observed": {
+        "boot_identity": "matches replay_a boot 2d075c68-f680-4556-9b5d-d2b17315e4cb on 65 services",
+        "boots": {
+          "final_bank": {
+            "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+            "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+            "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+            "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/arena-fingerprint.json",
+            "route_profile": "monolith"
+          },
+          "final_golden": {
+            "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+            "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+            "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+            "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/arena-fingerprint.json",
+            "route_profile": "monolith"
+          },
+          "final_route": {
+            "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+            "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+            "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+            "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/arena-fingerprint.json",
+            "route_profile": "monolith"
+          },
+          "profile_direct_golden": {
+            "boot_id": "12f8246a-947c-4b25-a615-c4598352f9cd",
+            "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+            "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+            "path": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/arena-fingerprint.json",
+            "route_profile": "direct"
+          },
+          "profile_kafka": {
+            "boot_id": "173ddb6f-b01e-447c-9ccc-9ca7b251aa17",
+            "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+            "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+            "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/arena-fingerprint.json",
+            "route_profile": "kafka"
+          },
+          "profile_mixed_golden": {
+            "boot_id": "98a377a2-93fe-42f3-bd32-eb63c05fbb8a",
+            "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+            "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+            "path": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/arena-fingerprint.json",
+            "route_profile": "direct-create-monolith-status"
+          },
+          "replay_a": {
+            "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+            "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+            "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+            "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/arena-fingerprint.json",
+            "route_profile": "monolith"
+          },
+          "replay_b": {
+            "boot_id": "6000c5c3-0b85-41b2-92cf-b8aa03f80e36",
+            "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+            "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+            "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/arena-fingerprint.json",
+            "route_profile": "monolith"
+          }
+        },
+        "current_config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "mismatched_files": {}
+      },
+      "passed": true,
+      "reason": null
+    },
+    "verifier_suite": {
+      "artifacts": [
+        "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/junit.xml",
+        "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/junit.xml"
+      ],
+      "observed": {
+        "replay_a": {
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0,
+          "tests": 26
+        },
+        "replay_b": {
+          "errors": 0,
+          "failures": 0,
+          "skipped": 0,
+          "tests": 26
+        }
+      },
+      "passed": true,
+      "reason": null
+    }
+  },
+  "checks": {
+    "declared_deviations_present": true,
+    "egress_same_window": true,
+    "empty_volume_boot": true,
+    "explorer_saved_and_live": true,
+    "fixed_twin_defects_recorded": true,
+    "fresh_build": true,
+    "logical_replay": true,
+    "no_unexplained_results": true,
+    "resource_profile": true,
+    "route_fidelity": true,
+    "runtime_endpoint_audit": true,
+    "secret_scan": true,
+    "staleness": true,
+    "verifier_suite": true
+  },
+  "current_tree": {
+    "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+    "config_files_hashed": 122,
+    "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461"
+  },
+  "declared_deviations": {
+    "count": 76,
+    "entries": [
+      {
+        "fix_ref": "ENV2_COMPOSE/substitutes/ledger-gate/server.py; ENV2_COMPOSE/substitutes/ledger-gate/CONTRACT.md; ENV2_COMPOSE/substitutes/ledger-gate/test_contract.py",
+        "id": "DEV-001",
+        "location": "ENV2_COMPOSE/substitutes/ledger-gate/server.py:forward_headers",
+        "status": "fixed_in_m1"
+      },
+      {
+        "fix_ref": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml",
+        "id": "DEV-002",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml:[mutex].ttl",
+        "status": "fixed_in_m1"
+      },
+      {
+        "fix_ref": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml [features].ikey_auto_enforcement",
+        "id": "DEV-003",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[features].ikey_auto_enforcement",
+        "status": "fixed_in_m1"
+      },
+      {
+        "fix_ref": "ENV2_COMPOSE/build/build-host.sh",
+        "id": "DEV-004",
+        "location": "ENV2_COMPOSE/build/build-host.sh:stage_assets_payouts",
+        "status": "fixed_in_m1"
+      },
+      {
+        "fix_ref": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml [kafka_producer].Brokers",
+        "id": "DEV-005",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[kafka_producer].Brokers",
+        "status": "fixed_in_m1"
+      },
+      {
+        "fix_ref": "ENV2_COMPOSE/config/routes.py",
+        "id": "DEV-006",
+        "location": "ENV2_COMPOSE/config/routes.py:53 -- payouts_service.update_fts_fund_transfer.TIMEOUT",
+        "status": "fixed_in_m1"
+      },
+      {
+        "fix_ref": "ENV2_COMPOSE/docker-compose.yml",
+        "id": "DEV-007",
+        "location": "ENV2_COMPOSE/docker-compose.yml -- payouts kafka consumer services",
+        "status": "fixed_in_m1"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-010",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml -- all *.host / *.url / *.brokers / db.*.url / queue.sqs.prefix keys",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-011",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml -- all auth/username/password/key/cert keys",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-012",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[mozart.httpclient.resiliency].circuitbreakertimeout",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-013",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[account_service.httpclient.resiliency].circuitbreakertimeout",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-014",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[events].enabled",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-015",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[ccsdk].mock",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-016",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[wda].mock and [elasticsearch].Mock",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-017",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[dcs].Mock",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-018",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[api_internal_ingress_feature].enable",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-019",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[features].forward_dual_write, reverse_dual_write, skip_ca_dual_write",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-020",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[features].db_route_label_enabled and source_updater_sns_enabled",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-021",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[source_update_topics] (7 keys)",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-022",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[kafka_producer].MaxRetry, [kafka_consumers.status_update_retry_consumer.config].RetryBackoff, kafka_*.EnableTLS",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-023",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml -- db.master/replica.connectionMaxLifetime, maxIdleConnections, cfa.maxIdleConnections, raven timeouts, app.shutdownDelay/shutdownTimeout",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-024",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[job] (19 SQS queue names)",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-025",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml:[splitz_experiment_list] (43 ids) and splitz.client_side_eval",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-026",
+        "location": "ENV2_COMPOSE/config/routes.py:44-47 -- configs.fts_request_from_ps.{enabled_env,whitelist_env,blacklist_env}",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-027",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml -- Telemetry.Environment, app.appEnv, worker.name, slack.alerts.environment, log.level, tracing.Enabled, elasticsearch.PayoutDocumentIndex",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-028",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml -- prod-only keys the arena drops: cache.redis.mode, redis.mode, ccsdk.governor.appMode, job.rbl_banking_account_statement, job.x_account_statement_source_event",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-029",
+        "location": "ENV2_COMPOSE/docker-compose.yml -- PAYOUTS_WORKER_MAXCONCURRENCY, PAYOUTS_CONSUMER_MAXCONCURRENCY",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-030",
+        "location": "ENV2_COMPOSE/docker-compose.yml -- APP_MODE env var",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-031",
+        "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml -- db_query_permission.*, es_sync.*, cache_ttl.*, async_job_dispatch_limit.*, redis pool params",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-040",
+        "location": "ENV2_COMPOSE/config/templates/base/fts/env.arena.toml -- all *.URL / *.BASE_URL / database / redis endpoints and every credential",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-041",
+        "location": "ENV2_COMPOSE/config/templates/base/fts/env.arena.toml:158 -- kafka_producers.fire_transfer_status.enabled",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-042",
+        "location": "ENV2_COMPOSE/config/templates/base/fts/env.arena.toml -- webhook.*.transfer_status.URL (9 keys)",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-043",
+        "location": "ENV2_COMPOSE/config/templates/base/fts/env.arena.toml:[razorx].BASE_URL",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-044",
+        "location": "ENV2_COMPOSE/config/templates/base/fts/env.arena.toml:[ledger].BASE_URL",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-045",
+        "location": "ENV2_COMPOSE/config/templates/base/fts/env.arena.toml -- queue.worker_concurrency_map absent",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-046",
+        "location": "ENV2_COMPOSE/config/templates/base/fts/env.arena.toml -- 202 prod-only keys undeclared",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-047",
+        "location": "ENV2_COMPOSE/docker-compose.yml -- fts-web entrypoint",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-048",
+        "location": "ENV2_COMPOSE/config/templates/base/fts/env.arena.toml -- 31 splitz.experiments.* ids",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-060",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml -- all host/url/queue endpoints and every credential",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-061",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml:[app].appMode",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-062",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml:[authz].mock and [splitz].mock and [apiService].mock",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-063",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml:[splitAccount]",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-064",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml:[splitAccount].mutexTTL, cacheTTL, pgBatchSize",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-065",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml:[mutex.mutex].scope",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-066",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml -- db.pg.cache.isEnabled, db.rx.cache.isEnabled, db.makeshift.cache.isEnabled, db.enableTrafficSplit",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-067",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml -- 51 prod-only keys: the whole db.pg.reader, db.rx.reader and db.rx.warm blocks",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-068",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml:[outboxJob].useOutboxJobsSync",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-069",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml:[queue].driver and pubSub/snsOutboxer journal_created drivers",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-070",
+        "location": "ENV2_COMPOSE/docker-compose.yml LEDGER_WORKER_MAXCONCURRENCY and arena.toml [worker].maxconcurrency, retrydelay",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-071",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/arena.toml -- elasticache.clusterMode, db.*.ConnectionPoolConfig, db.*.writer.debug, sentry.enabled, tracing.enabled, events.kafka.topic/enableTls/debugEnabled, slack.mock, pagerDuty.mock",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-072",
+        "location": "ENV2_COMPOSE/config/templates/base/ledger/default.toml:6,474,493",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-080",
+        "location": "ENV2_COMPOSE/config/templates/base/xbalances/arena.toml -- all endpoints and credentials",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-081",
+        "location": "ENV2_COMPOSE/config/templates/base/xbalances/arena.toml:[Queue].Driver",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-082",
+        "location": "ENV2_COMPOSE/config/templates/base/xbalances/arena.toml -- PayoutService.Mock, APIService.Mock, AccountServiceConfig.Mock, BankingAccountsConfig.Mock, MozartConfig.Mock, DCSConfig.Mock",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-083",
+        "location": "ENV2_COMPOSE/config/templates/base/xbalances/arena.toml:[Server.ServerAddresses].Grpc",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-084",
+        "location": "ENV2_COMPOSE/config/templates/base/xbalances/arena.toml -- Worker.MaxConcurrency, Worker.Name, Worker.Sync, MozartConfig.ConnPoolConfig.Timeout, App.Env, AccountServiceConfig.LogResponse, and dropped prod-only keys",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-090",
+        "location": "ENV2_COMPOSE/config/templates/base/cfa/arena.toml -- all endpoints and credentials",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-091",
+        "location": "ENV2_COMPOSE/config/templates/base/cfa/arena.toml:[FundAccountFetchMultiple].enable_cfa_db, enable_tidb",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-092",
+        "location": "ENV2_COMPOSE/config/templates/base/cfa/arena.toml -- ElasticSearch.Enabled/Mock, Dcs.mock, Wda.mock, VaultService.Mock, BinService.Mock, ApiService.Mock",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-093",
+        "location": "ENV2_COMPOSE/config/templates/base/cfa/arena.toml -- EventSystem.QueueConfigs.fund_account.default, Store.MongoDB.Port, Queue.Sqs.MaxRetries/VisibilityTimeout/WaitTimeout, Httpclient timeouts, FundAccountValidation.use_relaxed_beneficiary_name_regex",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-094",
+        "location": "ENV2_COMPOSE/build/cfa-entry.sh",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-120",
+        "location": "payouts/pkg/dcs/client.go:54-57; cfa/internal/dcsservice/client.go:72-75; x-balances/pkg/dcs/client.go:47-50; plus a one-line GetContextUrl patch in three goutils/dcs module copies",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-121",
+        "location": "payouts/pkg/stork/client.go:107-110",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-122",
+        "location": "payouts/go.mod, cfa/go.mod, x-balances/go.mod -- replace directives to the local goutils/dcs copy",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-123",
+        "location": "fts/internal/providers/encryption/sign.go:24; ledger/pkg/idempotency/idempotency/repo.go:44",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-124",
+        "location": "ledger generated RPC code (19 .pb.go / .twirp.go files) and internal/database/migrations",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-125",
+        "location": "ENV2_COMPOSE/build/runtime-only.Dockerfile; ENV2_COMPOSE/build/build-host.sh",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-126",
+        "location": "ENV2_COMPOSE/docker-compose.yml -- payouts entrypoint",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-127",
+        "location": "ENV2_COMPOSE/docker-compose.yml x-proxy-env anchor -- HTTP_PROXY, HTTPS_PROXY, NO_PROXY",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-128",
+        "location": "ENV2_COMPOSE/build/build-host.sh:92-95",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-129",
+        "location": "ENV2_COMPOSE/config/generate.py:276-284 sanitizer, applied to config/templates/base/fts/env.default.toml",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-140",
+        "location": "ENV2_COMPOSE/seeds/mysql/apidb-ddl/00_init.sql:192-195 -- features.name",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-141",
+        "location": "ENV2_COMPOSE/seeds/schema-patches/payouts.sql:6-8 -- payout_details.beneficiary_bank_code",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-142",
+        "location": "ENV2_COMPOSE/seeds/mysql/apidb-ddl/00_init.sql:14-16,118,261-296",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-150",
+        "location": "ENV2_COMPOSE/substitutes/monolith-stub/server.py -- no Kafka consumer",
+        "status": "declared"
+      },
+      {
+        "fix_ref": "",
+        "id": "DEV-151",
+        "location": "ENV2_COMPOSE/substitutes/ -- monolith-stub, asv-stub, bankingaccounts-stub, shield-stub, splitz-stub, stork-capture, mozart-sim, dcs-stub, kong-lite, xas-sink, merchant-webhook-sink",
+        "status": "declared"
+      }
+    ],
+    "source": "ENV2_COMPOSE/config/declared-deviations.yaml"
+  },
+  "evidence_files": [
+    {
+      "path": ".local/twin-repos/build-evidence-20260905T160213Z/build-results.json",
+      "sha256": "0cf47d8e081e155408aa3b9003f835bd812a26546170442d70ce67c6ff6bcb89"
+    },
+    {
+      "path": ".local/twin-repos/build-evidence-20260905T160213Z/cfa-asset-readability.json",
+      "sha256": "2039a0ee4ee191169ab1854fd3b5acc3826957a20bd54bc256e0583d8ace25d0"
+    },
+    {
+      "path": ".local/twin-repos/build-evidence-20260905T160213Z/payouts-asset-readability.json",
+      "sha256": "fa9ff0f2082f76ac77f9be122b44b79cc14f80704a33825a84b46bd8cb077dc8"
+    },
+    {
+      "path": ".local/twin-repos/build-evidence-20260905T160213Z/post-build-verification.json",
+      "sha256": "058c629616093e74f03dfd401faf6178f8e63d2d10049d9e3023887178e01ec8"
+    },
+    {
+      "path": ".local/twin-repos/build-evidence-20260905T160213Z/provenance.json",
+      "sha256": "8f89ecf1a9bde31f40a3db7ef9b8fb35c6f750c0f0ed1d24688689b395110fce"
+    },
+    {
+      "path": "ENV2_COMPOSE/config/declared-deviations.yaml",
+      "sha256": "1b2d4705598c9f3e5668f0142fa41294574ecd4b1eb5520b9e61374a9268ee72"
+    },
+    {
+      "path": "TWIN_SPEC/expected-failures.yaml",
+      "sha256": "0d842952df54fdfea0c8b5be9a10528af05ad5e0abbb9680ece1b93c8a8fc32f"
+    },
+    {
+      "path": "reports/implementation/audits/m1-current-boot-20260905T165742Z/audit-summary.json",
+      "sha256": "a7bd70547854ad7868ed4491093c7d535926efb56029acfb80fa3384953d7fcc"
+    },
+    {
+      "path": "reports/implementation/audits/m1-current-boot-20260905T165742Z/logical-store-secret-scan.json",
+      "sha256": "158c0e6507a3357b224afc88bccd6e8f72244c04e0a8f640ad1029db3f8010ec"
+    },
+    {
+      "path": "reports/implementation/audits/m1-current-boot-20260905T165742Z/remaining-volume-secret-scan.json",
+      "sha256": "f054e551ea5bf8034f8263d5d969a3c967c08c8460db2baace954e33067ff654"
+    },
+    {
+      "path": "reports/implementation/audits/m1-current-boot-20260905T165742Z/secret-and-endpoint-audit.json",
+      "sha256": "ff699e05e8b1eb1d4597f017a96e64a673e5662a332ef993a4a4bada5d506dfb"
+    },
+    {
+      "path": "reports/implementation/explorer-final-saved-verification.json",
+      "sha256": "16f003b8a0847715f15f056fb9d38079e3d168fd12397031cae2a11532d570fd"
+    },
+    {
+      "path": "reports/implementation/fixed-twin-defects.json",
+      "sha256": "641dbb0fdb58656e7a2751d9d6c10ebe4846e71a94f560d88cf632dc021d0c4e"
+    },
+    {
+      "path": "reports/implementation/logical-replay-m1.json",
+      "sha256": "6628191412fe55c712603b39e989ad5df783091fff4d86e7f1f35f11147a7fe1"
+    },
+    {
+      "path": "reports/implementation/resource-profile-m1.json",
+      "sha256": "5f0b8d7b7ee12bc7e6c46f0b21bd42ff8f84274763b64e4d2fbe501fc53f2c23"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/arena-fingerprint.json",
+      "sha256": "6177bbd46c251f5cc5070e68ea33a192cf1d0673db8040e54597b1c255575bab"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/egress.json",
+      "sha256": "7947a7fa4f81d65530ade64d0189469a8f33b9c08851688613afe8d884ce4a6c"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/live-golden-shared.jsonl",
+      "sha256": "faabe43fb31ed3b71d63a78dd618b66901e570f6ce16279292313dd3bbc65f0a"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/live-result.json",
+      "sha256": "8a86422c54c293bf6d9136d5df1044a51301968a752c3b01b5a1383ba46e54ec"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/route-evidence.json",
+      "sha256": "c5ba1fd198115904f643997ce1599927c613f86613c3c9636984ce7217a6daa6"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/arena-fingerprint.json",
+      "sha256": "bd5f3795f51e731e7833326e4fff7a5e13de6943b657b6c06c9f1d95561f3d6e"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/egress.json",
+      "sha256": "ce6ff0b8466252526fa8a3b4f47d31a184a3c128ab8cc618316db4e400609e58"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/live-golden-shared.jsonl",
+      "sha256": "f0fbb05b37e4581b2775d8cf16311889cc7a42b58d4e1743a15d83c35722d23c"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/live-result.json",
+      "sha256": "d2b071c6b1e2e5b90989c3d1b5c0ef676dc46f5e5d6c38998be4d9742444e185"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/route-evidence.json",
+      "sha256": "0d154c8ce2df9f73dbeedcfd5b07d651b78cb9fcde2a4d8d631b114d8ba4bf1c"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/egress.json",
+      "sha256": "e7ecdb9ed889d53b52c822e57c7921555b439058a8d6aae56cf155eb5566b1f2"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-direct_after_shared.jsonl",
+      "sha256": "8764d2e0c5ff3de0a103da595d17000f98be88745aaa0fb9db9588de7a908a0e"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-failed_dropped_direct.jsonl",
+      "sha256": "335f24b6f02ef1e8cb72da5c140c7ac5a98540ad689ff879613da26a91805f48"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-failed_dropped_shared.jsonl",
+      "sha256": "d66030827a89c3f28c34a6f20e1b869a590e083aa16252130a668cd109199a30"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+      "sha256": "fc52fc0255d91822188d86eda2c22e88784100489cce9e10a7e24c445705a74a"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-reversed_dropped_direct.jsonl",
+      "sha256": "1c634e3313dd76e74713b7e13584e8b30bf4cd0c123d8d4fa60390c1c615327b"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-shared_source_failure.jsonl",
+      "sha256": "65e1768fb8d83942dc4af812bfe0e1ca7857a4b3a90ab3495dae10c21de6095a"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-direct_after_shared.json",
+      "sha256": "78ddd9902af628c941ddb46dabad4457a45c6f3e58de535239fffaa5318fcbf8"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_direct.json",
+      "sha256": "f4744088c2d4a6902a5547b311f87d83c3226d70293301fce38f1847cc540513"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_shared.json",
+      "sha256": "7260833b66903b1ba3662b90d510243949a234edc6d5614967ad8afaab7dc50b"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-reversed_dropped_direct.json",
+      "sha256": "5702c6b6644fc10679376788201b5145070e817dff074ffd8a567b666755e912"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/arena-fingerprint.json",
+      "sha256": "e9f48fbcbe2c9a8946b49a651f5a2b0158c949006e2a1882c6e35bd4f7142b3d"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/egress.json",
+      "sha256": "7366fae71a77d1ed0a7f613fb297db17a328f9db592fed63daa7b8f7e89bc95c"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/live-golden-shared.jsonl",
+      "sha256": "107d2680ee049c7170a76145a0760bce3e943a08cf5b59e4831f0cdfc086945d"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/live-result.json",
+      "sha256": "0b94a750aca6c8dad648f8eb31534ceab88d7b97dd8fb387d87093aaac491754"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/route-evidence.json",
+      "sha256": "cf626e86087132158d0a16bc565d7c943ebcd234daec433eb985ad09da630442"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/arena-fingerprint.json",
+      "sha256": "b891cd7254128d46488623246894280bd23a8da18987f81caa3db76ff1c59490"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-ambiguous_with_utr.jsonl",
+      "sha256": "375ad8a23c565b89e474c0cfb98d30db9028015fece7c29642a4dce8ac45d9e7"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-ambiguous_without_utr.jsonl",
+      "sha256": "a18db99aa677eec7ae55e4ef8a8a88eb5e783b85bd8d6d33d00ea1d5dd6e5986"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-delayed_success.jsonl",
+      "sha256": "206281119abe169c16f6d1851bf20eba548ae6b491c2877fca921d22a5d42abb"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-duplicate.jsonl",
+      "sha256": "3f3c9d89ed94e512e8f2a3c282d888a9ee31ce1a093f9c2e490dbace89f62c34"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+      "sha256": "b7705e14e3a6290270e7d63282bc6a7e417fd61325d0b9b1a162956152319cb3"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-hold.jsonl",
+      "sha256": "b2fc55b0c9c537411c5da0efe0c2f1ae1a72426c412fcadf34ec7acc66454714"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-timeout.jsonl",
+      "sha256": "4740f8b326da6e58589e06616d2acd48249bb0bf2aa04a81d1d1da5ae382c8ee"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/egress.json",
+      "sha256": "ba2910a71aadad5839e83c7d8d2b1063c9d04707620dbc93eea92f5afddbb72f"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-ambiguous_with_utr.json",
+      "sha256": "ab0a4295719b7aac38b657c09a74949aa2941b64e7a006942b6696816201e7f4"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-ambiguous_without_utr.json",
+      "sha256": "9b64a86b6e7eafb7626189813170af98722a9c866c0b3f8cb165ecc98d86dc31"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-delayed_success.json",
+      "sha256": "b12edd993c9745181ac508c7a87df33005430f6010f93fcd34f48fbd5ce61a41"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-duplicate.json",
+      "sha256": "da0c963789bb6df27f1e8af041d95fc198e4c6df435c5d5d7e5df8109aa92f32"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-hold.json",
+      "sha256": "db6caffd267c90a8acf742f7f3772a8c9b73cd3d17e73f74d640a6b19c0b0505"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-timeout.json",
+      "sha256": "756df55abddb2fd02ae33d4f6314f4ef3a2dda8a999be4863a61161683b50533"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/down.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/egress.json",
+      "sha256": "b3a62ba6fb30ffb82543c8c16a62d41623f24ec7080208cc4fe10f588d8f19d1"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/junit.xml",
+      "sha256": "75d162b63a6d78c83579dcfa66c9b0029b21b4b236c4c2226a8bd3fdd3842b8f"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_failed_webhook_remaps_differently_by_account_type.jsonl",
+      "sha256": "44df0de9d82b991b6688f9d173342b40b9b4b803112b510f1499e501cf364f71"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_fts_transfer_dedupe_on_source_id_and_type.jsonl",
+      "sha256": "20f532373d18e332de609c5e364a1216e0f2d66076862d34676eb3e15ec717a8"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_idempotent_create_same_key_different_body_rejected.jsonl",
+      "sha256": "e42f78e71fefd496d5218d862379b367454311959c595b451750f3bd03647a5b"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_idempotent_create_same_key_same_body.jsonl",
+      "sha256": "018ead8e615e3f0c88fed5e181d5a7572c4fed4f44a508158d672ec8efd8ac64"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_inflight_reservation_total_equals_live_reservations.jsonl",
+      "sha256": "740ba7630fee9d03610b29fa859972d8603ac9d6b188d7698b8918c07e180a4d"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_insufficient_balance_fails_when_queue_if_low_balance_false.jsonl",
+      "sha256": "ea1b49f6e14400c6cb27d1208662343687a862f002e4633c7e55a1c1c4f43a11"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_insufficient_balance_queues_when_queue_if_low_balance_true.jsonl",
+      "sha256": "b1e00ce29403c335e67b6128fd6032c5b28354276b735c6dcb2a43ab463d3e0d"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_ledger_journal_dedupe_on_transactor_id_and_event.jsonl",
+      "sha256": "aa113bb05c4f0f46ad5ff3c85086493c5cb1a40eb892d704546320e46d3fcab8"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_merchant_balance_debited_synchronously.jsonl",
+      "sha256": "d91fa5292827fb9f2928551442c1ba6f9ec32298d74a622020d659e063a22fca"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_no_illegal_transition_in_payout_logs.jsonl",
+      "sha256": "331e37996178213ca65ec01ca32575f67332ea3460241e8f7679f3e19b09693e"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_other_merchant_cannot_fetch_or_cancel.jsonl",
+      "sha256": "fb4ec5721e4cd0a4f9b5a79347d6a7be67db8dc24385475067193f934f490867"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_payout_failed_direct_account_no_reversal_no_ledger.jsonl",
+      "sha256": "433b04a73d3dac41fdb4d462e7bd97defe3c8620da039e494b45298b51b64c25"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_payout_initiated_journal_sums_to_zero_and_debits_merchant.jsonl",
+      "sha256": "c3427cb8dd4abd2eaa42474b4388d8f1f306b2d3fb733ee48bcfacd30478adc0"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_payout_processed_journal_mirrors_ledger.jsonl",
+      "sha256": "547f85a862041273ec6c03f5e4b801fdf7155449b72af10d2832098935550baf"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_payout_reversed_journal_and_reversal_entity.jsonl",
+      "sha256": "cae350daa28fc0a7caa0b4ac2baa8cee4ac2a36212d2d14d9d900e39642bf74b"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_pricing_500_rejects_payout.jsonl",
+      "sha256": "2a668df3f00a9f81ea551ac50efddc21b38e5e84e9c70a9e0222be2e3dcbdfda"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_queued_low_balance_payout_dequeues_after_topup_and_cron.jsonl",
+      "sha256": "bf4a0400b02344af57c0b67bbfa0710ddbdc6f2bba308a9f930b490a4f1e1298"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_reservation_released_on_terminal_event.jsonl",
+      "sha256": "83d2a1f99d649cbec939c10e33fc018886f85b2f21aa55e7955d60648c698107"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_reversal_row_committed_before_ledger_call_baseline.jsonl",
+      "sha256": "6565292c5e15f82f28d6eddd409e4f1d8db44e2ecc04ab6cfb0b8ec4f43e29d1"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_reversal_survives_ledger_outage_via_async_retry.jsonl",
+      "sha256": "52fcd316a09817e651d0bb8c929f2df54520c15827cc67a67a252fa6273940fd"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_scheduled_payout_dequeues_after_slot_and_cron.jsonl",
+      "sha256": "d656bcb8865992d4a3ec043426febe161d90f1993f498feaae06f9868ff53724"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_shield_timeout_fails_open.jsonl",
+      "sha256": "fb0e5c33e2d15a42b14b6667f2fad99f0b7194cc5304921345cef1e913591990"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_stuck_initiated_payout_has_no_automated_repair.jsonl",
+      "sha256": "021f37e4a179d7332b1a38f2bac053036fa7163153a9e11b4286d19b8c41fa1b"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_terminal_webhook_fires_exactly_once.jsonl",
+      "sha256": "dce9e9861482246f218ebecb0ed771edb7765a3dbbe98726db64ce0ade6e52f0"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_transaction_id_set_blocks_failed_transition.jsonl",
+      "sha256": "177c91d11b2e181610c9372eb19a7dffc92c189e015a4ad40883eb2af1da6510"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full/test_webhook_on_cancelled_payout_is_noop.jsonl",
+      "sha256": "31e808fb3ac2c1265a7a8603a4feb611383ccb73a8d2ee2ba304b0fdf4ff78a4"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/arena-fingerprint.json",
+      "sha256": "b891cd7254128d46488623246894280bd23a8da18987f81caa3db76ff1c59490"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/egress.json",
+      "sha256": "612f7ca8ae3e6a677426ee816f7a1eac1a85bc23c6b22d85faa915cd5a978ecb"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/live-golden-shared.jsonl",
+      "sha256": "773fef877b760cf119d6a1e5ca00f2ad5b1a417eaddcc2f41ff1f7b66de641f1"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/live-result.json",
+      "sha256": "0b306f414cc42da82f8c6c56ca8b10a9af9ce08301f51a6f4eab4a6182bbcd25"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/route-evidence.json",
+      "sha256": "69b863b417c370b5efd949751702452ad6c109a0f5a8eb2b9256093b257fab25"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/arena-fingerprint.json",
+      "sha256": "b891cd7254128d46488623246894280bd23a8da18987f81caa3db76ff1c59490"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/egress.json",
+      "sha256": "31c3d45bddf31a397e47990bc868ae54b15e118fb59224bf8ea185f753ded434"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-direct_success.jsonl",
+      "sha256": "c3127928118998a6f726b3bd3f247d2c1c36ba9b975f7d8847163f45e6fb4354"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-direct_success.json",
+      "sha256": "8821223814f8b6dbd8cda8945162c29b6cba62688d218862d82af6f1471e003f"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-failed_direct.json",
+      "sha256": "df24545a02def137d473867ed713a5c251eeb68fb43c97dd5879a312209bd5bf"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-failed_shared.json",
+      "sha256": "608db98f75fccb7e1fc307085937a9ccca9fd7dc4633ccfcedb880a07f4bd0a1"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-queued.json",
+      "sha256": "f20a9b752c79a3fc613fa18596bffc0ad87101a0adc23fae1eea44eb89c355e3"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-returned.json",
+      "sha256": "1d8878684e5161277f34b2ef7905a246c0381c07ccb13a879d9b3a51aaa22518"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-scheduled.json",
+      "sha256": "c5e2ee97b8cfa634f287a6e812a1d40c6d1e5130299833c6aaf8a9e3ddef2509"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-failed_direct.jsonl",
+      "sha256": "2a6b3c078a2d6509c7a6ba59694eeb11080750457011cc5058a15e30dbd44aeb"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-failed_shared.jsonl",
+      "sha256": "023a9d0378d3dd21783588ff3dff22258a4bf129b9f9e70675ea6019c09a56aa"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-queued.jsonl",
+      "sha256": "aaeeb07014c46c769888896d2eccb32c59eed2c5ad4797b89027eafeefd69d2d"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json",
+      "sha256": "9bbe63025ca942b2dbb56bf570e67a16f87b9e718722e0a9b9714a8b96ab864d"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-returned.jsonl",
+      "sha256": "9042d358bf7cae229e230b3e9da0f891106182bcdb4ddb8986a3987bcc94df14"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-scheduled.jsonl",
+      "sha256": "0be230c1176cbc5e7234cfb4b7b5d45a327f1c4019b3881f844f2a0535162b7b"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/up.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/up.log",
+      "sha256": "d82e346f7f29c5d6bd83599bae243d7b61cfafec634f9b3ddbe9ca448996218d"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/down.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/arena-fingerprint.json",
+      "sha256": "60f7db22dfc5b5e7c1fc3cc9cbd042af82fab2724931843b1670a3e0ba684554"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/egress.json",
+      "sha256": "9c94eb743ca84e6b6bba8b36d677a6c8d0b6956a639a645ab375115aa916a7e6"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/junit.xml",
+      "sha256": "f30b739bb7b24e47fba5f3764380c0de6372c96aee4ba81369d9bc18a8c2de49"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_failed_webhook_remaps_differently_by_account_type.jsonl",
+      "sha256": "6d521f9351a1db7dda71bef0122a165d637d73c77bb17c5b6554d66fc8fe2d4e"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_fts_transfer_dedupe_on_source_id_and_type.jsonl",
+      "sha256": "ec623c25b528accd87e7d875a6369c48fbb4b829f846bb68e0b8f4d50a9af91d"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_idempotent_create_same_key_different_body_rejected.jsonl",
+      "sha256": "af8dd624a0776803fe67dadc4420e1a45372db5b973c9d231f73ce531a740ef5"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_idempotent_create_same_key_same_body.jsonl",
+      "sha256": "e323ef5d9953222475d67860ba0e820205b7579f37c34af537f57831339e371a"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_inflight_reservation_total_equals_live_reservations.jsonl",
+      "sha256": "40795b06083bb31bbd974ea1a0a16d4e6fc55d9113bfc35843241bfd8f1d990a"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_insufficient_balance_fails_when_queue_if_low_balance_false.jsonl",
+      "sha256": "cf36b74761187af0ba6fc8b59b6af077ee60521c452a99c2286369e5cbbadf16"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_insufficient_balance_queues_when_queue_if_low_balance_true.jsonl",
+      "sha256": "84fa19b88998e75a802b0c2b2088f6ba5c87a9d464edc7ee703aae05780f2c19"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_ledger_journal_dedupe_on_transactor_id_and_event.jsonl",
+      "sha256": "e832fccbc689e91cba9c6793045b36e39f2b836a78e18c9f2f70156cf4c4bd33"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_merchant_balance_debited_synchronously.jsonl",
+      "sha256": "468e1bf6e42f5ae58667c6a031e61954617e5bd96ba9fb1ca355634eb9a7cd85"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_no_illegal_transition_in_payout_logs.jsonl",
+      "sha256": "8350589e79893b5822516de39805095a66092796edc7cbb6403283dfcff64ccd"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_other_merchant_cannot_fetch_or_cancel.jsonl",
+      "sha256": "de3656dee63934642ea6277b021f9346f3f6fcc64b437da70be68dc1d007e887"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_payout_failed_direct_account_no_reversal_no_ledger.jsonl",
+      "sha256": "5c3501b5982fda1ed9480d607a0595cde3617c76ec26a06f651cc8e139697b13"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_payout_initiated_journal_sums_to_zero_and_debits_merchant.jsonl",
+      "sha256": "2c5e27295c9fb20fc8012fc48316cd492b2da05f96488aa45f8ed78eb4e3efed"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_payout_processed_journal_mirrors_ledger.jsonl",
+      "sha256": "b5bd9f5aa43388951a7432b703962de66cd991e7f4bc032a575184d0ce0bcb73"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_payout_reversed_journal_and_reversal_entity.jsonl",
+      "sha256": "e02acb0111170a5c45f68b16bf7fcd5393dfeedbc9b2a4af53ab772f51293a10"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_pricing_500_rejects_payout.jsonl",
+      "sha256": "f784be4b231e779298a534c9ad1c23c7a95bf85bb7fc03fe49cb6833341930f5"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_queued_low_balance_payout_dequeues_after_topup_and_cron.jsonl",
+      "sha256": "9ca61ed3ef3885878b5c71c968844f0a137d0cb3f99354518079bb1e7df0aadd"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_reservation_released_on_terminal_event.jsonl",
+      "sha256": "067d47904f541dd3918872fb5e31ba6867347b4c1d10a81a144c9debaaee89f2"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_reversal_row_committed_before_ledger_call_baseline.jsonl",
+      "sha256": "a6251d6b691deb3683bcdcc89163cbc5082ec5292392d5c7a01c535f2e3a531f"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_reversal_survives_ledger_outage_via_async_retry.jsonl",
+      "sha256": "a7aa0f90efe6666efae245abea2c9acd43674f52bdfbbdae2960958d336119e6"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_scheduled_payout_dequeues_after_slot_and_cron.jsonl",
+      "sha256": "6707f3c068b3fcefbb120287dc90b8e95db59e510a3140b917be27ed6a2c1072"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_shield_timeout_fails_open.jsonl",
+      "sha256": "a4276983528d6b60252a9a5f8a5c6cb0e63cb3a6fa238b654ae5684e6bf2c204"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_stuck_initiated_payout_has_no_automated_repair.jsonl",
+      "sha256": "c3b2091c486a28286296dc18db3fcaace2811261e3ab2219770200e47140393d"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_terminal_webhook_fires_exactly_once.jsonl",
+      "sha256": "641a198fc036028d1afa2d6d424d985f70d57d94276c7e55a08f2f70df482f91"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_transaction_id_set_blocks_failed_transition.jsonl",
+      "sha256": "51279223f28470aa72eccf9e5d77f8791fe9abe20b1bd558f8dcace4875c75ac"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/test_webhook_on_cancelled_payout_is_noop.jsonl",
+      "sha256": "4a6e8bb487ac8a2b04bf1afff7466ae1bea81d000ca9a5da1fc2ab22feedd765"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/up.exit",
+      "sha256": "9a271f2a916b0b6ee6cecb2426f0b3206ef074578be55d9bc94f6f3fe3ab86aa"
+    },
+    {
+      "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/up.log",
+      "sha256": "bbc0f5abd1117ef0948c9c6ca59fc4d7ade437167702cd16ed3f9b6d6249a61c"
+    }
+  ],
+  "executed": {
+    "boots": {
+      "final_bank": {
+        "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/arena-fingerprint.json",
+        "route_profile": "monolith"
+      },
+      "final_golden": {
+        "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/arena-fingerprint.json",
+        "route_profile": "monolith"
+      },
+      "final_route": {
+        "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/arena-fingerprint.json",
+        "route_profile": "monolith"
+      },
+      "profile_direct_golden": {
+        "boot_id": "12f8246a-947c-4b25-a615-c4598352f9cd",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/arena-fingerprint.json",
+        "route_profile": "direct"
+      },
+      "profile_kafka": {
+        "boot_id": "173ddb6f-b01e-447c-9ccc-9ca7b251aa17",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/arena-fingerprint.json",
+        "route_profile": "kafka"
+      },
+      "profile_mixed_golden": {
+        "boot_id": "98a377a2-93fe-42f3-bd32-eb63c05fbb8a",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/arena-fingerprint.json",
+        "route_profile": "direct-create-monolith-status"
+      },
+      "replay_a": {
+        "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/arena-fingerprint.json",
+        "route_profile": "monolith"
+      },
+      "replay_b": {
+        "boot_id": "6000c5c3-0b85-41b2-92cf-b8aa03f80e36",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/arena-fingerprint.json",
+        "route_profile": "monolith"
+      }
+    },
+    "route_profiles": [
+      "direct",
+      "direct-create-monolith-status",
+      "kafka",
+      "monolith"
+    ],
+    "scenarios": [
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario": "direct_success",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario": "scheduled",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario": "queued",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario": "returned",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario": "failed_direct",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario": "failed_shared",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario": "hold",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario": "delayed_success",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario": "ambiguous_with_utr",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario": "ambiguous_without_utr",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario": "duplicate",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario": "timeout",
+        "status": "passed"
+      },
+      {
+        "profile": "monolith",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden",
+        "scenario": "golden",
+        "status": "passed"
+      },
+      {
+        "profile": "direct",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden",
+        "scenario": "golden",
+        "status": "passed"
+      },
+      {
+        "profile": "direct-create-monolith-status",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden",
+        "scenario": "golden",
+        "status": "passed"
+      },
+      {
+        "profile": "kafka",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared",
+        "scenario": "golden-shared",
+        "status": "failed"
+      },
+      {
+        "profile": "kafka",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+        "scenario": "direct_after_shared",
+        "status": "passed"
+      },
+      {
+        "profile": "kafka",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+        "scenario": "failed_dropped_direct",
+        "status": "expected_failure"
+      },
+      {
+        "profile": "kafka",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+        "scenario": "failed_dropped_shared",
+        "status": "expected_failure"
+      },
+      {
+        "profile": "kafka",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+        "scenario": "reversed_dropped_direct",
+        "status": "expected_failure"
+      }
+    ]
+  },
+  "expected_failures": [
+    {
+      "deployed_status": "DEPLOYED. payouts-kafka-fts-status-updates-consumer (and the retry consumer) are templated with no enable gate; cde/payouts/values.yaml sets 1/1 replicas and the retained drift report devstack-prod-parity/reports/batch8/ drift-check-20260703.html shows the live object in namespace `payouts`, application `prod-payouts`, created 2022-02-17, revision 418, LIVE REPLICAS 3, restartPolicy Always, with HTTP liveness and readiness probes. The FTS producer is enabled in prod-live (env.prod-live.toml:318, [kafka_producers.fire_transfer_status] enabled = true, topic rx-fts-status-update-events). Whether any production MERCHANT is on the Kafka route is NOT DETERMINABLE from repository evidence: the per-merchant gate is Splitz experiment PYGTRQEzO39PfB (env.prod-live.toml:364, fail-closed to false) and no fixture for it exists in the splitz clone (owner questions Q1/Q2).",
+      "id": "EF-001",
+      "matched": true,
+      "matched_by": [
+        {
+          "artifacts": [
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/live-result.json",
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/route-evidence.json"
+          ],
+          "profile": "kafka",
+          "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared",
+          "scenario": "golden-shared"
+        }
+      ],
+      "predicted_state": {
+        "fts_status": "PROCESSED",
+        "journals": {
+          "absent": [
+            "payout_processed"
+          ],
+          "present": [
+            "payout_initiated"
+          ]
+        },
+        "payout_status": "initiated",
+        "webhooks": {
+          "absent": [
+            "payout.processed",
+            "payout.failed",
+            "payout.reversed"
+          ]
+        }
+      },
+      "scope": {
+        "cases": [
+          "shared_source_failure",
+          "golden-shared"
+        ],
+        "profile": "kafka"
+      },
+      "source_refs": [
+        "payouts internal/boot/handler.go:154",
+        "payouts internal/boot/boot_kafka_consumer.go:17-29",
+        "payouts pkg/worker/manager.go:186-189",
+        "payouts internal/app/payouts/core.go:2472-2475",
+        "payouts internal/app/payouts/core.go:2589-2595"
+      ],
+      "title": "Shared-account PROCESSED over Kafka cannot enqueue the processed Ledger journal"
+    },
+    {
+      "deployed_status": "DEPLOYED. Same consumer deployment as EF-001: live replicas 3, restartPolicy Always, no enable gate; FTS producer enabled in prod-live. Merchant rollout NOT DETERMINABLE (Splitz PYGTRQEzO39PfB has no repository fixture). The API monolith consumes the same topic under its own group (cde/api/values.yaml:315, 8 replicas) and can relay status over HTTP for transfers whose FTA row the monolith created, so the drop is unmitigated only for PS-direct-created transfers (owner question Q2).",
+      "id": "EF-002",
+      "matched": true,
+      "matched_by": [
+        {
+          "artifacts": [
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-failed_dropped_direct.jsonl",
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_direct.json"
+          ],
+          "profile": "kafka",
+          "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+          "scenario": "failed_dropped_direct"
+        },
+        {
+          "artifacts": [
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-failed_dropped_shared.jsonl",
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_shared.json"
+          ],
+          "profile": "kafka",
+          "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+          "scenario": "failed_dropped_shared"
+        }
+      ],
+      "predicted_state": {
+        "fts_status": "FAILED",
+        "journals": {
+          "absent": [
+            "payout_failed",
+            "payout_reversed"
+          ]
+        },
+        "payout_status": "initiated",
+        "webhooks": {
+          "absent": [
+            "payout.failed",
+            "payout.reversed"
+          ]
+        }
+      },
+      "scope": {
+        "cases": [
+          "failed_dropped_direct",
+          "failed_dropped_shared"
+        ],
+        "profile": "kafka"
+      },
+      "source_refs": [
+        "payouts internal/taskHandlers/fts_status_updates.go:56-62",
+        "payouts internal/taskHandlers/fts_status_updates_retry.go:58-64"
+      ],
+      "title": "FTS FAILED delivered over Kafka is acknowledged and dropped"
+    },
+    {
+      "deployed_status": "DEPLOYED. Same consumer deployment as EF-001/EF-002: live replicas 3, restartPolicy Always, no enable gate; FTS producer enabled in prod-live; merchant rollout NOT DETERMINABLE.",
+      "id": "EF-003",
+      "matched": true,
+      "matched_by": [
+        {
+          "artifacts": [
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-reversed_dropped_direct.jsonl",
+            "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-reversed_dropped_direct.json"
+          ],
+          "profile": "kafka",
+          "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+          "scenario": "reversed_dropped_direct"
+        }
+      ],
+      "predicted_state": {
+        "fts_status": "REVERSED",
+        "journals": {
+          "absent": [
+            "payout_reversed",
+            "payout_failed"
+          ]
+        },
+        "payout_status": "processed",
+        "webhooks": {
+          "absent": [
+            "payout.reversed"
+          ]
+        }
+      },
+      "scope": {
+        "cases": [
+          "reversed_dropped_direct"
+        ],
+        "profile": "kafka"
+      },
+      "source_refs": [
+        "payouts internal/taskHandlers/fts_status_updates.go:56-62",
+        "payouts internal/taskHandlers/fts_status_updates_retry.go:58-64"
+      ],
+      "title": "FTS REVERSED delivered over Kafka is acknowledged and dropped"
+    }
+  ],
+  "fixed_twin_defects": [
+    {
+      "evidence_expectation": "kafka-results.json: shared_source_failure matches EF-001 and direct_after_shared passed in the same boot; route-evidence-*.json consumer_state shows both consumers running with restart_count 0 and the retry consumer group with the republished Shared message.",
+      "evidence_run": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+      "fix": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml [kafka_producer].Brokers = [\"kafka:9092\"] (was the upstream default.toml:429 dummy); ENV2_COMPOSE/docker-compose.yml restart: on-failure on payouts-kafka-fts-status-updates-consumer and -retry-consumer (deployed restartPolicy: Always). No core source change: the unchecked nil producer and the unrecovered goroutine remain as in source (registered as a declared robustness gap).",
+      "id": "FD-001",
+      "location": "ENV2_COMPOSE/config/templates/base/payouts/arena.toml (rendered to generated/payouts/arena.toml:460); ENV2_COMPOSE/config/routes.py:58-63 rewrites only the FTS producer",
+      "supersedes": [
+        {
+          "result": "direct_success timed out after the failing Shared message",
+          "run": "reports/implementation/runs/profile-kafka/direct-account",
+          "was_recorded_as": "inconclusive"
+        },
+        {
+          "result": "direct_success timed out; consumer container exited 2 after the panic",
+          "run": "reports/implementation/runs/claude-audit-kafka-repro-20260905T152544Z/direct-after-shared",
+          "was_recorded_as": "reproduced and diagnosed (audit)"
+        }
+      ],
+      "symptom": "After the Shared PROCESSED enqueue failure, HandleFailedMessage republishes to the retry topic; provider.GetKafkaProducerProvider returns a nil interface because the container cannot build a producer against [\"broker:9092\",\"broker1:9092\"] (getter.go:161-166, container.go:110-113). The nil is unchecked and the processMessages goroutine has no recover, so payouts-kafka-fts-status-updates-consumer panics at taskHandlers/fts_status_updates.go:105 and exits 2. The next scenario (Direct-after-Shared) then times out with no consumer group member. Reproduced at reports/implementation/runs/claude-audit-kafka-repro-20260905T152544Z/.",
+      "title": "payouts [kafka_producer].Brokers carried the upstream dummy, crashing the Kafka consumer on any failed message"
+    },
+    {
+      "evidence_expectation": "V04 passes with the index catalogue non-empty guard; ledger-gate image rebuilt from the corrected server.py before the boot (arena-fingerprint.json hashes substitutes/ledger-gate/server.py).",
+      "evidence_run": "reports/implementation/runs/m1-20260905T165255Z/replay-a/full",
+      "fix": "ENV2_COMPOSE/substitutes/ledger-gate/server.py forward_headers(): every inbound header is forwarded except the hop-by-hop/transport set (host, content-length, connection, transfer-encoding, keep-alive, te, trailer(s), upgrade, accept-encoding, proxy-*), so idempotency-key, Request-ID, Trace-ID, Country-Code reach ledger-api; contract test ENV2_COMPOSE/substitutes/ledger-gate/test_contract.py. Ledger [mutex].ttl restored to 60000 (prod-live.toml:326) in the same change set (DEV-002).",
+      "id": "FD-002",
+      "location": "ENV2_COMPOSE/substitutes/ledger-gate/server.py:15",
+      "symptom": "Only five headers were forwarded, so ledger pkg/idempotency/interceptor.go:115-118 short-circuited on the empty key and Ledger's request-idempotency layer was disabled for that leg. V04 therefore measured one fewer layer than production. FTS and the monolith reach ledger-api directly and kept the header.",
+      "title": "ledger-gate stripped idempotency-key and the SDK correlation headers on the Payouts-to-Ledger leg"
+    },
+    {
+      "evidence_expectation": "up.exit 0 on the rerun with a freshly generated password; the failed boot directory is retained beside it.",
+      "evidence_run": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka",
+      "fix": "rand_password now draws the first character from [A-Za-z0-9] and keeps the remaining 43 base64url characters; no seed or service file changed, so run fingerprints are unaffected (secrets/ is never fingerprinted).",
+      "id": "FD-003",
+      "location": "ENV2_COMPOSE/secrets/gen-secrets.sh rand_password(); consumer ENV2_COMPOSE/scripts/up.sh:94-95 (mongosh --password \"$MONGO_CFA_ROOT_PW\")",
+      "symptom": "rand_password mapped base64 '+' to '-', so roughly one boot in 32 produced a Mongo root password beginning with '-'. mongosh treated it as an option, printed its usage text and the seeds step aborted, so the whole boot failed (retained: reports/implementation/runs/m1-20260905T165255Z/profile-kafka-failed-boot/up.log). Intermittent, secret-dependent boot failure; no service behaviour involved.",
+      "title": "Generated arena passwords could start with '-' and were then parsed as CLI options by the CFA seed step"
+    }
+  ],
+  "generated_by": "ENV2_COMPOSE/scripts/local-acceptance.py",
+  "manifest": "reports/implementation/acceptance-manifest.json",
+  "product_route_health": {
+    "direct": {
+      "golden": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/live-result.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/route-evidence.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden"
+      }
+    },
+    "direct-create-monolith-status": {
+      "golden": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/live-result.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/route-evidence.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden"
+      }
+    },
+    "kafka": {
+      "direct_after_shared": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-direct_after_shared.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-direct_after_shared.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka"
+      },
+      "failed_dropped_direct": {
+        "business_completed": false,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-failed_dropped_direct.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_direct.json"
+        ],
+        "expected_failure_ref": "EF-002",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka"
+      },
+      "failed_dropped_shared": {
+        "business_completed": false,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-failed_dropped_shared.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_shared.json"
+        ],
+        "expected_failure_ref": "EF-002",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka"
+      },
+      "golden-shared": {
+        "business_completed": false,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/live-result.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/route-evidence.json"
+        ],
+        "expected_failure_ref": "EF-001",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared"
+      },
+      "reversed_dropped_direct": {
+        "business_completed": false,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-reversed_dropped_direct.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-reversed_dropped_direct.json"
+        ],
+        "expected_failure_ref": "EF-003",
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka"
+      }
+    },
+    "monolith": {
+      "ambiguous_with_utr": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-ambiguous_with_utr.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank"
+      },
+      "ambiguous_without_utr": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-ambiguous_without_utr.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank"
+      },
+      "delayed_success": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-delayed_success.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank"
+      },
+      "direct_success": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-direct_success.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-direct_success.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route"
+      },
+      "duplicate": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-duplicate.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank"
+      },
+      "failed_direct": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-failed_direct.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-failed_direct.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route"
+      },
+      "failed_shared": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-failed_shared.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-failed_shared.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route"
+      },
+      "golden": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/live-result.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/route-evidence.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden"
+      },
+      "hold": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-hold.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank"
+      },
+      "queued": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-queued.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-queued.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route"
+      },
+      "returned": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-returned.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-returned.jsonl"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route"
+      },
+      "scheduled": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-scheduled.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-scheduled.jsonl"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route"
+      },
+      "timeout": {
+        "business_completed": true,
+        "evidence": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-timeout.json"
+        ],
+        "expected_failure_ref": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank"
+      }
+    }
+  },
+  "recorded_at": "2026-09-05T17:09:33.725386+00:00",
+  "route_fidelity": {
+    "direct": {
+      "golden": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/live-result.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/route-evidence.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "PROCESSED",
+          "journal_events": [
+            "payout_initiated",
+            "payout_processed"
+          ],
+          "payout_status": "processed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.processed",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/route-evidence.json",
+        "transport_observed": true
+      }
+    },
+    "direct-create-monolith-status": {
+      "golden": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/live-result.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/route-evidence.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "PROCESSED",
+          "journal_events": [
+            "payout_initiated",
+            "payout_processed"
+          ],
+          "payout_status": "processed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.processed",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/route-evidence.json",
+        "transport_observed": true
+      }
+    },
+    "kafka": {
+      "direct_after_shared": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-direct_after_shared.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-direct_after_shared.json"
+        ],
+        "consumer_state": {
+          "containers": [
+            {
+              "restart_count": 0,
+              "running": true,
+              "service": "payouts-kafka-fts-status-updates-consumer"
+            },
+            {
+              "restart_count": 0,
+              "running": true,
+              "service": "payouts-kafka-fts-status-updates-retry-consumer"
+            }
+          ],
+          "panic_count": 0
+        },
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "PROCESSED",
+          "journal_events": [],
+          "payout_status": "processed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.processed",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-direct_after_shared.json",
+        "transport_observed": true
+      },
+      "failed_dropped_direct": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-failed_dropped_direct.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_direct.json"
+        ],
+        "consumer_state": {
+          "containers": [
+            {
+              "restart_count": 0,
+              "running": true,
+              "service": "payouts-kafka-fts-status-updates-consumer"
+            },
+            {
+              "restart_count": 0,
+              "running": true,
+              "service": "payouts-kafka-fts-status-updates-retry-consumer"
+            }
+          ],
+          "panic_count": 0
+        },
+        "expected_failure_ref": "EF-002",
+        "fidelity_pass": true,
+        "matched_expected_failure": true,
+        "observed_state": {
+          "fts_status": "FAILED",
+          "journal_events": [],
+          "payout_status": "initiated",
+          "webhook_events": [
+            "payout.initiated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+        "scenario_status": "expected_failure",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_direct.json",
+        "transport_observed": true
+      },
+      "failed_dropped_shared": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-failed_dropped_shared.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_shared.json"
+        ],
+        "consumer_state": {
+          "containers": [
+            {
+              "restart_count": 0,
+              "running": true,
+              "service": "payouts-kafka-fts-status-updates-consumer"
+            },
+            {
+              "restart_count": 0,
+              "running": true,
+              "service": "payouts-kafka-fts-status-updates-retry-consumer"
+            }
+          ],
+          "panic_count": 0
+        },
+        "expected_failure_ref": "EF-002",
+        "fidelity_pass": true,
+        "matched_expected_failure": true,
+        "observed_state": {
+          "fts_status": "FAILED",
+          "journal_events": [
+            "payout_initiated"
+          ],
+          "payout_status": "initiated",
+          "webhook_events": [
+            "payout.initiated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+        "scenario_status": "expected_failure",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-failed_dropped_shared.json",
+        "transport_observed": true
+      },
+      "golden-shared": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/live-result.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/route-evidence.json"
+        ],
+        "consumer_state": {
+          "containers": [
+            {
+              "restart_count": 0,
+              "running": true,
+              "service": "payouts-kafka-fts-status-updates-consumer"
+            },
+            {
+              "restart_count": 0,
+              "running": true,
+              "service": "payouts-kafka-fts-status-updates-retry-consumer"
+            }
+          ],
+          "panic_count": 0
+        },
+        "expected_failure_ref": "EF-001",
+        "fidelity_pass": true,
+        "matched_expected_failure": true,
+        "observed_state": {
+          "fts_status": "PROCESSED",
+          "journal_events": [
+            "payout_initiated"
+          ],
+          "payout_status": "initiated",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared",
+        "scenario_status": "failed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/route-evidence.json",
+        "transport_observed": true
+      },
+      "reversed_dropped_direct": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/kafka-reversed_dropped_direct.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-reversed_dropped_direct.json"
+        ],
+        "consumer_state": {
+          "containers": [
+            {
+              "restart_count": 0,
+              "running": true,
+              "service": "payouts-kafka-fts-status-updates-consumer"
+            },
+            {
+              "restart_count": 0,
+              "running": true,
+              "service": "payouts-kafka-fts-status-updates-retry-consumer"
+            }
+          ],
+          "panic_count": 0
+        },
+        "expected_failure_ref": "EF-003",
+        "fidelity_pass": true,
+        "matched_expected_failure": true,
+        "observed_state": {
+          "fts_status": "REVERSED",
+          "journal_events": [],
+          "payout_status": "processed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.processed",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka",
+        "scenario_status": "expected_failure",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/kafka/route-evidence-reversed_dropped_direct.json",
+        "transport_observed": true
+      }
+    },
+    "monolith": {
+      "ambiguous_with_utr": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-ambiguous_with_utr.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "INITIATED",
+          "journal_events": [
+            "payout_initiated"
+          ],
+          "payout_status": "initiated",
+          "webhook_events": [
+            "payout.initiated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-ambiguous_with_utr.json",
+        "transport_observed": true
+      },
+      "ambiguous_without_utr": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-ambiguous_without_utr.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "INITIATED",
+          "journal_events": [
+            "payout_initiated"
+          ],
+          "payout_status": "initiated",
+          "webhook_events": [
+            "payout.initiated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-ambiguous_without_utr.json",
+        "transport_observed": true
+      },
+      "delayed_success": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-delayed_success.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "PROCESSED",
+          "journal_events": [
+            "payout_initiated",
+            "payout_processed"
+          ],
+          "payout_status": "processed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.processed",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-delayed_success.json",
+        "transport_observed": true
+      },
+      "direct_success": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-direct_success.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-direct_success.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "PROCESSED",
+          "journal_events": [],
+          "payout_status": "processed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.processed",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-direct_success.json",
+        "transport_observed": true
+      },
+      "duplicate": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-duplicate.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "INITIATED",
+          "journal_events": [
+            "payout_initiated"
+          ],
+          "payout_status": "initiated",
+          "webhook_events": [
+            "payout.initiated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-duplicate.json",
+        "transport_observed": true
+      },
+      "failed_direct": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-failed_direct.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-failed_direct.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "FAILED",
+          "journal_events": [],
+          "payout_status": "failed",
+          "webhook_events": [
+            "payout.failed",
+            "payout.initiated",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-failed_direct.json",
+        "transport_observed": true
+      },
+      "failed_shared": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-failed_shared.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-failed_shared.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "FAILED",
+          "journal_events": [
+            "payout_failed",
+            "payout_initiated"
+          ],
+          "payout_status": "reversed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.reversed",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-failed_shared.json",
+        "transport_observed": true
+      },
+      "golden": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/live-result.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/route-evidence.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "PROCESSED",
+          "journal_events": [
+            "payout_initiated",
+            "payout_processed"
+          ],
+          "payout_status": "processed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.processed",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/route-evidence.json",
+        "transport_observed": true
+      },
+      "hold": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-hold.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "INITIATED",
+          "journal_events": [
+            "payout_initiated"
+          ],
+          "payout_status": "initiated",
+          "webhook_events": [
+            "payout.initiated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-hold.json",
+        "transport_observed": true
+      },
+      "queued": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-queued.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-queued.jsonl",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "PROCESSED",
+          "journal_events": [
+            "payout_initiated",
+            "payout_processed"
+          ],
+          "payout_status": "processed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.processed",
+            "payout.queued",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-queued.json",
+        "transport_observed": true
+      },
+      "returned": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-returned.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-returned.jsonl"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "REVERSED",
+          "journal_events": [
+            "payout_initiated",
+            "payout_processed",
+            "payout_reversed"
+          ],
+          "payout_status": "reversed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.processed",
+            "payout.reversed",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-returned.json",
+        "transport_observed": true
+      },
+      "scheduled": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-scheduled.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-results.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-scheduled.jsonl"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "PROCESSED",
+          "journal_events": [
+            "payout_initiated",
+            "payout_processed"
+          ],
+          "payout_status": "processed",
+          "webhook_events": [
+            "payout.initiated",
+            "payout.processed",
+            "payout.updated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/route-evidence-scheduled.json",
+        "transport_observed": true
+      },
+      "timeout": {
+        "artifacts": [
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/bank-effects.json",
+          "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-timeout.json"
+        ],
+        "consumer_state": null,
+        "expected_failure_ref": null,
+        "fidelity_pass": true,
+        "matched_expected_failure": false,
+        "observed_state": {
+          "fts_status": "INITIATED",
+          "journal_events": [
+            "payout_initiated"
+          ],
+          "payout_status": "initiated",
+          "webhook_events": [
+            "payout.initiated"
+          ]
+        },
+        "reason": null,
+        "run_dir": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank",
+        "scenario_status": "passed",
+        "transport_evidence": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/route-evidence-timeout.json",
+        "transport_observed": true
+      }
+    }
+  },
+  "schema_version": 2,
+  "staleness": {
+    "boot_identity": "matches replay_a boot 2d075c68-f680-4556-9b5d-d2b17315e4cb on 65 services",
+    "boots": {
+      "final_bank": {
+        "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/arena-fingerprint.json",
+        "route_profile": "monolith"
+      },
+      "final_golden": {
+        "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/golden/arena-fingerprint.json",
+        "route_profile": "monolith"
+      },
+      "final_route": {
+        "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/route/arena-fingerprint.json",
+        "route_profile": "monolith"
+      },
+      "profile_direct_golden": {
+        "boot_id": "12f8246a-947c-4b25-a615-c4598352f9cd",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/profile-direct/golden/arena-fingerprint.json",
+        "route_profile": "direct"
+      },
+      "profile_kafka": {
+        "boot_id": "173ddb6f-b01e-447c-9ccc-9ca7b251aa17",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/profile-kafka/golden-shared/arena-fingerprint.json",
+        "route_profile": "kafka"
+      },
+      "profile_mixed_golden": {
+        "boot_id": "98a377a2-93fe-42f3-bd32-eb63c05fbb8a",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/profile-mixed/golden/arena-fingerprint.json",
+        "route_profile": "direct-create-monolith-status"
+      },
+      "replay_a": {
+        "boot_id": "2d075c68-f680-4556-9b5d-d2b17315e4cb",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/replay-a/bank/arena-fingerprint.json",
+        "route_profile": "monolith"
+      },
+      "replay_b": {
+        "boot_id": "6000c5c3-0b85-41b2-92cf-b8aa03f80e36",
+        "config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+        "git_head": "a5917f9f76e71349a7c64ef88c4d5968278f1461",
+        "path": "reports/implementation/runs/m1-20260905T165255Z/replay-b/full/arena-fingerprint.json",
+        "route_profile": "monolith"
+      }
+    },
+    "current_config_digest": "afb1aa02eb3112e9b1114b7239c9f86c3f3d53089ad76de42d84076293c7067d",
+    "mismatched_files": {}
+  },
+  "status": "passed",
+  "unexplained_results": []
+}

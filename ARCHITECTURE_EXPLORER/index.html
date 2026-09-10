@@ -1,0 +1,15 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="Explore the synthetic Payouts Twin, follow payout states, and inspect architecture evidence.">
+<title>Payouts Twin Explorer</title><link rel="stylesheet" href="style.css">
+</head>
+<body>
+<a class="skip" href="#workspace">Skip to explorer</a>
+<header><div class="brand"><span class="mark">↗</span><div>Payouts Twin <strong>Explorer</strong><small>RazorpayX · synthetic local environment</small></div></div><div class="header-tools"><span id="health" class="health">Checking local arena</span><label class="toggle"><input id="technical" type="checkbox"> Technical detail</label></div></header>
+<div class="shell"><nav aria-label="Explorer views"><p class="nav-label">EXPLORE</p><button data-view="map" class="active">01 <span>Architecture</span></button><button data-view="flow">02 <span>Follow a payout</span></button><button data-view="states">03 <span>State machines</span></button><button data-view="ownership">04 <span>Who owns the data</span></button><button data-view="synthetic">05 <span>Synthetic data</span></button><button data-view="evidence">06 <span>Evidence & fidelity</span></button><button data-view="live">07 <span>Local runs</span></button><div class="nav-foot"><span class="dot"></span> Synthetic data only<br><small>Source references stay local.</small></div></nav>
+<main id="workspace" tabindex="-1"><div id="view"></div></main></div>
+<div id="toast" role="status" aria-live="polite"></div>
+<script type="module" src="app.js"></script>
+</body></html>

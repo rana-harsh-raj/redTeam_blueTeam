@@ -1,0 +1,144 @@
+{
+  "replay": "m5-finding-replays",
+  "generated_at": "2026-09-07T12:35:08Z",
+  "count": 4,
+  "all_reproduced": true,
+  "replays": [
+    {
+      "finding_defect": "terminal",
+      "family": "state-integrity",
+      "first_proposed_by": "kimi-k3",
+      "reproduced_by": [
+        "kimi-k3",
+        "gpt-5.5"
+      ],
+      "fresh_replay_1": {
+        "violated": true,
+        "evidence": {
+          "approve_after_reject_status": 200,
+          "state": "approved",
+          "error": null
+        }
+      },
+      "fresh_replay_2": {
+        "violated": true,
+        "evidence": {
+          "approve_after_reject_status": 200,
+          "state": "approved",
+          "error": null
+        }
+      },
+      "negative_control_fixed": {
+        "violated": false,
+        "evidence": {
+          "approve_after_reject_status": 409,
+          "state": "rejected",
+          "error": "terminal_state"
+        }
+      },
+      "reproduced": true
+    },
+    {
+      "finding_defect": "separation",
+      "family": "maker-checker",
+      "first_proposed_by": "kimi-k3",
+      "reproduced_by": [
+        "kimi-k3",
+        "gpt-5.5",
+        "glm-5p2"
+      ],
+      "fresh_replay_1": {
+        "violated": true,
+        "evidence": {
+          "self_approve_status": 200,
+          "state": "approved",
+          "error": null
+        }
+      },
+      "fresh_replay_2": {
+        "violated": true,
+        "evidence": {
+          "self_approve_status": 200,
+          "state": "approved",
+          "error": null
+        }
+      },
+      "negative_control_fixed": {
+        "violated": false,
+        "evidence": {
+          "self_approve_status": 403,
+          "state": null,
+          "error": "separation_violation"
+        }
+      },
+      "reproduced": true
+    },
+    {
+      "finding_defect": "cross_org",
+      "family": "org-boundary",
+      "first_proposed_by": "kimi-k3",
+      "reproduced_by": [
+        "kimi-k3",
+        "gpt-5.5",
+        "glm-5p2"
+      ],
+      "fresh_replay_1": {
+        "violated": true,
+        "evidence": {
+          "foreign_approve_status": 200,
+          "state": "approved",
+          "error": null
+        }
+      },
+      "fresh_replay_2": {
+        "violated": true,
+        "evidence": {
+          "foreign_approve_status": 200,
+          "state": "approved",
+          "error": null
+        }
+      },
+      "negative_control_fixed": {
+        "violated": false,
+        "evidence": {
+          "foreign_approve_status": 403,
+          "state": null,
+          "error": "cross_org"
+        }
+      },
+      "reproduced": true
+    },
+    {
+      "finding_defect": "counting",
+      "family": "approval-integrity",
+      "first_proposed_by": "kimi-k3",
+      "reproduced_by": [
+        "kimi-k3",
+        "gpt-5.5",
+        "glm-5p2"
+      ],
+      "fresh_replay_1": {
+        "violated": true,
+        "evidence": {
+          "state_after_two_same_approver": "approved",
+          "approvals": 2
+        }
+      },
+      "fresh_replay_2": {
+        "violated": true,
+        "evidence": {
+          "state_after_two_same_approver": "approved",
+          "approvals": 2
+        }
+      },
+      "negative_control_fixed": {
+        "violated": false,
+        "evidence": {
+          "state_after_two_same_approver": "pending",
+          "approvals": 1
+        }
+      },
+      "reproduced": true
+    }
+  ]
+}

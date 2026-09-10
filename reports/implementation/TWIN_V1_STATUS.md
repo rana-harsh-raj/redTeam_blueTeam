@@ -1,0 +1,36 @@
+# Payouts Twin v1 implementation status
+
+## Milestone 1 (2026-09-05)
+
+The independent audit at `reports/claude-review/TWIN_V1_AUDIT_AND_NEXT_STEP.md` found and corrected seven previously-undeclared twin-side weakenings of production controls (DEV-001..DEV-007 in `ENV2_COMPOSE/config/declared-deviations.yaml`, all `status: fixed_in_m1`): the ledger-gate header allow-list dropping `idempotency-key` and the SDK correlation headers, Ledger's mutex TTL, payouts' idempotency-key enforcement flag, the missing `files/error/*.json` bank error-code assets, the placeholder Kafka producer brokers, the FTS-to-payouts webhook timeout, and the absence of a `restart:` policy on the Kafka consumers. The last two of these (placeholder brokers plus no restart policy) explain and fix the historical inconclusive Direct-after-Shared Kafka timeout: a nil-producer panic in `HandleFailedMessage` left the consumer container exited rather than restarted, recorded as twin defect FD-001. The Shared-account source bootstrap gap itself is unchanged and remains a required, source-faithful failure (EF-001 in `TWIN_SPEC/expected-failures.yaml`).
+
+The hand-authored `local-acceptance.json` gate is replaced by one generated from run artifacts by `ENV2_COMPOSE/scripts/local-acceptance.py` (schema 2), which separates `route_fidelity` (required for freeze) from `product_route_health` (informational) and blocks the freeze on any unexplained result. A new Kafka scenario family (`ENV2_COMPOSE/verifier/kafka_scenarios.py`, five cases) exercises the Kafka status-transport leg end to end using only real bank outcomes, real FTS publishes and the real payouts consumer. Fresh-run outcome under the corrected twin: two independent empty-volume full suites 26/0/0 with logically equivalent observations, six route and six bank cases, golden runs on the monolith, direct and mixed profiles, and the five Kafka cases all matching their source predictions with the consumer surviving (`reports/implementation/runs/m1-20260905T165255Z`); generated gate `local-acceptance.json` status passed, 14/14 checks, zero unexplained results.
+
+The local executable twin, synthetic-data generator, Explorer and gated Daytona package are implemented. **This is a locally verified candidate with explicit fidelity limits; strict acceptance and remote execution remain gated.** The Shared-account Kafka route exposes a real source bootstrap failure and is preserved as a failing scenario. See [local acceptance](LOCAL_ACCEPTANCE.md) for the exact checks and [route coverage](ROUTE_COVERAGE.md) for observed outcomes.
+
+## What changed
+
+- Five real core services build from fresh, sanitized copies of pinned source commits. The originals are unchanged. Input manifests, generated RPC/migrations, module verification, image hashes and two explicit arena patches are documented in [build provenance](BUILD_PROVENANCE.md).
+- The corrected Compose package boots from empty volumes, selects monolith/direct/mixed/Kafka routes, wires the actual Ledger workers and Direct reservation feature, and uses narrow synthetic-secret mounts. Both runtime networks are internal; host access uses a loopback bridge.
+- Source-derived monolith and bank substitutes provide deterministic merchant mapping, balance updates, DTO translation, controllable bank outcomes and per-payout delivery/fault controls. The verifier preserves real service state, exact money assertions, observed dependency faults and signed terminal webhooks.
+- A versioned generator provides 96 synthetic merchants with isolated verifier/scenario namespaces, cross-service identities and provenance. Schema differences and confidence ceilings are explicit in [the schema comparison](SCHEMA_COMPARISON.md).
+- [Payouts Twin Explorer](../../ARCHITECTURE_EXPLORER/README.md) provides the architecture, ownership, state machines, source references, 128 illustrated hops across nine scenarios, and captured saved/live traces. Private source bodies and runtime credentials are excluded from its frontend.
+- [The Daytona package](../../DAYTONA/README.md) provides gated planning, resource selection, SDK capability checks, approved-transfer manifests, smoke/full runners, result export, TTL and delete/absence verification. No sandbox has been created or artifact uploaded.
+
+Every material fix is classified in [FIDELITY_IMPLEMENTATION_MATRIX.csv](FIDELITY_IMPLEMENTATION_MATRIX.csv). The two behavior-changing core arena flags override DCS endpoint selection and select Stork JSON encoding; their risks are documented, rather than treated as production equivalence.
+
+## What is established
+
+The final two empty-volume runs each pass **26 / 0 / 0**, with same-window egress audits and **all 26 recorded outcomes logically equivalent**. The [verifier report](VERIFIER_RESULTS.md) and [final comparison](logical-replay-final.json) retain the evidence and earlier failed attempts. The final supplemental run passes six route cases and six bank cases with same-window DNS/packet checks, Payouts/FTS/Ledger assertions as applicable, merchant-delivery checks and traces. Direct HTTP and mixed Shared routes pass; Direct Kafka reaches processed with a signed terminal webhook but logs an auxiliary dual-write failure. Shared Kafka remains initiated after FTS processes because its consumer does not register the accounting job.
+
+The Explorer passes browser checks for all views and illustrated steps, a live payout, and portable saved playback. Offline checks pass **143 / 0 / 0** (pass/fail/skip). Real Docker timeout and SIGTERM negative tests confirm cleanup of owned command/capture containers and PCAP volumes. The final same-boot secret/endpoint audit has zero unresolved findings within its documented scanner and logical-read coverage. [LOCAL_ACCEPTANCE.md](LOCAL_ACCEPTANCE.md) records each verdict and its limits.
+
+## Fidelity and remaining inputs
+
+The API monolith, bank adapter, Stork delivery, gateway identity, Workflow and XAS are bounded substitutes or representative boundaries. This does not establish the full production authorization/approval system, production retries/cadences, every bank response/version, automatic later-return repair, bulk payouts or migration cutover. Real-service deployment feasibility for the substituted repositories has not been proved impossible.
+
+Needed inputs are narrow: schema-only exports for the unresolved Payouts/API columns; approved migration registration for x-balances sub-balances; sanitized queue/retry/cron/rollout configuration; relevant bank/mock dependency versions and fixtures; and source-owner decisions on Kafka bootstrap/DTO compatibility and optional savings-account representation. [REMAINING_BLOCKERS.md](REMAINING_BLOCKERS.md) names exact artifacts and why each matters. No production rows or credentials are requested.
+
+## Use and remote status
+
+Start with [TWIN_V1_README.md](../../TWIN_V1_README.md) for fresh-build, local run, scenario, Explorer, resource, replay and cleanup commands. [RESOURCE_PROFILE.md](RESOURCE_PROFILE.md) gives measured local use and exclusions. [DAYTONA_RUN_REPORT.md](DAYTONA_RUN_REPORT.md) records **zero remote resource usage**. No sandbox existed, so deletion verification is **not applicable**, not a claimed successful deletion. Company transfer approval and passed local acceptance are both required before remote execution.

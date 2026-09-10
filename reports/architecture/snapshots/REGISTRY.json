@@ -1,0 +1,45 @@
+{
+ "current": "8a52779f05275ea3aaa375e1e44678a33257e02a7ff6a2f4bb7bbf8723cb4db4",
+ "kind": "snapshot_registry",
+ "schema_version": "m8.1",
+ "snapshots": {
+  "5b6a5dade17eba6c0a407d3d4ba8423c8bf0b8ebeb9ea2bc3706483e04e8d141": {
+   "compiler": {
+    "name": "archkit",
+    "version": "1.0.0"
+   },
+   "imports": {
+    "m7": {
+     "acceptance_record_id": "057671330877e35ab652ae5ab66ebb9e2bd5a8966ad6e54c775b7dff5e5b4809",
+     "evidence_bundle_id": "76907ee5d6e13d3945c1450c002e4368e5de14d5f178096db3cdd403aa55b390",
+     "m7_snapshot_sha256": "d88a26342e10eea4c18971f2765ecc2e05364d7716cc113733f7d76233709651",
+     "runtime_instance_id": "10d78b6bfce4c77b8214cc6fe561dc35856c03267c46b55ad4a086be661395fa",
+     "tag": "twin-m7-shared-ingress-integration"
+    }
+   },
+   "kind": "architecture_snapshot",
+   "recipe_count": 98,
+   "recipe_set_id": "85f237c46431c2af8b1ad9818a9e3b266080c7db829c198bf8811c8c02ee1bc0",
+   "source_lock_id": "6f1f77748e9260b12ab82d61a842bd5a46b123d67526c0694b5731ba44a98f61"
+  },
+  "8a52779f05275ea3aaa375e1e44678a33257e02a7ff6a2f4bb7bbf8723cb4db4": {
+   "compiler": {
+    "name": "archkit",
+    "version": "1.0.0"
+   },
+   "imports": {
+    "m7": {
+     "acceptance_record_id": "057671330877e35ab652ae5ab66ebb9e2bd5a8966ad6e54c775b7dff5e5b4809",
+     "evidence_bundle_id": "76907ee5d6e13d3945c1450c002e4368e5de14d5f178096db3cdd403aa55b390",
+     "m7_snapshot_sha256": "d88a26342e10eea4c18971f2765ecc2e05364d7716cc113733f7d76233709651",
+     "runtime_instance_id": "10d78b6bfce4c77b8214cc6fe561dc35856c03267c46b55ad4a086be661395fa",
+     "tag": "twin-m7-shared-ingress-integration"
+    }
+   },
+   "kind": "architecture_snapshot",
+   "recipe_count": 118,
+   "recipe_set_id": "e662e95a0a7caeb0b3bfa6ef5e179d7c59c998abc3aeacdfbccf79f36afa896d",
+   "source_lock_id": "9e1f5af867a468d157ddd825e5e6f1c4077ea3128f8d9a9238199bd32178ed35"
+  }
+ }
+}

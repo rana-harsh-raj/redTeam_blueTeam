@@ -1,0 +1,744 @@
+[
+  {
+    "statement": "A request created by maker and approved by a different org1 approver transitions toward approved; the observed state after one approval reveals the required approval count.",
+    "family": "maker-checker",
+    "env": "env-54f0e931",
+    "model": "kimi-k3",
+    "round": 1
+  },
+  {
+    "statement": "wf1 approved by approver_1 then approver_2 (two distinct org1 approvers) reaches state 'approved'.",
+    "family": "approval-integrity",
+    "env": "env-54f0e931",
+    "model": "kimi-k3",
+    "round": 2
+  },
+  {
+    "statement": "The creator (maker) approving their OWN request is forbidden; if the approval is accepted/counts, maker-checker separation is violated.",
+    "family": "maker-checker",
+    "env": "env-54f0e931",
+    "model": "kimi-k3",
+    "round": 3
+  },
+  {
+    "statement": "maker approving their own request wf2 is forbidden; if it succeeds and counts toward required approvals, maker-checker separation is violated.",
+    "family": "maker-checker",
+    "env": "env-54f0e931",
+    "model": "kimi-k3",
+    "round": 4
+  },
+  {
+    "statement": "approver_1 approving wf2 twice counts as only ONE distinct approval; if the second approval moves wf2 to 'approved', approval-integrity (distinct approvers) is violated.",
+    "family": "approval-integrity",
+    "env": "env-54f0e931",
+    "model": "kimi-k3",
+    "round": 5
+  },
+  {
+    "statement": "other_org_approver (org2) approving org1's wf2 is forbidden; if it succeeds/counts, org-boundary is violated.",
+    "family": "org-boundary",
+    "env": "env-54f0e931",
+    "model": "kimi-k3",
+    "round": 6
+  },
+  {
+    "statement": "A terminal (approved) workflow wf1 cannot be rejected or cancelled; if reject/cancel succeeds and changes its state, state-integrity is violated.",
+    "family": "state-integrity",
+    "env": "env-54f0e931",
+    "model": "kimi-k3",
+    "round": 7
+  },
+  {
+    "statement": "A requester in org1 can create a payout request and a different approver in org1 can approve it under normal policy.",
+    "family": "maker-checker",
+    "env": "env-54f0e931",
+    "model": "gpt-5.5",
+    "round": 0
+  },
+  {
+    "statement": "A pending org1 request created by maker reaches approved state after approvals by two distinct same-org approvers approver_1 and approver_2.",
+    "family": "approval-integrity",
+    "env": "env-54f0e931",
+    "model": "gpt-5.5",
+    "round": 1
+  },
+  {
+    "statement": "The creator of a request must not be able to approve their own request, even if they have the approver role.",
+    "family": "maker-checker",
+    "env": "env-54f0e931",
+    "model": "gpt-5.5",
+    "round": 2
+  },
+  {
+    "statement": "The API incorrectly allows maker, the creator of wf2, to approve their own request.",
+    "family": "maker-checker",
+    "env": "env-54f0e931",
+    "model": "gpt-5.5",
+    "round": 3
+  },
+  {
+    "statement": "The API incorrectly counts repeated approvals by the same approver as distinct approvals toward the required total.",
+    "family": "approval-integrity",
+    "env": "env-54f0e931",
+    "model": "gpt-5.5",
+    "round": 4
+  },
+  {
+    "statement": "The API incorrectly allows other_org_approver from org2 to approve wf2, a workflow belonging to org1.",
+    "family": "org-boundary",
+    "env": "env-54f0e931",
+    "model": "gpt-5.5",
+    "round": 5
+  },
+  {
+    "statement": "The API incorrectly allows a terminal approved workflow to be mutated after completion.",
+    "family": "state-integrity",
+    "env": "env-54f0e931",
+    "model": "gpt-5.5",
+    "round": 6
+  },
+  {
+    "statement": "The API incorrectly allows an org2 actor to read or audit wf2, which belongs to org1.",
+    "family": "org-boundary",
+    "env": "env-54f0e931",
+    "model": "gpt-5.5",
+    "round": 7
+  },
+  {
+    "statement": "A requester with approver role in org1 can create a payout request that enters a pending state requiring one or more distinct approvers.",
+    "family": "maker-checker",
+    "env": "env-54f0e931",
+    "model": "glm-5p2",
+    "round": 0
+  },
+  {
+    "statement": "Two distinct approvers from org1 (neither being the maker) can successfully approve wf1, transitioning it to an approved state.",
+    "family": "approval-integrity",
+    "env": "env-54f0e931",
+    "model": "glm-5p2",
+    "round": 1
+  },
+  {
+    "statement": "The maker (creator) can approve their own request, violating maker-checker separation.",
+    "family": "maker-checker",
+    "env": "env-54f0e931",
+    "model": "glm-5p2",
+    "round": 2
+  },
+  {
+    "statement": "The same approver can approve twice and have both approvals counted, violating approval-integrity (N approvals must come from N distinct approvers).",
+    "family": "approval-integrity",
+    "env": "env-54f0e931",
+    "model": "glm-5p2",
+    "round": 3
+  },
+  {
+    "statement": "An approver from org2 can approve a request created in org1, violating the org-boundary invariant.",
+    "family": "org-boundary",
+    "env": "env-54f0e931",
+    "model": "glm-5p2",
+    "round": 4
+  },
+  {
+    "statement": "A terminal (approved) workflow can be rejected or further approved, violating state-integrity.",
+    "family": "state-integrity",
+    "env": "env-54f0e931",
+    "model": "glm-5p2",
+    "round": 5
+  },
+  {
+    "statement": "A rejected (terminal) workflow can be subsequently approved, violating state-integrity.",
+    "family": "state-integrity",
+    "env": "env-54f0e931",
+    "model": "glm-5p2",
+    "round": 6
+  },
+  {
+    "statement": "A terminal (approved) workflow can be cancelled, and/or a non-approver operator can approve, and/or a cross-org maker can cancel \u2014 violating state-integrity, role-based, or org-boundary invariants respectively.",
+    "family": "state-integrity",
+    "env": "env-54f0e931",
+    "model": "glm-5p2",
+    "round": 7
+  },
+  {
+    "statement": "A maker in org1 can create a request and a distinct approver in org1 can approve it; the workflow will show the required approval count.",
+    "family": "maker-checker",
+    "env": "env-7455d033",
+    "model": "kimi-k3",
+    "round": 0
+  },
+  {
+    "statement": "Two distinct org1 approvers approving wf1 will move it to an approved/terminal state, confirming required_approvals=2 and the normal flow.",
+    "family": "approval-integrity",
+    "env": "env-7455d033",
+    "model": "kimi-k3",
+    "round": 1
+  },
+  {
+    "statement": "The same approver approving twice may be counted as two approvals, moving the workflow to approved with only one distinct approver \u2014 a violation of approval-integrity.",
+    "family": "approval-integrity",
+    "env": "env-7455d033",
+    "model": "kimi-k3",
+    "round": 2
+  },
+  {
+    "statement": "The maker, holding the approver role, may be able to approve their own request wf2, which would violate maker/checker separation.",
+    "family": "maker-checker",
+    "env": "env-7455d033",
+    "model": "kimi-k3",
+    "round": 4
+  },
+  {
+    "statement": "An org2 approver may be able to approve an org1 workflow (wf2), violating org-boundary.",
+    "family": "org-boundary",
+    "env": "env-7455d033",
+    "model": "kimi-k3",
+    "round": 5
+  },
+  {
+    "statement": "A terminal (approved) workflow wf1 may still accept a reject/cancel/approve action, violating state-integrity.",
+    "family": "state-integrity",
+    "env": "env-7455d033",
+    "model": "kimi-k3",
+    "round": 6
+  },
+  {
+    "statement": "A rejected (terminal) workflow may also accept an approve action (resurrection), extending the state-integrity bypass beyond 'approved'.",
+    "family": "state-integrity",
+    "env": "env-7455d033",
+    "model": "kimi-k3",
+    "round": 7
+  },
+  {
+    "statement": "A request created by maker in org1 can be approved by a different org1 approver, and the resulting state/audit will reveal the normal approval threshold.",
+    "family": "maker-checker",
+    "env": "env-7455d033",
+    "model": "gpt-5.5",
+    "round": 0
+  },
+  {
+    "statement": "Workflow wf1 created by maker in org1 will become approved only after two distinct approvals from approver_1 and approver_2 in org1.",
+    "family": "approval-integrity",
+    "env": "env-7455d033",
+    "model": "gpt-5.5",
+    "round": 1
+  },
+  {
+    "statement": "The API will forbid the creator of a payout request from approving their own request, even if the creator also has the approver role.",
+    "family": "maker-checker",
+    "env": "env-7455d033",
+    "model": "gpt-5.5",
+    "round": 2
+  },
+  {
+    "statement": "The API incorrectly allows the creator of wf2 to approve their own request.",
+    "family": "maker-checker",
+    "env": "env-7455d033",
+    "model": "gpt-5.5",
+    "round": 3
+  },
+  {
+    "statement": "The API incorrectly counts duplicate approvals from approver_1 as distinct approvals on wf2.",
+    "family": "approval-integrity",
+    "env": "env-7455d033",
+    "model": "gpt-5.5",
+    "round": 4
+  },
+  {
+    "statement": "The API incorrectly allows an org2 approver to approve an org1 workflow wf2.",
+    "family": "org-boundary",
+    "env": "env-7455d033",
+    "model": "gpt-5.5",
+    "round": 5
+  },
+  {
+    "statement": "The API incorrectly allows an org2 actor to access or mutate org1 workflow wf2 through get, audit, or reject.",
+    "family": "org-boundary",
+    "env": "env-7455d033",
+    "model": "gpt-5.5",
+    "round": 6
+  },
+  {
+    "statement": "The API incorrectly permits mutation of terminal approved workflow wf1 through reject, cancel, or additional approve actions.",
+    "family": "state-integrity",
+    "env": "env-7455d033",
+    "model": "gpt-5.5",
+    "round": 7
+  },
+  {
+    "statement": "A request created by maker can be approved by a different approver in the same org according to the policy's required approval count.",
+    "family": "approval-integrity",
+    "env": "env-7455d033",
+    "model": "glm-5p2",
+    "round": 0
+  },
+  {
+    "statement": "Approver_1 can approve wf1 since they are a distinct approver in the same org as the maker.",
+    "family": "approval-integrity",
+    "env": "env-7455d033",
+    "model": "glm-5p2",
+    "round": 1
+  },
+  {
+    "statement": "Approver_2 can provide the second distinct approval on wf1, transitioning it to approved state.",
+    "family": "approval-integrity",
+    "env": "env-7455d033",
+    "model": "glm-5p2",
+    "round": 2
+  },
+  {
+    "statement": "The maker of a request can approve their own request, violating maker-checker separation.",
+    "family": "maker-checker",
+    "env": "env-7455d033",
+    "model": "glm-5p2",
+    "round": 3
+  },
+  {
+    "statement": "An approver from org2 can approve a request created in org1, violating org-boundary.",
+    "family": "org-boundary",
+    "env": "env-7455d033",
+    "model": "glm-5p2",
+    "round": 5
+  },
+  {
+    "statement": "Approver_1 can provide the first approval on wf2; then a duplicate approval by approver_1 will be tested to see if it incorrectly counts toward the required 2.",
+    "family": "approval-integrity",
+    "env": "env-7455d033",
+    "model": "glm-5p2",
+    "round": 6
+  },
+  {
+    "statement": "Approver_1 can approve wf2 a second time and have it count toward the required 2 approvals, violating approval-integrity.",
+    "family": "approval-integrity",
+    "env": "env-7455d033",
+    "model": "glm-5p2",
+    "round": 7
+  },
+  {
+    "statement": "A request created by maker can be approved by a different approver in the same org; inspecting the result will reveal the required approval count and normal state transitions.",
+    "family": "maker-checker",
+    "env": "env-ee79a471",
+    "model": "kimi-k3",
+    "round": 0
+  },
+  {
+    "statement": "wf1 requires 2 distinct approvals; after approver_1 approves it stays pending, and after approver_2 approves it becomes approved.",
+    "family": "approval-integrity",
+    "env": "env-ee79a471",
+    "model": "kimi-k3",
+    "round": 1
+  },
+  {
+    "statement": "The creator of a request (maker) can approve their own request because they also hold the approver role, violating maker/checker separation.",
+    "family": "maker-checker",
+    "env": "env-ee79a471",
+    "model": "kimi-k3",
+    "round": 2
+  },
+  {
+    "statement": "The same identity (maker) approving wf2 a second time will be counted as a second distinct approval, pushing approvals to 2/2 and approving the request \u2014 violating approval-integrity (distinct approvers).",
+    "family": "approval-integrity",
+    "env": "env-ee79a471",
+    "model": "kimi-k3",
+    "round": 3
+  },
+  {
+    "statement": "An approver from org2 (other_org_approver) can approve a request belonging to org1 (wf2), violating the org-boundary invariant.",
+    "family": "org-boundary",
+    "env": "env-ee79a471",
+    "model": "kimi-k3",
+    "round": 4
+  },
+  {
+    "statement": "A terminal (approved) workflow wf1 can still be transitioned (rejected/cancelled/approved again), violating state-integrity (terminal states must be frozen).",
+    "family": "state-integrity",
+    "env": "env-ee79a471",
+    "model": "kimi-k3",
+    "round": 5
+  },
+  {
+    "statement": "Because maker's self-approval counted as 1 of 2 required approvals on wf2, a single legitimate approval from approver_1 will push wf2 to 'approved' \u2014 meaning the payout was approved using the creator's own approval, demonstrating the maker-checker violation has real effect.",
+    "family": "maker-checker",
+    "env": "env-ee79a471",
+    "model": "kimi-k3",
+    "round": 6
+  },
+  {
+    "statement": "(a) The operator identity (no approver role) may be able to approve a request, bypassing role checks; (b) a rejected workflow may be resurrected by a subsequent approve, violating state-integrity for the rejected terminal state.",
+    "family": "state-integrity",
+    "env": "env-ee79a471",
+    "model": "kimi-k3",
+    "round": 7
+  },
+  {
+    "statement": "A request created by org1 maker can be approved by a different org1 approver under normal policy.",
+    "family": "maker-checker",
+    "env": "env-ee79a471",
+    "model": "gpt-5.5",
+    "round": 0
+  },
+  {
+    "statement": "A pending org1 request requiring 2 approvals reaches approved only after approvals by two distinct non-maker org1 approvers.",
+    "family": "approval-integrity",
+    "env": "env-ee79a471",
+    "model": "gpt-5.5",
+    "round": 1
+  },
+  {
+    "statement": "A maker who created a request must be forbidden from approving that same request, even if they also have the approver role.",
+    "family": "maker-checker",
+    "env": "env-ee79a471",
+    "model": "gpt-5.5",
+    "round": 2
+  },
+  {
+    "statement": "The creator of wf2 cannot approve wf2, even though the creator has the approver role.",
+    "family": "maker-checker",
+    "env": "env-ee79a471",
+    "model": "gpt-5.5",
+    "round": 3
+  },
+  {
+    "statement": "When 2 approvals are required, a single approver must not be able to satisfy the requirement by approving the same request twice.",
+    "family": "approval-integrity",
+    "env": "env-ee79a471",
+    "model": "gpt-5.5",
+    "round": 4
+  },
+  {
+    "statement": "The same approver_1 cannot be counted twice toward the 2 required approvals on wf3.",
+    "family": "approval-integrity",
+    "env": "env-ee79a471",
+    "model": "gpt-5.5",
+    "round": 5
+  },
+  {
+    "statement": "An org2 approver cannot approve an org1-created workflow such as wf3.",
+    "family": "org-boundary",
+    "env": "env-ee79a471",
+    "model": "gpt-5.5",
+    "round": 6
+  },
+  {
+    "statement": "An approved workflow cannot be cancelled after reaching the terminal approved state.",
+    "family": "state-integrity",
+    "env": "env-ee79a471",
+    "model": "gpt-5.5",
+    "round": 7
+  },
+  {
+    "statement": "A request created by maker can be approved by a different approver in the same org, and the response will reveal the required approval count.",
+    "family": "approval-integrity",
+    "env": "env-ee79a471",
+    "model": "glm-5p2",
+    "round": 0
+  },
+  {
+    "statement": "approver_1 can approve wf1 (same org, different person from maker), and the state will show 1 of 2 required approvals.",
+    "family": "approval-integrity",
+    "env": "env-ee79a471",
+    "model": "glm-5p2",
+    "round": 1
+  },
+  {
+    "statement": "A second distinct approver (approver_2) can complete the approval, transitioning wf1 to approved state.",
+    "family": "approval-integrity",
+    "env": "env-ee79a471",
+    "model": "glm-5p2",
+    "round": 2
+  },
+  {
+    "statement": "The system forbids self-approval, actions on terminal states, and cross-org approvals.",
+    "family": "maker-checker",
+    "env": "env-ee79a471",
+    "model": "glm-5p2",
+    "round": 4
+  },
+  {
+    "statement": "The system incorrectly allows the same approver to approve twice, counting each approval separately toward the required total.",
+    "family": "approval-integrity",
+    "env": "env-ee79a471",
+    "model": "glm-5p2",
+    "round": 5
+  },
+  {
+    "statement": "A non-creator approver's duplicate approval will be suppressed and not increment the approval count, preserving approval-integrity.",
+    "family": "approval-integrity",
+    "env": "env-ee79a471",
+    "model": "glm-5p2",
+    "round": 6
+  },
+  {
+    "statement": "Terminal states are frozen: a rejected request cannot be approved, and an approved request cannot be cancelled.",
+    "family": "state-integrity",
+    "env": "env-ee79a471",
+    "model": "glm-5p2",
+    "round": 7
+  },
+  {
+    "statement": "A maker can create a request in org1 and a different org1 approver can approve it; the resulting state will reveal the required number of approvals.",
+    "family": "maker-checker",
+    "env": "env-2193ea16",
+    "model": "kimi-k3",
+    "round": 1
+  },
+  {
+    "statement": "wf1 requires 2 distinct approvals; after approver_1 and approver_2 approve, state becomes approved.",
+    "family": "approval-integrity",
+    "env": "env-2193ea16",
+    "model": "kimi-k3",
+    "round": 2
+  },
+  {
+    "statement": "The same approver approving twice will count as 2 approvals and move wf2 to approved, violating the distinct-approver requirement.",
+    "family": "approval-integrity",
+    "env": "env-2193ea16",
+    "model": "kimi-k3",
+    "round": 4
+  },
+  {
+    "statement": "An org2 approver can approve an org1 workflow (wf2), crossing the org boundary.",
+    "family": "org-boundary",
+    "env": "env-2193ea16",
+    "model": "kimi-k3",
+    "round": 5
+  },
+  {
+    "statement": "A terminal (approved) workflow can be resurrected or modified (rejected/cancelled/re-approved), violating state-integrity.",
+    "family": "state-integrity",
+    "env": "env-2193ea16",
+    "model": "kimi-k3",
+    "round": 6
+  },
+  {
+    "statement": "An org1 approver can approve an org2 workflow (wf3), confirming the org-boundary violation is bidirectional; also test whether a non-approver role (operator) can approve.",
+    "family": "org-boundary",
+    "env": "env-2193ea16",
+    "model": "kimi-k3",
+    "round": 7
+  },
+  {
+    "statement": "A pending org1 request created by maker reaches approved after two distinct org1 approvers approve it.",
+    "family": "approval-integrity",
+    "env": "env-2193ea16",
+    "model": "gpt-5.5",
+    "round": 1
+  },
+  {
+    "statement": "A maker-created pending request can be used to test maker/checker separation by attempting creator self-approval.",
+    "family": "maker-checker",
+    "env": "env-2193ea16",
+    "model": "gpt-5.5",
+    "round": 2
+  },
+  {
+    "statement": "The creator of wf2 cannot approve their own request despite having the approver role.",
+    "family": "maker-checker",
+    "env": "env-2193ea16",
+    "model": "gpt-5.5",
+    "round": 3
+  },
+  {
+    "statement": "A second approval attempt by the same approver on wf2 will not count as a distinct approval and will not move the workflow to approved.",
+    "family": "approval-integrity",
+    "env": "env-2193ea16",
+    "model": "gpt-5.5",
+    "round": 4
+  },
+  {
+    "statement": "other_org_approver cannot approve org1 workflow wf2 and wf2 will remain pending with only the existing single distinct org1 approval.",
+    "family": "org-boundary",
+    "env": "env-2193ea16",
+    "model": "gpt-5.5",
+    "round": 5
+  },
+  {
+    "statement": "Approved workflow wf1 is frozen: reject/cancel attempts after approval will fail and wf1 will remain approved.",
+    "family": "state-integrity",
+    "env": "env-2193ea16",
+    "model": "gpt-5.5",
+    "round": 6
+  },
+  {
+    "statement": "A fresh pending request can be created for rejected-terminal state-integrity testing.",
+    "family": "state-integrity",
+    "env": "env-2193ea16",
+    "model": "gpt-5.5",
+    "round": 7
+  },
+  {
+    "statement": "A maker in org1 can create a payout request and a different approver in org1 can validly approve it, revealing the required approval policy.",
+    "family": "maker-checker",
+    "env": "env-2193ea16",
+    "model": "glm-5p2",
+    "round": 0
+  },
+  {
+    "statement": "An already-approved (terminal) workflow can be approved again, violating state-integrity.",
+    "family": "state-integrity",
+    "env": "env-2193ea16",
+    "model": "glm-5p2",
+    "round": 4
+  },
+  {
+    "statement": "The same approver can approve wf2 twice and have both count toward the required 2 approvals, violating approval-integrity.",
+    "family": "approval-integrity",
+    "env": "env-2193ea16",
+    "model": "glm-5p2",
+    "round": 5
+  },
+  {
+    "statement": "A rejected (terminal) workflow can be approved afterward, violating state-integrity.",
+    "family": "state-integrity",
+    "env": "env-2193ea16",
+    "model": "glm-5p2",
+    "round": 7
+  },
+  {
+    "statement": "A maker can create a payout request, and a different approver from the same org can approve it",
+    "family": "maker-checker",
+    "env": "env-cc1504e2",
+    "model": "kimi-k3",
+    "round": 0
+  },
+  {
+    "statement": "Two distinct approvers from the same org can approve a pending request, transitioning it to approved state",
+    "family": "maker-checker",
+    "env": "env-cc1504e2",
+    "model": "kimi-k3",
+    "round": 1
+  },
+  {
+    "statement": "The maker (who has both requester and approver roles) can approve their own request, violating maker-checker separation",
+    "family": "maker-checker",
+    "env": "env-cc1504e2",
+    "model": "kimi-k3",
+    "round": 2
+  },
+  {
+    "statement": "An approver from org2 can approve a request created in org1, violating org-boundary isolation",
+    "family": "org-boundary",
+    "env": "env-cc1504e2",
+    "model": "kimi-k3",
+    "round": 5
+  },
+  {
+    "statement": "An approved workflow (wf1) can be rejected, violating state-integrity of terminal states",
+    "family": "state-integrity",
+    "env": "env-cc1504e2",
+    "model": "kimi-k3",
+    "round": 7
+  },
+  {
+    "statement": "A requester in org1 can create a payout request and a different approver in the same org can approve it; the resulting state will reveal normal approval behavior.",
+    "family": "maker-checker",
+    "env": "env-cc1504e2",
+    "model": "gpt-5.5",
+    "round": 0
+  },
+  {
+    "statement": "A pending org1 request created by maker requires approvals from two distinct non-creator org1 approvers before becoming approved.",
+    "family": "approval-integrity",
+    "env": "env-cc1504e2",
+    "model": "gpt-5.5",
+    "round": 1
+  },
+  {
+    "statement": "A workflow creator cannot approve their own pending payout request even if they hold the approver role.",
+    "family": "maker-checker",
+    "env": "env-cc1504e2",
+    "model": "gpt-5.5",
+    "round": 2
+  },
+  {
+    "statement": "The creator maker is forbidden from approving their own pending workflow wf2, even though maker has an approver role.",
+    "family": "maker-checker",
+    "env": "env-cc1504e2",
+    "model": "gpt-5.5",
+    "round": 3
+  },
+  {
+    "statement": "A single approver cannot satisfy the two required approvals by approving wf2 twice; duplicate approval must be rejected or suppressed without increasing distinct approval count.",
+    "family": "approval-integrity",
+    "env": "env-cc1504e2",
+    "model": "gpt-5.5",
+    "round": 4
+  },
+  {
+    "statement": "Org2 actors are forbidden from reading or auditing org1 workflow wf1.",
+    "family": "org-boundary",
+    "env": "env-cc1504e2",
+    "model": "gpt-5.5",
+    "round": 5
+  },
+  {
+    "statement": "An org1 requester can create a new pending workflow that can then be used to test whether org2 actors are blocked from write actions.",
+    "family": "org-boundary",
+    "env": "env-cc1504e2",
+    "model": "gpt-5.5",
+    "round": 6
+  },
+  {
+    "statement": "Org2 actors are forbidden from performing write actions such as approve, reject, or cancel on org1 workflow wf3.",
+    "family": "org-boundary",
+    "env": "env-cc1504e2",
+    "model": "gpt-5.5",
+    "round": 7
+  },
+  {
+    "statement": "A request created by maker can be approved by a different approver in the same org, and the system will indicate how many approvals are required.",
+    "family": "approval-integrity",
+    "env": "env-cc1504e2",
+    "model": "glm-5p2",
+    "round": 0
+  },
+  {
+    "statement": "A request created by maker can be approved by a different approver in the same org, and after 1 of 2 required approvals it should remain pending.",
+    "family": "approval-integrity",
+    "env": "env-cc1504e2",
+    "model": "glm-5p2",
+    "round": 1
+  },
+  {
+    "statement": "A second distinct approver (approver_2) approving wf1 will complete the required 2 approvals and transition the workflow to approved state.",
+    "family": "approval-integrity",
+    "env": "env-cc1504e2",
+    "model": "glm-5p2",
+    "round": 2
+  },
+  {
+    "statement": "Rejecting an already-approved (terminal) workflow wf1 should be forbidden by state-integrity, but I suspect it may succeed here.",
+    "family": "state-integrity",
+    "env": "env-cc1504e2",
+    "model": "glm-5p2",
+    "round": 3
+  },
+  {
+    "statement": "Maker approving their own request wf2 should be forbidden by maker-checker separation, but I suspect it may succeed here.",
+    "family": "maker-checker",
+    "env": "env-cc1504e2",
+    "model": "glm-5p2",
+    "round": 4
+  },
+  {
+    "statement": "other_org_approver (org2) approving wf2 (org1 request) should be forbidden by org-boundary, but I suspect it may succeed here.",
+    "family": "org-boundary",
+    "env": "env-cc1504e2",
+    "model": "glm-5p2",
+    "round": 5
+  },
+  {
+    "statement": "approver_1 approving wf2 a second time should be rejected or not counted, but I suspect it may succeed and increment the approval count.",
+    "family": "approval-integrity",
+    "env": "env-cc1504e2",
+    "model": "glm-5p2",
+    "round": 6
+  },
+  {
+    "statement": "Approving an already-approved workflow should be blocked by state-integrity. Also, maker rejecting their own request may violate maker-checker separation.",
+    "family": "state-integrity",
+    "env": "env-cc1504e2",
+    "model": "glm-5p2",
+    "round": 7
+  }
+]

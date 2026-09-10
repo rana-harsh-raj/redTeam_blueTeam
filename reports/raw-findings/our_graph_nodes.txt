@@ -1,0 +1,153 @@
+repo:payouts | repository | razorpay/payouts
+svc:payouts | service | Payouts Service (Go)
+svc:payouts-workers | worker | Payouts SQS workers (cmd/workers)
+svc:payouts-kafka | worker | Payouts Kafka consumer (cmd/kafkaConsumers)
+repo:ledger | repository | razorpay/ledger
+svc:ledger | service | Ledger Service (Twirp, tenant X)
+repo:fts | repository | razorpay/fts
+svc:fts | service | FTS web
+svc:fts-workers | worker | FTS default-workers (machinery)
+repo:cfa | repository | razorpay/cfa
+svc:cfa | service | CFA (gRPC+gateway)
+repo:x-balances | repository | razorpay/x-balances
+svc:x-balances | service | X Balances
+svc:x-balances-workers | worker | x-balances per-bank balance-fetch workers
+repo:banking-accounts | repository | razorpay/banking-accounts
+svc:banking-accounts | service | Banking Account Service
+repo:xperience | repository | razorpay/xperience
+svc:xperience | service | Xperience BFF
+repo:x | repository | razorpay/x
+fe:x | frontend | RazorpayX dashboard SPA (x.razorpay.com)
+repo:xas | repository | razorpay/x-account-statements
+svc:xas | service | XAS account statements
+repo:validx | repository | razorpay/ValidX
+svc:validx | service | ValidX (FAV)
+repo:payout-links | repository | razorpay/payout-links
+svc:payout-links | service | Payout Links
+repo:vendor-payments | repository | razorpay/vendor-payments
+svc:vendor-payments | service | Vendor Payments
+repo:charge-collections | repository | razorpay/charge-collections
+svc:charge-collections | service | Charge Collections (pricing)
+repo:admin-dashboard | repository | razorpay/admin-dashboard
+fe:admin-dashboard | frontend | Admin dashboard (internal)
+repo:virtual-account | repository | razorpay/virtual-account
+svc:virtual-account | service | Virtual Account
+repo:frontend-x | repository | razorpay/frontend-x
+fe:payout-links-customer | frontend | x-customer-payout-links (payee page)
+repo:accounting-integrations | repository | razorpay/accounting-integrations
+svc:accounting-integrations | service | Accounting Integrations
+svc:api-monolith | service | API monolith (razorpay/api, PHP) — NOT ACCESSIBLE
+svc:edge | gateway route | Edge / Kong (terraform-kong) — NOT ACCESSIBLE
+svc:authz | AuthZ policy | AuthZ service + goutils/authz enforcer — NOT ACCESSIBLE
+svc:stork | service | Stork webhooks/SMS/email — NOT ACCESSIBLE
+svc:mozart | service | Mozart bank gateway — NOT ACCESSIBLE
+svc:dcs | configuration source | DCS dynamic config — NOT ACCESSIBLE
+svc:splitz | configuration source | Splitz experiments — NOT ACCESSIBLE
+svc:shield | service | Shield risk engine — NOT ACCESSIBLE
+svc:governor | service | Governor pricing rules — NOT ACCESSIBLE
+svc:asv | service | Account Service (ASV gRPC) — NOT ACCESSIBLE
+svc:ups | service | UPI service (UPS) — NOT ACCESSIBLE
+svc:vault | service | Vault (card tokens) / HVault (secrets) — NOT ACCESSIBLE
+svc:workflow | service | Workflow service (approval engine) — NOT ACCESSIBLE
+svc:batch | service | Batch service — NOT ACCESSIBLE
+svc:recon | service | Recon / ART — NOT ACCESSIBLE
+svc:settlements | service | Settlements service — NOT ACCESSIBLE
+svc:wallet | service | Wallet service — NOT ACCESSIBLE
+svc:beam | service | Beam file relay — NOT ACCESSIBLE
+svc:relay | configuration source | Relay config server
+ext:banks | external bank/provider | Partner banks via Mozart: ICICI, Axis, RBL, IDFC, Yes Bank, HDFC, Citi, M2P, MCS, OCBC, Slice, Amazon Pay, JPMC
+ext:merchant-webhook | webhook consumer | Merchant webhook endpoint
+ext:merchant-api-client | identity | Merchant API client (key_id/secret Basic Auth)
+id:dashboard-user | identity | Dashboard user (cookie session + CSRF; passport minted at edge)
+id:service-basic-auth | identity | Service-to-service Basic Auth credentials (per caller)
+role:finance-l1 | role | finance_l1 (maker)
+role:finance-l2 | role | finance_l2 (checker)
+role:finance-l3 | role | finance_l3 (checker)
+role:owner-admin | role | owner/admin
+role:view-only | role | view_only
+db:payouts-mysql | datastore | Payouts MySQL (payouts, payout_details, idempotency_keys, reversals, workflow_state_map...)
+db:payouts-tidb | datastore | TiDB (payouts_temp / analytical copy via WDA)
+db:payouts-redis | datastore | Payouts Redis (idempotency mutex, in-flight reservations)
+db:payouts-es | datastore | Payouts Elasticsearch (search index)
+db:ledger-pg | datastore | Ledger Postgres rx (journal, accounts, ledger_entries, ledger_config, idempotency)
+db:fts-mysql | datastore | FTS MySQL (transfers, attempts, transfer_meta, source_accounts, routing tables)
+db:fts-redis | datastore | FTS Redis (machinery broker, mutex)
+db:cfa-mongo | datastore | CFA MongoDB (contacts, fund_accounts, hash_lookup)
+db:api-mysql | datastore | API monolith MySQL (balance, contacts, fund_accounts, bank_accounts; payouts table DELETED Aug-2026)
+db:xbalances-mysql | datastore | x-balances MySQL (balance, sub_balance)
+db:bas-mysql | datastore | banking-accounts MySQL (banking_account: account_number, balance_id, fts_fund_account_id)
+db:xas-mysql | datastore | XAS MySQL (account_statements, accounts)
+q:sqs-webhook-event | queue/topic | SQS webhook_event
+q:sqs-queued-payout | queue/topic | SQS queued_payout / schedule_payout / on_hold_payout
+q:sqs-async-dual-write | queue/topic | SQS async_dual_write / data_consistency_checker
+q:sqs-xbalances-refresh | queue/topic | SQS x_balances_balance_refresh (x-balances → payouts)
+q:sqs-xas-source | queue/topic | SQS payout/reversal source events (payouts → XAS)
+q:kafka-fts-status | queue/topic | Kafka rx-fts-status-update-events (+ fts_status_updates_retry)
+q:kafka-tds | queue/topic | Kafka add-tds-entry
+q:sns-source-updates | queue/topic | SNS source_update_topics (vendor_payments, payout_links, settlements, xpayroll, tax_payments...)
+q:sns-journal-created | queue/topic | SNS journal-created (ledger)
+q:sqs-ledger-balance-update | queue/topic | SQS ledger balance_update (async non-merchant accounts)
+q:kafka-payout-cdc | queue/topic | Kafka payout-kafka-topic (CDC/Maxwell shape, consumed by charge-collections)
+event:payout.pending | event | payout.pending
+event:payout.rejected | event | payout.rejected
+event:payout.queued | event | payout.queued
+event:payout.initiated | event | payout.initiated
+event:payout.processed | event | payout.processed
+event:payout.updated | event | payout.updated
+event:payout.reversed | event | payout.reversed
+event:payout.failed | event | payout.failed
+event:payout.downtime.started | event | payout.downtime.started
+event:payout.downtime.resolved | event | payout.downtime.resolved
+flag:shadow_gateway.enabled | feature flag | shadow_gateway.enabled (prod=false)
+flag:splitz:shadow-route | feature flag | Splitz per-route shadow-gateway experiment (devstack pilot TUnTsUB8Os2kX0)
+flag:splitz:CreateTransferMetaRollout | feature flag | Splitz CreateTransferMetaRollout (FTS webhook → PS direct)
+flag:splitz:FireStatusUpdateKafka | feature flag | Splitz FireStatusUpdateKafka (FTS status via Kafka)
+flag:dcs:payout_workflows | feature flag | DCS payout_workflows / skip_approval_workflow_for_api / skip_workflow_for_* (merchant)
+flag:dcs:in_flight_reservation_enabled | feature flag | DCS in_flight_reservation_enabled
+flag:features.forward_dual_write | feature flag | features.forward_dual_write / reverse_dual_write / skip_ca_dual_write
+flag:splitz:IKeyAutoEnforcementRampUp | feature flag | features.ikey_auto_enforcement + Splitz ramp-up
+flag:merchant:payout_service_enabled | feature flag | merchant payout_service_enabled / is_payout_service
+flag:kong:payouts-proxy-cutover | gateway route | Kong template payouts-proxy-cutover (shadow route, monolith default upstream)
+ep:POST /v1/payouts | API endpoint | POST /v1/payouts (public; also payouts_internal, internal_contact_payout)
+ep:POST /payouts_with_otp | API endpoint | POST /merchant/api/{mode}/payouts_with_otp (dashboard)
+ep:POST /v1/payouts/{id}/approve | API endpoint | POST /payouts/{id}/approve|reject (+bulk, 2fa)
+ep:POST /v1/payouts/{id}/cancel | API endpoint | POST /v1/payouts/{id}/cancel
+ep:POST /v1/transfer | API endpoint | FTS POST /v1/transfer
+ep:Journal.Create | API endpoint | Ledger Twirp Journal.Create
+ep:transfer_status_webhook | API endpoint | PS POST /v1/payouts/transfer_status_webhook
+ep:update_fts_fund_transfer | API endpoint | API monolith /v1/update_fts_fund_transfer (legacy FTS webhook)
+ep:update_payouts_with_fts | API endpoint | PS PATCH /v1/payouts/update_payouts_with_fts (internal)
+ep:manual_action | admin action | PS POST /v1/payouts/manual_action (processed→processing, approve/reject workflow)
+ep:admin-force-status | admin action | Admin PATCH live/payouts/{id}/manual/status (force status)
+ep:cron | cron | PS /v1/cron/* (queued/scheduled/on_hold dispatch, reservation reconcile, dual-write failure, SLA monitor)
+ep:fts-stuck-cron | cron | FTS stuck_payouts cron (canary instance, leader-elected)
+ep:xbalances-fetch-cron | cron | x-balances /v1/cron/balance/{channel}/fetch
+ep:xas-fetch | cron | XAS statement fetch jobs
+deploy:payouts | deployment | payouts Dockerfiles build/docker/prod/*, devspace.yaml; manifests external
+deploy:fts | deployment | fts deployments/{prod,stage,func,perf}/deployment-web|default-worker.yaml
+db:validx-mysql | datastore | ValidX MySQL (validations, validation_attempts, gateway_routing_rules, rpd_ledger)
+q:sqs-validx-dualwrite | queue/topic | SQS prod-api-validation-dual-write-live (ValidX → monolith)
+ep:POST /v1/fund_accounts/validations | API endpoint | Public POST /v1/fund_accounts/validations (owned by API monolith)
+ep:validx-internal | API endpoint | ValidX /v1/internal/validations*, /webhook/fts, /webhook/citi, /manual-action, /routing/rules
+ep:payouts_internal-approve | API endpoint | PS POST /v1/payouts/payouts_internal/{id}/approve|reject (BasicAuth only, unscoped FindByID)
+ep:workflow-state | API endpoint | PS POST/PATCH /v1/workflow/state[/:id] (workflow_state_map)
+ep:POST /v1/payouts/bulk | API endpoint | PS POST /v1/payouts/bulk (+/validate) — caller Batch service (inferred), X-Batch-Id header
+ep:notify-health | API endpoint | PS POST /v1/notify/health/update, /notify/downtime (FTS → partner bank health)
+flag:splitz:fts_request_from_ps | feature flag | config fts_request_from_ps merchant list + Splitz fts_request_from_payouts_service_experiment
+flag:splitz:merchant_config_via_asv_and_dcs | feature flag | Splitz merchant_config_via_asv_and_dcs_experiment (Qnc6b4fg1Hi36k): merchant config from monolith (default) vs ASV+DCS
+flag:splitz:for_duplicate_payout_evaluate | feature flag | Splitz for_duplicate_payout_evaluate {enable, action} shadow vs enforce
+flag:splitz:charge_collections_call_experiment | feature flag | Splitz charge_collections_call_experiment (pricing source: monolith vs CC-SDK)
+flag:splitz:PayoutWorkflowsDcsNameExperiment | feature flag | Splitz PayoutWorkflowsDcsNameExperiment (Sg7tEnMoxCbTzM): OR legacy + DCS flag names
+flag:splitz:use_api_db_for_payout_status_details | feature flag | Splitz use_api_db_for_payout_status_details_experiment (TMp5VcIFYOHK2m) fail-open → monolith DB reads
+db:redis-merchant-config | datastore | PS Redis MerchantConfig cache (30 min; UpdateMerchantFeatureInCache no-ops when cold)
+ep:cron-queued | cron | PS /v1/cron/process_queued_low_balance_payouts (6h balance-change window, limit 5000, no ORDER BY)
+ep:cron-reservation | cron | PS /v1/cron/process_inflight_reservation_reconciliation (5 min cadence, heartbeat TTL 12.5 min, fail-closed)
+ep:cron-scheduled | cron | PS /v1/cron/process_scheduled_payouts (4 IST slots; pending-at-slot ⇒ auto-reject)
+ep:cron-onhold | cron | PS /v1/cron/process_beneficiary_bank_on_hold_payouts + /process_queued_payouts (SLA breach ⇒ failed)
+ep:cron-sla | cron | PS SLA monitor (create_request_submitted, batch_submitted, scheduled only — NOT initiated; alert only)
+ep:bas-recon-payout-update | API endpoint | PS POST /v1/payouts/banking_account_statement/payout_update (BAS recon → can create reversal)
+q:sqs-payout-update-failure | queue/topic | SQS payout_update_failure_handling (ledger processed/reversed retries, MaxRetries 3, 120 s)
+ep:ps-admin-merchant-configuration | admin action | PS POST/PUT /v1/admin/merchant-configuration (+ cron variant) — merchant config mutation
+ep:ps-admin-payouts-sync | admin action | PS PATCH /v1/admin/payouts_sync + POST /v1/admin/free_payout/:balance_id (passport admin + BasicAuth)
+ep:fts-manual-override | admin action | FTS channel-health /manual_override, /fail_fast_status/manual_update, /v1/transfer/fail, /v1/manual_queries/update
+job:monolith-ApprovedPayoutProcessor | worker | API monolith job ApprovedPayoutProcessor — still issues UPDATE payouts SET status='rejected' against deleted api.payouts table (failing 2026-09-03) ⚠

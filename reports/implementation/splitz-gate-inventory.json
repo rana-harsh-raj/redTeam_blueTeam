@@ -1,0 +1,428 @@
+{
+  "payouts_fields": 38,
+  "fts_fields": 32,
+  "default_variant": "off",
+  "classification": "All variants ASSUMED synthetic; source config fields verified",
+  "fields": [
+    {
+      "service": "payouts",
+      "source_field": "ForDuplicatePayoutEvaluate",
+      "config_key": "forDuplicatePayoutEvaluate",
+      "experiment_id": "PXoynBvY8VkA5a"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ForPayoutPropertiesEventEvaluate",
+      "config_key": "forPayoutPropertiesEventEvaluate",
+      "experiment_id": "Pf0j4gdcJNPZta"
+    },
+    {
+      "service": "payouts",
+      "source_field": "PartnerBankOnHoldPayoutsExperiment",
+      "config_key": "partner_bank_on_hold_payouts_experiment",
+      "experiment_id": "PXm4aNSJOfdmXm"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ForDualWriteDirectPushToAPI",
+      "config_key": "forDualWriteDirectPushToAPI",
+      "experiment_id": "PoQI26W5xwnXib"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ForChargeCollectionEvaluate",
+      "config_key": "forChargeCollectionEvaluate",
+      "experiment_id": "PpEyxfP2yIvlJN"
+    },
+    {
+      "service": "payouts",
+      "source_field": "MerchantConfigurationExperiment",
+      "config_key": "merchant_configuration_experiment",
+      "experiment_id": "merchant_configuration_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ForProcessingFilterEvaluate",
+      "config_key": "forProcessingFilterEvaluate",
+      "experiment_id": "Po1yZkb1pdCkXy"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ExperimentForTestingPartnerBankOnHoldPayoutsAsyncProcessing",
+      "config_key": "testing_partner_bank_on_hold_payouts_async_processing_experiment",
+      "experiment_id": "arena_ps_testing_partner_bank_on_hold_payouts_async_processing_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ExperimentForTestingBeneBankOnHoldPayoutsAsyncProcessing",
+      "config_key": "testing_bene_bank_on_hold_payouts_async_processing_experiment",
+      "experiment_id": "arena_ps_testing_bene_bank_on_hold_payouts_async_processing_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ExperimentForTestingQueueIfLowBalancePayoutsAsyncProcessing",
+      "config_key": "testing_queue_if_low_balance_payouts_async_processing_experiment",
+      "experiment_id": "arena_ps_testing_queue_if_low_balance_payouts_async_processing_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "PerformanceOptimizationExperiment",
+      "config_key": "performance_optimization_experiment",
+      "experiment_id": "performance_optimization_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ExperimentForFtsRequestFromPayoutsService",
+      "config_key": "fts_request_from_payouts_service_experiment",
+      "experiment_id": "QTwJ8uQKns0pOE"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ForDowntimeV2WebhookNotificationExperiment",
+      "config_key": "downtime_v2_webhook_notification_experiment",
+      "experiment_id": "QaLdhqjfjLYZFm"
+    },
+    {
+      "service": "payouts",
+      "source_field": "GoRoutineCappingExperiment",
+      "config_key": "go_routine_capping_experiment",
+      "experiment_id": "go_routine_capping_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ExperimentForTestingFundAccountOptimisation",
+      "config_key": "fund_account_optimisation_experiment",
+      "experiment_id": "fund_account_optimisation_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ExperimentAPIAndWebhookAdditionalFields",
+      "config_key": "api_and_webhook_additional_fields",
+      "experiment_id": "QiH03vj8QtN2FX"
+    },
+    {
+      "service": "payouts",
+      "source_field": "BulkPayoutConcurrencyExperiment",
+      "config_key": "bulk_payout_concurrency_experiment",
+      "experiment_id": "bulk_payout_concurrency_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ForBulkProcessingOptimisation",
+      "config_key": "bulk_processing_optimisation_experiment",
+      "experiment_id": "bulk_processing_optimisation_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "XasSourceEventExperiment",
+      "config_key": "account_statement_source_event",
+      "experiment_id": "P9jMHiqpMI81A5"
+    },
+    {
+      "service": "payouts",
+      "source_field": "IKeyAutoEnforcementRampUp",
+      "config_key": "ikey_auto_enforcement_ramp_up",
+      "experiment_id": "R2Mo039vdGE3Dr"
+    },
+    {
+      "service": "payouts",
+      "source_field": "MerchantConfigViaAsvAndDcs",
+      "config_key": "merchant_config_via_asv_and_dcs_experiment",
+      "experiment_id": "merchant_config_via_asv_and_dcs"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ChargeCollectionsCallExperiment",
+      "config_key": "charge_collections_call_experiment",
+      "experiment_id": "R9gHg72EW42wi8"
+    },
+    {
+      "service": "payouts",
+      "source_field": "ChargeCollectionsCallCanaryExperiment",
+      "config_key": "charge_collections_call_canary_experiment",
+      "experiment_id": "RNkAkBIfS8zTcA"
+    },
+    {
+      "service": "payouts",
+      "source_field": "FetchFromMicroservicesExperiment",
+      "config_key": "fetch_from_microservices_experiment",
+      "experiment_id": "RGCBZ5zidPFaPL"
+    },
+    {
+      "service": "payouts",
+      "source_field": "FetchBalanceEntityFromXBalance",
+      "config_key": "fetch_balance_entity_from_x_balance",
+      "experiment_id": "Rjdj0sAd4paXMG"
+    },
+    {
+      "service": "payouts",
+      "source_field": "FetchBalanceEntityFromXBalanceAsync",
+      "config_key": "fetch_balance_entity_from_x_balance_async",
+      "experiment_id": "SQg4o8tfP5GwVq"
+    },
+    {
+      "service": "payouts",
+      "source_field": "SkipBalanceCacheForceXBalances",
+      "config_key": "skip_balance_cache_force_x_balances",
+      "experiment_id": "S9qQNxNd9dpYYE"
+    },
+    {
+      "service": "payouts",
+      "source_field": "XasSourceEventUTRAndGRNMatchExperiment",
+      "config_key": "xas_source_event_utr_and_grn_match_experiment",
+      "experiment_id": "RStPt2vqXrd5Wl"
+    },
+    {
+      "service": "payouts",
+      "source_field": "SourceUpdaterSnsExperiment",
+      "config_key": "source_updater_sns_experiment",
+      "experiment_id": "arena_ps_source_updater_sns_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "DeductCreditsExperiment",
+      "config_key": "deduct_credits_experiment",
+      "experiment_id": "RfVD62nvKbFvWL"
+    },
+    {
+      "service": "payouts",
+      "source_field": "FetchPayoutByIdViaOrchestratorExperiment",
+      "config_key": "fetch_payout_by_id_via_orchestrator_experiment",
+      "experiment_id": "Rbyk5bJ3ZJZmGn"
+    },
+    {
+      "service": "payouts",
+      "source_field": "SLAMonitoringExperiment",
+      "config_key": "sla_monitoring_experiment",
+      "experiment_id": "arena_ps_sla_monitoring_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "FetchByIDAPIFallbackExperiment",
+      "config_key": "fetch_by_id_api_fallback_experiment",
+      "experiment_id": "arena_ps_fetch_by_id_api_fallback_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "UseApiDbForPayoutsExperiment",
+      "config_key": "use_api_db_for_payouts_experiment",
+      "experiment_id": "TLL7cUwWeEELzd"
+    },
+    {
+      "service": "payouts",
+      "source_field": "UseApiDbForPayoutStatusDetailsExperiment",
+      "config_key": "use_api_db_for_payout_status_details_experiment",
+      "experiment_id": "TMp0fcGQi3nMWG"
+    },
+    {
+      "service": "payouts",
+      "source_field": "FreePayoutsXBalancesExperiment",
+      "config_key": "free_payouts_xbalances_experiment",
+      "experiment_id": "arena_ps_free_payouts_xbalances_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "FMPInitiateExperiment",
+      "config_key": "fmp_initiate_experiment",
+      "experiment_id": "arena_ps_fmp_initiate_experiment"
+    },
+    {
+      "service": "payouts",
+      "source_field": "PayoutWorkflowsDcsNameExperiment",
+      "config_key": "payout_workflows_dcs_name_experiment",
+      "experiment_id": "Sg7vrXQkpK4hBA"
+    },
+    {
+      "service": "fts",
+      "source_field": "StuckPayoutsExperiment",
+      "config_key": "stuck_payouts_experiment",
+      "experiment_id": "arena_fts_stuck_payouts_experiment"
+    },
+    {
+      "service": "fts",
+      "source_field": "StuckPayoutsInitiateExperiment",
+      "config_key": "stuck_payouts_initiate_experiment",
+      "experiment_id": "arena_fts_stuck_payouts_initiate_experiment"
+    },
+    {
+      "service": "fts",
+      "source_field": "NeftSecondSlotExperiment",
+      "config_key": "neft_second_slot_experiment",
+      "experiment_id": "arena_fts_neft_second_slot_experiment"
+    },
+    {
+      "service": "fts",
+      "source_field": "NeftSecondSlotExperimentPermanent",
+      "config_key": "neft_second_slot_experiment_permanent",
+      "experiment_id": "arena_fts_neft_second_slot_experiment_permanent"
+    },
+    {
+      "service": "fts",
+      "source_field": "NewMaintainNeftFlow",
+      "config_key": "new_maintain_neft_flow",
+      "experiment_id": "arena_fts_new_maintain_neft_flow"
+    },
+    {
+      "service": "fts",
+      "source_field": "FireStatusUpdateKafka",
+      "config_key": "fire_status_update_kafka",
+      "experiment_id": "arena_fts_kafka"
+    },
+    {
+      "service": "fts",
+      "source_field": "MarNewRoutingFlow",
+      "config_key": "mar_new_routing_flow",
+      "experiment_id": "arena_fts_mar_new_routing_flow"
+    },
+    {
+      "service": "fts",
+      "source_field": "RoutingCongestionCalculatorNEFT",
+      "config_key": "routing_congestion_calculator_neft",
+      "experiment_id": "arena_fts_routing_congestion_calculator_neft"
+    },
+    {
+      "service": "fts",
+      "source_field": "LimitedWebhookFlowExperiment",
+      "config_key": "limited_webhook_flow_experiment",
+      "experiment_id": "arena_fts_limited_webhook_flow_experiment"
+    },
+    {
+      "service": "fts",
+      "source_field": "AxisUpiCustomStatusCheckExperiment",
+      "config_key": "axis_upi_custom_status_check_experiment",
+      "experiment_id": "arena_fts_axis_upi_custom_status_check_experiment"
+    },
+    {
+      "service": "fts",
+      "source_field": "RBLUPIOptimizedStatusCheckExperiment",
+      "config_key": "rbl_upi_optimized_status_check_experiment",
+      "experiment_id": "arena_fts_rbl_upi_optimized_status_check_experiment"
+    },
+    {
+      "service": "fts",
+      "source_field": "NonReconStatusCheckExperiment",
+      "config_key": "non_recon_status_check_experiment",
+      "experiment_id": "arena_fts_non_recon_status_check_experiment"
+    },
+    {
+      "service": "fts",
+      "source_field": "ReSelectSAFlowExperiment",
+      "config_key": "reselect_sa_flow_experiment",
+      "experiment_id": "arena_fts_reselect_sa_flow_experiment"
+    },
+    {
+      "service": "fts",
+      "source_field": "CombinedTpsSourceAccountFetch",
+      "config_key": "combined_tps_source_account_fetch",
+      "experiment_id": "arena_fts_combined_tps_source_account_fetch"
+    },
+    {
+      "service": "fts",
+      "source_field": "TokenSelectionFeature",
+      "config_key": "token_selection_feature",
+      "experiment_id": "arena_fts_token_selection_feature"
+    },
+    {
+      "service": "fts",
+      "source_field": "RBLDataSystemActivity",
+      "config_key": "rbl_data_system_activity",
+      "experiment_id": "arena_fts_rbl_data_system_activity"
+    },
+    {
+      "service": "fts",
+      "source_field": "RBLEgressTokenBucket",
+      "config_key": "rbl_egress_token_bucket",
+      "experiment_id": "arena_fts_rbl_egress_token_bucket"
+    },
+    {
+      "service": "fts",
+      "source_field": "FtsFraudCheck",
+      "config_key": "fts_fraud_check",
+      "experiment_id": "arena_fts_fts_fraud_check"
+    },
+    {
+      "service": "fts",
+      "source_field": "YesBankSyncFlowFeature",
+      "config_key": "yesbank_sync_flow_feature",
+      "experiment_id": "arena_fts_yesbank_sync_flow_feature"
+    },
+    {
+      "service": "fts",
+      "source_field": "NEFT24x7QueueingFeature",
+      "config_key": "neft_24_7_queuing_feature",
+      "experiment_id": "arena_fts_neft_24_7_queuing_feature"
+    },
+    {
+      "service": "fts",
+      "source_field": "TracerTransferFeatureEnabled",
+      "config_key": "tracer_transfer_feature_enabled",
+      "experiment_id": "arena_fts_tracer_transfer_feature_enabled"
+    },
+    {
+      "service": "fts",
+      "source_field": "AxisNeft24x7Enable",
+      "config_key": "axis_neft_24_7_enable",
+      "experiment_id": "arena_fts_axis_neft_24_7_enable"
+    },
+    {
+      "service": "fts",
+      "source_field": "SeparateQueueForGKMerchants",
+      "config_key": "separate_queue_for_gk_merchants",
+      "experiment_id": "arena_fts_separate_queue_for_gk_merchants"
+    },
+    {
+      "service": "fts",
+      "source_field": "SeparateQueueForPettyCashMerchants",
+      "config_key": "separate_queue_for_petty_cash_merchants",
+      "experiment_id": "arena_fts_separate_queue_for_petty_cash_merchants"
+    },
+    {
+      "service": "fts",
+      "source_field": "AxisChannelNeftModeTransferRemarksEnhancement",
+      "config_key": "axis_channel_neft_mode_transfer_remarks_enhancement",
+      "experiment_id": "arena_fts_axis_channel_neft_mode_transfer_remarks_enhancement"
+    },
+    {
+      "service": "fts",
+      "source_field": "CreateTransferMetaRollout",
+      "config_key": "create_transfer_meta_rollout",
+      "experiment_id": "arena_fts_meta"
+    },
+    {
+      "service": "fts",
+      "source_field": "ShadowModeHeaders",
+      "config_key": "shadow_mode_headers",
+      "experiment_id": "arena_fts_shadow_mode_headers"
+    },
+    {
+      "service": "fts",
+      "source_field": "FireTransferStatusWebhookToPS",
+      "config_key": "fire_transfer_status_webhook_to_ps",
+      "experiment_id": "arena_fts_fire_transfer_status_webhook_to_ps"
+    },
+    {
+      "service": "fts",
+      "source_field": "PassRequestMetaToMozart",
+      "config_key": "pass_request_meta_to_mozart",
+      "experiment_id": "arena_fts_pass_request_meta_to_mozart"
+    },
+    {
+      "service": "fts",
+      "source_field": "SliceV2TerminalFailureHandling",
+      "config_key": "slice_v2_terminal_failure_handling",
+      "experiment_id": "arena_fts_slice_v2_terminal_failure_handling"
+    },
+    {
+      "service": "fts",
+      "source_field": "IrctcAxis",
+      "config_key": "irctc_axis",
+      "experiment_id": "arena_fts_irctc_axis"
+    },
+    {
+      "service": "fts",
+      "source_field": "OpgspSettlementCurrencyAmount",
+      "config_key": "opgsp_settlement_currency_amount",
+      "experiment_id": "arena_fts_opgsp_settlement_currency_amount"
+    }
+  ]
+}

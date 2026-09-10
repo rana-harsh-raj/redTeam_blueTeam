@@ -1,0 +1,15 @@
+{
+  "schema_version": 1,
+  "status": "passed",
+  "evidence_hashes_verified": 133,
+  "checks_true": 8,
+  "checks_false": [
+    "scenario_assertions",
+    "no_unexplained_results"
+  ],
+  "acceptance_status": "blocked",
+  "execution_gate_rejection": "Local acceptance has not passed",
+  "remote_api_calls": 0,
+  "audit_reader_hashes_verified": true,
+  "same_running_boot": true
+}

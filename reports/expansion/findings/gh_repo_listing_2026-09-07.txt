@@ -1,0 +1,252 @@
+.github	PUBLIC		2026-08-21	Razorpay's Public Profile Page
+IT-Team---Public-Bucket	PUBLIC		2025-07-23	
+Laravel-Excel	PUBLIC		2025-09-23	🚀 Supercharged Excel exports and imports in Laravel
+Laravel-Throttle	PUBLIC		2025-09-15	A rate limiter for Laravel 5
+MISP	PUBLIC	ARCHIVED	2022-05-18	MISP (core software) - Open Source Threat Intelligence and Sharing Platform
+PHPExcel	PUBLIC		2025-09-15	ARCHIVED
+RazorpaySalesDemo	PUBLIC		2026-04-21	
+Requests	PUBLIC		2025-09-15	Requests for PHP is a humble HTTP request library. It simplifies how you interact with other sites and takes away all your worries.
+TestDummy	PUBLIC		2025-09-15	Easy factories for PHP integration testing.
+ValidX	PRIVATE		2026-09-03	Service is responsible to validate the beneficiary bank accounts and vpa handles and return the underlying registered names. Future scope is to add the complete validation stack like validating aadhar, pan, gst, etc
+accounting-integrations	PRIVATE		2026-09-07	Accounting Integration Rx-Apps Microservice
+actions	PRIVATE		2026-09-03	host for all centralized github actions
+admin-dashboard	PRIVATE		2026-09-07	Razorpay's Admin Dashboard
+agent-skills	PRIVATE		2026-09-07	Central Agent Skills for Automating day-to-day workflows.
+ai-playbook	PUBLIC		2026-09-07	
+alert-rules	PRIVATE		2026-09-07	Prometheus alert rules repo
+alohomora	PUBLIC		2026-08-28	alohomora is razorpay's secret distribution system
+api	PRIVATE		2026-09-07	The backbone of Razorpay
+authz	PRIVATE		2026-09-07	Razorpay's Authorization framework
+avas	INTERNAL		2026-09-07	
+banking-accounts	PRIVATE		2026-09-07	Razorpay X Banking Account Service
+batch	PRIVATE		2026-09-07	Razorpay Batch service
+bhadra	PUBLIC		2026-09-03	Bhadra is a Vulnerability Management Platform to handle all security issues
+blade	PUBLIC		2026-09-07	Design System that powers Razorpay
+bozo	PUBLIC	ARCHIVED	2015-06-25	Razorpay's in house visual regression testing tool.
+branch-cleanup-action	PUBLIC		2025-07-23	A GitHub action to automatically delete the branch after a pull request has been merged. 
+business-verification-service-sdk-go	PRIVATE		2026-09-07	Go sdk for business verification service
+cfa	PRIVATE		2026-09-07	Central Repository for Contacts and Fund Accounts
+chaos-mesh	PUBLIC		2025-07-23	A Chaos Engineering Platform for Kubernetes.
+charge-collections	PRIVATE		2026-09-07	Platform Pricing Service
+charge-collections-sdk	PRIVATE		2026-09-04	pricing-sdk
+checkout-action	PUBLIC		2026-08-30	Action for checking out a repo
+checkout-demo-extension	PUBLIC		2026-07-15	Razorpay Checkout demo extension
+checkout-swift	PUBLIC		2026-07-15	Swift Package Support - Checkout
+citadel	PUBLIC		2026-07-15	Documentation Platform
+cloudsploit-scans	PUBLIC		2025-07-23	AWS security scanning checks
+commerce_razorpay	PUBLIC	ARCHIVED	2017-05-04	
+commerce_razorpay_D8	PUBLIC	ARCHIVED	2017-12-08	
+common-frontend-utils	PUBLIC		2026-07-23	Common Frontend Utils
+component.js	PUBLIC		2026-07-23	Simple and Opinionated way to build UI Components
+concierge	PUBLIC		2026-08-03	Web Management & Secure Access Control of AWS Security Groups. Allows you to create IP leases for incoming connections to AWS instances. Also, allows creating invites to allow guest access by URL/Email Invites.Uses two factor authentication for additional security. 
+config-proto	PRIVATE		2026-09-07	Proto Repository for Razorpay's Dynamic Configurations.
+create-comment	PUBLIC		2026-08-28	📋 GitHub Action that post comment on a GitHub Issue or Pull Request
+create-github-app-token	INTERNAL		2026-09-01	create-github-app-token
+cryptocows-whitepaper	PUBLIC	ARCHIVED	2018-03-31	Technical Documentation for Razorpay CryptoCows
+darts	PUBLIC	ARCHIVED	2016-09-29	:dart: The Razorpay Dart Board Championship Hall of Fame
+dashboard	PRIVATE		2026-09-07	Razorpay's Merchant Dashboard
+data-mcp	INTERNAL		2026-07-22	
+dcs	PRIVATE		2026-09-07	Razorpay's Solution for Dynamic Configurations.
+devstack	PUBLIC		2026-08-28	Razorpay DevX cloud on laptop solution
+distribution	PUBLIC		2026-08-28	The toolkit to pack, ship, store, and deliver container content
+django-DefectDojo	PUBLIC	ARCHIVED	2023-09-21	DefectDojo is an open-source application vulnerability correlation and security orchestration tool.
+docker	PUBLIC	ARCHIVED	2017-11-07	Razorpay CI Docker Images
+docker-alpine-wkhtmltopdf	PUBLIC		2025-09-15	wkhtmltopdf alpine docker container with headless qt patches
+docker-build-push-action	PUBLIC		2026-08-28	:octocat: GitHub Action to build and push Docker images with Buildx
+docker-login-action	PUBLIC		2026-08-28	:octocat: GitHub Action to login against a Docker registry
+dot-settings	PUBLIC		2026-07-15	
+drone-kubernetes	PUBLIC	ARCHIVED	2019-02-25	A drone plugin to update a deployment on a kubernetes cluster
+drone-s3-cache	PUBLIC		2025-09-15	Caches build artifacts to S3 compatible storage backends
+drupal_commerce_razorpay	PUBLIC		2026-07-15	Razorpay Payment Extension for Drupal Commerce
+ec2-metadata	PUBLIC		2025-09-15	A rewrite of the EC2 Instance Metadata API for PHP.
+edge	PRIVATE		2026-09-07	Razorpay's API Gateway at the Edge
+error-mapping-module	PRIVATE		2026-09-07	Error Code Mapping Library
+etcd-backup	PUBLIC		2025-07-23	Docker file for etcd-backup running as a k8s cron job.
+fluentd-kubernetes-sumologic	PUBLIC	ARCHIVED	2019-05-30	razorpay's fork for fluentd-kubernetes-sumologic
+frontend-care	PRIVATE		2026-09-07	React repo which has all the care codebase
+frontend-universe	PRIVATE		2026-09-06	JavaScript Monorepo which holds all the configs, utils, tools etc. for frontend
+frontend-x	PRIVATE		2026-09-07	Suite of RazorpayX mobile and web apps
+fts	PRIVATE		2026-09-07	Funds transfer service
+ftx-hackathon	PUBLIC		2026-07-15	Wiki for the FTX Hackathon
+genesis	PUBLIC		2026-08-28	
+gh-find-current-pr	PUBLIC		2026-07-20	Github Action for finding the Pull Request (PR) associated with the current SHA.
+go-financial	PUBLIC		2026-08-03	A go port of numpy-financial functions and more.
+go-foundation-v2	PRIVATE		2026-09-03	Best in class - golang service - refer it and make it better!
+go-money	PUBLIC		2025-07-23	Go implementation of Fowler's Money pattern
+go-openssl	PUBLIC		2026-08-03	OpenSSL bindings for Golang
+go-rwp	INTERNAL	ARCHIVED	2023-06-05	Backend rewards market place repository.
+golib	PUBLIC		2026-08-28	This repo has a collection of Go modules shared across Go services.
+gollum-setup	PUBLIC	ARCHIVED	2021-11-11	Scripts to help you setup gollum
+goredis	PUBLIC		2025-07-23	a middleware for go-redis/redis to use opentracing
+gorm	PUBLIC		2026-08-03	The fantastic ORM library for Golang, aims to be developer friendly
+goutils	PRIVATE		2026-09-07	Repository of Shared Golang Packages - telemetry, storage, configloader, validation and also contains SDKs of services: account-service, authz, dcs, splitz, bin-service, and likes
+govalidator	PUBLIC		2025-09-15	Validate Golang request data with simple rules. Highly inspired by Laravel's request validation.
+govaluate	PUBLIC		2025-09-15	Arbitrary expression evaluation for golang
+governor	PRIVATE		2026-09-07	Razorpay Rule Engine Service
+governor-executor	PRIVATE		2026-09-07	Rules execution library of Governor
+harbor	PUBLIC		2026-04-16	An open source trusted cloud native registry project that stores, signs, and scans content.
+helm-git	PUBLIC	ARCHIVED	2022-10-10	Helm Plugin - Install Helm Charts directly from Git repositories
+helmfile	PUBLIC	ARCHIVED	2022-09-09	Declaratively deploy your Kubernetes manifests, Kustomize configs, and Charts as Helm releases in one shot
+hermes	PUBLIC		2026-08-28	A document management system
+homebrew-razorpay-cli	PUBLIC		2026-07-15	
+hypertrace-attribute-service	PUBLIC	ARCHIVED	2023-05-16	Service which does the CRUD for attributes in Hypertrace.
+hypertrace-config-bootstrapper	PUBLIC	ARCHIVED	2023-05-16	Bootstrapping Hypertrace attributes and entities configuration
+hypertrace-config-service	PUBLIC	ARCHIVED	2022-09-30	Service for storing and serving configurations across multiple services and contexts.
+hypertrace-entity-service	PUBLIC	ARCHIVED	2022-09-30	Service will interface with the entities document store, currently MongoDB
+hypertrace-gateway-service	PUBLIC	ARCHIVED	2022-12-07	Entry service for querying data from other services like entity-service, query-service, etc
+hypertrace-hypertrace-graphql	PUBLIC	ARCHIVED	2022-12-28	The public graphql API of the Hypertrace platform
+hypertrace-ingester	PUBLIC	ARCHIVED	2023-09-18	Streaming jobs for Hypertrace
+hypertrace-pinot-docker	PUBLIC	ARCHIVED	2023-05-16	Apache Pinot docker image and helm chart
+hypertrace-query-service	PUBLIC	ARCHIVED	2023-05-12	Query service which exposes APIs to query data from the underlying stores.
+hypertrace-service	PUBLIC	ARCHIVED	2023-06-14	Multiple hypertrace services combined together to form a single service.
+hypertrace-ui	PUBLIC	ARCHIVED	2023-08-10	fork of hypertrace UI
+i18nify	PUBLIC		2026-09-07	One stop solution for all your internationalisation needs. 
+i18nify-react	PUBLIC		2026-08-28	
+ifsc	PUBLIC		2026-09-01	:bank: IFSC Codes Repository
+ifsc-api	PUBLIC		2026-09-03	:bank: Standalone API for IFSC codes
+imagepullsecret-patcher	PUBLIC		2026-08-28	A simple Kubernetes client-go application that creates and patches imagePullSecrets to service accounts in all Kubernetes namespaces to allow cluster-wide authenticated access to private container registry.
+incubator-livy	PUBLIC		2025-09-15	Mirror of Apache livy (Incubating)
+incubator-pinot	PUBLIC		2025-12-04	Apache Pinot (Incubating) - A realtime distributed OLAP datastore
+k6	PUBLIC		2026-08-28	A modern load testing tool, using Go and JavaScript - https://k6.io
+knowledge-base	PRIVATE		2026-09-07	Git-backed Curated Knowledge Base for Agents
+kong-pongo	PUBLIC		2026-08-28	Tooling to run plugin tests with Kong and Kong Enterprise
+kong-template	PUBLIC	ARCHIVED	2021-02-04	Kong template for plugin development
+konga	PUBLIC		2026-08-28	More than just another GUI to Kong Admin API
+kube-manifests	PRIVATE		2026-09-07	
+kubestash	PUBLIC		2025-09-15	Kubernetes + Credstash Integration, push your credstash table into Kubernetes secrets. 
+kubestash-v2	PUBLIC		2025-09-15	Sync secrets from DDB Credstash table to K8
+laravel-settings	PUBLIC		2025-09-15	Persistent settings in Laravel
+ledger	PRIVATE		2026-09-07	Ledger Service
+ledger-sdk	PRIVATE		2026-09-03	Ledger SDK
+list-files-in-pr	PUBLIC		2026-08-28	
+lqext	PUBLIC		2026-07-15	Transaction aware events dispatch
+lytics.js	PUBLIC		2026-07-15	Simpler analytics using HTML attributes.
+magic-clickstream	INTERNAL		2026-09-03	
+markdown-docs	PUBLIC		2026-09-03	
+memoir	INTERNAL		2026-09-03	Memoir, an inhouse traffic recording sidecar curated specifically for razorpay services
+metro	PUBLIC		2026-09-02	The Service Bus!
+metro-proto	PUBLIC		2026-08-28	Protobuf definitions for Metro
+mozart	PRIVATE		2026-09-07	Razorpay Gateway Integration Framework
+n8n-nodes-razorpay	PUBLIC		2026-07-15	
+ndbench	PUBLIC		2025-09-15	Netflix Data Store Benchmark
+oauth-5-laravel	PUBLIC		2025-09-15	OAuth Service Provider for Laravel 5
+offsite_payments	PUBLIC	ARCHIVED	2022-01-21	A simple and unified API to handle dozens of different offsite payment pages.
+omnigollum	PUBLIC	ARCHIVED	2022-02-26	Omniauth authentication for gollum
+omnipay-razorpay	PUBLIC		2026-08-05	Razorpay plugin for Omnipay Payment Processing Library
+opencensus-php	PUBLIC		2026-08-28	Opencensus Package for PHP
+opencensus-php-exporter-jaeger	PUBLIC		2026-08-28	OpenCensus PHP exporters for Jaeger
+opensource.razorpay.com	PUBLIC		2026-08-28	Razorpay Open Source showcase website
+payment-button-elementor-plugin	PUBLIC		2026-07-15	Payment button Elementor plugin.
+payment-button-siteorigin-plugin	PUBLIC		2026-07-15	Payment Button plugin for WP siteorigin.
+payment-button-visual-composer	PUBLIC		2026-07-15	Payment Button plugin for WP visual composer.
+payment-button-wordpress-plugin	PUBLIC		2026-07-15	Payment button plugin for wordpress.
+payment_button_drupal_plugin	PUBLIC		2026-07-15	Payment button Drupal plugin.
+payment_button_joomla_plugin	PUBLIC		2026-07-15	Payment button Joomla plugin.
+payments-upi	PRIVATE		2026-09-07	Razorpay UPI Payments Service
+payout-links	PRIVATE		2026-09-06	Payout Links apps microservice
+payouts	PRIVATE		2026-09-07	RazorpayX Payouts Service
+pg-sdk	PRIVATE		2026-09-07	PG-Router SDK
+php-bloom-filter	PUBLIC	ARCHIVED	2017-07-24	Bloom filter
+presto-gateway	PUBLIC		2025-09-15	A load balancer / proxy / gateway for prestodb
+proto	PRIVATE		2026-09-07	Protobuf definitions for Razorpay services
+proto-api-docs-action	PUBLIC		2026-07-15	github action to generate swagger api docs from protobufs
+public-presentations	PUBLIC		2026-07-15	A curated list of public talks and articles by Razorpay
+python-foundation	INTERNAL		2026-09-03	Python framework for building services at Razorpay
+rQuery	PUBLIC	ARCHIVED	2018-03-27	₹Query: jQuery modified, made in India, for India, by Indians.
+ranger	PUBLIC		2026-08-28	Mirror of Apache Ranger
+razor-analytics	PRIVATE		2026-09-03	
+razor-analytics-plugins	PRIVATE		2026-09-03	
+razorpay-ai-tools	PRIVATE		2026-09-03	
+razorpay-android-custom-sample-app	PUBLIC		2025-07-23	Sample app to demonstrate the custom UI integration
+razorpay-android-sample-app	PUBLIC		2026-08-28	Sample app demonstrating integration of Razorpay checkout
+razorpay-arastta	PUBLIC		2026-09-02	Razorpay Payment Extension for Arastta stores
+razorpay-banking-wrapper-sdk	PUBLIC		2026-07-15	
+razorpay-banking-wrapper-sdk-ios	INTERNAL		2026-09-03	
+razorpay-capacitor	PUBLIC		2026-08-04	Capacitor wrapper around Razorpay's Android and iOS SDKs
+razorpay-cli	PUBLIC		2026-09-03	Command-line interface for the Razorpay API.
+razorpay-cordova	PUBLIC		2025-10-24	Cordova wrapper around Razorpay's Android and iOS SDKs
+razorpay-cordova-sample-app	PUBLIC		2026-06-11	:iphone: Razorpay Sample Application for Cordova, Ionic v1 and Ionic v2
+razorpay-cscart	PUBLIC		2026-07-15	Razorpay Payment Extension for CS Cart
+razorpay-customui-pod	PUBLIC		2026-09-02	iOS CustomUI SDK of Razorpay
+razorpay-dot-net	PUBLIC		2026-08-28	Razorpay .NET SDK
+razorpay-dotnet-testapp	PUBLIC		2026-07-15	Test app for .net integration
+razorpay-edd	PUBLIC		2026-07-15	Razorpay plugin for Wordpress Easy Digital Downloads
+razorpay-flutter	PUBLIC		2026-09-02	Razorpay Flutter Plugin
+razorpay-flutter-banking-wrapper-sdk	INTERNAL		2026-09-03	
+razorpay-flutter-customui	PUBLIC		2026-09-02	Razorpay Flutter Plugin for Customui
+razorpay-go	PUBLIC		2026-08-28	Razorpay Go SDK
+razorpay-gravity-forms	PUBLIC		2026-07-15	Razorpay Gravity Forms plugin
+razorpay-ios-sample-app	PUBLIC		2025-07-23	:iphone: Sample app demonstrating integration of Razorpay iOS Framework
+razorpay-java	PUBLIC		2026-08-28	Razorpay Java SDK
+razorpay-java-testapp	PUBLIC		2026-07-15	Sample app for Razorpay Java Integration
+razorpay-magento	PUBLIC		2026-08-12	Razorpay Payment Extension for Magento
+razorpay-magento-v1	PUBLIC		2026-07-15	Razorpay Payment Extension for Magento 1.x
+razorpay-mcp-server	PUBLIC		2026-08-28	Razorpay's Official MCP Server
+razorpay-node	PUBLIC		2026-08-28	Razorpay node.js bindings
+razorpay-opencart	PUBLIC		2026-08-19	Razorpay Payment Extension for Opencart
+razorpay-php	PUBLIC		2026-08-12	Razorpay PHP Library 
+razorpay-php-testapp	PUBLIC		2026-07-15	Sample App for Razorpay PHP Integration
+razorpay-pod	PUBLIC		2026-09-02	:iphone: CocoaPod implementation of Razorpay's Payment SDK. Refer for instructions:
+razorpay-prestashop	PUBLIC		2026-07-15	Prestashop plugin for Razorpay
+razorpay-python	PUBLIC		2026-08-28	Razorpay Python SDK
+razorpay-python-testapp	PUBLIC		2026-07-15	Razorpay test app for python
+razorpay-quick-payments	PUBLIC		2026-09-07	Razorpay Quick Payments plugin for WordPress
+razorpay-ruby	PUBLIC		2026-08-28	Razorpay Ruby SDK
+razorpay-turbo-custom	PUBLIC		2026-09-03	
+razorpay-turbo-pod	PUBLIC		2026-09-03	
+razorpay-whmcs	PUBLIC		2026-07-15	Razorpay Payment Extension for WHMCS
+razorpay-woocommerce	PUBLIC		2026-09-04	Razorpay Payment Extension for Woocommerce
+razorpay-woocommerce-subscriptions	PUBLIC		2026-07-15	Razorpay WooCommerce Subscriptions Plugin
+rcagpt-automation	INTERNAL		2026-09-03	
+rdslogs	PUBLIC		2026-08-28	Razorpay RDS Logs
+react-native-apollo-devtools	PUBLIC		2026-07-15	Flipper plugin to debug apollo client cache for React Native
+react-native-razorpay	PUBLIC		2026-08-31	React Native wrapper for Razorpay's mobile SDKs
+recon	PRIVATE		2026-09-07	Recon Product
+registry	PUBLIC		2026-07-20	Schema Registry
+relay	PRIVATE		2026-09-06	Config Server to RELAY changes across Apps
+rpc	PRIVATE		2026-09-07	description: repo to keep all generated rpc packages
+rzpconv	PRIVATE		2026-09-07	Razorpay semantic conventions  
+scoop-razorpay-cli	PUBLIC		2026-07-15	
+security-action	INTERNAL		2026-08-27	Security Github Action
+self-serve-analytics	INTERNAL		2026-09-07	
+shield	PRIVATE		2026-09-07	Razorpay's Risk Engine Service
+shield-sdk	PRIVATE		2026-09-03	SDK for Shield (Razorpay's Risk Engine Service)
+shubhcron	PUBLIC	ARCHIVED	2021-02-18	A drop-in cron replacement that can run your jobs on auspicious timings.
+shubhcron-pandit	PUBLIC	ARCHIVED	2018-04-01	A microservice to serve shubhcron results.
+slack	PUBLIC		2026-08-28	A simple PHP package for sending messages to Slack, with a focus on ease of use and elegant syntax. Includes Laravel support out of the box. This fork adds Queue support (see queue branch)
+slack-laravel	PUBLIC		2025-09-15	Laravel integration for the maknz/slack package
+sonarcloud-github-action	PUBLIC		2025-07-23	Integrate SonarCloud code analysis to GitHub Actions
+sorting-hat	PUBLIC	ARCHIVED	2018-03-21	Post new signup data to Slack using the clearbit API
+spinacode	PRIVATE		2026-09-07	Spinnaker Pipelines As Code
+spinnaker	PUBLIC		2026-09-03	Spinnaker is an open source, multi-cloud continuous delivery platform for releasing software changes with high velocity and confidence.
+splitz	PRIVATE		2026-09-07	A/B testing Backend
+sqoop-on-spark	PUBLIC		2026-08-28	Connectors for Delta Lake
+sqs-autoscaler-controller	PUBLIC		2026-09-03	Kubernetes controller for scaling Deployments based on AWS SQS queue length
+statping	PUBLIC		2026-08-18	Status Page for monitoring your websites and applications with beautiful graphs, analytics, and plugins. Run on any type of environment.
+statsd_exporter	PUBLIC		2026-08-28	StatsD to Prometheus metrics exporter
+status-cake-exporter	PUBLIC		2026-08-28	A Prometheus exporter for StatusCake
+stork	PRIVATE		2026-09-07	Stork - Razorpay's Notification service
+subscription-button-elementor-plugin	PUBLIC		2026-07-15	Subscription button plugin for elementor.
+subscription-button-wordpress-plugin	PUBLIC		2026-07-15	Subscription button plugin for wordpress.
+subscriptions-magento-plugin	PUBLIC		2026-07-15	Subscriptions plugin for magento.
+subscriptions-opencart-plugin	PUBLIC		2026-07-15	Subscriptions plugin for opencart.
+tally-integration	PRIVATE		2026-07-22	source code for tally integration plugin
+teamcolony-rss	PUBLIC	ARCHIVED	2015-08-13	RSS Feed generator for teamcolony reports
+tejas	INTERNAL		2026-09-03	
+terraform-aws-ssl-ciphers	PUBLIC		2026-07-15	Common SSL Negotiation Policies to be used with AWS ELBs using Terraform
+terraform-kong	PRIVATE		2026-09-07	Terraform repo to configure Kong running on Razorpay's edge
+thirdeye	PUBLIC		2026-08-28	ThirdEye is an integrated tool for realtime monitoring of time series and interactive root-cause analysis. It enables anyone inside an organization to collaborate on effective identification and analysis of deviations in business and system metrics. ThirdEye supports the entire workflow from anomaly detection, over root-cause analysis, to issue resolution and post-mortem reporting.
+trino-gateway	PUBLIC		2026-08-03	Traffic routing for Trino Clusters
+vendor-experience	PRIVATE		2026-09-03	Microservice for vendor portal and onboarding
+vendor-payments	PRIVATE		2026-09-07	Vendor Payments apps microservice
+virtual-account	PRIVATE		2026-09-07	
+wercker-aws-code-deploy	PUBLIC	ARCHIVED	2017-09-01	A Wercker step to deploy applications with AWS Code Deploy
+wercker-ubuntu14.04-ansible1.6	PUBLIC	ARCHIVED	2015-10-12	Ubuntu 14.04 with Ansible 1.6 box for http://wercker.com/
+workflows	PRIVATE		2026-09-06	Razorpay Workflow Service
+x	PRIVATE		2026-09-07	Razorpay X - web application
+x-account-statements	PRIVATE		2026-09-05	
+x-attendance	INTERNAL		2026-07-22	
+x-balances	PRIVATE		2026-09-06	This is repo to maintain x-banking accounts, VA and CA  balances
+x-bank-statement-sync	PRIVATE		2026-07-22	Bank Transactions Sync to Accounting tools based on Accounting Integrations for RX-Neobanking Unit
+x-payroll-commons	INTERNAL		2026-07-22	
+xperience	PRIVATE		2026-09-03	Core Banking Experience MicroService

@@ -1,0 +1,451 @@
+{
+  "start": "2026-09-06T20:03:37Z",
+  "end": "2026-09-06T21:26:58Z",
+  "elapsed_seconds": 5000,
+  "contexts": [
+    "broad_coverage",
+    "deep_direct_accounting",
+    "identity_tenant_boundary",
+    "concurrency_event_order"
+  ],
+  "cycles": [
+    {
+      "cycle": 0,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 11,
+      "reassignments": []
+    },
+    {
+      "cycle": 1,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 2,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": []
+    },
+    {
+      "cycle": 2,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 1,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 3,
+      "reassignments": []
+    },
+    {
+      "cycle": 3,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 1,
+      "reassignments": []
+    },
+    {
+      "cycle": 4,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 7,
+      "reassignments": []
+    },
+    {
+      "cycle": 5,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 4,
+      "reassignments": []
+    },
+    {
+      "cycle": 6,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 4,
+      "reassignments": []
+    },
+    {
+      "cycle": 7,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 1,
+      "reassignments": []
+    },
+    {
+      "cycle": 8,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 7,
+      "reassignments": []
+    },
+    {
+      "cycle": 9,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": []
+    },
+    {
+      "cycle": 10,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 3,
+      "reassignments": []
+    },
+    {
+      "cycle": 11,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 6,
+      "reassignments": []
+    },
+    {
+      "cycle": 12,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": []
+    },
+    {
+      "cycle": 13,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 10,
+      "reassignments": []
+    },
+    {
+      "cycle": 14,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": []
+    },
+    {
+      "cycle": 15,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": []
+    },
+    {
+      "cycle": 16,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": []
+    },
+    {
+      "cycle": 17,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": []
+    },
+    {
+      "cycle": 18,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 1,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 3,
+      "reassignments": []
+    },
+    {
+      "cycle": 19,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": []
+    },
+    {
+      "cycle": 20,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 3,
+      "reassignments": []
+    },
+    {
+      "cycle": 21,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": []
+    },
+    {
+      "cycle": 22,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 1,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 6,
+      "reassignments": []
+    },
+    {
+      "cycle": 23,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": []
+    },
+    {
+      "cycle": 24,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": []
+    },
+    {
+      "cycle": 25,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 3,
+      "reassignments": []
+    },
+    {
+      "cycle": 26,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": []
+    },
+    {
+      "cycle": 27,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": []
+    },
+    {
+      "cycle": 28,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": []
+    },
+    {
+      "cycle": 29,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 1,
+      "reassignments": []
+    },
+    {
+      "cycle": 30,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 4,
+      "reassignments": []
+    },
+    {
+      "cycle": 31,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 2,
+      "reassignments": []
+    },
+    {
+      "cycle": 32,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 10,
+      "reassignments": []
+    },
+    {
+      "cycle": 33,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 1,
+      "reassignments": []
+    },
+    {
+      "cycle": 34,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 5,
+      "reassignments": []
+    },
+    {
+      "cycle": 35,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 4,
+      "reassignments": []
+    },
+    {
+      "cycle": 36,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": true,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 13,
+      "reassignments": []
+    },
+    {
+      "cycle": 37,
+      "policy": "deep_direct_accounting",
+      "scenario": "identity_variation",
+      "produced_work": true,
+      "new_hypotheses": 1,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 0,
+      "reassignments": []
+    },
+    {
+      "cycle": 38,
+      "policy": "identity_tenant_boundary",
+      "scenario": "concurrency",
+      "produced_work": false,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 0,
+      "reassignments": []
+    },
+    {
+      "cycle": 39,
+      "policy": "concurrency_event_order",
+      "scenario": "reversal_idempotency",
+      "produced_work": false,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 0,
+      "reassignments": []
+    },
+    {
+      "cycle": 40,
+      "policy": "broad_coverage",
+      "scenario": "baseline",
+      "produced_work": false,
+      "new_hypotheses": 0,
+      "duplicates_suppressed": 0,
+      "experiments_executed": 0,
+      "reassignments": []
+    }
+  ],
+  "turns": 155,
+  "hypotheses_by_status": {
+    "proposed": 5,
+    "claimed": 0,
+    "experiment_defined": 1,
+    "executing": 0,
+    "evidence_gathered": 0,
+    "falsified": 0,
+    "blocked": 0,
+    "supported": 0,
+    "replay_requested": 0,
+    "reproduced": 0,
+    "rejected": 0,
+    "accepted": 0,
+    "closed": 0,
+    "deprioritized": 0
+  },
+  "experiments_executed": 155,
+  "leases": {
+    "expired": 0,
+    "reassigned": 0,
+    "active": 0
+  },
+  "leases_expired": 0,
+  "leases_reassigned": 0,
+  "checkpoints": 41,
+  "duplicates_suppressed": 0,
+  "stop_reason": "stagnation"
+}

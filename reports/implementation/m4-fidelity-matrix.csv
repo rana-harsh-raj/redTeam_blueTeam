@@ -1,0 +1,43 @@
+component,layer,fidelity_label,evidence_pointer,production_reachability,deviation_ids
+payouts-api (PS core v1-candidate),real_service,real,reports/implementation/m4-direct-provision.json,known,
+fts-web (FTS v1-candidate),real_service,real,reports/implementation/m4-direct-provision.json,known,
+ledger-api (Ledger v1-candidate),real_service,real,reports/implementation/m4-xas-ledger.json:checks,unknown,C-010;DEV-001;DEV-002
+xbalances-server (x-balances v1-candidate),real_service,real,reports/implementation/m4-direct-provision.json,known,DEV-024
+cfa-server (v1-candidate),real_service,real;fund_account_resolution_substitute_grade,reports/implementation/m4-baseline-report.md,known,T23-flag
+kong-lite (hardened edge),substitute,substitute,reports/implementation/m4-boundary-results.json,known,
+PS worker rbl_banking_account_statement (statement ingest),real_service,real-worker/substitute-bank,reports/implementation/m4-bas-ingest.json:all_pass,known,L-007
+mozart-sim (RBL v2 account_statement bank boundary),substitute,substitute,reports/implementation/m4-bas-ingest.json,unknown,L-003
+bankingaccounts-stub (RBL credentials route),substitute,substitute,reports/implementation/m4-bas-ingest.json,known,L-003
+BASD rows (banking_account_statement_details),fixture,substitute,reports/implementation/m4-bas-ingest.json,known,L-006
+PS ART route /v1/banking_account_statement/process/batch (matcher a),real_service,real,reports/implementation/m4-xas-ledger.json:checks,known,
+xas-sim (XAS enrichment/matcher b),substitute,substitute,reports/implementation/m4-xas-ledger.json:checks,unknown,L-005;C-011;C-013;C-014
+PS x_account_statement_source_event queue,real_service,real,reports/implementation/m4-xas-ledger.json:checks,unknown,U-06
+PS UpdatePayoutAfterBASRecon (repair route),real_service,real,reports/implementation/m4-xas-ledger.json:checks,unknown,
+DA ledger journal emitter (processLedgerPayoutForDirect),substitute,substitute,reports/implementation/m4-xas-ledger.json:checks,unknown,L-004;C-004;C-010;U-08;U-09;EF-004
+DA ledger journals da_payout_processed(+_recon),real_service,executed,reports/implementation/m4-xas-ledger.json:checks,unknown,L-016;DEV-001
+monolith-stub (create_fta relay + emitter),substitute,substitute,reports/implementation/m4-source-map.md:#2,known,L-013;U-13
+dcs-stub (feature/config),substitute,substitute,reports/implementation/m4-known-limits.md:L-018,unknown,DEV-120;DEV-172;U-01;U-02
+splitz-stub (experiment flags),substitute,substitute,reports/implementation/m4-source-map.md:#7,unknown,DEV-025;U-03;U-04;U-05;U-06;U-07;U-08
+Route A PS->FTS create (PS-direct),real_service,executed,reports/implementation/m4-source-map.md:#2,known,
+Route B PS->monolith->FTS create,substitute,executed,reports/implementation/m4-source-map.md:#2,known,L-013
+Route C FTS->bank (Mozart),substitute,executed,reports/implementation/m4-bas-ingest.json,unknown,L-003
+Route D FTS->PS direct status webhook,real_service,executed,reports/implementation/m4-xas-ledger.json:checks,known,
+Route E FTS->monolith->PS status,substitute,executed,reports/implementation/m4-route-coverage.json,known,L-013
+Route F FTS->Kafka->PS status (Direct FAILED/REVERSED drop),real_service,source_inferred,TWIN_SPEC/expected-failures.yaml:EF-002,unknown,EF-002;EF-003;U-05
+Route G Admin return (verify/safe_update),real_service,executed,reports/implementation/m4-source-map.md:#2,known,
+Route H FTS health/on-hold notify,substitute,unresolved,reports/implementation/m4-known-limits.md:L-010,unknown,EF-008;L-010
+Route I PS->XAS source event,substitute,implemented,reports/implementation/m4-xas-ledger.json:checks,unknown,L-005;U-06
+Journey: Direct success (create->FTS->bank->statement->recon->ledger->webhook),real_service,executed,reports/implementation/m4-xas-ledger.json:all_green,unknown,C-010
+Journey: Direct immediate failure,real_service,executed,reports/implementation/m4-direct-provision.json:summary.all_green,known,
+Journey: pending->success (held->processed->ledger),substitute,substitute,reports/implementation/m4-xas-ledger.json:checks,unknown,
+Journey: pending->failure (held->failed->reversed),substitute,substitute,reports/implementation/m4-xas-ledger.json:checks,unknown,
+Journey: statement-first ordering,real_service,executed,reports/implementation/m4-xas-ledger.json:checks,known,
+Balance-refresh / hold-release trigger A (BalanceRefreshEvent),substitute,deliberately_simplified,reports/implementation/m4-known-limits.md:L-009,unknown,L-009;C-009;DEV-024;EF-007
+Reservation release (5-min reconciler trigger B),real_service,executed,reports/implementation/m4-xas-ledger.json:all_green,known,C-015
+Tenant-isolation boundary (merchant A/B),real_service,executed,reports/implementation/m4-boundary-results.json:gates,known,
+Concurrent idempotency (payout create),real_service,executed,reports/implementation/m4-boundary-results.json:gates.G52,known,DEV-001
+Autonomous hypothesis lifecycle harness,substitute,executed,reports/implementation/m4-hypothesis-lifecycle.json:gate,n/a,
+Autonomous soak (bounded/checkpointed),substitute,executed,RED_LOOP/runs/*/m4-direct-e2e-soak.json,n/a,
+Cross-provider replay machinery (calibration),substitute,independently_reproduced,reports/implementation/m4-lifecycle-validation.json:independent_replay,n/a,
+SLICE Direct channel,fixture,deliberately_simplified,reports/implementation/m4-known-limits.md:L-012,unknown,L-012
+Direct pricing (flat twin plan),fixture,deliberately_simplified,reports/implementation/m4-known-limits.md:L-017,unknown,L-017

@@ -1,0 +1,32 @@
+schema_version: 1
+events:
+  - id: s2p.event.add-tds-entry
+    topic: add-tds-entry
+    direction: consumed
+    consumer: s2p.vendor-payments
+    evidence:
+      - vendor-payments/config/prod.toml:336
+      - vendor-payments/internal/tasks/initiatetds.go:20
+    semantics: Attempts to create or update the monthly TDS tax-payment aggregate and, for payout entities, tags the source payout with the resulting tax-payment ID.
+    idempotency: The selected Kafka path supplies no idempotency key. Exact sequential replay is runtime-verified to compute zero delta without another record. Core has a separate non-empty-key lookup; concurrent delivery semantics are not established.
+    warning: This event does not create the remittance payout.
+  - id: s2p.event.accounting-payout-status
+    topic: prod.x.vendor-payments.accounting-payouts.status-update
+    direction: produced_and_consumed
+    producer: s2p.vendor-payments
+    consumer: s2p.accounting-integrations
+    evidence:
+      - vendor-payments/config/prod.toml:273
+      - accounting-integrations/config/prod.toml:196
+      - accounting-integrations/config/prod.toml:204
+    production_topic_value: source_observed
+    selected_runtime_status: SOURCE_MAPPED_NOT_RUNNING
+    selected_journey_emission: false
+  - id: s2p.event.tax-payment-updated
+    topic: tax_payment_updated
+    transport: in_process_pubsub
+    direction: observed_from_actual_source
+    selected_statuses: [unpaid, money_loading_initiated, money_loading_success]
+    evidence: vendor-payments/internal/taxpayments/core.go
+    runtime_proof: ../inventory/runtime-proof.json
+    warning: The normal direct-tax downstream subscriber is not registered by the local driver.

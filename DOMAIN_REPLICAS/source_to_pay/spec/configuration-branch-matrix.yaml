@@ -1,0 +1,50 @@
+schema_version: 1
+scope: selected_runtime_configuration_and_control_branches
+matrix:
+  - {id: CFG-TOPIC-VALID, control: InitiateTdsConfig.Topic, value: add-tds-entry, branch: valid wrapped TdsEntryRequest, expected: one actual source record and source-payout tagback, verification: journey, evidence: artifacts/journey-latest.json}
+  - {id: CFG-TOPIC-REPLAY, control: Kafka replay on add-tds-entry, value: same payload on a new offset, branch: source computes zero delta, expected: committed message with no second records row, verification: journey, evidence: artifacts/journey-latest.json}
+  - {id: CFG-TOPIC-INVALID, control: entity_type, value: invalid_entity, branch: source validation failure swallowed by upstream task contract, expected: committed message and no material DB mutation, verification: journey, evidence: artifacts/journey-latest.json}
+  - id: CFG-CLOCK-CURRENT-MONTH
+    control: common.TimeNow
+    value: '2026-08-20T06:30:00Z'
+    branch: remittance attempted before deduction month completion
+    expected: actual Pay rejects; no payout association
+    verification: journey
+  - id: CFG-CLOCK-ADVANCED
+    control: common.TimeNow
+    value: '2026-09-01T00:00:00Z'
+    branch: prior-month tax payment is payable
+    expected: actual Pay creates one payout association
+    verification: journey
+  - {id: CFG-CONTACT-DISABLED, control: boundary contact_enabled, value: false, branch: contact search returns zero items, expected: actual Pay rejects and creates no payout association, verification: journey}
+  - {id: CFG-CONTACT-ENABLED, control: boundary contact_enabled, value: true, branch: one active rzp_tax_pay contact with expanded fund account, expected: contact and fund-account validation pass, verification: journey_and_contract}
+  - {id: CFG-INTERNAL-APP-ALLOWED, control: synthetic Basic secret mapping, value: vendor_payments, branch: rzp_tax_pay contact-type allow-list, expected: internal-contact payout accepted, verification: journey_and_contract}
+  - {id: CFG-INTERNAL-APP-DENIED, control: synthetic Basic secret mapping, value: xpayroll, branch: rzp_tax_pay contact-type allow-list, expected: AppNotPermittedToCreatePayoutOnThisContactType, verification: contract}
+  - id: CFG-BENEFICIARY-MATCH
+    control: [TaxPaymentFundAccountNumber, TaxPaymentFundAccountIFSC, TaxPaymentFundAccountBeneName]
+    value: [synthetic-fixed-account, synthetic-fixed-ifsc, RZPX PRIVATE LIMITED]
+    branch: active bank fund account matches all source checks
+    expected: actual Pay proceeds
+    verification: journey
+    substitution_evidence: artifacts/build-runtime-patch.json
+  - {id: CFG-BENEFICIARY-MISMATCH, control: fund_account_id, value: any id other than fa_tax_internal_1, branch: boundary internal-contact payout gate, expected: rejected, verification: source_mapped_not_executed_in_golden}
+  - {id: CFG-OTP-VALID, control: OTP, value: '754081', branch: synthetic verification success, expected: '{Success: true}', verification: journey_and_contract}
+  - {id: CFG-OTP-INVALID, control: OTP, value: any other value, branch: synthetic verification failure, expected: '{Success: false}', verification: implementation_mapped_not_executed}
+  - {id: CFG-ACCOUNT-MATCH, control: debit account_number, value: '7878780011', branch: returned BankingAccountAPIResponse contains requested account, expected: actual Pay selects account and continues, verification: journey_and_contract}
+  - {id: CFG-ACCOUNT-MISMATCH, control: debit account_number, value: any absent account, branch: actual source item lookup returns no banking account, expected: actual Pay rejects, verification: source_mapped_not_executed}
+  - id: CFG-IDEMPOTENCY-SAME
+    control: [merchant_id, X-Payout-Idempotency, request_body]
+    branch: same scoped tuple repeated
+    expected: same payout returned; one persisted payout
+    verification: contract
+  - id: CFG-IDEMPOTENCY-CONFLICT
+    control: [merchant_id, X-Payout-Idempotency, request_body]
+    branch: same merchant and key with different body
+    expected: rejected without mutation
+    verification: implementation_mapped_not_executed
+  - id: CFG-IDEMPOTENCY-CROSS-TENANT
+    control: [merchant_id, X-Payout-Idempotency]
+    branch: same key under a different merchant
+    expected: separate payout; no response leak
+    verification: contract
+production_value_policy: Synthetic branch values exercise source conditions and replacement contracts. They are not asserted as production configuration.

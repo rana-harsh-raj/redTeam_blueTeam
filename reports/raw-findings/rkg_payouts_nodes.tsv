@@ -1,0 +1,144 @@
+id	type	subtype	title
+account-statement	entity	lifecycle_object	Account Statement
+atomic-va-creation	invariant	state	Atomic Va Creation
+balance-fetch	flow	balance	Balance Fetch
+balance-snapshot-eventual-consistency	invariant	state	Balance Snapshot Eventual Consistency
+balance-snapshot-sync	flow	balance	Balance Snapshot Sync
+bank-account-fund-account-fts-replication	decision	adr	Bank Account Fund Account Fts Replication
+bank-cbs-stuck-pending	failure_mode	incident_pattern	Bank Cbs Stuck Pending
+beneficiary-data-encrypted-at-rest	invariant	compliance	Beneficiary Data Encrypted At Rest
+cache-key-determinism	invariant	state	Cache Key Determinism
+cache-validation	flow	validation	Cache Validation
+cfa	service	api	Cfa
+cfa-contact	entity	lifecycle_object	Cfa Contact
+cfa-data-integrity-degradation	failure_mode	alert	Cfa Data Integrity Degradation
+cfa-fund-account	entity	lifecycle_object	Cfa Fund Account
+cfa-fund-account-validation-surge	failure_mode	alert	Cfa Fund Account Validation Surge
+cfa-hash-dedup	invariant	uniqueness	Cfa Hash Dedup
+cfa-merchant-isolation	invariant	state	Cfa Merchant Isolation
+cfa-service-degradation	failure_mode	alert	Cfa Service Degradation
+citi	participant	gateway	Citi
+citi-inquiry-polling	flow	validation	Citi Inquiry Polling
+citi-webhook-contract	contract	webhook	Citi Webhook Contract
+contact-management	flow	contact	Contact Management
+debug-balance-mismatch	runbook	oncall	Debug Balance Mismatch
+debug-cache-not-working	runbook	oncall	Debug Cache Not Working
+debug-fund-account-validation	runbook	oncall	Debug Fund Account Validation
+debug-gateway-routing	runbook	oncall	Debug Gateway Routing
+debug-missing-statement	runbook	oncall	Debug Missing Statement
+debug-rpd-refund-stuck	runbook	oncall	Debug Rpd Refund Stuck
+debug-stuck-payout	runbook	oncall	Debug Stuck Payout
+debug-stuck-validation	runbook	oncall	Debug Stuck Validation
+debug-transfer-failure	runbook	oncall	Debug Transfer Failure
+debug-va-credit	runbook	oncall	Debug Va Credit
+debug-validation-timeout	runbook	oncall	Debug Validation Timeout
+debug-webhook-not-processed	runbook	oncall	Debug Webhook Not Processed
+duplicate-workflow-state-map-records	failure_mode	incident_pattern	Duplicate Workflow State Map Records
+fts	service	api	Fts
+fts-bene-bank-downtime	failure_mode	alert	Fts Bene Bank Downtime
+fts-channel	entity	config	Fts Channel
+fts-empty-channel-list-panic	failure_mode	incident_pattern	Fts Empty Channel List Panic
+fts-gateway	entity	config	Fts Gateway
+fts-gateway-degradation	failure_mode	alert	Fts Gateway Degradation
+fts-idempotent-transfer	invariant	uniqueness	Fts Idempotent Transfer
+fts-mode-routing	invariant	state	Fts Mode Routing
+fts-stuck-transfers	failure_mode	alert	Fts Stuck Transfers
+fts-success-rate-drop	failure_mode	alert	Fts Success Rate Drop
+fts-webhook-contract	contract	webhook	Fts Webhook Contract
+fund-account-card-tokenization	flow	fund_account	Fund Account Card Tokenization
+fund-account-contact-linkage	invariant	state	Fund Account Contact Linkage
+fund-account-immutable-once-created	invariant	state	Fund Account Immutable Once Created
+fund-account-management	flow	fund_account	Fund Account Management
+fund-transfer	entity	lifecycle_object	Fund Transfer
+fund-transfer-routing	flow	transfer	Fund Transfer Routing
+gateway-dispatch	flow	transfer	Gateway Dispatch
+gateway-ns404-stuck-initiated	failure_mode	incident_pattern	Gateway Ns404 Stuck Initiated
+gateway-routing-resolution	flow	routing	Gateway Routing Resolution
+gateway-routing-rule	entity	configuration	Gateway Routing Rule
+ifsc-bank-mapping	entity	reference_data	Ifsc Bank Mapping
+is-payout-service-dual-stack	decision	adr	Is Payout Service Dual Stack
+ledger-entry-once-per-validation	invariant	money	Ledger Entry Once Per Validation
+merchant-config	entity	config	Merchant Config
+order-va-mapping	entity	value_object	Order Va Mapping
+payment-credit-processing	flow	credit	Payment Credit Processing
+payout	entity	lifecycle_object	Payout
+payout-creation	flow	payout	Payout Creation
+payout-idempotency	invariant	uniqueness	Payout Idempotency
+payout-processing	flow	payout	Payout Processing
+payout-reversal	flow	payout	Payout Reversal
+payout-single-debit	invariant	money	Payout Single Debit
+payout-source-updater-refund-race	failure_mode	incident_pattern	Payout Source Updater Refund Race
+payout-status-fsm	invariant	state	Payout Status Fsm
+payout-transaction	entity	value_object	Payout Transaction
+payouts	service	api	Payouts
+payouts-4xx-spike	failure_mode	alert	Payouts 4Xx Spike
+payouts-5xx-error-rate	failure_mode	alert	Payouts 5Xx Error Rate
+payouts-changes-in-microservice-not-api	decision	adr	Payouts Changes In Microservice Not Api
+payouts-not-reaching-fts	failure_mode	alert	Payouts Not Reaching Fts
+payouts-queue-lag	failure_mode	alert	Payouts Queue Lag
+payouts-sla-breach-stuck	failure_mode	alert	Payouts Sla Breach Stuck
+pg-settlements-lite-payout-nodal	decision	adr	Pg Settlements Lite Payout Nodal
+routing-api-contract	contract	api	Routing Api Contract
+routing-rule-precedence	invariant	configuration	Routing Rule Precedence
+rpd-ledger	entity	financial_record	Rpd Ledger
+rpd-refund	flow	validation	Rpd Refund
+rpd-upi-intent	flow	validation	Rpd Upi Intent
+slice	participant	gateway	Slice
+slice-inquiry-polling	flow	validation	Slice Inquiry Polling
+statement-generation	flow	statement	Statement Generation
+statement-immutability	invariant	state	Statement Immutability
+statement-transaction	entity	lifecycle_object	Statement Transaction
+statement-txn-ingestion	flow	statement	Statement Txn Ingestion
+timeout-leaves-attempt-open	invariant	state	Timeout Leaves Attempt Open
+va-account	entity	lifecycle_object	Va Account
+va-account-processing	flow	va	Va Account Processing
+va-aggregate-root	invariant	state	Va Aggregate Root
+va-bank-account	entity	lifecycle_object	Va Bank Account
+va-close	flow	va	Va Close
+va-create-failure	failure_mode	alert	Va Create Failure
+va-creation	flow	va	Va Creation
+va-credit	entity	lifecycle_object	Va Credit
+va-credit-processing-degradation	failure_mode	alert	Va Credit Processing Degradation
+va-external-client-failure	failure_mode	alert	Va External Client Failure
+va-optimistic-locking	invariant	state	Va Optimistic Locking
+va-service-unavailable	failure_mode	alert	Va Service Unavailable
+va-strict-fsm	invariant	state	Va Strict Fsm
+va-vpa	entity	lifecycle_object	Va Vpa
+va-webhook-events	contract	api	Va Webhook Events
+validation	entity	lifecycle_object	Validation
+validation-amount-int64-paise	invariant	money	Validation Amount Int64 Paise
+validation-attempt	entity	lifecycle_object	Validation Attempt
+validation-beneficiary-data	entity	lifecycle_object	Validation Beneficiary Data
+validation-cache-info	entity	lookup_record	Validation Cache Info
+validation-creation	flow	validation	Validation Creation
+validation-fallback	flow	validation	Validation Fallback
+validation-grpc-api	contract	proto	Validation Grpc Api
+validation-initiation	flow	validation	Validation Initiation
+validation-single-lock-per-id	invariant	state	Validation Single Lock Per Id
+validation-status-detail	entity	audit_record	Validation Status Detail
+validation-status-fsm	invariant	state	Validation Status Fsm
+validation-timeout-handling	flow	validation	Validation Timeout Handling
+validation-webhook-processing	flow	validation	Validation Webhook Processing
+validx	service	api	Validx
+validx-cache-hit-drop	failure_mode	alert	Validx Cache Hit Drop
+validx-db-driven-gateway-routing	decision	adr	Validx Db Driven Gateway Routing
+validx-fallback-storm	failure_mode	alert	Validx Fallback Storm
+validx-fts-webhook-missing	failure_mode	alert	Validx Fts Webhook Missing
+validx-inquiry-budget-exhausted	failure_mode	alert	Validx Inquiry Budget Exhausted
+validx-mozart-degradation	failure_mode	alert	Validx Mozart Degradation
+validx-penniless-default	decision	adr	Validx Penniless Default
+validx-routing-resolution-failure	failure_mode	alert	Validx Routing Resolution Failure
+validx-rpd-refund-backlog	failure_mode	alert	Validx Rpd Refund Backlog
+validx-statemanager-strategy-split	decision	adr	Validx Statemanager Strategy Split
+validx-timeout-surge	failure_mode	alert	Validx Timeout Surge
+virtual-account	service	api	Virtual Account
+wallet-account-type	entity	value_object	Wallet Account Type
+x-account-statements	service	api	X Account Statements
+x-balance	entity	lifecycle_object	X Balance
+x-balances	service	api	X Balances
+x-balances-dual-write-mismatch	failure_mode	alert	X Balances Dual Write Mismatch
+x-balances-service-degradation	failure_mode	alert	X Balances Service Degradation
+x-balances-update-lag	failure_mode	alert	X Balances Update Lag
+xas-fallback	failure_mode	alert	Xas Fallback
+xas-missing-statements	failure_mode	alert	Xas Missing Statements
+xas-yesbank-statement-fetch-failure	failure_mode	alert	Xas Yesbank Statement Fetch Failure

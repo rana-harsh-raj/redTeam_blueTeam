@@ -1,0 +1,1759 @@
+{
+ "lane": "m11-trust-path",
+ "sources": [
+  {
+   "repo": "terraform-kong",
+   "path": "prod/api/api.tf",
+   "sha": "8ffe965bce7868d150344433d3bfbf3e630e228b"
+  },
+  {
+   "repo": "edge",
+   "path": "kong-plugins/",
+   "sha": "da9ff5b22b7d0e4dbecfba5d3305ff8469c60de0"
+  },
+  {
+   "repo": "shield",
+   "path": "app/",
+   "sha": "514516f53d58dbb469521d59b22830cc3db15cb4"
+  },
+  {
+   "repo": "banking-accounts",
+   "path": "internal/",
+   "sha": "c3fc1fe8ae41a528a4a3d7ed1b0ec9dad6f98141"
+  },
+  {
+   "repo": "workflows",
+   "path": "internal/",
+   "sha": "080d71a51b777c89af586c92ac4b5f683a473a7c"
+  },
+  {
+   "repo": "twin",
+   "path": "ENV2_COMPOSE/docker-compose.m11.yml"
+  }
+ ],
+ "nodes": [
+  {
+   "id": "db:banking-accounts/mysql",
+   "kind": "db",
+   "label": "MySQL 8.0 -- banking_account schema (goose SQL migrations)",
+   "owner_domain": "banking-accounts",
+   "criticality": "P1",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `mysql-bas` (image mysql:8.0)"
+  },
+  {
+   "id": "db:edge/postgres",
+   "kind": "db",
+   "label": "PostgreSQL 15 -- Kong schema + plugin tables (basicauth_x_credentials, impersonation_grant, key identifiers)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `postgres-kong` (image postgres:15-alpine)"
+  },
+  {
+   "id": "db:shield/mysql",
+   "kind": "db",
+   "label": "MySQL 8.0 -- shield schema (razorpay/shield migrations)",
+   "owner_domain": "shield",
+   "criticality": "P1",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `mysql-shield` (image mysql:8.0)"
+  },
+  {
+   "id": "db:shield/redis",
+   "kind": "db",
+   "label": "Redis 7 single-node cluster (shield uses a go-redis ClusterClient)",
+   "owner_domain": "shield",
+   "criticality": "P1",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `redis-shield` (image redis:7-alpine)"
+  },
+  {
+   "id": "db:workflows/cadence",
+   "kind": "db",
+   "label": "Uber Cadence server v1.4.1 (auto-setup, MySQL persistence, domain payouts)",
+   "owner_domain": "workflows",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `cadence` (image ubercadence/server:v1.4.1-auto-setup)"
+  },
+  {
+   "id": "db:workflows/mysql",
+   "kind": "db",
+   "label": "MySQL 8.0 -- workflows schema + cadence/cadence_visibility",
+   "owner_domain": "workflows",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `mysql-workflows` (image mysql:8.0)"
+  },
+  {
+   "id": "identity:bas-api-token",
+   "kind": "identity",
+   "label": "payouts -> banking-accounts Api-Token header (== [api].token)",
+   "owner_domain": "trust-path",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "banking-accounts/internal/routing/middleware/auth.go",
+    "payouts/pkg/bankingAccountService/fetch_merchant_details.go"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml + config/generate.py TRUST tokens"
+  },
+  {
+   "id": "identity:edge-passport-edgev2",
+   "kind": "identity",
+   "label": "Edge passport (X-Passport-JWT-V1, RS256 kid edgev2) minted by kong-plugin-upstream-jwt per authenticated request",
+   "owner_domain": "trust-path",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "edge/kong-plugins/kong-plugin-upstream-jwt/kong/plugins/upstream-jwt/access.lua",
+    "terraform-kong/prod/api/api.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml + config/generate.py TRUST tokens"
+  },
+  {
+   "id": "identity:kong-merchant-credential",
+   "kind": "identity",
+   "label": "Merchant API key as a Kong basic-auth-x credential (username rzp_<mode>_<mid>, tags m~l/m~t, r~<role>) on the merchant's consumer",
+   "owner_domain": "trust-path",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "edge/kong-plugins/kong-plugin-basic-auth-x/kong/plugins/basic-auth-x/daos.lua",
+    "ENV2_COMPOSE/trustpath/edge/provision_kong.py"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml + config/generate.py TRUST tokens"
+  },
+  {
+   "id": "identity:monolith-passport-apiv1",
+   "kind": "identity",
+   "label": "Monolith passport (kid apiv1) minted toward the Payouts service by the monolith replacement (api-ingress) in the api slot payouts registers (pkg/passport/handler.go)",
+   "owner_domain": "trust-path",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/substitutes/api-ingress/server.py",
+    "payouts/pkg/passport/handler.go"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml + config/generate.py TRUST tokens"
+  },
+  {
+   "id": "identity:shield-basic-payouts",
+   "kind": "identity",
+   "label": "payouts -> Shield HTTP Basic (payouts [shield.auth] == shieldAuthUser.payout)",
+   "owner_domain": "trust-path",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "shield/app/middlewares/auth.go",
+    "payouts/config/prod.toml"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml + config/generate.py TRUST tokens"
+  },
+  {
+   "id": "identity:workflows-basic-payouts",
+   "kind": "identity",
+   "label": "payouts -> Workflow service HTTP Basic (payouts [workflow.auth] == workflows [auth.payouts])",
+   "owner_domain": "trust-path",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "workflows/internal/boot/hooks/auth.go",
+    "payouts/pkg/workflow/workflow_create.go"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml + config/generate.py TRUST tokens"
+  },
+  {
+   "id": "identity:workflows-callback-rzp-live",
+   "kind": "identity",
+   "label": "Workflow service -> payouts callbacks: clients.payouts_live (rzp_live + payouts [auth.workflow]) on /v1/workflow/state and /v1/payouts/payouts_internal/{id}/{approve,reject}",
+   "owner_domain": "trust-path",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "workflows/internal/client/types/common/callback.go",
+    "payouts/internal/routing/router/workflow_routes.go",
+    "payouts/internal/routing/router/payout_internal_routes.go"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml + config/generate.py TRUST tokens"
+  },
+  {
+   "id": "repo:banking-accounts",
+   "kind": "repo",
+   "label": "razorpay/banking-accounts",
+   "owner_domain": "banking-accounts",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "reports/domain/REPOSITORY_INVENTORY_M6.csv"
+   ],
+   "twin_ref": "ENV2_COMPOSE/build/m11/",
+   "sha": "c3fc1fe8ae41a528a4a3d7ed1b0ec9dad6f98141"
+  },
+  {
+   "id": "repo:edge",
+   "kind": "repo",
+   "label": "razorpay/edge (Kong plugins: passport minting, auth flows)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "reports/domain/REPOSITORY_INVENTORY_M6.csv"
+   ],
+   "twin_ref": "ENV2_COMPOSE/build/m11/",
+   "sha": "da9ff5b22b7d0e4dbecfba5d3305ff8469c60de0"
+  },
+  {
+   "id": "repo:shield",
+   "kind": "repo",
+   "label": "razorpay/shield (risk rule engine)",
+   "owner_domain": "shield",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "reports/domain/REPOSITORY_INVENTORY_M6.csv"
+   ],
+   "twin_ref": "ENV2_COMPOSE/build/m11/",
+   "sha": "514516f53d58dbb469521d59b22830cc3db15cb4"
+  },
+  {
+   "id": "repo:terraform-kong",
+   "kind": "repo",
+   "label": "razorpay/terraform-kong (declarative Kong routes/plugins)",
+   "owner_domain": "terraform-kong",
+   "criticality": "P0",
+   "fidelity": "real_source_mapped_not_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "reports/domain/REPOSITORY_INVENTORY_M6.csv"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json (derived)",
+   "sha": "8ffe965bce7868d150344433d3bfbf3e630e228b"
+  },
+  {
+   "id": "repo:workflows",
+   "kind": "repo",
+   "label": "razorpay/workflows (REAL Workflow Service, Go/Twirp/Cadence)",
+   "owner_domain": "workflows",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "reports/domain/REPOSITORY_INVENTORY_M6.csv"
+   ],
+   "twin_ref": "ENV2_COMPOSE/build/m11/",
+   "sha": "080d71a51b777c89af586c92ac4b5f683a473a7c"
+  },
+  {
+   "id": "route:edge-kong/GET ~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "kind": "route",
+   "label": "contact_get-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:791",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.contact_get",
+   "kong_route": "contact_get",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/GET ~/v1/contacts/?$",
+   "kind": "route",
+   "label": "contact_list-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:139",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.contact_list",
+   "kong_route": "contact_list",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/GET ~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "kind": "route",
+   "label": "fund_account_get-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:172",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.fund_account_get",
+   "kong_route": "fund_account_get",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/GET ~/v1/fund_accounts/?$",
+   "kind": "route",
+   "label": "fund_account_list-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:992",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.fund_account_list",
+   "kong_route": "fund_account_list",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/GET ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "kind": "route",
+   "label": "payout_fetch_by_id-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:655",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.payout_fetch_by_id",
+   "kong_route": "payout_fetch_by_id",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/GET ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "kind": "route",
+   "label": "payout_get_by_id-payouts-ext (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/templates/payouts/payouts-ext.tf:21",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.payouts-ext.routes.payout_get_by_id",
+   "kong_route": "payout_get_by_id",
+   "kong_service": "payouts-ext",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/GET ~/v1/payouts/?$",
+   "kind": "route",
+   "label": "payout_fetch_multiple-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:1172",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.payout_fetch_multiple",
+   "kong_route": "payout_fetch_multiple",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/GET ~/v1/payouts/purposes/?$",
+   "kind": "route",
+   "label": "payout_purpose_get-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:735",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.payout_purpose_get",
+   "kong_route": "payout_purpose_get",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/PATCH ~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "kind": "route",
+   "label": "contact_update-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:799",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.contact_update",
+   "kong_route": "contact_update",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/PATCH ~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "kind": "route",
+   "label": "fund_account_update-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:131",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.fund_account_update",
+   "kong_route": "fund_account_update",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/POST ~/v1/contacts/?$",
+   "kind": "route",
+   "label": "contact_create-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:164",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.contact_create",
+   "kong_route": "contact_create",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/POST ~/v1/fund_accounts/?$",
+   "kind": "route",
+   "label": "fund_account_create-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:156",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.fund_account_create",
+   "kong_route": "fund_account_create",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/approve/?$",
+   "kind": "route",
+   "label": "payout_approve-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:695",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.payout_approve",
+   "kong_route": "payout_approve",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/cancel/?$",
+   "kind": "route",
+   "label": "payout_cancel-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:703",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.payout_cancel",
+   "kong_route": "payout_cancel",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/reject/?$",
+   "kind": "route",
+   "label": "payout_reject-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:751",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.payout_reject",
+   "kong_route": "payout_reject",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/POST ~/v1/payouts/?$",
+   "kind": "route",
+   "label": "payout_create-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:663",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.payout_create",
+   "kong_route": "payout_create",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/POST ~/v1/payouts_batch/?$",
+   "kind": "route",
+   "label": "payouts_batch_create-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:759",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.payouts_batch_create",
+   "kong_route": "payouts_batch_create",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "route:edge-kong/POST ~/v1/payouts_with_otp/?$",
+   "kind": "route",
+   "label": "payout_create_with_otp-prod-api (authenticated_paths, consumer-authentication, basic-auth-x, jwt-x, impersonation-grant, consumer-identifier, passport-enabler, ip-restriction-x)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:719",
+    "terraform-kong/module/plugins.tf"
+   ],
+   "twin_ref": "ENV2_COMPOSE/trustpath/edge/kong-config.json services.prod-api.routes.payout_create_with_otp",
+   "kong_route": "payout_create_with_otp",
+   "kong_service": "prod-api",
+   "plugins": [
+    "consumer-authentication",
+    "basic-auth-x",
+    "jwt-x",
+    "impersonation-grant",
+    "consumer-identifier",
+    "passport-enabler",
+    "ip-restriction-x"
+   ]
+  },
+  {
+   "id": "svc:banking-accounts",
+   "kind": "svc",
+   "label": "Banking Accounts service (razorpay/banking-accounts)",
+   "owner_domain": "banking-accounts",
+   "criticality": "P1",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "banking-accounts/main.go",
+    "banking-accounts/internal/bootstrap/routes.go",
+    "banking-accounts/internal/routing/middleware/auth.go",
+    "banking-accounts/internal/database/repos/banking_account_repo.go",
+    "banking-accounts/internal/database/migrations/",
+    "ENV2_COMPOSE/build/m11/build-banking-accounts.sh",
+    "ENV2_COMPOSE/trustpath/bankingaccounts/render_seed.py"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `banking-accounts-api` (+ mysql-bas, bas-migrate, bas-seed)",
+   "repo": "repo:banking-accounts",
+   "sha": "c3fc1fe8ae41a528a4a3d7ed1b0ec9dad6f98141",
+   "fidelity_evidence": "real binary from the pinned clone with its goose SQL migrations; the payouts routes GET /v0.2/payouts/shield/merchant/{mid}/details and GET /v0.2/merchant/{mid}/banking_account_by_account_number/{acct}/credentials run the real handlers/queries (businesses x banking_accounts on merchant_id)",
+   "apis": [
+    "GET /v0.2/payouts/shield/merchant/{merchant_id}/details?account_number=",
+    "GET /v0.2/merchant/{merchant_id}/banking_account_by_account_number/{account_number}/credentials",
+    "GET /status"
+   ],
+   "identity_model": "Api-Token header == [api].token (middleware VerifyApiAuth); payouts sends Api-Token + X-Razorpay-MerchantId (pkg/bankingAccountService)",
+   "variants": [
+    "real (banking-accounts-api)",
+    "substitute (bankingaccounts-stub)"
+   ]
+  },
+  {
+   "id": "svc:edge-kong",
+   "kind": "svc",
+   "label": "Edge gateway (razorpay/edge: Kong 3.4.2 + custom auth plugins; routes/plugins from terraform-kong prod)",
+   "owner_domain": "edge",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "edge/Dockerfile",
+    "edge/kong.conf",
+    "edge/kong-plugins/kong-plugin-basic-auth-x/kong/plugins/basic-auth-x/access.lua",
+    "edge/kong-plugins/kong-plugin-consumer-authentication/kong/plugins/consumer-authentication/access.lua",
+    "edge/kong-plugins/kong-plugin-upstream-jwt/kong/plugins/upstream-jwt/access.lua",
+    "edge/kong-plugins/kong-plugin-passport-enabler/kong/plugins/passport-enabler/access.lua",
+    "terraform-kong/prod/api/api.tf",
+    "terraform-kong/module/plugins.tf",
+    "terraform-kong/templates/payouts/payouts-ext.tf",
+    "ENV2_COMPOSE/trustpath/edge/kong-config.json",
+    "ENV2_COMPOSE/build/m11/edge-kong.Dockerfile"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `edge-kong` (+ postgres-kong, edge-kong-migrate, edge-kong-config, edge-bridge)",
+   "repo": "repo:edge",
+   "sha": "da9ff5b22b7d0e4dbecfba5d3305ff8469c60de0",
+   "fidelity_evidence": "real Kong + every plugin from the pinned edge clone; Postgres-backed; consumer-authentication/basic-auth-x/impersonation-grant/passport-enabler/ip-restriction-x per route and upstream-jwt (kid edgev2) per service exactly as terraform-kong prod-api declares",
+   "identity_model": "Kong consumers (username = merchant id, tags tenant~razorpay) + basicauth_x_credentials (username = rzp_<mode>_<mid>, sha512(pw..consumer_id), tags m~l/m~t, r~<role>); anonymous consumer for unauthenticated fall-through",
+   "apis": [
+    "POST ~/v1/payouts/?$ -> api-ingress",
+    "GET ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$ -> api-ingress",
+    "GET ~/v1/payouts/?$ -> api-ingress",
+    "POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/approve/?$ -> api-ingress",
+    "POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/reject/?$ -> api-ingress",
+    "POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/cancel/?$ -> api-ingress",
+    "POST ~/v1/payouts_with_otp/?$ -> api-ingress",
+    "GET ~/v1/payouts/purposes/?$ -> api-ingress",
+    "POST ~/v1/payouts_batch/?$ -> api-ingress",
+    "POST ~/v1/contacts/?$ -> api-ingress",
+    "GET ~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$ -> api-ingress",
+    "GET ~/v1/contacts/?$ -> api-ingress",
+    "PATCH ~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$ -> api-ingress",
+    "POST ~/v1/fund_accounts/?$ -> api-ingress",
+    "GET ~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$ -> api-ingress",
+    "GET ~/v1/fund_accounts/?$ -> api-ingress",
+    "PATCH ~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$ -> api-ingress",
+    "GET ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$ -> payouts-api"
+   ],
+   "entry_points": [
+    "edge-kong :8000 (proxy) / :8001 (admin, arena-internal)"
+   ],
+   "variants": [
+    "real (edge-kong)",
+    "substitute (kong-lite)"
+   ]
+  },
+  {
+   "id": "svc:shield",
+   "kind": "svc",
+   "label": "Shield risk rule engine (razorpay/shield, payouts deployment profile APP_MODE=rzpxprod)",
+   "owner_domain": "shield",
+   "criticality": "P1",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "shield/main.go",
+    "shield/app/app.go",
+    "shield/app/router/router.go",
+    "shield/app/middlewares/auth.go",
+    "shield/app/services/ruler/ruler.go",
+    "shield/conf/rzpxprod.toml",
+    "shield/migrations/",
+    "ENV2_COMPOSE/build/m11/build-shield.sh",
+    "ENV2_COMPOSE/trustpath/shield/seed_rules.py"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `shield-web` (+ mysql-shield, redis-shield, shield-migrate, shield-seed)",
+   "repo": "repo:shield",
+   "sha": "514516f53d58dbb469521d59b22830cc3db15cb4",
+   "fidelity_evidence": "real source ADAPTED: the pinned repository built with ONE stubbed module (github.com/razorpay/fingerprint-sdk, 404 to the build identity, 4 symbols on the card cross-border path); real migrations, real rule engine, real BasicAuth over shieldAuthUser pairs, rules created through the real rule API",
+   "apis": [
+    "POST /v1/rules/evaluate/payout (shield-sdk PayoutEvaluateRequest)",
+    "POST /v1/merchants/{merchant_id}/rules",
+    "GET /v1/status"
+   ],
+   "identity_model": "HTTP Basic over configured shieldAuthUser pairs (shieldAuthUser.payout <- payouts [shield.auth]); mode==test payouts skip evaluation (SKIPPING_SHIELD_RULE_EVALUATION)",
+   "variants": [
+    "real (shield-web)",
+    "substitute (shield-stub)"
+   ]
+  },
+  {
+   "id": "svc:workflows",
+   "kind": "svc",
+   "label": "Workflow Service API (razorpay/workflows, Twirp; Cadence-backed approvals)",
+   "owner_domain": "workflows",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "workflows/cmd/api/main.go",
+    "workflows/internal/boot/hooks/auth.go",
+    "workflows/internal/entities/workflow/interactor.go",
+    "workflows/internal/entities/config/validation.go",
+    "workflows/internal/client/types/common/callback.go",
+    "workflows/internal/database/migrations/",
+    "proto/workflows/workflow/v1/workflow_api.proto",
+    "proto/workflows/action/v1/action_api.proto",
+    "proto/workflows/config/v1/config_api.proto",
+    "ENV2_COMPOSE/build/m11/build-workflows.sh",
+    "ENV2_COMPOSE/trustpath/workflows/seed_configs.py"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `workflows-api` (+ mysql-workflows, cadence, workflows-migrate, workflows-seed)",
+   "repo": "repo:workflows",
+   "sha": "080d71a51b777c89af586c92ac4b5f683a473a7c",
+   "fidelity_evidence": "real Twirp API from the pinned clone (bindings generated with buf from the pinned razorpay/proto clone), real goose migrations, real Cadence server (ubercadence/server v1.4.1, MySQL persistence); Create resolves the config by owner/service/org and starts the Cadence workflow",
+   "apis": [
+    "POST /twirp/rzp.workflows.workflow.v1.WorkflowAPI/{Create,Get,List,ListPending,Terminate}",
+    "POST /twirp/rzp.workflows.action.v1.ActionAPI/{Create,CreateWithEntityId,List}",
+    "POST /twirp/rzp.workflows.config.v1.ConfigAPI/{Create,List,Get,Delete}",
+    "POST /twirp/rzp.common.health.v1.HealthCheckAPI/Check"
+   ],
+   "identity_model": "HTTP Basic over [auth.*] pairs (hooks.Auth): payouts presents [workflow.auth] (== [auth.payouts]); callbacks into payouts use clients.payouts_live (rzp_live + payouts [auth.workflow])",
+   "variants": [
+    "real (workflows-api + workflows-worker + cadence)",
+    "substitute (workflow-engine, M5 reconstruction)"
+   ]
+  },
+  {
+   "id": "svc:workflows-workers",
+   "kind": "svc",
+   "label": "Workflow Service Cadence workers (cmd/workers: the approval state machine)",
+   "owner_domain": "workflows",
+   "criticality": "P0",
+   "fidelity": "real_source_running",
+   "confidence": "confirmed",
+   "source_refs": [
+    "workflows/cmd/workers/main.go",
+    "workflows/internal/client/types/approval/workflow.go",
+    "workflows/pkg/cadence/factory.go"
+   ],
+   "twin_ref": "ENV2_COMPOSE/docker-compose.m11.yml service `workflows-worker` (WORKFLOW_TYPE=approval, WORKFLOW_DOMAINS=payouts)",
+   "repo": "repo:workflows",
+   "sha": "080d71a51b777c89af586c92ac4b5f683a473a7c",
+   "fidelity_evidence": "real worker binary polling the real Cadence server (TChannel :7933, domain payouts, task list payouts-approval)"
+  }
+ ],
+ "edges": [
+  {
+   "from": "db:workflows/cadence",
+   "to": "db:workflows/mysql",
+   "type": "depends_on",
+   "via": "cadence + cadence_visibility schemas",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/contacts/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/contacts/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/fund_accounts/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/fund_accounts/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "svc:payouts-api",
+   "type": "calls",
+   "via": "Kong service payouts-ext -> payouts-api:9400",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/templates/payouts/payouts-ext.tf (prod/payouts/config.tf: target payouts.razorpay.com:443 = the Payouts service)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/payouts/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/payouts/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/payouts/purposes/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/GET ~/v1/payouts/purposes/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/PATCH ~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/PATCH ~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/PATCH ~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/PATCH ~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/contacts/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/contacts/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/fund_accounts/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/fund_accounts/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/approve/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/approve/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/cancel/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/cancel/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/reject/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/reject/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts_batch/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts_batch/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts_with_otp/?$",
+   "to": "identity:kong-merchant-credential",
+   "type": "gated_by",
+   "via": "consumer-authentication (basic-auth-x, rollout 1.0)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/module/plugins.tf"
+   ]
+  },
+  {
+   "from": "route:edge-kong/POST ~/v1/payouts_with_otp/?$",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "Kong service prod-api -> api-ingress:8080",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf module prod-api (upstream targets api.api.svc.cluster.local:80 = the API monolith)"
+   ]
+  },
+  {
+   "from": "sub:api-ingress",
+   "to": "identity:edge-passport-edgev2",
+   "type": "authenticates",
+   "via": "DecodePassportJwt/PassportUtil ingest: verify + consumer/mode cross-check",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "sub:api-ingress",
+   "to": "identity:monolith-passport-apiv1",
+   "type": "authenticates",
+   "via": "monolith replacement mints the api-slot passport toward Payouts",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "sub:bankingaccounts-stub",
+   "to": "svc:banking-accounts",
+   "type": "implements",
+   "via": "substitute variant of role banking-accounts (R12)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "sub:kong-lite",
+   "to": "svc:edge-kong",
+   "type": "implements",
+   "via": "substitute variant of role gateway (R12)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "sub:shield-stub",
+   "to": "svc:shield",
+   "type": "implements",
+   "via": "substitute variant of role shield (R12)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "sub:workflow-engine",
+   "to": "svc:workflows",
+   "type": "implements",
+   "via": "substitute variant of role workflows (R12; M5 reconstruction)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:banking-accounts",
+   "to": "db:banking-accounts/mysql",
+   "type": "depends_on",
+   "via": "gorm",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:banking-accounts",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "GET /jwks at boot (goutils passport v4 InitHandler)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "db:edge/postgres",
+   "type": "depends_on",
+   "via": "kong.db (consumers, credentials, routes, plugins)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "identity:edge-passport-edgev2",
+   "type": "authenticates",
+   "via": "kong-plugin-upstream-jwt mints per request",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/GET ~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:791"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/GET ~/v1/contacts/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:139"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/GET ~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:172"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/GET ~/v1/fund_accounts/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:992"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/GET ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:655"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/GET ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/templates/payouts/payouts-ext.tf:21"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/GET ~/v1/payouts/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:1172"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/GET ~/v1/payouts/purposes/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:735"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/PATCH ~/v1/contacts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:799"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/PATCH ~/v1/fund_accounts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:131"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/POST ~/v1/contacts/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:164"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/POST ~/v1/fund_accounts/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:156"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/approve/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:695"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/cancel/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:703"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/POST ~/v1/payouts/(?<entity_id>([a-zA-Z-_]+_)?[a-zA-Z0-9]{14})/reject/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:751"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/POST ~/v1/payouts/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:663"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/POST ~/v1/payouts_batch/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:759"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "route:edge-kong/POST ~/v1/payouts_with_otp/?$",
+   "type": "owns",
+   "confidence": "confirmed",
+   "source_refs": [
+    "terraform-kong/prod/api/api.tf:719"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "sub:api-ingress",
+   "type": "calls",
+   "via": "prod-api service (the monolith replacement); upstream-jwt passport kid edgev2 + X-PASSPORT-USABLE",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:edge-kong",
+   "to": "svc:payouts-api",
+   "type": "calls",
+   "via": "payouts-ext service (direct-to-Payouts read route)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:payouts-api",
+   "to": "identity:bas-api-token",
+   "type": "authenticates",
+   "via": "[banking_account_service.auth].password as Api-Token",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:payouts-api",
+   "to": "identity:shield-basic-payouts",
+   "type": "authenticates",
+   "via": "[shield.auth]",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:payouts-api",
+   "to": "identity:workflows-basic-payouts",
+   "type": "authenticates",
+   "via": "[workflow.auth]",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:payouts-api",
+   "to": "svc:banking-accounts",
+   "type": "calls",
+   "via": "GET /v0.2/payouts/shield/merchant/{mid}/details (pkg/bankingAccountService)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:payouts-api",
+   "to": "svc:shield",
+   "type": "calls",
+   "via": "POST /v1/rules/evaluate/payout (pkg/shield, [shield].host, 200ms fail-open)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:payouts-api",
+   "to": "svc:workflows",
+   "type": "calls",
+   "via": "POST /twirp/rzp.workflows.workflow.v1.WorkflowAPI/Create (pkg/workflow WfCreate, 100ms)",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:shield",
+   "to": "db:shield/mysql",
+   "type": "depends_on",
+   "via": "gorm",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:shield",
+   "to": "db:shield/redis",
+   "type": "depends_on",
+   "via": "ClusterClient + asynq + redis queue driver",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:workflows",
+   "to": "db:workflows/cadence",
+   "type": "depends_on",
+   "via": "StartWorkflow via TChannel :7933",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:workflows",
+   "to": "db:workflows/mysql",
+   "type": "depends_on",
+   "via": "gorm",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:workflows-workers",
+   "to": "db:workflows/cadence",
+   "type": "depends_on",
+   "via": "worker polling",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:workflows-workers",
+   "to": "db:workflows/mysql",
+   "type": "depends_on",
+   "via": "gorm",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:workflows-workers",
+   "to": "identity:workflows-callback-rzp-live",
+   "type": "authenticates",
+   "via": "clients.payouts_live Basic",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  },
+  {
+   "from": "svc:workflows-workers",
+   "to": "svc:payouts-api",
+   "type": "callback",
+   "via": "clients.payouts_live: /v1/workflow/state (created/processed) and /v1/payouts/payouts_internal/{id}/{approve,reject}",
+   "confidence": "confirmed",
+   "source_refs": [
+    "ENV2_COMPOSE/docker-compose.m11.yml"
+   ]
+  }
+ ],
+ "families": [
+  {
+   "id": "family:trust-path",
+   "label": "Critical trust path through real components (M11)",
+   "priority": "P0",
+   "description": "merchant API-key authentication and identity propagation through the real edge gateway, route-level authorization, cross-merchant denial, beneficiary ownership, service-to-service identity, real Shield rule evaluation, real banking-accounts merchant lookup, maker-checker through the real Workflow service, restart/cache invalidation and idempotency",
+   "entry_points": [
+    "edge-kong :8000 /v1/payouts, /v1/contacts, /v1/fund_accounts"
+   ],
+   "components": [
+    "svc:edge-kong",
+    "sub:api-ingress",
+    "svc:payouts-api",
+    "svc:shield",
+    "svc:banking-accounts",
+    "svc:workflows",
+    "svc:workflows-workers",
+    "db:edge/postgres",
+    "db:shield/mysql",
+    "db:shield/redis",
+    "db:banking-accounts/mysql",
+    "db:workflows/mysql",
+    "db:workflows/cadence",
+    "identity:edge-passport-edgev2",
+    "identity:monolith-passport-apiv1",
+    "identity:kong-merchant-credential",
+    "identity:shield-basic-payouts",
+    "identity:bas-api-token",
+    "identity:workflows-basic-payouts",
+    "identity:workflows-callback-rzp-live"
+   ],
+   "variants": [
+    "api_key_auth",
+    "identity_propagation",
+    "dashboard_session",
+    "internal_app_auth",
+    "route_authorization",
+    "cross_merchant_denial",
+    "beneficiary_ownership",
+    "service_identity",
+    "maker_checker",
+    "restart_cache",
+    "idempotency",
+    "shield_rules",
+    "bas_lookup"
+   ],
+   "source_refs": [
+    "reports/implementation/M11_FINAL_REPORT.md"
+   ]
+  }
+ ],
+ "open_questions": [
+  "PU-M11-1 production merchant-credential sync into Kong (not in any granted repository)",
+  "PU-M11-2 production rate-limiter/global plugin configuration and Redis cluster",
+  "PU-M11-3 production values of the edge/monolith/BAS/Shield/Workflow secrets and the Shield auth slot payouts uses (PAYOUTS_SHIELD_AUTH_USERNAME)",
+  "PU-M11-4 the API monolith itself cannot be booted (private composer packages 404, registry credentials): api-ingress remains a contract-faithful replacement",
+  "PU-M11-5 razorpay/account-service (ASV) is not granted to this identity: asv-stub remains"
+ ]
+}

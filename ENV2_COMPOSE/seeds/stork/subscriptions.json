@@ -1,0 +1,48 @@
+{
+  "_source": "findings/25_stork_mozart.md:51-124,288-308 (proto/stork/webhook/v1/webhook.proto:14-31,57-68). Endpoint: POST /twirp/rzp.stork.webhook.v1.WebhookAPI/ProcessEvent. Signature: X-Razorpay-Signature = hex(HMAC-SHA256(secret, raw payload JSON)); also X-Razorpay-Event-Id, Request-Id headers.",
+  "_event_names": "payout.initiated, payout.processed, payout.reversed, payout.failed, payout.updated, payout.queued, payout.rejected, payout.pending (payouts/internal/app/common/appConstants/webhooks.go:4-11)",
+  "webhooks": [
+    {
+      "service": "rx-live",
+      "owner_id": "ARENAM00000001",
+      "owner_type": "merchant",
+      "url": "http://merchant-webhook-sink:8080/webhook/ARENAM00000001",
+      "secret": "arena_stork_secret_m1_min5",
+      "disabled": false,
+      "subscriptions": [
+        { "eventmeta": { "name": "payout.initiated" } }, { "eventmeta": { "name": "payout.processed" } },
+        { "eventmeta": { "name": "payout.reversed" } }, { "eventmeta": { "name": "payout.failed" } },
+        { "eventmeta": { "name": "payout.updated" } }, { "eventmeta": { "name": "payout.queued" } },
+        { "eventmeta": { "name": "payout.rejected" } }, { "eventmeta": { "name": "payout.pending" } }
+      ]
+    },
+    {
+      "service": "rx-live",
+      "owner_id": "ARENAM00000002",
+      "owner_type": "merchant",
+      "url": "http://merchant-webhook-sink:8080/webhook/ARENAM00000002",
+      "secret": "arena_stork_secret_m2_min5",
+      "disabled": false,
+      "subscriptions": [
+        { "eventmeta": { "name": "payout.initiated" } }, { "eventmeta": { "name": "payout.processed" } },
+        { "eventmeta": { "name": "payout.reversed" } }, { "eventmeta": { "name": "payout.failed" } },
+        { "eventmeta": { "name": "payout.updated" } }, { "eventmeta": { "name": "payout.queued" } },
+        { "eventmeta": { "name": "payout.rejected" } }, { "eventmeta": { "name": "payout.pending" } }
+      ]
+    },
+    {
+      "service": "rx-live",
+      "owner_id": "ARENAM00000003",
+      "owner_type": "merchant",
+      "url": "http://merchant-webhook-sink:8080/webhook/ARENAM00000003",
+      "secret": "arena_stork_secret_m3_min5",
+      "disabled": false,
+      "subscriptions": [
+        { "eventmeta": { "name": "payout.initiated" } }, { "eventmeta": { "name": "payout.processed" } },
+        { "eventmeta": { "name": "payout.reversed" } }, { "eventmeta": { "name": "payout.failed" } },
+        { "eventmeta": { "name": "payout.updated" } }, { "eventmeta": { "name": "payout.queued" } },
+        { "eventmeta": { "name": "payout.rejected" } }, { "eventmeta": { "name": "payout.pending" } }
+      ]
+    }
+  ]
+}
